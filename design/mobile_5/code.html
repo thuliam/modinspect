@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ซื้อการ์ดจอมือสอง ต้องเช็กอะไรบ้าง? | PC Price Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "primary-container": "#131b2e",
+                "market-teal": "#0D9488",
+                "surface-container-lowest": "#ffffff",
+                "on-tertiary-fixed-variant": "#005049",
+                "error": "#ba1a1a",
+                "tertiary": "#000000",
+                "surface-container-highest": "#e0e3e5",
+                "on-primary-fixed": "#131b2e",
+                "border-subtle": "#E2E8F0",
+                "surface": "#f7f9fb",
+                "surface-variant": "#e0e3e5",
+                "inverse-primary": "#bec6e0",
+                "on-secondary": "#ffffff",
+                "outline": "#76777d",
+                "on-primary": "#ffffff",
+                "secondary-container": "#6063ee",
+                "on-secondary-fixed": "#07006c",
+                "surface-container-low": "#f2f4f6",
+                "status-amber": "#D97706",
+                "primary-fixed-dim": "#bec6e0",
+                "on-surface-variant": "#45464d",
+                "status-blue": "#2563EB",
+                "secondary-fixed-dim": "#c0c1ff",
+                "inverse-surface": "#2d3133",
+                "inverse-on-surface": "#eff1f3",
+                "on-error-container": "#93000a",
+                "tertiary-fixed-dim": "#6bd8cb",
+                "surface-tint": "#565e74",
+                "background": "#f7f9fb",
+                "tertiary-container": "#00201d",
+                "on-tertiary": "#ffffff",
+                "surface-container": "#eceef0",
+                "on-secondary-container": "#fffbff",
+                "on-primary-fixed-variant": "#3f465c",
+                "surface-dim": "#d8dadc",
+                "secondary-fixed": "#e1e0ff",
+                "secondary": "#4648d4",
+                "surface-bright": "#f7f9fb",
+                "text-muted": "#64748B",
+                "error-container": "#ffdad6",
+                "on-secondary-fixed-variant": "#2f2ebe",
+                "on-tertiary-fixed": "#00201d",
+                "on-background": "#191c1e",
+                "surface-container-high": "#e6e8ea",
+                "outline-variant": "#c6c6cd",
+                "primary-fixed": "#dae2fd",
+                "on-tertiary-container": "#0c9488",
+                "primary": "#000000",
+                "tertiary-fixed": "#89f5e7",
+                "on-primary-container": "#7c839b",
+                "risk-red": "#DC2626",
+                "status-violet": "#7C3AED",
+                "on-error": "#ffffff",
+                "on-surface": "#191c1e"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "margin-mobile": "16px",
+                "section-gap": "64px",
+                "gutter": "24px",
+                "base": "4px",
+                "stack-md": "16px",
+                "stack-sm": "8px",
+                "container-max": "1280px"
+            },
+            "fontFamily": {
+                "label-sm": ["JetBrains Mono"],
+                "body-md": ["IBM Plex Sans Thai"],
+                "headline-lg": ["IBM Plex Sans Thai"],
+                "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                "price-display": ["IBM Plex Sans"],
+                "headline-xl": ["IBM Plex Sans Thai"],
+                "data-table": ["IBM Plex Sans"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .article-shadow {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .collapsible-active .collapsible-content {
+            max-height: 500px;
+        }
+        .sticky-cta {
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md text-body-md antialiased pb-24">
+<!-- Top Navigation Bar (Shared Component Context) -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest flex items-center justify-between px-margin-mobile h-16 border-b border-border-subtle">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">PC Price Radar</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="share">share</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="language">language</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="mt-16 pt-6 px-margin-mobile max-w-md mx-auto">
+<!-- Article Header -->
+<section class="mb-8">
+<div class="flex gap-2 mb-3">
+<span class="bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded font-label-sm text-label-sm uppercase">Buying Guide</span>
+<span class="text-text-muted font-label-sm text-label-sm">5 MIN READ</span>
+</div>
+<h1 class="font-headline-xl text-[32px] leading-tight text-primary mb-4">ซื้อการ์ดจอมือสอง ต้องเช็กอะไรบ้าง?</h1>
+<p class="text-on-surface-variant leading-relaxed">คู่มือเจาะลึกการเลือกซื้อ GPU มือสองอย่างมือโปร พร้อม Checklist ตรวจสอบสภาพและวิธีเลี่ยงโดนโกง</p>
+<div class="mt-6 rounded-xl overflow-hidden aspect-video border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="A high-end cinematic close-up of a modern computer graphics card with sleek metallic heat sinks and copper pipes. The lighting is moody and professional, using deep navy blue and sharp white highlights to emphasize technical precision. The background is a clean, minimalist tech laboratory environment, conveying an atmosphere of corporate financial intelligence and hardware expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnFYnkwE4ozeXUfeivEGYotC36-wZY9-1H0mssowQBIKI9wj2z8FBxRWClZVrpi41JmyrJgWOhAa-Pr8wCoPhFPm3l7WaQtmIjH6gLRP1U0BLuka7gvTOiuBV6J_BoWZtqmSy9sfhf0Dlgo2ATsYm0Cvqg3MFmO0pa7eLVW53c076zhGYGumwgYW6Z2ak9x-rkt6vUppZSK4UJAn9FH6-d7IHa8mThniDWjoX5FJuqCSfGvgNU0GVE08uBqHp7PYAQouoVKIZnLsbP"/>
+</div>
+</section>
+<!-- Collapsible Table of Contents -->
+<section class="mb-10 bg-surface-container-low border border-border-subtle rounded-xl p-4 transition-all" id="toc-container">
+<button class="flex items-center justify-between w-full" onclick="toggleTOC()">
+<span class="font-bold text-primary">สารบัญเนื้อหา</span>
+<span class="material-symbols-outlined transition-transform" data-icon="expand_more" id="toc-icon">expand_more</span>
+</button>
+<div class="collapsible-content mt-4 border-t border-border-subtle pt-4" id="toc-content">
+<ul class="space-y-3">
+<li><a class="text-secondary hover:underline flex items-center gap-2" href="#checklist"><span class="w-1 h-1 bg-secondary rounded-full"></span>Checklist ตรวจสภาพภายนอก</a></li>
+<li><a class="text-secondary hover:underline flex items-center gap-2" href="#benchmark"><span class="w-1 h-1 bg-secondary rounded-full"></span>การทำ Benchmark และ Stress Test</a></li>
+<li><a class="text-secondary hover:underline flex items-center gap-2" href="#redflags"><span class="w-1 h-1 bg-secondary rounded-full"></span>สัญญาณอันตราย (Red Flags)</a></li>
+<li><a class="text-secondary hover:underline flex items-center gap-2" href="#price"><span class="w-1 h-1 bg-secondary rounded-full"></span>ราคากลางและการรับประกัน</a></li>
+</ul>
+</div>
+</section>
+<!-- Section: Checklist -->
+<section class="mb-12" id="checklist">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-market-teal" data-icon="fact_check">fact_check</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">1. Checklist ตรวจสภาพภายนอก</h2>
+</div>
+<div class="space-y-4">
+<div class="flex items-start gap-4 p-4 bg-white border border-border-subtle rounded-xl article-shadow">
+<div class="bg-surface-container text-primary p-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</div>
+<div>
+<h3 class="font-bold mb-1">ตรวจสอบคราบเกลือและสนิม</h3>
+<p class="text-on-surface-variant text-sm">ส่องดูตามซิงค์ระบายความร้อนและน็อต หากมีคราบขาวหรือสนิมเขียว แสดงว่าเคยใช้งานในที่ชื้นสูง</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 bg-white border border-border-subtle rounded-xl article-shadow">
+<div class="bg-surface-container text-primary p-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+</div>
+<div>
+<h3 class="font-bold mb-1">วอยด์ประกัน (Warranty Void)</h3>
+<p class="text-on-surface-variant text-sm">ตรวจสอบสติกเกอร์หัวน็อตว่ายังอยู่ครบไหม ถ้าขาดแปลว่าเคยถูกแกะเพื่อเปลี่ยนซิลิโคนหรือซ่อม</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-4 bg-white border border-border-subtle rounded-xl article-shadow">
+<div class="bg-surface-container text-primary p-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="toys">toys</span>
+</div>
+<div>
+<h3 class="font-bold mb-1">สภาพพัดลม</h3>
+<p class="text-on-surface-variant text-sm">ลองหมุนพัดลมด้วยมือ ต้องหมุนลื่นไม่มีเสียงกึกกัก หรือแกนพัดลมไม่แกว่ง</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Red Flags -->
+<section class="mb-12" id="redflags">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-risk-red" data-icon="warning">warning</span>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">2. สัญญาณอันตราย (Red Flags)</h2>
+</div>
+<div class="bg-error-container border border-error/20 p-5 rounded-xl">
+<ul class="space-y-4">
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-risk-red shrink-0" data-icon="dangerous">dangerous</span>
+<span class="text-on-error-container font-medium">ราคาถูกผิดปกติ (Too good to be true) - มักจะเป็นการ์ดผ่านการขุดหนักหรือการ์ดปลอม</span>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-risk-red shrink-0" data-icon="dangerous">dangerous</span>
+<span class="text-on-error-container font-medium">ไม่ยอมให้ผ่านกลาง หรือนัดรับ - เสี่ยงโดนโกงเงินโอนมากที่สุด</span>
+</li>
+<li class="flex gap-3">
+<span class="material-symbols-outlined text-risk-red shrink-0" data-icon="dangerous">dangerous</span>
+<span class="text-on-error-container font-medium">มีรอยไหม้หรือคราบน้ำมันซึม - เป็นสัญญาณว่าภาคจ่ายไฟเสื่อมสภาพจากการใช้งานหนัก</span>
+</li>
+</ul>
+</div>
+</section>
+<!-- Section: Distribution Bar Concept -->
+<section class="mb-12 p-6 bg-surface-container-low rounded-2xl border border-border-subtle">
+<h3 class="font-bold text-primary mb-4 text-center">ตัวอย่างการดูช่วงราคากลาง</h3>
+<div class="relative pt-6 pb-2">
+<div class="flex h-3 w-full rounded-full overflow-hidden">
+<div class="h-full w-[20%] bg-risk-red"></div>
+<div class="h-full w-[50%] bg-market-teal"></div>
+<div class="h-full w-[15%] bg-status-amber"></div>
+<div class="h-full w-[15%] bg-status-violet"></div>
+</div>
+<!-- Radar Indicator -->
+<div class="absolute top-0 left-[45%] flex flex-col items-center">
+<span class="text-label-sm font-label-sm text-market-teal font-bold mb-1">Fair Price</span>
+<div class="w-0.5 h-8 bg-primary"></div>
+</div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] font-label-sm text-text-muted uppercase tracking-wider">
+<span>Outlier</span>
+<span>Market Range</span>
+<span>Premium</span>
+</div>
+<p class="text-xs text-center text-on-surface-variant mt-4">ตรวจสอบราคากลางได้ที่เครื่องมือ Radar ของเรา</p>
+</section>
+<!-- Related Products (Bento Style Mobile) -->
+<section class="mb-12">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary mb-6">ดีลที่น่าสนใจวันนี้</h2>
+<div class="grid grid-cols-1 gap-4">
+<!-- Card 1 -->
+<div class="bg-white border border-border-subtle rounded-xl p-4 flex gap-4 article-shadow">
+<div class="w-24 h-24 bg-surface-container rounded-lg shrink-0 overflow-hidden border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="A clean product shot of an ASUS ROG Strix GeForce RTX 3080 graphics card on a white studio background. The image is captured in a minimalist, high-key style with soft lighting that emphasizes the metallic textures and premium build quality. The overall aesthetic is professional and technical, matching a modern corporate financial hardware intelligence platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASviIvSQOTP4nxzgwDymIG-a3UMM7145Lg3eIuIJjJk7P0AjMA3ev46vJDBhpi7beXc-h7EsDDl1YhKq77BpU6TdIUrmLIPfKDS-Zfmql93cyKEnqp9rvcOYPrFfFBM9iNiP1cFOGGpzFfWj1oLG9vU_LnMiZDDZrhAXc_CitQSodgvezHuSaNnK53yACzFBXrTtnL-k9if7ORWOJ0I1E4XBGfpR4ofzFY2QRjQxh63jX8k60Bph1irGMDLrd5sW8ypgGjo5FCnAOV"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-market-teal border border-market-teal px-1 rounded">TRUSTED</span>
+<h4 class="font-bold text-primary text-sm mt-1">RTX 3080 10GB GDDR6X</h4>
+<p class="text-[11px] text-on-surface-variant font-label-sm">ASUS ROG STRIX / 3 FANS</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-price-display text-price-display text-lg text-secondary">฿14,500</span>
+<span class="material-symbols-outlined text-secondary" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white border border-border-subtle rounded-xl p-4 flex gap-4 article-shadow">
+<div class="w-24 h-24 bg-surface-container rounded-lg shrink-0 overflow-hidden border border-border-subtle">
+<img class="w-full h-full object-cover" data-alt="A professional product photograph of an EVGA GeForce RTX 3070 graphics card, showcasing its dual-fan cooling system and sleek black shroud. The lighting is crisp and modern, set against a neutral, light-mode background that highlights the hardware's technical details. The image follows a corporate minimalist aesthetic, emphasizing reliability and unbiased market intelligence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg7JMx05YaRK9yKP4CExEjEzbHLnurZ9_mYvYARVzR39q148r-ON28Mc0vWkhlU6qHOcPbDqYLzriknC9KeEj4aA5rcHZ1wR2qdiDwZf-1yW0f_kGLMpttg9NXKAqePC72ACLxoM5N-rpRAmXtXFxZKjS3bc2I1W2HGJF1zTWsoXy8VIzj3XgdPlBJE22qnOWqVlF4AWD3b1BpQ_kuBfv9ytQ0k65ObJHqpSrct42IosTBTEtKgjvm71QJdtVJV6UZpwwAxGBmzkoT"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-[10px] text-status-amber border border-status-amber px-1 rounded">RARE</span>
+<h4 class="font-bold text-primary text-sm mt-1">RTX 3070 8GB GDDR6</h4>
+<p class="text-[11px] text-on-surface-variant font-label-sm">EVGA FTW3 ULTRA</p>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-price-display text-price-display text-lg text-secondary">฿9,800</span>
+<span class="material-symbols-outlined text-secondary" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Area (Shared Component Style) -->
+<footer class="w-full py-12 px-margin-mobile flex flex-col gap-8 bg-surface-container-low border-t border-border-subtle">
+<div class="flex flex-col gap-4">
+<span class="font-headline-lg font-bold text-primary">PC Price Radar</span>
+<p class="text-text-muted text-label-sm">© 2024 PC Price Radar. ข้อมูลราคาเพื่อการตัดสินใจเท่านั้น</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<a class="text-on-primary-fixed-variant font-label-sm" href="#">ระเบียบวิธีวิจัย</a>
+<a class="text-on-primary-fixed-variant font-label-sm" href="#">คำสงวนสิทธิ์</a>
+<a class="text-on-primary-fixed-variant font-label-sm" href="#">เกี่ยวกับเรา</a>
+<a class="text-on-primary-fixed-variant font-label-sm" href="#">ติดต่อเรา</a>
+</div>
+</footer>
+<!-- Sticky Bottom CTA -->
+<div class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md p-4 sticky-cta z-40">
+<button class="w-full bg-secondary hover:bg-secondary-container text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="search_insights">search_insights</span>
+            เช็กดีลตอนนี้
+        </button>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+        function toggleTOC() {
+            const container = document.getElementById('toc-container');
+            const icon = document.getElementById('toc-icon');
+            container.classList.toggle('collapsible-active');
+            
+            if (container.classList.contains('collapsible-active')) {
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Simple scroll spy behavior for the CTA appearance
+        let lastScrollTop = 0;
+        const cta = document.querySelector('.sticky-cta');
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop) {
+                // Scroll Down
+                cta.style.transform = 'translateY(100%)';
+                cta.style.transition = 'transform 0.3s ease';
+            } else {
+                // Scroll Up
+                cta.style.transform = 'translateY(0)';
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+    </script>
+</body></html>

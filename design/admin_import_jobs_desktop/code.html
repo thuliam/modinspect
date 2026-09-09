@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Import Jobs - Price Radar Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#6063ee",
+                        "on-tertiary-fixed-variant": "#005049",
+                        "on-primary-fixed": "#131b2e",
+                        "on-primary-container": "#7c839b",
+                        "border-subtle": "#E2E8F0",
+                        "surface-container-low": "#f2f4f6",
+                        "outline": "#76777d",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "primary": "#000000",
+                        "surface-container-highest": "#e0e3e5",
+                        "outline-variant": "#c6c6cd",
+                        "on-background": "#191c1e",
+                        "on-surface": "#191c1e",
+                        "tertiary-fixed-dim": "#6bd8cb",
+                        "tertiary-container": "#00201d",
+                        "surface": "#f7f9fb",
+                        "on-tertiary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "text-muted": "#64748B",
+                        "risk-red": "#DC2626",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#e1e0ff",
+                        "tertiary-fixed": "#89f5e7",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "status-amber": "#D97706",
+                        "on-surface-variant": "#45464d",
+                        "background": "#f7f9fb",
+                        "status-violet": "#7C3AED",
+                        "surface-container": "#eceef0",
+                        "on-secondary-fixed": "#07006c",
+                        "on-secondary-container": "#fffbff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary": "#000000",
+                        "surface-tint": "#565e74",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e0e3e5",
+                        "secondary": "#4648d4",
+                        "status-blue": "#2563EB",
+                        "market-teal": "#0D9488",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#0c9488",
+                        "inverse-surface": "#2d3133",
+                        "primary-container": "#131b2e",
+                        "inverse-primary": "#bec6e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "stack-md": "16px",
+                        "container-max": "1280px",
+                        "section-gap": "64px",
+                        "gutter": "24px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["IBM Plex Sans Thai"],
+                        "data-table": ["IBM Plex Sans"],
+                        "headline-lg": ["IBM Plex Sans Thai"],
+                        "price-display": ["IBM Plex Sans"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                        "body-md": ["IBM Plex Sans Thai"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                        "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .data-grid-row:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container-low dark:bg-inverse-surface border-r border-border-subtle dark:border-outline-variant flex flex-col py-stack-md z-50">
+<div class="px-stack-md mb-10">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-inverse-primary leading-tight">Price Radar Admin</h1>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">Hardware Intelligence</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Data Quality Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">fact_check</span>
+<span class="font-body-md text-body-md">Observation Review</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md text-body-md">Product Master</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">label</span>
+<span class="font-body-md text-body-md">Product Aliases</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high dark:hover:bg-on-surface-variant transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+<span class="font-body-md text-body-md">Source Health</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-secondary dark:text-secondary-fixed-dim font-bold border-r-4 border-secondary bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">cloud_sync</span>
+<span class="font-body-md text-body-md">Import Jobs</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-border-subtle pt-stack-md">
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<div class="px-stack-md mt-4 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs font-bold">Admin User</span>
+<span class="text-[10px] text-text-muted">Data Architect</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-72 min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-40 bg-surface-container-lowest dark:bg-surface-container-low border-b border-border-subtle dark:border-outline-variant px-gutter py-stack-md flex justify-between items-center h-20">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Data Quality Monitor</h2>
+<div class="h-6 w-px bg-border-subtle mx-2"></div>
+<nav class="flex gap-4">
+<span class="font-body-md text-primary font-bold">Import Jobs</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-muted text-lg">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container border border-border-subtle rounded w-64 focus:ring-1 focus:ring-secondary focus:border-secondary outline-none text-sm transition-all" placeholder="Search job IDs, files..." type="text"/>
+</div>
+<div class="flex gap-4 items-center">
+<button class="text-on-surface-variant hover:text-secondary transition-colors duration-100 active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors duration-100 active:scale-95">
+<span class="material-symbols-outlined">history</span>
+</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors duration-100 active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-gutter max-w-container-max mx-auto w-full flex-1">
+<!-- Page Header Actions -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-primary mb-1">Bulk Import Management</h3>
+<p class="text-text-muted font-body-md max-w-2xl">Monitor and manage automated and manual data ingestion pipelines. All imports are validated against the hardware technical schema before commit.</p>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-3 flex items-center gap-2 rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-sm" onclick="toggleModal('import-modal')">
+<span class="material-symbols-outlined">cloud_upload</span>
+                    New Import Job
+                </button>
+</div>
+<!-- Dashboard Stats Summary -->
+<div class="grid grid-cols-4 gap-gutter mb-10">
+<div class="bg-white border border-border-subtle p-6 rounded transition-all hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)]">
+<p class="font-label-sm text-text-muted uppercase mb-2">Total Imports (24h)</p>
+<p class="font-price-display text-price-display text-primary">124</p>
+<div class="mt-4 flex items-center gap-2 text-market-teal text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>12% increase from yesterday</span>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-6 rounded">
+<p class="font-label-sm text-text-muted uppercase mb-2">Success Rate</p>
+<p class="font-price-display text-price-display text-market-teal">98.2%</p>
+<div class="mt-4 w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-market-teal h-full w-[98%]"></div>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-6 rounded">
+<p class="font-label-sm text-text-muted uppercase mb-2">Active Jobs</p>
+<p class="font-price-display text-price-display text-status-blue">3</p>
+<p class="mt-4 text-xs text-text-muted">Currently processing in AWS-East-1</p>
+</div>
+<div class="bg-white border border-border-subtle p-6 rounded border-l-4 border-l-risk-red">
+<p class="font-label-sm text-text-muted uppercase mb-2">Failed Jobs</p>
+<p class="font-price-display text-price-display text-risk-red">2</p>
+<p class="mt-4 text-xs text-risk-red font-medium">Requires immediate intervention</p>
+</div>
+</div>
+<!-- Import History Table -->
+<div class="bg-white border border-border-subtle rounded-lg overflow-hidden mb-10">
+<div class="px-6 py-4 border-b border-border-subtle bg-surface-container-low flex justify-between items-center">
+<h4 class="font-bold text-sm uppercase tracking-wider text-on-surface-variant">Import History</h4>
+<div class="flex gap-2">
+<button class="p-1 text-on-surface-variant hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-lg">filter_alt</span></button>
+<button class="p-1 text-on-surface-variant hover:bg-surface-container-high rounded transition-colors"><span class="material-symbols-outlined text-lg">refresh</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-data-table text-data-table">
+<thead class="bg-surface-container-lowest text-text-muted text-[11px] uppercase tracking-widest border-b border-border-subtle">
+<tr>
+<th class="px-6 py-4 font-bold">Job ID / File</th>
+<th class="px-6 py-4 font-bold">Source</th>
+<th class="px-6 py-4 font-bold">Records</th>
+<th class="px-6 py-4 font-bold text-center">Status</th>
+<th class="px-6 py-4 font-bold">Date & Time</th>
+<th class="px-6 py-4 font-bold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<!-- Row 1: Completed -->
+<tr class="data-grid-row transition-all">
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-primary">#JOB-8842-12</span>
+<span class="text-xs text-text-muted">rtx_40_series_pricing_july.json</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="bg-surface-container px-2 py-1 rounded text-[10px] font-bold text-on-surface-variant">AWS S3 BUCKET</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex gap-3 items-center">
+<div class="flex flex-col">
+<span class="font-bold text-primary">4,200</span>
+<span class="text-[10px] text-text-muted uppercase">Total</span>
+</div>
+<div class="h-6 w-px bg-border-subtle"></div>
+<div class="flex flex-col">
+<span class="font-bold text-market-teal">4,198</span>
+<span class="text-[10px] text-text-muted uppercase">Valid</span>
+</div>
+<div class="h-6 w-px bg-border-subtle"></div>
+<div class="flex flex-col">
+<span class="font-bold text-risk-red">2</span>
+<span class="text-[10px] text-text-muted uppercase">Err</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<span class="inline-flex items-center gap-1 bg-market-teal/10 text-market-teal px-3 py-1 rounded-full text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-market-teal"></span>
+                                        Completed
+                                    </span>
+</td>
+<td class="px-6 py-5 text-text-muted text-xs">
+                                    Today, 09:42 AM
+                                </td>
+<td class="px-6 py-5 text-right">
+<button class="text-secondary hover:underline font-bold text-xs mr-3">View Log</button>
+<button class="text-on-surface-variant"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 2: Processing -->
+<tr class="data-grid-row transition-all bg-status-blue/5">
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-primary">#JOB-8842-13</span>
+<span class="text-xs text-text-muted">euro_market_dump_v2.csv</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="bg-surface-container px-2 py-1 rounded text-[10px] font-bold text-on-surface-variant">MANUAL UPLOAD</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<span class="font-bold text-primary">--</span>
+<span class="text-xs italic text-text-muted">Scanning file...</span>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<span class="inline-flex items-center gap-1 bg-status-blue/10 text-status-blue px-3 py-1 rounded-full text-[11px] font-bold animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-status-blue"></span>
+                                        Processing
+                                    </span>
+</td>
+<td class="px-6 py-5 text-text-muted text-xs">
+                                    Today, 11:15 AM
+                                </td>
+<td class="px-6 py-5 text-right">
+<button class="text-secondary hover:underline font-bold text-xs mr-3">Cancel</button>
+<button class="text-on-surface-variant"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</td>
+</tr>
+<!-- Row 3: Failed -->
+<tr class="data-grid-row transition-all">
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="font-bold text-primary">#JOB-8841-01</span>
+<span class="text-xs text-text-muted">historical_scrap_2023.json</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="bg-surface-container px-2 py-1 rounded text-[10px] font-bold text-on-surface-variant">API ENDPOINT</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex gap-3 items-center">
+<div class="flex flex-col">
+<span class="font-bold text-primary">12,500</span>
+<span class="text-[10px] text-text-muted uppercase">Total</span>
+</div>
+<div class="h-6 w-px bg-border-subtle"></div>
+<div class="flex flex-col">
+<span class="font-bold text-market-teal">0</span>
+<span class="text-[10px] text-text-muted uppercase">Valid</span>
+</div>
+<div class="h-6 w-px bg-border-subtle"></div>
+<div class="flex flex-col">
+<span class="font-bold text-risk-red">12,500</span>
+<span class="text-[10px] text-text-muted uppercase">Err</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<span class="inline-flex items-center gap-1 bg-risk-red/10 text-risk-red px-3 py-1 rounded-full text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-risk-red"></span>
+                                        Failed
+                                    </span>
+</td>
+<td class="px-6 py-5 text-text-muted text-xs">
+                                    Yesterday, 04:30 PM
+                                </td>
+<td class="px-6 py-5 text-right">
+<button class="bg-risk-red text-white text-[10px] px-2 py-1 rounded font-bold hover:bg-risk-red/90 transition-colors mr-3">Resolve Errors</button>
+<button class="text-on-surface-variant"><span class="material-symbols-outlined text-lg">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-surface-container-lowest border-t border-border-subtle flex justify-between items-center text-xs text-text-muted">
+<span>Showing 1 to 3 of 124 import jobs</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-border-subtle rounded hover:bg-surface-container transition-colors">Previous</button>
+<button class="px-3 py-1 border border-border-subtle rounded bg-secondary text-white font-bold">1</button>
+<button class="px-3 py-1 border border-border-subtle rounded hover:bg-surface-container transition-colors">2</button>
+<button class="px-3 py-1 border border-border-subtle rounded hover:bg-surface-container transition-colors">3</button>
+<button class="px-3 py-1 border border-border-subtle rounded hover:bg-surface-container transition-colors">Next</button>
+</div>
+</div>
+</div>
+<!-- Detailed Error Log Sample (Conditional/Contextual) -->
+<div class="bg-white border border-border-subtle rounded-lg p-6">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-risk-red">error</span>
+<h4 class="font-bold text-primary">Error Log Snapshot: #JOB-8841-01</h4>
+</div>
+<button class="text-text-muted hover:text-primary transition-colors flex items-center gap-1 text-sm">
+                        Export Logs
+                        <span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+<div class="bg-inverse-surface text-surface rounded-lg p-4 font-label-sm text-xs space-y-2 overflow-auto max-h-48 scrollbar-thin scrollbar-thumb-outline-variant">
+<p class="text-risk-red">[CRITICAL] - Schema Validation Failed at row 1: 'product_id' cannot be null.</p>
+<p class="text-outline-variant">[INFO] - Data normalization engine started at 16:30:02.124Z</p>
+<p class="text-status-amber">[WARN] - Unrecognized field 'vram_speed' at row 42. Field ignored.</p>
+<p class="text-risk-red">[CRITICAL] - Schema Validation Failed at row 43: 'msrp' must be an integer, received 'string'.</p>
+<p class="text-risk-red">[CRITICAL] - Error limit exceeded (10000+). Process terminated.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal for New Import -->
+<div class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4" id="import-modal">
+<div class="bg-white w-full max-w-xl rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="px-6 py-5 border-b border-border-subtle flex justify-between items-center">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold">New Import Job</h4>
+<button class="text-text-muted hover:text-risk-red transition-colors" onclick="toggleModal('import-modal')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-8 space-y-8">
+<!-- Drop Zone -->
+<div class="border-2 border-dashed border-border-subtle rounded-xl p-10 flex flex-col items-center justify-center bg-surface hover:border-secondary transition-colors cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl">upload_file</span>
+</div>
+<p class="font-bold text-primary mb-1">Click to upload or drag and drop</p>
+<p class="text-text-muted text-sm">CSV, JSON or XLSX (Max 50MB)</p>
+</div>
+<div class="space-y-4">
+<div>
+<label class="block font-label-sm text-text-muted uppercase mb-2">Import Destination Table</label>
+<select class="w-full bg-surface-container-lowest border border-border-subtle rounded px-4 py-3 outline-none focus:ring-1 focus:ring-secondary transition-all">
+<option>Product Inventory (Master)</option>
+<option>Price History (Audit)</option>
+<option>Vendor Profiles</option>
+<option>Market Benchmarks</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-text-muted uppercase mb-2">Pre-Import Logic</label>
+<div class="space-y-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-4 h-4 rounded text-secondary focus:ring-secondary border-border-subtle" type="checkbox"/>
+<span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Validate technical schema before ingest</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-4 h-4 rounded text-secondary focus:ring-secondary border-border-subtle" type="checkbox"/>
+<span class="text-sm text-on-surface-variant group-hover:text-primary transition-colors">Overwrite existing records with matching IDs</span>
+</label>
+</div>
+</div>
+</div>
+</div>
+<div class="px-6 py-5 bg-surface-container-low border-t border-border-subtle flex justify-end gap-3">
+<button class="px-6 py-2 border border-border-subtle text-on-surface-variant font-bold rounded hover:bg-surface-container-high transition-colors" onclick="toggleModal('import-modal')">Cancel</button>
+<button class="px-8 py-2 bg-secondary text-on-secondary font-bold rounded hover:opacity-90 transition-opacity">Start Processing</button>
+</div>
+</div>
+</div>
+<script>
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Simple mock interaction for the log snap-shot
+        document.querySelectorAll('.data-grid-row').forEach(row => {
+            row.addEventListener('click', () => {
+                // Highlight the selected row visually
+                document.querySelectorAll('.data-grid-row').forEach(r => r.classList.remove('bg-surface-container-high'));
+                row.classList.add('bg-surface-container-high');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>รายการของฉัน - PC Price Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-pill {
+            box-shadow: 0 2px 4px rgba(70, 72, 212, 0.2);
+        }
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .price { font-family: 'IBM Plex Sans', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#89f5e7",
+                        "on-surface": "#191c1e",
+                        "risk-red": "#DC2626",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "status-violet": "#7C3AED",
+                        "status-blue": "#2563EB",
+                        "surface-bright": "#f7f9fb",
+                        "outline": "#76777d",
+                        "surface-tint": "#565e74",
+                        "on-tertiary-fixed-variant": "#005049",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "primary-fixed-dim": "#bec6e0",
+                        "tertiary-container": "#00201d",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-container": "#fffbff",
+                        "tertiary": "#000000",
+                        "secondary-fixed": "#e1e0ff",
+                        "border-subtle": "#E2E8F0",
+                        "on-tertiary-container": "#0c9488",
+                        "surface-container-lowest": "#ffffff",
+                        "status-amber": "#D97706",
+                        "primary": "#000000",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#6bd8cb",
+                        "surface-container-low": "#f2f4f6",
+                        "text-muted": "#64748B",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#6063ee",
+                        "outline-variant": "#c6c6cd",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#bec6e0",
+                        "surface-container": "#eceef0",
+                        "on-background": "#191c1e",
+                        "surface": "#f7f9fb",
+                        "market-teal": "#0D9488",
+                        "primary-container": "#131b2e",
+                        "secondary": "#4648d4",
+                        "on-surface-variant": "#45464d",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#7c839b",
+                        "background": "#f7f9fb",
+                        "on-secondary-fixed": "#07006c",
+                        "inverse-surface": "#2d3133",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#dae2fd",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-fixed": "#00201d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "section-gap": "64px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["IBM Plex Sans Thai"],
+                        "body-md": ["IBM Plex Sans Thai"],
+                        "price-display": ["IBM Plex Sans"],
+                        "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                        "data-table": ["IBM Plex Sans"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["IBM Plex Sans Thai"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest border-b border-border-subtle flex items-center justify-between px-gutter h-16">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">PC Price Radar</h1>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-secondary active:scale-90 transition-transform">language</button>
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center border border-border-subtle overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a Thai technology enthusiast in a minimalist studio setting. The lighting is soft and even, highlighting a modern corporate aesthetic with a clean white background. The subject is wearing a neutral-toned smart-casual outfit, reflecting a trustworthy and technical persona consistent with a high-end SaaS platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa1EDAQHT_JMogGE_R8brdbjUJJg-rfs1NbGaQGEe0YwqMsmh7tzm5v20Ih-5nOJHat6WA9lPRzQIClVT86Bkr5hrVojxb3Ir-HhIoZJNQXKW7H6dzIIvLs56whiQh3pwqAlaIn7JZeraSdJShkPlLhzrH6da5fDK1s-CwvB-gVhCgaSBHfpHfe5DRl-uM-FhCJER2-7qwFXod4xBE2ZbL06MyxTOtskgKJ7X1nND8CR6vWefe_G7Y5NjuM-W-ykTPkNQYJlksLsAJ"/>
+</div>
+</div>
+</header>
+<main class="pt-20 px-margin-mobile">
+<!-- Title and Stats Summary -->
+<section class="mb-stack-md">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">รายการของฉัน</h2>
+<p class="font-body-md text-text-muted text-sm">จัดการประกาศขายและดูความเคลื่อนไหวของตลาด</p>
+</section>
+<!-- Search & Filter Bar -->
+<section class="mb-stack-md space-y-3">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface-container border border-border-subtle rounded-xl font-body-md focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all" placeholder="ค้นหารายการของคุณ..." type="text"/>
+</div>
+<!-- Category Chips -->
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-secondary text-on-secondary font-body-md text-sm active-pill transition-all">ทั้งหมด</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container border border-border-subtle text-on-surface-variant font-body-md text-sm hover:bg-surface-container-high transition-all">GPU</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container border border-border-subtle text-on-surface-variant font-body-md text-sm hover:bg-surface-container-high transition-all">CPU</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container border border-border-subtle text-on-surface-variant font-body-md text-sm hover:bg-surface-container-high transition-all">RAM</button>
+<button class="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface-container border border-border-subtle text-on-surface-variant font-body-md text-sm hover:bg-surface-container-high transition-all">Storage</button>
+</div>
+</section>
+<!-- Tabs for Status -->
+<div class="flex border-b border-border-subtle mb-stack-md">
+<button class="flex-1 py-3 text-center font-bold text-secondary border-b-2 border-secondary transition-all" id="tab-active" onclick="switchTab('active')">ประกาศขายอยู่ (3)</button>
+<button class="flex-1 py-3 text-center font-body-md text-on-surface-variant hover:text-secondary transition-all" id="tab-drafts" onclick="switchTab('drafts')">แบบร่าง (0)</button>
+</div>
+<!-- Active Listings Container -->
+<div class="space-y-stack-md" id="active-content">
+<!-- Listing Card 1 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="flex gap-4">
+<div class="w-20 h-20 rounded-lg bg-surface-container border border-border-subtle overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up studio photography of an ASUS ROG Strix GeForce RTX 3080 graphics card. The lighting is clinical and precise, emphasizing the technical components and sleek metal shroud. The background is a clean, neutral gray, keeping the focus entirely on the hardware's craftsmanship and modern engineering aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIpeAJA2V3gvIY8IK3WZUC-nLT30m6cu7Ta2Zhitm8p3e0lDyeHgwpwz_BG4eVG_WjNi5FsRHNrf_Qol21U08ZkpAZZvN1ozZ_7ESP9t5zjjNrbO9BOV0z1TZ7rpnga0b9l86mdCtgdBRw6H6qLBbMe7i2v3RBtzLltK5SMSgmPJpvqj2verbIhxn_kYowDW1z05jL_5PCUl1vXSAaYgitOYmvFBEDkQYfDEXNNYfIkVv3z8kawuXUepJRiP2rHFHBDN3j0qoXF0IC"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-label-sm text-label-sm text-market-teal bg-market-teal/10 px-2 py-0.5 rounded mb-1 inline-block">GPU</span>
+<h3 class="font-body-md font-bold text-on-surface leading-tight">RTX 3080 10GB LHR</h3>
+</div>
+<button class="material-symbols-outlined text-outline hover:text-secondary" onclick="toggleMenu('menu-1')">more_vert</button>
+</div>
+<div class="mt-2 flex items-baseline gap-1">
+<span class="font-price-display text-price-display text-secondary">15,900</span>
+<span class="font-body-md text-xs text-text-muted">THB</span>
+</div>
+</div>
+</div>
+<!-- Price Distribution Bar (Mini) -->
+<div class="mt-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-label-sm text-text-muted uppercase">Market Position</span>
+<span class="text-[10px] font-label-sm text-market-teal font-bold">Good Deal</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full flex overflow-hidden">
+<div class="h-full bg-risk-red/30 w-1/4"></div>
+<div class="h-full bg-market-teal w-1/4 border-r-2 border-white"></div>
+<div class="h-full bg-status-amber/30 w-1/4"></div>
+<div class="h-full bg-status-violet/30 w-1/4"></div>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="mt-4 grid grid-cols-3 border-t border-border-subtle pt-3">
+<div class="text-center border-r border-border-subtle">
+<p class="font-label-sm text-[10px] text-text-muted uppercase">Views</p>
+<p class="font-price-display text-base text-on-surface">1.2K</p>
+</div>
+<div class="text-center border-r border-border-subtle">
+<p class="font-label-sm text-[10px] text-text-muted uppercase">Matches</p>
+<p class="font-price-display text-base text-on-surface">42</p>
+</div>
+<div class="text-center">
+<p class="font-label-sm text-[10px] text-text-muted uppercase">Days</p>
+<p class="font-price-display text-base text-on-surface">3</p>
+</div>
+</div>
+<!-- Dropdown Menu (Hidden by default) -->
+<div class="hidden absolute top-12 right-4 bg-surface-container-lowest border border-border-subtle shadow-lg rounded-lg z-10 w-40 overflow-hidden" id="menu-1">
+<button class="w-full text-left px-4 py-3 font-body-md text-sm hover:bg-surface-container flex items-center gap-2 border-b border-border-subtle">
+<span class="material-symbols-outlined text-sm">edit</span> แก้ไขข้อมูล
+                    </button>
+<button class="w-full text-left px-4 py-3 font-body-md text-sm hover:bg-surface-container flex items-center gap-2 border-b border-border-subtle">
+<span class="material-symbols-outlined text-sm">visibility_off</span> ปิดประกาศ
+                    </button>
+<button class="w-full text-left px-4 py-3 font-body-md text-sm text-risk-red hover:bg-error-container/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">delete</span> ลบรายการ
+                    </button>
+</div>
+</div>
+<!-- Listing Card 2 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+<div class="flex gap-4">
+<div class="w-20 h-20 rounded-lg bg-surface-container border border-border-subtle overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A macro shot of an Intel Core i9-12900K processor resting on a reflective surface. The image highlights the intricate gold pins and the heat spreader with engraved markings. Lighting is bright and corporate, emphasizing technical precision and quality, set against a minimalist architectural background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMO28u0FZJGSPUArRHChcV2ecViiqVklsU7bd6onxbEWUaVyP_02LWCx4Hy0kmK0KUbbpXwfD7i6ZFHRJWwZnofldLlqbFsVVvOj75jGQjzFrbjscZ1gL2VF6y1w57ly1XJECnVZgTeYH9yHFr_EW9X-iB5yQIccSq69PYPQihYHLfQ_S3dOhrnU93c_q4mt9yW1PHJnOs88JQKLLr0zndiYawhs2OX1GhpXKwxxv2mmkxsPjd7LLgDLIs2rsq5lND1W-ImShIeoag"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-label-sm text-label-sm text-status-amber bg-status-amber/10 px-2 py-0.5 rounded mb-1 inline-block">CPU</span>
+<h3 class="font-body-md font-bold text-on-surface leading-tight">Intel Core i9-12900K</h3>
+</div>
+<button class="material-symbols-outlined text-outline" onclick="toggleMenu('menu-2')">more_vert</button>
+</div>
+<div class="mt-2 flex items-baseline gap-1">
+<span class="font-price-display text-price-display text-secondary">9,500</span>
+<span class="font-body-md text-xs text-text-muted">THB</span>
+</div>
+</div>
+</div>
+<div class="mt-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-[10px] font-label-sm text-text-muted uppercase">Market Position</span>
+<span class="text-[10px] font-label-sm text-status-amber font-bold">Premium Price</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container rounded-full flex overflow-hidden">
+<div class="h-full bg-risk-red/30 w-1/4"></div>
+<div class="h-full bg-market-teal/30 w-1/4"></div>
+<div class="h-full bg-status-amber/30 w-1/4 border-r-2 border-white"></div>
+<div class="h-full bg-status-violet/30 w-1/4"></div>
+</div>
+</div>
+<div class="mt-4 grid grid-cols-3 border-t border-border-subtle pt-3">
+<div class="text-center border-r border-border-subtle">
+<p class="font-label-sm text-[10px] text-text-muted uppercase">Views</p>
+<p class="font-price-display text-base text-on-surface">450</p>
+</div>
+<div class="text-center border-r border-border-subtle">
+<p class="font-label-sm text-[10px] text-text-muted uppercase">Matches</p>
+<p class="font-price-display text-base text-on-surface">12</p>
+</div>
+<div class="text-center">
+<p class="font-label-sm text-[10px] text-text-muted uppercase">Days</p>
+<p class="font-price-display text-base text-on-surface">14</p>
+</div>
+</div>
+</div>
+<!-- Listing Card 3 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden opacity-80">
+<div class="absolute top-0 right-0 bg-surface-variant px-3 py-1 rounded-bl-lg">
+<span class="font-label-sm text-[10px] text-on-surface-variant font-bold uppercase">Reserved</span>
+</div>
+<div class="flex gap-4">
+<div class="w-20 h-20 rounded-lg bg-surface-container border border-border-subtle overflow-hidden flex-shrink-0 grayscale">
+<img class="w-full h-full object-cover" data-alt="High-detail shot of Corsair Vengeance RGB DDR4 RAM modules in a professional hardware photography setting. The RGB lighting is subtle and tasteful, glowing with a soft indigo hue. The background is dark and clean, with sharp focus on the textures of the heat spreader and the high-tech component design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8AmPEmxtl7YP9dXVNqG4v1TT6wJjXRTxYdI-NPSP3Xm8PS7jjZdULFeH9AV0h1P68xK19JVt766vWr2wCYW0Yy-JrbzBC4NOuCCt9ghiqiy7Px0yR1PSUYbaRYVQFCG-ZTjOy4-RVtTyeK3159IX7MBA-565bQ2eaGqRJjJhHzhTOirfOb3ejpMWb-Q83r49k4H95t4O3Jdx9TZAQB3K0CeWQ0azp9ZIrmeWbDmSHiMH9TQIpbjkG3h2OgzyVS9FjgMdvNEmrZXO6"/>
+</div>
+<div class="flex-1">
+<div>
+<span class="font-label-sm text-label-sm text-status-blue bg-status-blue/10 px-2 py-0.5 rounded mb-1 inline-block">RAM</span>
+<h3 class="font-body-md font-bold text-on-surface leading-tight">16GB (8x2) DDR4 3200</h3>
+</div>
+<div class="mt-2 flex items-baseline gap-1">
+<span class="font-price-display text-price-display text-secondary">1,200</span>
+<span class="font-body-md text-xs text-text-muted">THB</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State for Drafts (Hidden by default) -->
+<div class="hidden py-section-gap flex flex-col items-center text-center animate-in fade-in duration-500" id="drafts-content">
+<div class="w-48 h-48 mb-8 relative">
+<div class="absolute inset-0 bg-secondary-fixed rounded-full opacity-20 blur-3xl"></div>
+<div class="relative z-10 w-full h-full flex items-center justify-center">
+<span class="material-symbols-outlined text-[80px] text-outline-variant">edit_note</span>
+</div>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">ไม่มีรายการแบบร่าง</h3>
+<p class="font-body-md text-text-muted px-8 mb-8">คุณยังไม่ได้บันทึกแบบร่างไว้ เริ่มลงประกาศขายเพื่อประเมินราคาตลาดได้ทันที</p>
+<button class="bg-secondary text-on-secondary px-8 py-3 rounded-full font-bold flex items-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span> สร้างประกาศใหม่
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-border-subtle flex justify-around items-center h-20 px-4 z-50">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60" href="#">
+<span class="material-symbols-outlined">search_insights</span>
+<span class="text-[10px] font-body-md">เช็กราคา</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60" href="#">
+<span class="material-symbols-outlined">local_offer</span>
+<span class="text-[10px] font-body-md">เช็กดีล</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-secondary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="text-[10px] font-bold">ของฉัน</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60" href="#">
+<span class="material-symbols-outlined">memory</span>
+<span class="text-[10px] font-body-md">จัดสเปก</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant opacity-60" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-body-md">โปรไฟล์</span>
+</a>
+</nav>
+<!-- FAB for New Listing -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<script>
+        function switchTab(tab) {
+            const activeTabBtn = document.getElementById('tab-active');
+            const draftsTabBtn = document.getElementById('tab-drafts');
+            const activeContent = document.getElementById('active-content');
+            const draftsContent = document.getElementById('drafts-content');
+
+            if (tab === 'active') {
+                activeTabBtn.classList.add('text-secondary', 'border-secondary', 'font-bold');
+                activeTabBtn.classList.remove('text-on-surface-variant', 'font-body-md');
+                draftsTabBtn.classList.remove('text-secondary', 'border-secondary', 'font-bold');
+                draftsTabBtn.classList.add('text-on-surface-variant', 'font-body-md');
+                
+                activeContent.classList.remove('hidden');
+                draftsContent.classList.add('hidden');
+            } else {
+                draftsTabBtn.classList.add('text-secondary', 'border-secondary', 'font-bold');
+                draftsTabBtn.classList.remove('text-on-surface-variant', 'font-body-md');
+                activeTabBtn.classList.remove('text-secondary', 'border-secondary', 'font-bold');
+                activeTabBtn.classList.add('text-on-surface-variant', 'font-body-md');
+
+                activeContent.classList.add('hidden');
+                draftsContent.classList.remove('hidden');
+            }
+        }
+
+        function toggleMenu(id) {
+            const menus = document.querySelectorAll('[id^="menu-"]');
+            menus.forEach(m => {
+                if (m.id === id) {
+                    m.classList.toggle('hidden');
+                } else {
+                    m.classList.add('hidden');
+                }
+            });
+        }
+
+        // Close menus when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInside = event.target.closest('.relative') || event.target.closest('.material-symbols-outlined');
+            if (!isClickInside) {
+                const menus = document.querySelectorAll('[id^="menu-"]');
+                menus.forEach(m => m.classList.add('hidden'));
+            }
+        });
+    </script>
+</body></html>

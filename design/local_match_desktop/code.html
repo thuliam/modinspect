@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .data-table { font-family: 'IBM Plex Sans', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
+
+        .card-hover:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transform: translateY(-2px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-container": "#eceef0",
+                      "on-surface": "#191c1e",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface": "#f7f9fb",
+                      "status-blue": "#2563EB",
+                      "market-teal": "#0D9488",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-high": "#e6e8ea",
+                      "on-secondary-container": "#fffbff",
+                      "on-secondary-fixed-variant": "#2f2ebe",
+                      "status-violet": "#7C3AED",
+                      "risk-red": "#DC2626",
+                      "surface-tint": "#565e74",
+                      "tertiary-fixed": "#89f5e7",
+                      "surface-bright": "#f7f9fb",
+                      "on-tertiary-container": "#0c9488",
+                      "text-muted": "#64748B",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#131b2e",
+                      "on-surface-variant": "#45464d",
+                      "inverse-primary": "#bec6e0",
+                      "inverse-surface": "#2d3133",
+                      "surface-variant": "#e0e3e5",
+                      "primary": "#000000",
+                      "outline": "#76777d",
+                      "on-secondary-fixed": "#07006c",
+                      "on-primary-container": "#7c839b",
+                      "error-container": "#ffdad6",
+                      "on-error": "#ffffff",
+                      "secondary": "#4648d4",
+                      "on-error-container": "#93000a",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#6bd8cb",
+                      "surface-dim": "#d8dadc",
+                      "tertiary-container": "#00201d",
+                      "status-amber": "#D97706",
+                      "error": "#ba1a1a",
+                      "outline-variant": "#c6c6cd",
+                      "on-secondary": "#ffffff",
+                      "tertiary": "#000000",
+                      "primary-fixed-dim": "#bec6e0",
+                      "border-subtle": "#E2E8F0",
+                      "secondary-fixed-dim": "#c0c1ff",
+                      "background": "#f7f9fb",
+                      "on-background": "#191c1e",
+                      "surface-container-highest": "#e0e3e5",
+                      "secondary-fixed": "#e1e0ff",
+                      "primary-fixed": "#dae2fd",
+                      "on-primary-fixed": "#131b2e",
+                      "secondary-container": "#6063ee",
+                      "on-tertiary-fixed": "#00201d",
+                      "on-tertiary-fixed-variant": "#005049",
+                      "surface-container-low": "#f2f4f6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-md": "16px",
+                      "margin-mobile": "16px",
+                      "base": "4px",
+                      "section-gap": "64px",
+                      "gutter": "24px",
+                      "stack-sm": "8px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["IBM Plex Sans Thai"],
+                      "body-md": ["IBM Plex Sans Thai"],
+                      "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                      "headline-xl": ["IBM Plex Sans Thai"],
+                      "data-table": ["IBM Plex Sans"],
+                      "price-display": ["IBM Plex Sans"],
+                      "label-sm": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                      "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest border-b border-border-subtle h-16">
+<div class="max-w-container-max mx-auto px-gutter flex items-center justify-between h-full">
+<div class="flex items-center gap-8">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">Price Radar</span>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors" href="#">Check Price</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors" href="#">Check Deal</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors" href="#">Spec Builder</a>
+<a class="text-secondary border-b-2 border-secondary font-bold pb-1" href="#">Local Match</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-2 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined">language</span>
+<span>Language</span>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-all active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-all active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<main class="pt-24 pb-section-gap max-w-container-max mx-auto px-gutter min-h-screen">
+<!-- Header Section -->
+<header class="mb-10">
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">หาคนซื้อ-ขายใกล้คุณ นัดรับแบบชนมือ</h1>
+<p class="text-on-surface-variant font-body-md text-body-md max-w-2xl">
+                ลดความเสี่ยงในการโดนโกงด้วยการนัดพบหน้างาน ระบบจะจับคู่คุณกับผู้ใช้งานที่อยู่ใกล้เคียงตามสเปกและราคาที่คุณต้องการ
+            </p>
+</header>
+<div class="grid grid-cols-12 gap-gutter items-start">
+<!-- Sidebar Filters -->
+<aside class="col-span-3 sticky top-24 bg-surface-container-lowest border border-border-subtle p-stack-md rounded-lg flex flex-col gap-6">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 mono">SEARCH PRODUCT</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant focus:border-secondary focus:ring-0 rounded-lg text-body-md transition-all" placeholder="เช่น RTX 4070, iPad Pro..." type="text"/>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 mono">INTENT</label>
+<div class="flex gap-1 p-1 bg-surface-container-low rounded-lg">
+<button class="flex-1 py-2 text-center rounded-md font-medium text-on-secondary-container bg-secondary-container">ทั้งหมด</button>
+<button class="flex-1 py-2 text-center rounded-md font-medium text-on-surface-variant hover:bg-surface-container-high transition-colors">ซื้อ</button>
+<button class="flex-1 py-2 text-center rounded-md font-medium text-on-surface-variant hover:bg-surface-container-high transition-colors">ขาย</button>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 mono">LOCATION</label>
+<select class="w-full py-2 px-3 bg-surface-container-low border border-outline-variant focus:border-secondary focus:ring-0 rounded-lg text-body-md">
+<option>กรุงเทพมหานคร</option>
+<option>นนทบุรี</option>
+<option>สมุทรปราการ</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 mono">TRAVEL RADIUS</label>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1 border border-outline-variant rounded-full text-label-sm mono hover:border-secondary hover:text-secondary transition-colors">5km</button>
+<button class="px-3 py-1 border border-secondary bg-secondary/10 text-secondary rounded-full text-label-sm mono">10km</button>
+<button class="px-3 py-1 border border-outline-variant rounded-full text-label-sm mono hover:border-secondary hover:text-secondary transition-colors">25km</button>
+<button class="px-3 py-1 border border-outline-variant rounded-full text-label-sm mono hover:border-secondary hover:text-secondary transition-colors">50km</button>
+<button class="px-3 py-1 border border-outline-variant rounded-full text-label-sm mono hover:border-secondary hover:text-secondary transition-colors">100km</button>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 mono">PRICE RANGE</label>
+<div class="flex items-center gap-2">
+<input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant focus:border-secondary focus:ring-0 rounded-lg text-body-md" placeholder="Min" type="text"/>
+<span class="text-on-surface-variant">-</span>
+<input class="w-full px-3 py-2 bg-surface-container-low border border-outline-variant focus:border-secondary focus:ring-0 rounded-lg text-body-md" placeholder="Max" type="text"/>
+</div>
+</div>
+<button class="mt-4 w-full bg-secondary text-on-secondary py-3 rounded-lg font-bold transition-all active:scale-95 shadow-sm">
+                    อัปเดตผลลัพธ์
+                </button>
+</aside>
+<!-- Main Listing Area -->
+<section class="col-span-9 space-y-4">
+<!-- Active Filters Bar -->
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="font-body-md text-body-md text-on-surface-variant">พบ <span class="font-bold text-on-surface">14</span> ผลลัพธ์ในระยะที่กำหนด</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant mono uppercase">Sort by:</span>
+<select class="bg-transparent border-none focus:ring-0 font-medium text-secondary p-0">
+<option>ใกล้ที่สุด</option>
+<option>ราคาต่ำสุด</option>
+<option>คะแนนการจับคู่สูงสุด</option>
+</select>
+</div>
+</div>
+<!-- Match Card 1 -->
+<div class="group bg-surface-container-lowest border border-border-subtle p-5 rounded-lg flex gap-6 card-hover transition-all duration-300">
+<div class="w-32 h-32 rounded-lg bg-surface overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A professional studio product photograph of a modern high-end graphics card with visible copper heat pipes and triple fans. The lighting is crisp and cool-toned, highlighting the metallic textures. The background is a clean, neutral grey to emphasize the industrial design of the hardware." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnCZ8_fpEa0qXJ3otTMt-RrqBYldAh3kKbiKOXje3_4x3Q2o92G1IeFij7H_OSsX3gHIkJJkD2rdtCqBzNCfl66jLkU5m9jKx_tZtJqadGeGRdo9fL6CurK2OyIU-oSBncKp_QUXQsrHFHsMIfESeG7DyoWglL7OZc4ZHXj1r_oJpfFjbwIW1FdpbBbx1xpghs2gmVXZOu8-Iip5lS2aswKqZyWuGVI1b-A_r7LddNE9vvs7wB-04S1MKkk1aO7F63VqbPVO9eNPyX"/>
+</div>
+<div class="flex-grow flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="flex gap-2 items-center mb-1">
+<span class="bg-market-teal/10 text-market-teal px-2 py-0.5 rounded text-label-sm mono font-bold">WANT TO BUY</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm mono">Posted 45m ago</span>
+</div>
+<div class="text-right">
+<div class="font-price-display text-price-display text-on-surface">฿12,500</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant mono uppercase">Budget</span>
+</div>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Gigabyte RTX 3070 Eagle OC 8GB</h3>
+<div class="flex gap-4 mt-2">
+<div class="flex items-center gap-1 text-on-surface-variant text-body-md">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>บางนา, กรุงเทพฯ</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant text-body-md">
+<span class="material-symbols-outlined text-[18px]">distance</span>
+<span class="text-secondary font-bold">2.4 km</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant text-body-md">
+<span class="material-symbols-outlined text-[18px]">cloud</span>
+<span>มือสอง (สภาพนางฟ้า)</span>
+</div>
+</div>
+</div>
+</div>
+<div class="w-48 border-l border-border-subtle pl-6 flex flex-col justify-center">
+<div class="mb-4">
+<div class="flex justify-between items-end mb-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant mono">MATCH SCORE</span>
+<span class="text-headline-lg-mobile font-bold text-status-blue">94%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-status-blue rounded-full" style="width: 94%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between text-label-sm mono text-on-surface-variant">
+<span>Price Fit</span>
+<span class="material-symbols-outlined text-market-teal text-[14px]">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-label-sm mono text-on-surface-variant">
+<span>Proximity</span>
+<span class="material-symbols-outlined text-market-teal text-[14px]">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-label-sm mono text-on-surface-variant">
+<span>Condition</span>
+<span class="material-symbols-outlined text-market-teal text-[14px]">check_circle</span>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border border-secondary text-secondary rounded font-bold hover:bg-secondary hover:text-on-secondary transition-all text-label-sm mono">
+                            SEND MESSAGE
+                        </button>
+</div>
+</div>
+<!-- Match Card 2 -->
+<div class="group bg-surface-container-lowest border border-border-subtle p-5 rounded-lg flex gap-6 card-hover transition-all duration-300">
+<div class="w-32 h-32 rounded-lg bg-surface overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A detailed close-up of a tablet screen showing digital art being created with a stylus. The lighting is soft and artistic, reflecting off the glass surface. The surrounding environment is a creative workstation with minimalist aesthetics, focusing on the sleek design of the device and the vibrant colors on the screen." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBixlPTUQJ88BPKw1xvtURk_6xDUbGKuBeVC7DeSxIs1GdqdPGhA8zVA60H4A7NxORv0FRcsHBnSZ-HBpRU-5ihc67gHRZPs9ILad7K4PGXdMOl327BtGT9rAVHPzkXg0HoVY-Oy3fA-VCgETVL-tJTCIq_fMlLlo0zcgHAXWIctCZtgAv2Ol2c0P54-Tft-xncIZacvHD9autwLcJg7EunonrDxjzgAtqQ7qzkl-9bHOF9Myy4tGOpJLlB0A51vewXeHRM1YXl0RtT"/>
+</div>
+<div class="flex-grow flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between">
+<div class="flex gap-2 items-center mb-1">
+<span class="bg-status-amber/10 text-status-amber px-2 py-0.5 rounded text-label-sm mono font-bold">WANT TO SELL</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm mono">Posted 2h ago</span>
+</div>
+<div class="text-right">
+<div class="font-price-display text-price-display text-on-surface">฿28,900</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant mono uppercase">Asking Price</span>
+</div>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">iPad Pro M2 11" 256GB WiFi (Silver)</h3>
+<div class="flex gap-4 mt-2">
+<div class="flex items-center gap-1 text-on-surface-variant text-body-md">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>ศรีนครินทร์, สมุทรปราการ</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant text-body-md">
+<span class="material-symbols-outlined text-[18px]">distance</span>
+<span class="text-secondary font-bold">5.8 km</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant text-body-md">
+<span class="material-symbols-outlined text-[18px]">cloud</span>
+<span>มือสอง (มีประกัน 6 เดือน)</span>
+</div>
+</div>
+</div>
+</div>
+<div class="w-48 border-l border-border-subtle pl-6 flex flex-col justify-center">
+<div class="mb-4">
+<div class="flex justify-between items-end mb-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant mono">MATCH SCORE</span>
+<span class="text-headline-lg-mobile font-bold text-status-amber">78%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-status-amber rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between text-label-sm mono text-on-surface-variant">
+<span>Price Fit</span>
+<span class="material-symbols-outlined text-status-amber text-[14px]">warning</span>
+</div>
+<div class="flex items-center justify-between text-label-sm mono text-on-surface-variant">
+<span>Proximity</span>
+<span class="material-symbols-outlined text-market-teal text-[14px]">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-label-sm mono text-on-surface-variant">
+<span>Condition</span>
+<span class="material-symbols-outlined text-market-teal text-[14px]">check_circle</span>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border border-secondary text-secondary rounded font-bold hover:bg-secondary hover:text-on-secondary transition-all text-label-sm mono">
+                            SEND MESSAGE
+                        </button>
+</div>
+</div>
+<!-- Empty State Example (Hidden by default, shown for concept) -->
+<div class="hidden bg-surface-container-lowest border border-dashed border-outline-variant py-20 rounded-lg flex flex-col items-center justify-center text-center">
+<div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant">person_search</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">ยังไม่พบคนซื้อ-ขายในระยะนี้</h4>
+<p class="text-on-surface-variant max-w-sm mb-8">ลองขยายระยะทางในการค้นหา หรือสร้างความต้องการของคุณทิ้งไว้เพื่อให้คนอื่นหาคุณเจอ</p>
+<button class="bg-secondary text-on-secondary px-8 py-3 rounded-lg font-bold transition-all active:scale-95 shadow-lg">
+                        สร้างโพสต์ความต้องการ
+                    </button>
+</div>
+<!-- More Button -->
+<div class="pt-6 flex justify-center">
+<button class="flex items-center gap-2 text-secondary font-bold hover:gap-3 transition-all duration-300">
+<span>โหลดข้อมูลเพิ่มเติม</span>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container border-t border-border-subtle py-section-gap px-gutter">
+<div class="max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start gap-stack-md mb-12">
+<div class="max-w-xs">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface mb-4 block">Price Radar</span>
+<p class="text-text-muted font-body-md text-body-md">เครื่องมือวิเคราะห์ราคาและจับคู่ตลาดฮาร์ดแวร์มือสองที่แม่นยำที่สุด ด้วยระบบ AI วิเคราะห์ราคาตลาดแบบ Real-time</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-12">
+<div class="flex flex-col gap-4">
+<span class="text-label-sm font-label-sm text-on-surface mono uppercase">Services</span>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Check Price</a>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Local Match</a>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Spec Builder</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-label-sm font-label-sm text-on-surface mono uppercase">Company</span>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Methodology</a>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Contact Us</a>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-label-sm font-label-sm text-on-surface mono uppercase">Connect</span>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Twitter</a>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">LinkedIn</a>
+<a class="text-text-muted hover:text-secondary transition-colors" href="#">Facebook</a>
+</div>
+</div>
+</div>
+<div class="pt-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4">
+<span class="text-label-sm font-label-sm text-text-muted">© 2024 Used PC Price Radar. All rights reserved.</span>
+<div class="flex gap-6">
+<a class="text-label-sm font-label-sm text-text-muted hover:text-secondary" href="#">Terms of Service</a>
+<a class="text-label-sm font-label-sm text-text-muted hover:text-secondary" href="#">Cookie Settings</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Simple Interaction logic for Radius filters
+        const radiusBtns = document.querySelectorAll('.travel-radius-btn');
+        radiusBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                radiusBtns.forEach(b => {
+                    b.classList.remove('border-secondary', 'bg-secondary/10', 'text-secondary');
+                    b.classList.add('border-outline-variant');
+                });
+                btn.classList.remove('border-outline-variant');
+                btn.classList.add('border-secondary', 'bg-secondary/10', 'text-secondary');
+            });
+        });
+    </script>
+</body></html>

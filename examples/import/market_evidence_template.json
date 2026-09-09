@@ -1,0 +1,18 @@
+{
+  "records": [
+    {
+      "source_type": "template_test",
+      "source_url": "https://example.test/listing/5700x3d-template",
+      "source_domain": "example.test",
+      "title": "TEST DATA AMD Ryzen 7 5700X3D มือสอง",
+      "listing_text": "ขาย Ryzen 7 5700X3D ใช้งานปกติ ราคา 7500 บาท ประกัน 6 เดือน",
+      "observed_at": "2026-09-09 12:00:00",
+      "displayed_price": "7500",
+      "currency": "THB",
+      "condition_hint": "good",
+      "warranty_hint": "6 months",
+      "external_listing_id": "template-json-001",
+      "notes": "Template TEST DATA only"
+    }
+  ]
+}

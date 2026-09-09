@@ -1,0 +1,162 @@
+[
+  {
+    "source": "fixture-community",
+    "title": "ขาย AMD Ryzen 7 5700X3D ประกัน 5 เดือน มีกล่อง ใช้งานปกติ",
+    "price_text": "฿7,500",
+    "url": "https://example.test/listings/5700x3d-good",
+    "captured_at": "2026-09-07 09:00:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "AMD 5700X3D มือสอง ใช้งานได้ดี ประกัน 3 เดือน",
+    "price_text": "7300",
+    "url": "https://example.test/listings/5700x3d-good-2",
+    "captured_at": "2026-09-07 09:02:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "R7 5700X3D สวย มีกล่องและใบเสร็จ",
+    "price_text": "7900",
+    "url": "https://example.test/listings/5700x3d-good-3",
+    "captured_at": "2026-09-07 09:03:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "รับซื้อ 5700x3d งบ 6000",
+    "price_text": "6000",
+    "url": "https://example.test/listings/wanted-5700x3d",
+    "captured_at": "2026-09-07 09:05:00",
+    "evidence_level": "D"
+  },
+  {
+    "source": "fixture-community",
+    "title": "Ryzen5700X3D + B550 bundle พร้อมกล่อง",
+    "price_text": "10500 บาท",
+    "url": "https://example.test/listings/bundle-5700x3d",
+    "captured_at": "2026-09-07 09:10:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "ขาย RTX3070 8GB ใช้งานได้ดี ประกัน 2 เดือน",
+    "price_text": "7,800",
+    "url": "https://example.test/listings/rtx3070",
+    "captured_at": "2026-09-07 09:15:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "RTX 3070 ราคา 7800 หรือรวม PSU 9000",
+    "price_text": "7800 9000",
+    "url": "https://example.test/listings/rtx3070-multiple-price",
+    "captured_at": "2026-09-07 09:16:00",
+    "evidence_level": "C"
+  },
+  {
+    "source": "fixture-community",
+    "title": "คอมทั้งชุด i5 12400F RTX 3070",
+    "price_text": "18500",
+    "url": "https://example.test/listings/fullpc-12400f",
+    "captured_at": "2026-09-07 09:20:00",
+    "evidence_level": "C"
+  },
+  {
+    "source": "fixture-community",
+    "title": "Core i5 12400F พร้อมบอร์ด H610 bundle",
+    "price_text": "3500",
+    "url": "https://example.test/listings/12400f-bundle",
+    "captured_at": "2026-09-07 09:22:00",
+    "evidence_level": "C"
+  },
+  {
+    "source": "fixture-community",
+    "title": "Core i5 12400F เปิดไม่ติด ขายเป็นอะไหล่",
+    "price_text": "900",
+    "url": "https://example.test/listings/broken-12400f",
+    "captured_at": "2026-09-07 09:25:00",
+    "evidence_level": "C"
+  },
+  {
+    "source": "fixture-community",
+    "title": "จอง RTX 3070 มัดจำก่อน 500",
+    "price_text": "500",
+    "url": "https://example.test/listings/deposit-3070",
+    "captured_at": "2026-09-07 09:30:00",
+    "evidence_level": "D"
+  },
+  {
+    "source": "fixture-community",
+    "title": "AMD Radeon RX 6600 XT มือสอง",
+    "price_text": "5400 บาท",
+    "url": "https://example.test/listings/mock-rx6600xt-good",
+    "captured_at": "2026-09-07 10:00:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "RX6600XT ราคา 6100 หรือพร้อมของแถม 6500",
+    "price_text": "6100 6500",
+    "url": "https://example.test/listings/mock-rx6600xt-bundleish",
+    "captured_at": "2026-09-07 10:01:00",
+    "evidence_level": "C"
+  },
+  {
+    "source": "fixture-community",
+    "title": "รับซื้อ RX 6600 XT งบ 4200",
+    "price_text": "4200",
+    "url": "https://example.test/listings/mock-rx6600xt-wanted",
+    "captured_at": "2026-09-07 10:02:00",
+    "evidence_level": "D"
+  },
+  {
+    "source": "fixture-community",
+    "title": "AMD Radeon RX 6700 XT มือสอง",
+    "price_text": "9300",
+    "url": "https://example.test/listings/mock-rx6700xt-good",
+    "captured_at": "2026-09-07 10:05:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "RX 6700 XT + PSU 650W พร้อมใช้งาน",
+    "price_text": "11500",
+    "url": "https://example.test/listings/mock-rx6700xt-bundle",
+    "captured_at": "2026-09-07 10:06:00",
+    "evidence_level": "C"
+  },
+  {
+    "source": "fixture-community",
+    "title": "RX6700XT เสีย เปิดไม่ติด ขายซ่อม",
+    "price_text": "2500",
+    "url": "https://example.test/listings/mock-rx6700xt-broken",
+    "captured_at": "2026-09-07 10:07:00",
+    "evidence_level": "D"
+  },
+  {
+    "source": "fixture-community",
+    "title": "AMD Radeon RX 7800 XT มือสอง",
+    "price_text": "18200",
+    "url": "https://example.test/listings/mock-rx7800xt-good",
+    "captured_at": "2026-09-07 10:10:00",
+    "evidence_level": "B"
+  },
+  {
+    "source": "fixture-community",
+    "title": "Radeon 7800 XT พร้อมของแถม",
+    "price_text": "20000",
+    "url": "https://example.test/listings/mock-rx7800xt-bundle",
+    "captured_at": "2026-09-07 10:11:00",
+    "evidence_level": "C"
+  },
+  {
+    "source": "fixture-community",
+    "title": "จอง RX7800XT มัดจำ 1000 ก่อนนัดรับ",
+    "price_text": "1000",
+    "url": "https://example.test/listings/mock-rx7800xt-deposit",
+    "captured_at": "2026-09-07 10:12:00",
+    "evidence_level": "D"
+  }
+]

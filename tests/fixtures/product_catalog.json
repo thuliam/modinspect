@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "full_name": "AMD Ryzen 7 5700X3D",
+    "aliases": ["5700x3d", "r7 5700x3d", "ryzen5700x3d", "amd 5700 x3d"]
+  },
+  {
+    "id": 2,
+    "full_name": "NVIDIA GeForce RTX 3070",
+    "aliases": ["rtx3070", "rtx 3070", "geforce 3070", "3070 8gb"]
+  },
+  {
+    "id": 3,
+    "full_name": "Intel Core i5-12400F",
+    "aliases": ["12400f", "i5 12400f", "core i5 12400f"]
+  }
+]

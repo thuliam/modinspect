@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Price Radar - นัดรับใกล้ฉัน</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container": "#eceef0",
+                    "on-surface": "#191c1e",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface": "#f7f9fb",
+                    "status-blue": "#2563EB",
+                    "market-teal": "#0D9488",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-high": "#e6e8ea",
+                    "on-secondary-container": "#fffbff",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "status-violet": "#7C3AED",
+                    "risk-red": "#DC2626",
+                    "surface-tint": "#565e74",
+                    "tertiary-fixed": "#89f5e7",
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary-container": "#0c9488",
+                    "text-muted": "#64748B",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#131b2e",
+                    "on-surface-variant": "#45464d",
+                    "inverse-primary": "#bec6e0",
+                    "inverse-surface": "#2d3133",
+                    "surface-variant": "#e0e3e5",
+                    "primary": "#000000",
+                    "outline": "#76777d",
+                    "on-secondary-fixed": "#07006c",
+                    "on-primary-container": "#7c839b",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "secondary": "#4648d4",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "surface-dim": "#d8dadc",
+                    "tertiary-container": "#00201d",
+                    "status-amber": "#D97706",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#c6c6cd",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#000000",
+                    "primary-fixed-dim": "#bec6e0",
+                    "border-subtle": "#E2E8F0",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "background": "#f7f9fb",
+                    "on-background": "#191c1e",
+                    "surface-container-highest": "#e0e3e5",
+                    "secondary-fixed": "#e1e0ff",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary-container": "#6063ee",
+                    "on-tertiary-fixed": "#00201d",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "surface-container-low": "#f2f4f6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "margin-mobile": "16px",
+                    "base": "4px",
+                    "section-gap": "64px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["IBM Plex Sans Thai"],
+                    "body-md": ["IBM Plex Sans Thai"],
+                    "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                    "headline-xl": ["IBM Plex Sans Thai"],
+                    "data-table": ["IBM Plex Sans"],
+                    "price-display": ["IBM Plex Sans"],
+                    "label-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'IBM Plex Sans Thai', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-tab .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+        
+        /* Bottom Sheet Animation */
+        #bottom-sheet {
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #bottom-sheet.open {
+            transform: translateY(0);
+        }
+        #overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Map Toggle Smoothness */
+        #map-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        #map-container.visible {
+            max-height: 400px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface mb-24">
+<!-- Top Navigation Anchor -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 bg-surface-container-lowest border-b border-border-subtle">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Price Radar</span>
+<div class="flex items-center gap-stack-sm">
+<button class="p-2 text-on-surface-variant active:scale-95 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant active:scale-95 transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="mt-16 px-margin-mobile pt-stack-md">
+<!-- Header & Map Toggle -->
+<header class="flex items-center justify-between mb-stack-md">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold">นัดรับใกล้ฉัน</h1>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border-subtle bg-surface-container-low text-secondary font-medium transition-all active:scale-95" onclick="toggleMap()">
+<span class="material-symbols-outlined text-[20px]" id="map-icon">map</span>
+<span class="font-label-sm text-label-sm" id="map-text">ดูแผนที่</span>
+</button>
+</header>
+<!-- Approximate Map (Hidden by Default) -->
+<div class="mb-stack-md" id="map-container">
+<div class="w-full h-64 rounded-xl overflow-hidden border border-border-subtle relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="A detailed digital map interface showing a minimalist urban layout of Bangkok with subtle data overlays. The map features a clean white and soft grey aesthetic with high-precision indigo pin markers indicating item locations. Soft daylight lighting enhances the clarity of the grid-based city structure, maintaining a professional fintech dashboard style." data-location="Bangkok, Thailand" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCu3h7q4xhjCYK44hZ4VXIn5USZuPxj1Jn3ZJ0d4eMnjaouMK05VEmJ_6XV3UHFV1xqLrIknBNZNJOK0mBEanRAZCLdnT6UfZIovpRwUDPhtzo8YSfQlR8FaamkENAD1-Xfx5WAtflWVYluKPXBd82YAd96K9g_MEg1kB6y6XQ16CMv5K6bNKrgXPwJIRtYfBpi6ME-w9bu_lFUd15gEQovKygtVHs3T_DUILSO9kTZJnlnC9z4tLjUJs-fYUk38cCmCtwHuCIk1YCQ')"></div>
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-black/10"></div>
+<div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur px-3 py-1.5 rounded-full border border-border-subtle flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+<span class="font-label-sm text-label-sm text-on-surface">กำลังหาตำแหน่งของคุณ</span>
+</div>
+</div>
+</div>
+<!-- Filter Bar Trigger -->
+<div class="flex gap-stack-sm mb-stack-md overflow-x-auto pb-2 scrollbar-hide">
+<button class="shrink-0 flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-border-subtle hover:border-secondary transition-colors" onclick="openFilters()">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-body-md text-body-md">กรุงเทพฯ - 10 กม.</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<button class="shrink-0 flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-full border border-border-subtle font-label-sm text-label-sm">
+                การ์ดจอ
+            </button>
+<button class="shrink-0 flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-full border border-border-subtle font-label-sm text-label-sm">
+                สภาพดีมาก
+            </button>
+</div>
+<!-- Result List -->
+<div class="space-y-stack-md">
+<!-- Result Card 1 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-stack-md shadow-sm active:scale-[0.98] transition-transform">
+<div class="flex gap-stack-md">
+<div class="w-24 h-24 rounded-lg bg-surface-container overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A professional product photograph of an ASUS GeForce RTX 3080 graphics card on a clean, neutral grey studio background. The lighting is crisp and technical, highlighting the metallic textures and fan details of the hardware. The aesthetic is minimalist and high-end, fitting a sophisticated financial intelligence tool for technology components." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWaCMFQsk8tfknaRVDja5vROqlbYMsS7chdDayU1W1dJDdWESvp91rSmOnfyBJNUjLgcHBKG9cjd0HpgczzLzKGmy6VhD_vC28rRn_YIkOHOTb3pXQCTpfP-2hfJ45HU9R2AQlYb5L_kgvJhmFKQ7StNXnqIjQAgeImVpz_VuFX2k7aminvMVSadYIAHcUDCDL6p1jOP4DmRV8McEqEBWtKd2K6TUSsgidN1y7nVJu5PhbPgIea6tF2xT_QN5CTyAI5maylh8Qdmpl"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-secondary uppercase">GPU</span>
+<span class="font-price-display text-price-display text-on-surface">฿14,500</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold mt-1">RTX 3080 10GB - ASUS TUF</h3>
+<div class="flex items-center gap-1 text-text-muted mt-1">
+<span class="material-symbols-outlined text-[14px]">near_me</span>
+<span class="font-label-sm text-label-sm">ห้วยขวาง · 1.2 กม.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="px-2 py-0.5 bg-market-teal/10 text-market-teal rounded text-[10px] font-bold uppercase">ราคาดี</span>
+<span class="font-label-sm text-label-sm text-text-muted">เมื่อ 2 ชม. ที่แล้ว</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Result Card 2 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-stack-md shadow-sm active:scale-[0.98] transition-transform">
+<div class="flex gap-stack-md">
+<div class="w-24 h-24 rounded-lg bg-surface-container overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up technical shot of an Intel Core i9 processor sitting on its protective tray. The image uses sharp, high-contrast lighting to emphasize the intricate etchings and gold contact points on the CPU surface. Set against a minimalist dark grey background, the visual style communicates reliability, technical precision, and unbiased data reporting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLvQX1D6Nknuhs1l5EopXbbJu7HlM9GdPEXVbWMDQbdtI5Wpd0RW2XRzTWgQraDbr89_mMF3d1UoemnbW5S4_NUPggbRAfSME0xNoiGkq0ycSVtoOoQExN404dIkyfGbJ25Z-M65GTLOSYfX0_mQzluy1dPovjJgG2HF9vGqCX6h9gSvJ9m1J9mWOCzHjyzSeStbcD8rd_PIRUy3evgNDmT_9UQFm7zOEbWTHar3g-_Slbe7bzAhWvb5XVKt0N89N3oEPWcmuPPz3g"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-secondary uppercase">CPU</span>
+<span class="font-price-display text-price-display text-on-surface">฿9,900</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold mt-1">Intel Core i9-12900K</h3>
+<div class="flex items-center gap-1 text-text-muted mt-1">
+<span class="material-symbols-outlined text-[14px]">near_me</span>
+<span class="font-label-sm text-label-sm">ดินแดง · 3.5 กม.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="px-2 py-0.5 bg-status-amber/10 text-status-amber rounded text-[10px] font-bold uppercase">ราคากลาง</span>
+<span class="font-label-sm text-label-sm text-text-muted">เมื่อ 45 นาที ที่แล้ว</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Safe Pickup Card (Premium In-feed CTA) -->
+<div class="bg-primary-container text-on-primary rounded-xl p-stack-md relative overflow-hidden">
+
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-white">verified_user</span>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-bold">นัดรับอย่างปลอดภัย (Safe Pickup)</h4>
+<p class="font-label-sm text-label-sm text-on-primary-container">พบปะในจุดที่ระบบแนะนำเพื่อความปลอดภัย</p>
+</div>
+</div>
+<button class="w-full py-2 bg-secondary text-white rounded-lg font-bold font-body-md mt-2 transition-transform active:scale-95">ดูจุดนัดรับแนะนำ</button>
+</div>
+</div>
+<!-- Result Card 3 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-stack-md shadow-sm active:scale-[0.98] transition-transform">
+<div class="flex gap-stack-md">
+<div class="w-24 h-24 rounded-lg bg-surface-container overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="Sleek, minimalist shot of a high-end mechanical keyboard with custom keycaps. The keyboard is placed on a clean white desk, surrounded by soft, diffused natural light that creates a bright and modern light-mode environment. The focus is on the clean lines and professional craftsmanship of the tech hardware, avoiding any distracting decorations." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy4mNWuCAjp9y6AOvwVY0_niOTJyw-ncenn1Y1ADNWv0yfqZj_TazLfAXHBiqOoOWI3BxlZgK-kcy-JHFJSBQEM_5nfIPmjQkDeNrA9-Klavc2K_vWSoKy7PdWc38GmBZC3YIEdt949ug-kC31QOYkPktqNvf_vO7wSSs-16JPMesC9ArjyQD5c6e-5WndaWYRDemyJq0EtUafp4TU8xaBHeIrxUwsOhJ1qfgJDacda5fcEs4X97tIdcfx_AyisTnnksjWtggs-yBu"/>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-secondary uppercase">PERIPHERAL</span>
+<span class="font-price-display text-price-display text-on-surface">฿4,200</span>
+</div>
+<h3 class="font-body-md text-body-md font-semibold mt-1">Keychron Q1 Knob Edition</h3>
+<div class="flex items-center gap-1 text-text-muted mt-1">
+<span class="material-symbols-outlined text-[14px]">near_me</span>
+<span class="font-label-sm text-label-sm">พญาไท · 4.1 กม.</span>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="px-2 py-0.5 bg-status-violet/10 text-status-violet rounded text-[10px] font-bold uppercase">สินค้าหายาก</span>
+<span class="font-label-sm text-label-sm text-text-muted">เมื่อ 1 วันที่แล้ว</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-margin-mobile w-14 h-14 bg-secondary text-white rounded-full shadow-lg flex items-center justify-center transition-all active:scale-90 z-40">
+<span class="material-symbols-outlined text-[28px]">add_location_alt</span>
+</button>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full h-16 bg-surface-container-lowest border-t border-border-subtle flex items-center justify-around px-margin-mobile z-50">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-[10px]">เช็คราคา</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-sm text-[10px]">ดีลเด็ด</span>
+</a>
+<a class="active-tab flex flex-col items-center gap-1 text-secondary font-bold active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined">near_me</span>
+<span class="font-label-sm text-[10px]">ใกล้ฉัน</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant active:scale-95 transition-all" href="#">
+<span class="material-symbols-outlined">build</span>
+<span class="font-label-sm text-[10px]">จัดสเปค</span>
+</a>
+</nav>
+<!-- Filter Bottom Sheet Overlay -->
+<div class="fixed inset-0 bg-black/40 z-[60]" id="overlay" onclick="closeFilters()"></div>
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest rounded-t-[2rem] z-[70] px-margin-mobile pb-10 pt-stack-md border-t border-border-subtle" id="bottom-sheet">
+<div class="w-12 h-1.5 bg-outline-variant rounded-full mx-auto mb-stack-md"></div>
+<div class="flex justify-between items-center mb-stack-md">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold">ตัวกรองระยะทาง</h2>
+<button class="text-on-surface-variant" onclick="closeFilters()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="space-y-6">
+<div>
+<label class="block font-body-md font-semibold mb-3">จังหวัด / พื้นที่</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">location_on</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface rounded-xl border border-border-subtle focus:border-secondary outline-none transition-all font-body-md" placeholder="ค้นหาพื้นที่..." type="text" value="กรุงเทพมหานคร"/>
+</div>
+</div>
+<div>
+<label class="block font-body-md font-semibold mb-3">รัศมีการค้นหา: <span class="text-secondary" id="radius-val">10</span> กม.</label>
+<input class="w-full h-2 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-secondary" max="50" min="1" oninput="document.getElementById('radius-val').innerText = this.value" type="range" value="10"/>
+<div class="flex justify-between mt-2 text-text-muted font-label-sm">
+<span>1 กม.</span>
+<span>50 กม.</span>
+</div>
+</div>
+<div class="flex gap-stack-md pt-stack-md">
+<button class="flex-1 py-3 border border-border-subtle rounded-xl font-body-md font-semibold text-on-surface active:scale-95 transition-all" onclick="closeFilters()">ล้างทั้งหมด</button>
+<button class="flex-[2] py-3 bg-secondary text-white rounded-xl font-body-md font-semibold active:scale-95 transition-all" onclick="closeFilters()">แสดงผลการค้นหา</button>
+</div>
+</div>
+</div>
+<script>
+        function openFilters() {
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('bottom-sheet').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFilters() {
+            document.getElementById('overlay').classList.remove('open');
+            document.getElementById('bottom-sheet').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function toggleMap() {
+            const container = document.getElementById('map-container');
+            const icon = document.getElementById('map-icon');
+            const text = document.getElementById('map-text');
+            
+            if (container.classList.contains('visible')) {
+                container.classList.remove('visible');
+                icon.innerText = 'map';
+                text.innerText = 'ดูแผนที่';
+            } else {
+                container.classList.add('visible');
+                icon.innerText = 'list';
+                text.innerText = 'ดูรายการ';
+            }
+        }
+
+        // Micro-interaction: Active state visual feedback for result cards
+        document.querySelectorAll('.active\\:scale-\\[0\\.98\\]').forEach(card => {
+            card.addEventListener('touchstart', () => card.classList.add('opacity-80'));
+            card.addEventListener('touchend', () => card.classList.remove('opacity-80'));
+        });
+    </script>
+</body></html>

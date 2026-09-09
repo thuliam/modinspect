@@ -1,0 +1,1 @@
+<section class="container page narrow"><div class="empty"><h1>ไม่มีสิทธิ์เข้าถึง</h1><p>บัญชีนี้ไม่มีสิทธิ์สำหรับการทำงานนี้</p><a class="button" href="<?= $base ?>/admin">กลับ Admin</a></div></section>

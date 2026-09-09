@@ -1,0 +1,5 @@
+<section class="container page">
+<div class="shop-heading"><div><span class="eyebrow">B2B SHOP INTELLIGENCE</span><h1>ภาพรวมร้าน Radar Demo Shop</h1></div><img src="<?= $base ?>/assets/images/shop-1.jpg" alt="ผู้ดูแลร้าน Radar Demo Shop"></div>
+<div class="kpi-grid"><div class="card"><span>มูลค่าสต็อก</span><b>฿<?= number_format(array_sum(array_map(fn($i)=>(float)$i['cost_price']*(int)$i['quantity'],$items))) ?></b></div><div class="card"><span>จำนวนหน่วย</span><b><?= array_sum(array_column($items,'quantity')) ?></b></div><div class="card"><span>สต็อกเกิน 30 วัน</span><b><?= count(array_filter($items,fn($i)=>(int)$i['age_days']>30)) ?></b></div><div class="card"><span>Margin Risk</span><b>ยังไม่เปิดใช้งาน</b></div></div>
+<div class="dashboard-actions"><a class="button" href="<?= $base ?>/shop/inventory"><span class="material-symbols-outlined">inventory_2</span> จัดการสต็อก</a><a class="button ghost" href="<?= $base ?>/market-report"><span class="material-symbols-outlined">query_stats</span> รายงานตลาด</a></div>
+<?php require ROOT_PATH.'/app/Views/modules/_inventory-table.php'; ?></section>

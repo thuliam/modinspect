@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@400;700&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .data-font { font-family: 'IBM Plex Sans', sans-serif; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "surface-variant": "#e0e3e5",
+                "on-secondary": "#ffffff",
+                "surface-dim": "#d8dadc",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed-variant": "#2f2ebe",
+                "on-primary": "#ffffff",
+                "tertiary-fixed": "#89f5e7",
+                "on-surface": "#191c1e",
+                "risk-red": "#DC2626",
+                "secondary-fixed-dim": "#c0c1ff",
+                "status-violet": "#7C3AED",
+                "status-blue": "#2563EB",
+                "surface-bright": "#f7f9fb",
+                "outline": "#76777d",
+                "surface-tint": "#565e74",
+                "on-tertiary-fixed-variant": "#005049",
+                "on-primary-fixed-variant": "#3f465c",
+                "primary-fixed-dim": "#bec6e0",
+                "tertiary-container": "#00201d",
+                "inverse-on-surface": "#eff1f3",
+                "on-secondary-container": "#fffbff",
+                "tertiary": "#000000",
+                "secondary-fixed": "#e1e0ff",
+                "border-subtle": "#E2E8F0",
+                "on-tertiary-container": "#0c9488",
+                "surface-container-lowest": "#ffffff",
+                "status-amber": "#D97706",
+                "primary": "#000000",
+                "on-error": "#ffffff",
+                "tertiary-fixed-dim": "#6bd8cb",
+                "surface-container-low": "#f2f4f6",
+                "text-muted": "#64748B",
+                "surface-container-highest": "#e0e3e5",
+                "on-tertiary": "#ffffff",
+                "secondary-container": "#6063ee",
+                "outline-variant": "#c6c6cd",
+                "error": "#ba1a1a",
+                "inverse-primary": "#bec6e0",
+                "surface-container": "#eceef0",
+                "on-background": "#191c1e",
+                "surface": "#f7f9fb",
+                "market-teal": "#0D9488",
+                "primary-container": "#131b2e",
+                "secondary": "#4648d4",
+                "on-surface-variant": "#45464d",
+                "surface-container-high": "#e6e8ea",
+                "on-primary-container": "#7c839b",
+                "background": "#f7f9fb",
+                "on-secondary-fixed": "#07006c",
+                "inverse-surface": "#2d3133",
+                "error-container": "#ffdad6",
+                "primary-fixed": "#dae2fd",
+                "on-primary-fixed": "#131b2e",
+                "on-tertiary-fixed": "#00201d"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "stack-sm": "8px",
+                "stack-md": "16px",
+                "section-gap": "64px",
+                "margin-mobile": "16px",
+                "gutter": "24px",
+                "container-max": "1280px",
+                "base": "4px"
+            },
+            "fontFamily": {
+                "headline-xl": ["IBM Plex Sans Thai"],
+                "body-md": ["IBM Plex Sans Thai"],
+                "price-display": ["IBM Plex Sans"],
+                "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                "data-table": ["IBM Plex Sans"],
+                "label-sm": ["JetBrains Mono"],
+                "headline-lg": ["IBM Plex Sans Thai"]
+            },
+            "fontSize": {
+                "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile md:px-gutter max-w-container-max mx-auto h-16 bg-surface-container-lowest border-b border-border-subtle">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">Price Radar</span>
+<div class="hidden md:flex gap-stack-md ml-10">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200 font-body-md text-body-md" href="#">Check Price</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200 font-body-md text-body-md" href="#">Check Deal</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200 font-body-md text-body-md" href="#">Spec Builder</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-200 font-body-md text-body-md" href="#">Local Match</a>
+</div>
+</div>
+<div class="flex items-center gap-stack-sm">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">account_circle</span>
+</button>
+</div>
+</nav>
+<!-- Sidebar (Desktop only) -->
+<aside class="hidden md:flex flex-col fixed left-0 top-16 h-[calc(100vh-64px)] w-64 py-stack-md px-4 bg-surface border-r border-border-subtle z-40">
+<div class="mb-8 px-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">คลังหลักฐาน</h2>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">Hardware Intelligence</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">ภาพรวมตลาด</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-sm text-label-sm">คลังผลทดสอบ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-sm text-label-sm">การวิเคราะห์ B2B</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">ตั้งค่าระบบ</span>
+</a>
+</nav>
+<div class="pt-stack-md mt-auto space-y-1 border-t border-border-subtle">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-sm text-label-sm">ความช่วยเหลือ</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-sm text-label-sm">ออกจากระบบ</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="pt-24 pb-section-gap px-margin-mobile md:pl-72 md:pr-gutter max-w-container-max mx-auto">
+<!-- Header & Stats -->
+<header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-primary">Evidence Library</h1>
+<p class="font-body-md text-body-md text-text-muted mt-1">คลังเก็บหลักฐานการทดสอบฮาร์ดแวร์เพื่อสร้างความเชื่อมั่นในการขาย</p>
+</div>
+<button class="flex items-center justify-center gap-2 bg-secondary text-on-secondary px-6 py-3 rounded-xl font-bold transition-all scale-100 active:scale-95 hover:opacity-90">
+<span class="material-symbols-outlined">upload</span>
+<span class="font-body-md text-body-md">อัปโหลดหลักฐานใหม่</span>
+</button>
+</header>
+<!-- Filters & Summary -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-stack-md mb-8">
+<div class="bg-surface-container-lowest p-stack-md rounded-xl border border-border-subtle flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-text-muted uppercase">ทั้งหมด</span>
+<span class="font-headline-lg text-headline-lg text-primary mt-1">24 รายการ</span>
+</div>
+<div class="bg-surface-container-lowest p-stack-md rounded-xl border border-border-subtle flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-market-teal uppercase">ผ่านการตรวจสอบ</span>
+<span class="font-headline-lg text-headline-lg text-market-teal mt-1">18 รายการ</span>
+</div>
+<div class="bg-surface-container-lowest p-stack-md rounded-xl border border-border-subtle flex flex-col justify-center border-l-4 border-l-status-amber">
+<span class="font-label-sm text-label-sm text-status-amber uppercase">ใกล้หมดอายุ</span>
+<span class="font-headline-lg text-headline-lg text-status-amber mt-1">4 รายการ</span>
+</div>
+<div class="bg-surface-container-lowest p-stack-md rounded-xl border border-border-subtle flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-risk-red uppercase">ค้างการตรวจสอบ</span>
+<span class="font-headline-lg text-headline-lg text-risk-red mt-1">2 รายการ</span>
+</div>
+</div>
+<!-- Evidence Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1: 3DMark (Valid) -->
+<div class="bg-white border border-border-subtle rounded-xl overflow-hidden hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all group">
+<div class="relative h-48 bg-surface-container-high overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="A detailed screen capture of a 3DMark Time Spy benchmark result on a desktop monitor, showing complex futuristic architecture and high score numbers. The image is clean, sharp, and technical, presented in a minimalist digital workspace with professional cool-toned lighting and neutral gray backgrounds." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB1wsSHzgxFbiw9nHgrgJASd_upF5a7Y3jBggJvV2gxEgvONHP9akxRo-FbdF1gI0M1FPc2BZC6jyCL1ASAVx3KqqLn3cZv_0YqPnxR1aAk8b0ict2ufqBoRiD879iaKlIMyWkBYda3fXOG979Z9Me6-0gu-ipN6shYUFICW-6pRmEYBrV3g4UlTz5r17bAXluM5C3YL_EuTQXcBAl2-1gp-bNBANf7pixALvWP3TDZ6JA9QQkKl00XyIdgvuq-YgVZuJmphxPRLgY6')"></div>
+<div class="absolute top-2 right-2 flex gap-1">
+<span class="bg-market-teal/10 text-market-teal px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm border border-market-teal/20">AI Validated</span>
+</div>
+</div>
+<div class="p-stack-md space-y-stack-sm">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary leading-none">3DMark Time Spy</h3>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">RTX 3080 Gaming OC</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded mono">SN: ...A4B9</span>
+</div>
+<div class="pt-2 border-t border-border-subtle flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-muted">ทดสอบเมื่อ</span>
+<span class="font-data-table text-data-table text-on-surface">15 ต.ค. 2023</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm text-text-muted">สถานะประกาศ</span>
+<span class="font-data-table text-data-table text-secondary font-medium">เชื่อมต่อแล้ว</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-2">
+<button class="flex items-center justify-center gap-1 border border-border-subtle py-2 rounded-lg hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">visibility</span>
+<span class="font-label-sm text-label-sm">ดูรูปเต็ม</span>
+</button>
+<button class="flex items-center justify-center gap-1 border border-border-subtle py-2 rounded-lg hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">link</span>
+<span class="font-label-sm text-label-sm">ดูประกาศ</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Cinebench (Outdated Warning) -->
+<div class="bg-white border border-border-subtle rounded-xl overflow-hidden hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all group">
+<div class="relative h-48 bg-surface-container-high overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="High-resolution close-up of a Cinebench R23 rendering benchmark interface, showcasing a complex architectural room being rendered in segments. The UI features professional dark-mode aesthetics with orange highlight accents. The lighting is precise, mimicking a professional workstation environment with a focus on data visualization and technical performance." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuARBCEJlcgXX4A2eHP4WpT5t7sYESqddo34avmCpitLRkNTU_n6vzXR2Fxvu02hNDdjUq1ZrZFGNsR5dGFAZkZrNlRrSSOBYkA_fYORfA7AG2tgsliAF-d1Z8FuGvSkklbcrbsBp2eyLOtuW1eOzActDWVDCYYWrVXMiVWGHpT0rbKiTewEB9OJULYUXZRWOcKb_hlr8rbz4--RkySZR3lXgqBZvRHN4AhIqnMoJfWd_rLGsE9bmRCTgXHhcqOou6v5LcTe-_xHA0ZY')"></div>
+<div class="absolute inset-0 bg-status-amber/5"></div>
+<div class="absolute top-2 right-2 flex gap-1">
+<span class="bg-status-amber text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm">Outdated</span>
+<span class="bg-market-teal/10 text-market-teal px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm border border-market-teal/20">AI Validated</span>
+</div>
+</div>
+<div class="p-stack-md space-y-stack-sm">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary leading-none">Cinebench R23</h3>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">Intel Core i9-12900K</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded mono">SN: ...7721</span>
+</div>
+<div class="bg-status-amber/10 p-2 rounded-lg flex items-center gap-2 border border-status-amber/20">
+<span class="material-symbols-outlined text-status-amber text-lg">warning</span>
+<span class="font-label-sm text-label-sm text-status-amber">หลักฐานอายุเกิน 90 วัน ควรทดสอบใหม่</span>
+</div>
+<div class="pt-2 border-t border-border-subtle flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-muted">ทดสอบเมื่อ</span>
+<span class="font-data-table text-data-table text-on-surface">12 มิ.ย. 2023</span>
+</div>
+<button class="text-risk-red hover:bg-risk-red/5 p-1 rounded transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-1 gap-2 pt-2">
+<button class="flex items-center justify-center gap-2 bg-primary text-white py-2 rounded-lg hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">add_link</span>
+<span class="font-label-sm text-label-sm">เชื่อมโยงกับประกาศขาย</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3: CrystalDiskInfo (Amber Status) -->
+<div class="bg-white border border-border-subtle rounded-xl overflow-hidden hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all group">
+<div class="relative h-48 bg-surface-container-high overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="Technical interface of CrystalDiskInfo software showing S.M.A.R.T. data for an SSD drive. The screen displays detailed health status, temperature, and read/write statistics in a grid format with blue and amber indicators. The visual style is functional and data-dense, presented with high-key lighting for maximum legibility of the small text and icons." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDHcTBzlTycIOarUV3DeEdFHv3B9UCOQEvoyVRjOt8XIbOo7tnq4GQ644XYxrgbnlvTJsoJ7ndcCtThnWC4Tx9vEm9asdcGjitSv_cNK1tyju6mqmq5YxSd63Aklc9I5BDtkL4FAGlxYSRSBQISMRP9hRAQoMqKEvJhuXklE6DmEBMQavdJM0rXBTIZvs5ce_FfeE6bofzcINykM7PZB0AI8RYh1Sq6POJOtYsLfD9ZUlxzbD7VbYof81bmNVlg-w-asci10aCV84id')"></div>
+<div class="absolute top-2 right-2 flex gap-1">
+<span class="bg-status-amber/10 text-status-amber px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm border border-status-amber/20">Manual Check Required</span>
+</div>
+</div>
+<div class="p-stack-md space-y-stack-sm">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary leading-none">CrystalDiskInfo</h3>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">Samsung 980 Pro 1TB</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded mono">SN: ...S65X</span>
+</div>
+<div class="pt-2 border-t border-border-subtle flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-muted">ทดสอบเมื่อ</span>
+<span class="font-data-table text-data-table text-on-surface">2 พ.ย. 2023</span>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 bg-surface-container text-on-surface-variant rounded">เพิ่งอัปโหลด</span>
+</div>
+<p class="text-status-amber font-label-sm text-label-sm bg-status-amber/5 p-2 rounded border border-status-amber/10">
+                        * ระบบตรวจไม่พบหมายเลข Serial อัตโนมัติ กรุณาตรวจสอบด้วยตนเอง
+                    </p>
+<div class="grid grid-cols-2 gap-2 pt-2">
+<button class="flex items-center justify-center gap-1 border border-border-subtle py-2 rounded-lg hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">visibility</span>
+<span class="font-label-sm text-label-sm">ตรวจสอบ</span>
+</button>
+<button class="flex items-center justify-center gap-1 border border-border-subtle py-2 rounded-lg hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">delete</span>
+<span class="font-label-sm text-label-sm">ลบทิ้ง</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4: 3DMark (Amber Status) -->
+<div class="bg-white border border-border-subtle rounded-xl overflow-hidden hover:shadow-[0_4px_12px_rgba(0,0,0,0.04)] transition-all group">
+<div class="relative h-48 bg-surface-container-high overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" data-alt="A screenshot of a GPU-Z technical summary window alongside a 3DMark score screen. The UI elements are dense with hardware specifications, clock speeds, and temperature graphs. The composition is modern and technical, using a clean corporate aesthetic with neutral tones and focused laboratory-style lighting to emphasize hardware transparency." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDNrefpMCD-R5aW1_Bu-I-WJDyWBKOsU-gcHQoGcv_IWimGs8_AM1QZTgO3BsJEDLvNrp5EsVEEEeFpl3_B8gyzNYlFCo3txlfvNPGv_HdsMbSA37K_vdgjA03c5i6ZQGsVNi1dWmX_VJJ4vBuY7GWjk4ZirY5nkUs5AVWI4CJxHg8AqhIbyfQmsK2ZEtGZz37vEhKZn4SP8JrZvUZarTbuB8GvOY0DXDctsSfkI1NONXatU3cUGWtSrUE1gV4_PI41TGLrj02uWvbv')"></div>
+<div class="absolute inset-0 bg-status-amber/5"></div>
+<div class="absolute top-2 right-2 flex gap-1">
+<span class="bg-status-amber text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm">Expiring Soon</span>
+<span class="bg-market-teal/10 text-market-teal px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm border border-market-teal/20">AI Validated</span>
+</div>
+</div>
+<div class="p-stack-md space-y-stack-sm">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary leading-none">3DMark Port Royal</h3>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">RTX 3070 Ti FE</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 rounded mono">SN: ...N307</span>
+</div>
+<div class="pt-2 border-t border-border-subtle flex justify-between items-center">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-muted">ทดสอบเมื่อ</span>
+<span class="font-data-table text-data-table text-on-surface">1 กันยายน 2023</span>
+</div>
+<span class="font-label-sm text-label-sm text-status-amber font-medium">เหลือ 12 วัน</span>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-2">
+<button class="flex items-center justify-center gap-1 border border-border-subtle py-2 rounded-lg hover:bg-surface-container-low transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">visibility</span>
+<span class="font-label-sm text-label-sm">ดูรูป</span>
+</button>
+<button class="flex items-center justify-center gap-1 bg-secondary text-white py-2 rounded-lg hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm">refresh</span>
+<span class="font-label-sm text-label-sm">อัปเดตใหม่</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Upload Placeholder Card -->
+<div class="border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center p-stack-md bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer group h-full min-h-[350px]">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant">add_a_photo</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">เพิ่มผลการทดสอบ</h4>
+<p class="font-body-md text-body-md text-text-muted text-center mt-2 px-6">ลากไฟล์รูปภาพมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์หลักฐานใหม่</p>
+<div class="mt-6 flex flex-wrap gap-2 justify-center">
+<span class="font-label-sm text-label-sm px-3 py-1 bg-white border border-border-subtle rounded-full text-text-muted">3DMark</span>
+<span class="font-label-sm text-label-sm px-3 py-1 bg-white border border-border-subtle rounded-full text-text-muted">Cinebench</span>
+<span class="font-label-sm text-label-sm px-3 py-1 bg-white border border-border-subtle rounded-full text-text-muted">DiskInfo</span>
+</div>
+</div>
+</div>
+<!-- History Table Section -->
+<section class="mt-section-gap">
+<div class="flex items-center justify-between mb-stack-md">
+<h2 class="font-headline-lg text-headline-lg text-primary">ประวัติการใช้หลักฐาน</h2>
+<button class="text-secondary font-medium font-label-sm text-label-sm hover:underline">ดูทั้งหมด</button>
+</div>
+<div class="bg-white border border-border-subtle rounded-xl overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-border-subtle">
+<tr>
+<th class="px-6 py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">วันที่ใช้งาน</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">ชื่อประกาศ (Listing)</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">หลักฐานที่ใช้</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">การเข้าชม</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">สถานะ</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="px-6 py-4 font-data-table text-data-table">18 ต.ค. 2023</td>
+<td class="px-6 py-4 font-body-md text-body-md font-medium text-primary">RTX 3080 สภาพนางฟ้า กล่องครบ</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">image</span>
+<span class="font-label-sm text-label-sm">3DMark_TimeSpy_OC.jpg</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-table text-data-table">1,240 ครั้ง</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-market-teal/10 text-market-teal rounded-full text-[10px] font-bold">ACTIVE</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="px-6 py-4 font-data-table text-data-table">05 ต.ค. 2023</td>
+<td class="px-6 py-4 font-body-md text-body-md font-medium text-primary">ชุดคอมเซ็ต i9-12900K มือสอง</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-on-surface-variant">image</span>
+<span class="font-label-sm text-label-sm">CB_R23_Multi.png</span>
+</div>
+</td>
+<td class="px-6 py-4 font-data-table text-data-table">850 ครั้ง</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-surface-container text-on-surface-variant rounded-full text-[10px] font-bold">SOLD</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-stack-md bg-surface-container border-t border-border-subtle mt-20">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface mb-2">Price Radar</span>
+<p class="font-body-md text-body-md text-text-muted">© 2024 Used PC Price Radar. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-4">
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Methodology</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Contact Us</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Twitter</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">LinkedIn</a>
+</div>
+</footer>
+<!-- Mobile Navigation Shell -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-border-subtle flex justify-around items-center h-16 z-50">
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium mt-1">หน้าหลัก</span>
+</a>
+<a class="flex flex-col items-center text-secondary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="text-[10px] font-bold mt-1">หลักฐาน</span>
+</a>
+<button class="flex flex-col items-center -mt-8 bg-secondary text-on-secondary p-3 rounded-full shadow-lg">
+<span class="material-symbols-outlined">add</span>
+</button>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium mt-1">วิเคราะห์</span>
+</a>
+<a class="flex flex-col items-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium mt-1">ตั้งค่า</span>
+</a>
+</nav>
+</body></html>

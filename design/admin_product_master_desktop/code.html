@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Price Radar Admin - Product Master</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "text-muted": "#64748B",
+                      "tertiary-fixed": "#89f5e7",
+                      "on-tertiary-fixed": "#00201d",
+                      "inverse-surface": "#2d3133",
+                      "tertiary": "#000000",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed": "#131b2e",
+                      "inverse-primary": "#bec6e0",
+                      "on-tertiary": "#ffffff",
+                      "risk-red": "#DC2626",
+                      "primary-container": "#131b2e",
+                      "secondary": "#4648d4",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "status-blue": "#2563EB",
+                      "inverse-on-surface": "#eff1f3",
+                      "secondary-fixed-dim": "#c0c1ff",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "outline": "#76777d",
+                      "on-secondary-container": "#fffbff",
+                      "background": "#f7f9fb",
+                      "tertiary-container": "#00201d",
+                      "on-background": "#191c1e",
+                      "secondary-container": "#6063ee",
+                      "on-primary-container": "#7c839b",
+                      "surface": "#f7f9fb",
+                      "border-subtle": "#E2E8F0",
+                      "on-error-container": "#93000a",
+                      "on-surface": "#191c1e",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-fixed-variant": "#005049",
+                      "error": "#ba1a1a",
+                      "surface-container": "#eceef0",
+                      "on-secondary-fixed": "#07006c",
+                      "surface-container-high": "#e6e8ea",
+                      "status-amber": "#D97706",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#d8dadc",
+                      "outline-variant": "#c6c6cd",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-secondary-fixed-variant": "#2f2ebe",
+                      "status-violet": "#7C3AED",
+                      "surface-container-low": "#f2f4f6",
+                      "on-surface-variant": "#45464d",
+                      "market-teal": "#0D9488",
+                      "primary-fixed": "#dae2fd",
+                      "secondary-fixed": "#e1e0ff",
+                      "on-tertiary-container": "#0c9488",
+                      "tertiary-fixed-dim": "#6bd8cb",
+                      "surface-variant": "#e0e3e5",
+                      "primary": "#000000",
+                      "surface-tint": "#565e74",
+                      "primary-fixed-dim": "#bec6e0",
+                      "surface-bright": "#f7f9fb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "base": "4px",
+                      "stack-sm": "8px",
+                      "section-gap": "64px",
+                      "stack-md": "16px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg": ["IBM Plex Sans Thai"],
+                      "price-display": ["IBM Plex Sans"],
+                      "headline-xl": ["IBM Plex Sans Thai"],
+                      "label-sm": ["JetBrains Mono"],
+                      "body-md": ["IBM Plex Sans Thai"],
+                      "data-table": ["IBM Plex Sans"]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- SIDE NAVIGATION -->
+<nav class="fixed left-0 top-0 h-screen w-72 bg-surface-container-low border-r border-border-subtle flex flex-col py-stack-md z-50">
+<div class="px-stack-md mb-8">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Price Radar Admin</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Hardware Intelligence</p>
+</div>
+<div class="flex-1 space-y-1">
+<!-- Data Quality Dashboard -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Data Quality Dashboard</span>
+</a>
+<!-- Observation Review -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-body-md text-body-md">Observation Review</span>
+</a>
+<!-- Product Master (ACTIVE) -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-secondary font-bold border-r-4 border-secondary bg-surface-container-high opacity-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-body-md text-body-md">Product Master</span>
+</a>
+<!-- Product Aliases -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-body-md text-body-md">Product Aliases</span>
+</a>
+<!-- Source Health -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md text-body-md">Source Health</span>
+</a>
+<!-- Import Jobs -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
+<span class="font-body-md text-body-md">Import Jobs</span>
+</a>
+</div>
+<div class="px-stack-md border-t border-border-subtle pt-stack-md mt-auto">
+<a class="flex items-center gap-stack-md px-stack-sm py-stack-sm text-on-surface-variant hover:text-secondary transition-colors duration-200 mb-1" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-sm py-stack-sm text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<div class="mt-4 flex items-center gap-stack-sm p-stack-sm bg-surface-container-lowest border border-border-subtle rounded-lg">
+<img class="w-10 h-10 rounded-full bg-surface-container-high" data-alt="A clean, professional headshot of a software administrator in their 30s, dressed in a minimal charcoal grey tech-focussed outfit. They are standing against a soft, bright neutral-toned studio background with diffuse, high-key lighting that emphasizes clarity and authority in a corporate SaaS environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF74cNe-95tttOWIzMBR3FRXU9C7r_YuGu2xnFuujl4x-l8LeP-aB5l6uZ6uBm8D7mhvNYSesmbG6yaZJ_FLJifgCla2foBkstrzZTINDXq4faBrteKn432ULNAhE6brxNW3Uh1BQrsviNUTXqNNr8c2D24jQHoy1B1B-mYk1rI2aW3X4JK4zVrCLM3ghqkKyBR9hCRon4trACQMvRHVsnVL72911rYBbPsR9TvjsIWDAdo2LBkldynuVgZhYSvrvFqETgEIn6dQd-"/>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-sm text-label-sm font-bold truncate">Admin User</p>
+<p class="font-label-sm text-label-sm text-text-muted truncate">Data Architect</p>
+</div>
+</div>
+</div>
+</nav>
+<!-- TOP BAR -->
+<header class="fixed top-0 right-0 left-72 h-16 bg-surface-container-lowest border-b border-border-subtle flex justify-between items-center px-gutter z-40">
+<div class="flex items-center gap-stack-md flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container border border-border-subtle rounded-lg font-body-md text-body-md focus:ring-1 focus:ring-secondary focus:border-secondary outline-none transition-all" placeholder="ค้นหาชื่อสินค้า, SKU หรือรหัสโมเดล..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="flex gap-stack-md">
+<button class="text-text-muted hover:text-secondary transition-colors"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="text-text-muted hover:text-secondary transition-colors"><span class="material-symbols-outlined" data-icon="history">history</span></button>
+<button class="text-text-muted hover:text-secondary transition-colors"><span class="material-symbols-outlined" data-icon="account_circle">account_circle</span></button>
+</div>
+<button class="bg-secondary text-white px-4 py-2 rounded-lg font-body-md font-bold flex items-center gap-stack-sm hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                เพิ่มสินค้าใหม่
+            </button>
+</div>
+</header>
+<!-- MAIN CONTENT -->
+<main class="ml-72 pt-16 min-h-screen">
+<div class="p-gutter max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="mb-gutter">
+<h2 class="font-headline-xl text-headline-xl text-primary mb-1">Product Master <span class="font-light text-text-muted">| ระบบจัดการสินค้าหลัก</span></h2>
+<nav class="flex text-label-sm text-text-muted font-label-sm gap-2 uppercase tracking-widest">
+<span>Admin</span>
+<span>/</span>
+<span class="text-secondary font-bold">Catalog Management</span>
+</nav>
+</div>
+<!-- Summary Stats (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-gutter">
+<div class="bg-white border border-border-subtle p-stack-md rounded-xl hover:shadow-lg transition-all duration-300">
+<p class="font-label-sm text-label-sm text-text-muted mb-2 uppercase">Total Products</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-lg text-headline-lg font-bold">12,842</span>
+<span class="text-market-teal font-label-sm bg-market-teal/10 px-2 py-1 rounded">+3.2%</span>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-stack-md rounded-xl hover:shadow-lg transition-all duration-300">
+<p class="font-label-sm text-label-sm text-text-muted mb-2 uppercase">Active Categories</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-lg text-headline-lg font-bold">24</span>
+<span class="material-symbols-outlined text-text-muted" data-icon="category">category</span>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-stack-md rounded-xl hover:shadow-lg transition-all duration-300 border-l-4 border-l-status-amber">
+<p class="font-label-sm text-label-sm text-text-muted mb-2 uppercase">Pending Aliases</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-lg text-headline-lg font-bold text-status-amber">184</span>
+<span class="material-symbols-outlined text-status-amber" data-icon="link_off">link_off</span>
+</div>
+</div>
+<div class="bg-white border border-border-subtle p-stack-md rounded-xl hover:shadow-lg transition-all duration-300 border-l-4 border-l-risk-red">
+<p class="font-label-sm text-label-sm text-text-muted mb-2 uppercase">Stale Price Data</p>
+<div class="flex items-end justify-between">
+<span class="font-headline-lg text-headline-lg font-bold text-risk-red">12</span>
+<span class="material-symbols-outlined text-risk-red" data-icon="warning">warning</span>
+</div>
+</div>
+</div>
+<!-- Filters & Main Table Container -->
+<div class="bg-white border border-border-subtle rounded-xl overflow-hidden shadow-sm">
+<!-- Advanced Filters -->
+<div class="p-stack-md border-b border-border-subtle flex flex-wrap gap-stack-md items-center justify-between bg-surface-container-low/30">
+<div class="flex flex-wrap gap-stack-md items-center">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-border-subtle rounded-lg">
+<span class="font-label-sm text-label-sm text-text-muted">Category:</span>
+<select class="border-none p-0 focus:ring-0 font-body-md text-body-md bg-transparent cursor-pointer">
+<option>All Categories</option>
+<option>CPU</option>
+<option>GPU</option>
+<option>RAM</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-border-subtle rounded-lg">
+<span class="font-label-sm text-label-sm text-text-muted">Brand:</span>
+<select class="border-none p-0 focus:ring-0 font-body-md text-body-md bg-transparent cursor-pointer">
+<option>All Brands</option>
+<option>AMD</option>
+<option>Intel</option>
+<option>NVIDIA</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-border-subtle rounded-lg">
+<span class="font-label-sm text-label-sm text-text-muted">Status:</span>
+<select class="border-none p-0 focus:ring-0 font-body-md text-body-md bg-transparent cursor-pointer">
+<option>Active Only</option>
+<option>Draft</option>
+<option>Archived</option>
+</select>
+</div>
+</div>
+<button class="flex items-center gap-2 font-label-sm text-label-sm text-secondary hover:underline">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                        More Filters
+                    </button>
+</div>
+<!-- Product Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low/50 border-b border-border-subtle">
+<tr>
+<th class="px-gutter py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">Product Info</th>
+<th class="px-stack-md py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">SKU / Code</th>
+<th class="px-stack-md py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">Data Health</th>
+<th class="px-stack-md py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider text-right">Median Price</th>
+<th class="px-stack-md py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider">Status</th>
+<th class="px-gutter py-4 font-label-sm text-label-sm text-text-muted uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group cursor-pointer" onclick="toggleDetail()">
+<td class="px-gutter py-4">
+<div class="flex items-center gap-stack-md">
+<div class="w-10 h-10 bg-surface-container rounded border border-border-subtle flex items-center justify-center overflow-hidden">
+<img class="object-cover" data-alt="A clean product shot of an AMD Ryzen 7 5700X3D CPU box on a reflective white surface. Professional studio lighting highlights the sharp edges of the packaging and the metallic accents. Minimalist tech aesthetic with a focus on product clarity and premium hardware branding." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEg196X3hIis9RHg1xd8Q4TAAg62eDe0S-m-IxSsxnWZv5g4X97iNhUS0aMYEkzJ77jXa9WMHYK31vz-W1T4EuRyHYb5GUIrMgnnRL8jUPrGv4YTKC2l7UQd5kkWRCqFICrRNiPsxiMOaAQ4yZWF8RJAKRckMPwOGjggXgzg_eFVSR7KqbwOkr1qV9JtS0kn8bGhyxm89vDQ96SuGptFL97ytM8W6yhTwLaLcO5goDSUoUMOFffjbNOLzIk8z3t5u4M3OpDYCT8xVK"/>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold text-primary">AMD Ryzen 7 5700X3D</p>
+<p class="font-label-sm text-label-sm text-text-muted">CPU / AMD / Zen 3</p>
+</div>
+</div>
+</td>
+<td class="px-stack-md py-4 font-label-sm text-label-sm text-text-muted">100-100001503WOF</td>
+<td class="px-stack-md py-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm">Observations: 428</span>
+<span class="w-2 h-2 rounded-full bg-market-teal"></span>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted">Freshness: 2h ago</span>
+</div>
+</td>
+<td class="px-stack-md py-4 text-right">
+<p class="font-price-display text-[18px] font-bold">฿8,450</p>
+<p class="font-label-sm text-[10px] text-market-teal">-2.4% MoM</p>
+</td>
+<td class="px-stack-md py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-market-teal/10 text-market-teal">Active</span>
+</td>
+<td class="px-gutter py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="query_stats">query_stats</span></button>
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors group cursor-pointer">
+<td class="px-gutter py-4">
+<div class="flex items-center gap-stack-md">
+<div class="w-10 h-10 bg-surface-container rounded border border-border-subtle flex items-center justify-center overflow-hidden">
+<img class="object-cover" data-alt="Close-up photography of an NVIDIA GeForce RTX 4070 Ti Graphics Card featuring three fans and a metallic casing. The lighting is cold and clinical, emphasizing the industrial design and sophisticated cooling components. The card is set against a dark, tech-inspired backdrop for maximum contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeXaRq_Ud1NR4INgT4QDd40LQiv3cjNa76BsTFEnarVi9Mjtm51ss4tV9lAowqB9zsi43ZRX9f9aPzQI8WTN8cedYxNQ9udTA2TVLn_HvBAiDfahRqJXenAq0ZlMHi718wQXPeNeL0cA4xaSX7gtfkQBt-Ov3UKpIlqNsd91HTW4ZPKs5hggQuuxuHVH9Mn7X8et8V5-Y7PeOH29vDNG0AOR6QXiOF5LOHgvHDu1tjc_89L927nJFrm2IkHg7-yZST8nxtNdbvqHKz"/>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold text-primary">NVIDIA GeForce RTX 4070 Ti</p>
+<p class="font-label-sm text-label-sm text-text-muted">GPU / NVIDIA / Ada Lovelace</p>
+</div>
+</div>
+</td>
+<td class="px-stack-md py-4 font-label-sm text-label-sm text-text-muted">RTX-4070TI-OC-12GB</td>
+<td class="px-stack-md py-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm">Observations: 1,104</span>
+<span class="w-2 h-2 rounded-full bg-market-teal"></span>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted">Freshness: 14m ago</span>
+</div>
+</td>
+<td class="px-stack-md py-4 text-right">
+<p class="font-price-display text-[18px] font-bold">฿24,900</p>
+<p class="font-label-sm text-[10px] text-risk-red">+1.2% MoM</p>
+</td>
+<td class="px-stack-md py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-market-teal/10 text-market-teal">Active</span>
+</td>
+<td class="px-gutter py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="query_stats">query_stats</span></button>
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 (Draft) -->
+<tr class="hover:bg-surface-container-lowest transition-colors group cursor-pointer">
+<td class="px-gutter py-4">
+<div class="flex items-center gap-stack-md">
+<div class="w-10 h-10 bg-surface-container rounded border border-border-subtle flex items-center justify-center overflow-hidden">
+<img class="object-cover" data-alt="A professional studio shot of an Intel Core i9-14900K processor sitting inside its distinctive deep blue premium packaging. The lighting is sharp, creating dramatic highlights on the silicon wafer illustration on the box. Modern, high-end technical aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE0xDUScfmV1JI7lHPDtJucVCTFhic9KqF3o4zkw_FYXdecFaSYBuFAaHA1WWC0IyOuuQJFs0LCSihJQIPn17O5HkSelZDuooQPkR7uSDBK3JyE-Hi08uNIHX9ELqFEJNHvvEoIPFofgp2dX7JiFHgm8Iw-bvY2Tr8VkTCjiOYu_XhOmsSH0CgAjlempw7cCcITjsTHVIrpTaX9XJkgEp7RKz7qL3Ub_Sy24JFOOda83bI8H6ywFa2p2YaU9uxMopJVoJePRs8yoxY"/>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold text-primary">Intel Core i9-14900K</p>
+<p class="font-label-sm text-label-sm text-text-muted">CPU / Intel / Raptor Lake-S</p>
+</div>
+</div>
+</td>
+<td class="px-stack-md py-4 font-label-sm text-label-sm text-text-muted">BX8071514900K</td>
+<td class="px-stack-md py-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm">Observations: 12</span>
+<span class="w-2 h-2 rounded-full bg-status-amber"></span>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted">Freshness: -</span>
+</div>
+</td>
+<td class="px-stack-md py-4 text-right text-text-muted">
+<p class="font-price-display text-[18px] font-bold">-</p>
+</td>
+<td class="px-stack-md py-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-container-high text-on-surface-variant">Draft</span>
+</td>
+<td class="px-gutter py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span></button>
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="query_stats">query_stats</span></button>
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded"><span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-stack-md flex items-center justify-between bg-surface-container-low/20">
+<span class="font-label-sm text-label-sm text-text-muted">Showing 1-10 of 12,842 products</span>
+<div class="flex gap-2">
+<button class="p-2 border border-border-subtle rounded hover:bg-white transition-colors disabled:opacity-50"><span class="material-symbols-outlined text-[18px]" data-icon="chevron_left">chevron_left</span></button>
+<button class="w-10 h-10 flex items-center justify-center bg-secondary text-white rounded font-label-sm font-bold shadow-sm">1</button>
+<button class="w-10 h-10 flex items-center justify-center hover:bg-white border border-transparent hover:border-border-subtle rounded font-label-sm transition-all">2</button>
+<button class="w-10 h-10 flex items-center justify-center hover:bg-white border border-transparent hover:border-border-subtle rounded font-label-sm transition-all">3</button>
+<button class="p-2 border border-border-subtle rounded hover:bg-white transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- DETAIL SLIDE PANEL (Hidden by default) -->
+<aside class="fixed top-0 right-0 h-screen w-[480px] bg-white shadow-2xl border-l border-border-subtle transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col overflow-hidden" id="detailPanel">
+<div class="p-stack-md border-b border-border-subtle flex items-center justify-between bg-surface-container-low/50">
+<h3 class="font-headline-lg text-[20px] font-bold">Product Details</h3>
+<button class="p-2 hover:bg-risk-red/10 hover:text-risk-red rounded-full transition-colors" onclick="toggleDetail()">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-stack-md">
+<!-- Header Image -->
+<div class="aspect-video w-full rounded-xl border border-border-subtle overflow-hidden mb-gutter relative group">
+<img class="w-full h-full object-cover" data-alt="A macro studio shot of an AMD Ryzen processor showing the detailed gold pins and metallic heat spreader. The lighting is warm and directional, creating deep shadows and bright highlights that emphasize the technical precision and craftsmanship of the hardware. Modern corporate tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmHPc_t-V557NXrHXHyaiSFGuJvWSkUMckK2sHqTqFr9ySWRZ8wE7ApLZvjSDGcAAF9KYe1g0rFEBeWEYHPZg2DDm-WV_jNky0tKSeDTp5hW9_Qcj1jPLKSC3Sfww8fh2Vvtb1l5TyIUj19ug9o6nVZRORc9nhzoj07ZSaAabIDRtxMk2vZgvIGZU4FRZdP1X6-dY-SIzi4oUjnR7yFaEw_cfGL6-EH7CjloaoaCzKoWH9TjLYUely21SIJohK8OKSHkk_W_eSiFlh"/>
+<button class="absolute bottom-3 right-3 bg-white/90 backdrop-blur p-2 rounded-lg font-label-sm text-label-sm flex items-center gap-2 border border-border-subtle">
+<span class="material-symbols-outlined text-[18px]" data-icon="photo_camera">photo_camera</span> Edit Photos
+                </button>
+</div>
+<!-- Golden Record Section -->
+<section class="mb-gutter">
+<div class="flex items-center justify-between mb-stack-sm">
+<h4 class="font-label-sm text-label-sm text-text-muted uppercase tracking-widest font-bold">Golden Record</h4>
+<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-[10px] font-bold rounded">MASTER_ID: CPU-AMD-5700X3D</span>
+</div>
+<div class="grid grid-cols-2 gap-stack-md bg-surface-container-low p-stack-md rounded-xl border border-border-subtle">
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">Release Name</p>
+<p class="font-body-md font-bold">Ryzen 7 5700X3D</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">Generation</p>
+<p class="font-body-md font-bold">Vermeer-X (Zen 3)</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">Launch Price (MSRP)</p>
+<p class="font-body-md font-bold">$249.00 USD</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">TDP / Heat</p>
+<p class="font-body-md font-bold">105 Watts</p>
+</div>
+</div>
+</section>
+<!-- Aliases Management -->
+<section class="mb-gutter">
+<div class="flex items-center justify-between mb-stack-sm">
+<h4 class="font-label-sm text-label-sm text-text-muted uppercase tracking-widest font-bold">Associated Aliases (6)</h4>
+<button class="text-secondary font-label-sm hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="add_circle">add_circle</span> Add Alias
+                    </button>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="px-3 py-1.5 bg-white border border-border-subtle rounded-lg flex items-center gap-2 group">
+<span class="font-data-table text-data-table">5700x3d</span>
+<button class="opacity-0 group-hover:opacity-100 text-risk-red transition-opacity"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<div class="px-3 py-1.5 bg-white border border-border-subtle rounded-lg flex items-center gap-2 group">
+<span class="font-data-table text-data-table">r7 5700x3d</span>
+<button class="opacity-0 group-hover:opacity-100 text-risk-red transition-opacity"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<div class="px-3 py-1.5 bg-white border border-border-subtle rounded-lg flex items-center gap-2 group">
+<span class="font-data-table text-data-table">ryzen 7 5700x3d box</span>
+<button class="opacity-0 group-hover:opacity-100 text-risk-red transition-opacity"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+<div class="px-3 py-1.5 bg-white border border-border-subtle rounded-lg flex items-center gap-2 group italic text-text-muted border-dashed">
+<span class="font-data-table text-data-table">amd 5700x3d</span>
+<button class="opacity-0 group-hover:opacity-100 text-risk-red transition-opacity"><span class="material-symbols-outlined text-[14px]" data-icon="close">close</span></button>
+</div>
+</div>
+</section>
+<!-- Distribution Chart Placeholder -->
+<section>
+<h4 class="font-label-sm text-label-sm text-text-muted uppercase tracking-widest font-bold mb-stack-sm">Market Position (Current)</h4>
+<div class="h-12 w-full flex rounded-lg overflow-hidden border border-border-subtle mb-2">
+<div class="flex-1 bg-risk-red/80 h-full"></div>
+<div class="flex-[3] bg-market-teal/80 h-full relative">
+<!-- Radar Indicator -->
+<div class="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-2 flex flex-col items-center">
+<span class="material-symbols-outlined text-primary text-[24px]" style="font-variation-settings: 'FILL' 1;">arrow_drop_down</span>
+</div>
+</div>
+<div class="flex-[1.5] bg-status-amber/80 h-full"></div>
+<div class="flex-[1] bg-status-violet/80 h-full"></div>
+</div>
+<div class="flex justify-between font-label-sm text-[10px] text-text-muted uppercase px-1">
+<span>Extreme Low</span>
+<span>Market Mean</span>
+<span>High Premium</span>
+</div>
+</section>
+</div>
+<div class="p-stack-md border-t border-border-subtle bg-surface-container-lowest grid grid-cols-2 gap-stack-md">
+<button class="py-3 rounded-lg border border-border-subtle font-bold text-on-surface hover:bg-surface-container-low transition-colors">Discard Changes</button>
+<button class="py-3 rounded-lg bg-secondary text-white font-bold hover:opacity-90 shadow-lg shadow-secondary/20 transition-all">Save Master Record</button>
+</div>
+</aside>
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[45] hidden transition-opacity duration-300 opacity-0" id="overlay" onclick="toggleDetail()"></div>
+<script>
+        function toggleDetail() {
+            const panel = document.getElementById('detailPanel');
+            const overlay = document.getElementById('overlay');
+            
+            if (panel.classList.contains('translate-x-full')) {
+                panel.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('opacity-100');
+                }, 10);
+            } else {
+                panel.classList.add('translate-x-full');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // Search Bar Micro-interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-secondary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-secondary/20');
+        });
+    </script>
+</body></html>

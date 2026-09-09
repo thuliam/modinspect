@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Seller Price Advisor - PC Price Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'IBM+Plex+Sans+Thai', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .radar-line {
+            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#3f465c",
+                      "error": "#ba1a1a",
+                      "tertiary": "#000000",
+                      "surface-container-high": "#e6e8ea",
+                      "text-muted": "#64748B",
+                      "error-container": "#ffdad6",
+                      "border-subtle": "#E2E8F0",
+                      "surface-dim": "#d8dadc",
+                      "surface-container": "#eceef0",
+                      "surface-variant": "#e0e3e5",
+                      "on-tertiary-fixed-variant": "#005049",
+                      "on-tertiary-container": "#0c9488",
+                      "tertiary-fixed-dim": "#6bd8cb",
+                      "on-secondary-fixed": "#07006c",
+                      "on-secondary-container": "#fffbff",
+                      "surface-tint": "#565e74",
+                      "primary": "#000000",
+                      "on-surface-variant": "#45464d",
+                      "on-secondary-fixed-variant": "#2f2ebe",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-primary-container": "#7c839b",
+                      "tertiary-fixed": "#89f5e7",
+                      "on-tertiary-fixed": "#00201d",
+                      "on-primary": "#ffffff",
+                      "secondary": "#4648d4",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed-dim": "#c0c1ff",
+                      "primary-container": "#131b2e",
+                      "surface-container-low": "#f2f4f6",
+                      "on-primary-fixed": "#131b2e",
+                      "primary-fixed-dim": "#bec6e0",
+                      "risk-red": "#DC2626",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#e1e0ff",
+                      "status-violet": "#7C3AED",
+                      "outline": "#76777d",
+                      "background": "#f7f9fb",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-container": "#6063ee",
+                      "on-tertiary": "#ffffff",
+                      "market-teal": "#0D9488",
+                      "on-background": "#191c1e",
+                      "inverse-surface": "#2d3133",
+                      "primary-fixed": "#dae2fd",
+                      "inverse-on-surface": "#eff1f3",
+                      "inverse-primary": "#bec6e0",
+                      "surface": "#f7f9fb",
+                      "surface-bright": "#f7f9fb",
+                      "outline-variant": "#c6c6cd",
+                      "on-surface": "#191c1e",
+                      "status-amber": "#D97706",
+                      "status-blue": "#2563EB",
+                      "on-error": "#ffffff",
+                      "tertiary-container": "#00201d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "stack-md": "16px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "section-gap": "64px",
+                      "stack-sm": "8px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "body-md": ["IBM Plex Sans Thai"],
+                      "label-sm": ["JetBrains Mono"],
+                      "headline-xl": ["IBM Plex Sans Thai"],
+                      "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                      "headline-lg": ["IBM Plex Sans Thai"],
+                      "price-display": ["IBM Plex Sans"],
+                      "data-table": ["IBM Plex Sans"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                      "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                      "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest border-b border-border-subtle h-16 flex items-center justify-between px-margin-mobile">
+<div class="flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">PC Price Radar</h1>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant p-2">language</button>
+</header>
+<main class="pt-20 pb-32 px-margin-mobile max-w-md mx-auto">
+<!-- Section 1: Product Context -->
+<section class="mb-stack-md">
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 flex gap-4 items-center">
+<div class="w-20 h-20 bg-surface-container rounded overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up professional product photography of an AMD Ryzen 7 5700X3D processor chip lying on a dark, technical surface. The lighting is crisp and cool, highlighting the metallic texture and laser-etched branding on the CPU heat spreader. The overall aesthetic is clean, corporate, and minimalist, using a neutral color palette with subtle tech-blue highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaH56Tuuihf5nNJwMSBgv-JWThLs9YTgPbfdrEzkf0wTxh1S0EWCv-7hqOf82RzJvHvPE9bFAUJ045Gy67zPWz9T1o6hKby55Xlt7o4hXEa28D6qGdxskVmOEyNU3N76J0fIP13rnpLY5FX7OrwJfHoyb2CinVv-03QZlwLb8o69K2Gaxy5TGXoPwvh6L9fkyOvM-NVRH8N1ZbmZPUvZuHNgZSmSAK27J8tQnGMuWC9xz_ZEbf8HDE-GJ3YuoCPT1L4CThXaHKVX7c"/>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">CPU / AM4</span>
+<h2 class="font-body-md text-body-md font-bold leading-tight">AMD Ryzen 7 5700X3D</h2>
+<p class="text-on-surface-variant text-sm mt-1">Market status: Active Intelligence</p>
+</div>
+</div>
+</section>
+<!-- Section 2: Input Form -->
+<section class="mb-section-gap space-y-stack-md">
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm">
+<h3 class="font-body-md text-body-md font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">edit_note</span> รายละเอียดสินค้า
+                </h3>
+<div class="space-y-4">
+<!-- Condition Select -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">สภาพสินค้า (Condition)</label>
+<select class="w-full bg-surface-container-low border border-border-subtle rounded-lg px-4 py-3 font-body-md focus:border-secondary focus:ring-0 outline-none transition-all">
+<option>เหมือนใหม่ (Like New)</option>
+<option selected="">ใช้งานปกติ (Used - Good)</option>
+<option>มีรอยตามการใช้งาน (Used - Fair)</option>
+</select>
+</div>
+<!-- Warranty Select -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">ระยะเวลาประกัน (Warranty)</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="border-2 border-secondary bg-secondary-fixed text-on-secondary-fixed py-2 rounded-lg font-body-md text-sm">มีประกัน (&gt; 1 ปี)</button>
+<button class="border border-border-subtle bg-surface-container-lowest text-on-surface-variant py-2 rounded-lg font-body-md text-sm">หมดประกัน / ประกันใจ</button>
+</div>
+</div>
+<!-- Accessories Chips -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">อุปกรณ์เสริม (Accessories)</label>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-market-teal/10 text-market-teal border border-market-teal/20 rounded-full text-xs font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> กล่องครบ
+                            </span>
+<span class="px-3 py-1 bg-market-teal/10 text-market-teal border border-market-teal/20 rounded-full text-xs font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> ใบเสร็จ
+                            </span>
+<button class="px-3 py-1 border border-border-subtle rounded-full text-xs text-on-surface-variant">+ เพิ่ม</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Analysis Result -->
+<section class="mb-section-gap">
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-6 relative overflow-hidden">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="font-body-md text-body-md font-bold">ราคาขายที่แนะนำ</h3>
+<p class="text-xs text-on-surface-variant">วิเคราะห์จากข้อมูลตลาดล่าสุด 24 ชม.</p>
+</div>
+<div class="bg-market-teal/10 text-market-teal px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest">Confidence: High</div>
+</div>
+<div class="mb-8 text-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">แนะนำตั้งราคาช่วง</span>
+<div class="font-price-display text-price-display text-primary flex items-baseline justify-center gap-1">
+                        ฿6,800 <span class="text-lg font-normal text-on-surface-variant">-</span> ฿7,200
+                    </div>
+</div>
+<!-- Distribution Bar -->
+<div class="relative pt-6 pb-2">
+<div class="h-3 w-full rounded-full flex overflow-hidden">
+<div class="h-full bg-risk-red w-[25%]" title="ขายไว"></div>
+<div class="h-full bg-market-teal w-[50%]" title="ราคาตลาด"></div>
+<div class="h-full bg-status-violet w-[25%]" title="พรีเมียม"></div>
+</div>
+<!-- Radar Indicator -->
+<div class="absolute top-0 left-[62%] -ml-px h-10 w-0.5 bg-primary radar-line">
+<div class="absolute -top-1 -left-[3px] w-2 h-2 rounded-full bg-primary"></div>
+<div class="absolute -bottom-6 -left-10 w-20 text-center font-label-sm text-[10px] font-bold text-primary uppercase">Current Spec</div>
+</div>
+<div class="flex justify-between mt-4 font-label-sm text-[10px] text-on-surface-variant uppercase">
+<span>ขายไว</span>
+<span>ราคาตลาด</span>
+<span>พรีเมียม</span>
+</div>
+</div>
+<!-- Suggested Tiers -->
+<div class="mt-8 grid grid-cols-1 gap-3">
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg border border-border-subtle/50">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-risk-red"></span>
+<span class="font-body-md text-sm">ขายด่วน ( &lt; 3 วัน)</span>
+</div>
+<span class="font-label-sm text-sm font-bold">฿6,400</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-market-teal/5 rounded-lg border border-market-teal/20">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-market-teal"></span>
+<span class="font-body-md text-sm font-bold text-market-teal">ราคากลางยอดนิยม</span>
+</div>
+<span class="font-label-sm text-sm font-bold text-market-teal">฿7,000</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Seller Checklist -->
+<section class="mb-8">
+<h3 class="font-body-md text-body-md font-bold mb-4">เช็คลิสต์เพื่อปิดการขายไวขึ้น</h3>
+<div class="space-y-3">
+<label class="flex items-start gap-3 p-4 bg-white border border-border-subtle rounded-xl active:bg-surface-container-high transition-colors">
+<input checked="" class="mt-1 rounded text-secondary focus:ring-secondary" type="checkbox"/>
+<div class="flex-1">
+<span class="block font-body-md text-sm font-bold">ภาพถ่าย CPU-Z / Benchmark</span>
+<span class="block text-xs text-on-surface-variant">ยืนยันว่าสินค้าใช้งานได้ปกติ 100%</span>
+</div>
+<span class="material-symbols-outlined text-market-teal">check_circle</span>
+</label>
+<label class="flex items-start gap-3 p-4 bg-white border border-border-subtle rounded-xl">
+<input class="mt-1 rounded text-secondary focus:ring-secondary" type="checkbox"/>
+<div class="flex-1">
+<span class="block font-body-md text-sm font-bold">ภาพถ่ายหน้าตรงพิน (Pins)</span>
+<span class="block text-xs text-on-surface-variant">โชว์ความสมบูรณ์ของขา CPU ไม่หักไม่ล้ม</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">image</span>
+</label>
+<label class="flex items-start gap-3 p-4 bg-white border border-border-subtle rounded-xl">
+<input class="mt-1 rounded text-secondary focus:ring-secondary" type="checkbox"/>
+<div class="flex-1">
+<span class="block font-body-md text-sm font-bold">แคปหน้าจอผลการทดสอบความร้อน</span>
+<span class="block text-xs text-on-surface-variant">แสดงประสิทธิภาพการระบายความร้อน</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">thermostat</span>
+</label>
+</div>
+</section>
+</main>
+<!-- Sticky Share Action -->
+<div class="fixed bottom-16 left-0 w-full p-4 z-40">
+<button class="w-full bg-secondary text-on-secondary font-body-md font-bold py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined">ios_share</span>
+            แชร์การ์ดราคาขาย
+        </button>
+</div>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-border-subtle h-16 flex items-center justify-around px-2 z-50 md:hidden">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">search_insights</span>
+<span class="text-[10px] font-medium">เช็คราคา</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-secondary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">local_offer</span>
+<span class="text-[10px] font-bold">เช็คดีล</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">memory</span>
+<span class="text-[10px] font-medium">จัดสเปก</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">storefront</span>
+<span class="text-[10px] font-medium">ร้านค้า</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('select, button, label').forEach(el => {
+            el.addEventListener('click', () => {
+                // Haptic feedback simulation or state updates could go here
+                console.log('Interaction detected');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PC Price Radar - B2B Inventory Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background-color: #f7f9fb;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c6c6cd;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #76777d;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-bright": "#f7f9fb",
+                        "inverse-primary": "#bec6e0",
+                        "status-violet": "#7C3AED",
+                        "tertiary-fixed-dim": "#6bd8cb",
+                        "status-amber": "#D97706",
+                        "secondary-fixed": "#e1e0ff",
+                        "tertiary": "#000000",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c6c6cd",
+                        "outline": "#76777d",
+                        "on-secondary-fixed": "#07006c",
+                        "surface-tint": "#565e74",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "on-background": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "inverse-on-surface": "#eff1f3",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#00201d",
+                        "on-secondary-container": "#fffbff",
+                        "on-primary": "#ffffff",
+                        "primary": "#000000",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary-fixed-variant": "#005049",
+                        "inverse-surface": "#2d3133",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dae2fd",
+                        "on-surface": "#191c1e",
+                        "primary-container": "#131b2e",
+                        "tertiary-container": "#00201d",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f7f9fb",
+                        "secondary": "#4648d4",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "text-muted": "#64748B",
+                        "border-subtle": "#E2E8F0",
+                        "surface-dim": "#d8dadc",
+                        "background": "#f7f9fb",
+                        "tertiary-fixed": "#89f5e7",
+                        "status-blue": "#2563EB",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "on-primary-fixed": "#131b2e",
+                        "market-teal": "#0D9488",
+                        "risk-red": "#DC2626"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "base": "4px",
+                        "gutter": "24px",
+                        "section-gap": "64px"
+                    },
+                    "fontFamily": {
+                        "price-display": ["IBM Plex Sans"],
+                        "headline-lg": ["IBM Plex Sans Thai"],
+                        "body-md": ["IBM Plex Sans Thai"],
+                        "headline-xl": ["IBM Plex Sans Thai"],
+                        "data-table": ["IBM Plex Sans"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- Shell Container -->
+<div class="flex min-h-screen">
+<!-- Side Navigation (Authority: SideNavBar JSON) -->
+<aside class="hidden lg:flex flex-col h-screen sticky top-0 bg-surface border-r border-border-subtle w-64 z-40 transition-all duration-200 ease-in-out">
+<div class="p-gutter flex flex-col h-full">
+<div class="mb-section-gap">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">PC Price Radar</h1>
+<p class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">Market Intelligence</p>
+</div>
+<nav class="flex-grow flex flex-col gap-base">
+<!-- Mapping from JSON: active state logic -->
+<a class="text-on-surface-variant flex items-center gap-stack-md px-4 py-3 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="search_insights">search_insights</span>
+<span class="font-body-md text-body-md">เช็กราคา</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-stack-md px-4 py-3 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="local_offer">local_offer</span>
+<span class="font-body-md text-body-md">เช็กดีล</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-stack-md px-4 py-3 hover:bg-surface-container-high transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+<span class="font-body-md text-body-md">จัดสเปก</span>
+</a>
+<!-- Active State for B2B Inventory Page -->
+<a class="bg-secondary-fixed text-on-secondary-fixed rounded-xl flex items-center gap-stack-md px-4 py-3" href="#">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-body-md text-body-md">สำหรับร้านค้า</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-base pt-stack-md border-t border-border-subtle">
+<button class="w-full bg-secondary text-on-secondary px-4 py-stack-md rounded-xl font-body-md text-body-md flex items-center justify-center gap-stack-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" data-icon="login">login</span>
+<span>เข้าระบบร้านค้า</span>
+</button>
+<div class="mt-stack-md flex flex-col gap-base">
+<a class="text-on-surface-variant flex items-center gap-stack-md px-4 py-2 text-sm" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+<span>ตั้งค่า</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-stack-md px-4 py-2 text-sm" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+<span>ช่วยเหลือ</span>
+</a>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-grow min-w-0 bg-surface-bright flex flex-col">
+<!-- Top App Bar (Authority: TopNavBar JSON) -->
+<header class="h-16 flex items-center justify-between px-gutter bg-surface-container-lowest border-b border-border-subtle z-30 sticky top-0">
+<div class="flex items-center gap-gutter flex-grow">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-border-subtle rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary transition-all font-body-md text-body-md" placeholder="ค้นหาชื่อรุ่น หรือ SKU..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="h-8 w-px bg-border-subtle mx-2"></div>
+<div class="flex items-center gap-stack-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold text-xs">BT</div>
+<div class="hidden md:block">
+<p class="font-body-md text-sm leading-none font-semibold">BKK Tech Store</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase">Pro Seller</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-gutter max-w-container-max mx-auto w-full space-y-gutter">
+<!-- Page Header & Action -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">ระบบบริหารคลังสินค้า</h2>
+<p class="text-on-surface-variant font-body-md">Market Intelligence Dashboard for Resellers</p>
+</div>
+<button class="bg-secondary text-on-secondary px-6 py-3 rounded-xl flex items-center gap-stack-sm hover:shadow-lg transition-all transform active:scale-95" onclick="document.getElementById('entryModal').classList.remove('hidden')">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-body-md font-bold">เพิ่มสินค้าใหม่</span>
+</button>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<!-- Stock Overview Card -->
+<div class="bg-surface-container-lowest p-stack-md border border-border-subtle rounded-xl flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</div>
+<span class="font-label-sm text-label-sm text-status-blue bg-status-blue/10 px-2 py-1 rounded-full">Active</span>
+</div>
+<div class="mt-4">
+<p class="font-body-md text-on-surface-variant text-sm">จำนวนสินค้าทั้งหมด</p>
+<h3 class="font-price-display text-price-display text-primary mt-1">128 <span class="text-sm font-normal">ชิ้น</span></h3>
+</div>
+</div>
+<!-- Inventory Value Card -->
+<div class="bg-surface-container-lowest p-stack-md border border-border-subtle rounded-xl flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+</div>
+<div class="mt-4">
+<p class="font-body-md text-on-surface-variant text-sm">มูลค่าสต็อกรวม</p>
+<h3 class="font-price-display text-price-display text-primary mt-1">฿452,000</h3>
+</div>
+</div>
+<!-- Financial Summary (Revenue) -->
+<div class="bg-surface-container-lowest p-stack-md border border-border-subtle rounded-xl flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-lg bg-market-teal/10 flex items-center justify-center text-market-teal">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+<div class="mt-4">
+<p class="font-body-md text-on-surface-variant text-sm">รายได้สะสม (เดือนนี้)</p>
+<h3 class="font-price-display text-price-display text-market-teal mt-1">฿89,400</h3>
+</div>
+</div>
+<!-- Profit/Loss Alert -->
+<div class="bg-surface-container-lowest p-stack-md border border-border-subtle rounded-xl flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-start justify-between">
+<div class="w-10 h-10 rounded-lg bg-status-amber/10 flex items-center justify-center text-status-amber">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</div>
+<span class="font-label-sm text-label-sm text-risk-red bg-risk-red/10 px-2 py-1 rounded-full">Low Stock</span>
+</div>
+<div class="mt-4">
+<p class="font-body-md text-on-surface-variant text-sm">สินค้าสต็อกต่ำ</p>
+<h3 class="font-price-display text-price-display text-status-amber mt-1">12 <span class="text-sm font-normal">รายการ</span></h3>
+</div>
+<div class="absolute bottom-0 right-0 opacity-10 scale-150 rotate-12">
+<span class="material-symbols-outlined text-6xl" data-icon="bar_chart">bar_chart</span>
+</div>
+</div>
+</div>
+<!-- Filters & Search Bar -->
+<div class="bg-surface-container-lowest p-4 border border-border-subtle rounded-xl flex flex-wrap items-center gap-stack-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="filter_alt">filter_alt</span>
+<span class="font-body-md font-semibold text-sm">ตัวกรอง:</span>
+</div>
+<select class="bg-surface border border-border-subtle rounded-lg px-3 py-1.5 font-body-md text-sm focus:ring-secondary focus:border-secondary">
+<option>ทุกหมวดหมู่</option>
+<option>Graphic Cards</option>
+<option>Processors (CPU)</option>
+<option>Memory (RAM)</option>
+</select>
+<select class="bg-surface border border-border-subtle rounded-lg px-3 py-1.5 font-body-md text-sm focus:ring-secondary focus:border-secondary">
+<option>ทุกสถานะ</option>
+<option>In-stock</option>
+<option>Low Stock</option>
+<option>Sold Out</option>
+</select>
+<div class="flex items-center bg-surface border border-border-subtle rounded-lg px-3 py-1.5 gap-2">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="calendar_month">calendar_month</span>
+<span class="font-body-md text-sm">30 วันล่าสุด</span>
+</div>
+<div class="flex-grow"></div>
+<button class="text-on-surface-variant font-body-md text-sm hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="restart_alt">restart_alt</span>
+<span>รีเซ็ต</span>
+</button>
+</div>
+<!-- Main Inventory Table -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-border-subtle">
+<th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase">Product Name &amp; Category</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase">Buy Price</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase">Market Price</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase">Margin</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase">Stock</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase">Status</th>
+<th class="px-6 py-4 font-label-sm text-label-sm text-on-surface-variant uppercase">Date Added</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle font-data-table text-data-table">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-semibold text-primary">ASUS ROG Strix RTX 3080 10GB</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">GPU • SKU: AS-3080-ROG-10</span>
+</div>
+</td>
+<td class="px-6 py-4 font-price-display text-sm">฿14,500</td>
+<td class="px-6 py-4 font-price-display text-sm text-secondary">฿18,200</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1 text-market-teal font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_upward">arrow_upward</span>
+<span>฿3,700</span>
+<span class="text-[10px] font-normal">(+25.5%)</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-sm text-label-sm">08</span>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-market-teal/10 text-market-teal rounded text-[11px] font-bold">IN-STOCK</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">12 ต.ค. 2024</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-semibold text-primary">Intel Core i9-12900K Tray</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">CPU • SKU: IN-I9-129-TR</span>
+</div>
+</td>
+<td class="px-6 py-4 font-price-display text-sm">฿11,200</td>
+<td class="px-6 py-4 font-price-display text-sm text-secondary">฿12,500</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1 text-market-teal font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_upward">arrow_upward</span>
+<span>฿1,300</span>
+<span class="text-[10px] font-normal">(+11.6%)</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-sm text-label-sm text-risk-red">02</span>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-status-amber/10 text-status-amber rounded text-[11px] font-bold">LOW STOCK</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">10 ต.ค. 2024</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="font-semibold text-primary">G.Skill Trident Z Neo 32GB (16x2)</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-tighter">RAM • SKU: GS-TZ-32DDR4</span>
+</div>
+</td>
+<td class="px-6 py-4 font-price-display text-sm">฿4,200</td>
+<td class="px-6 py-4 font-price-display text-sm text-secondary">฿3,900</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1 text-risk-red font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="arrow_downward">arrow_downward</span>
+<span>-฿300</span>
+<span class="text-[10px] font-normal">(-7.1%)</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="font-label-sm text-label-sm">15</span>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-market-teal/10 text-market-teal rounded text-[11px] font-bold">IN-STOCK</span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">08 ต.ค. 2024</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-low border-t border-border-subtle flex items-center justify-between">
+<p class="font-body-md text-sm text-on-surface-variant">แสดง 1 - 3 จาก 128 รายการ</p>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded-lg border border-border-subtle hover:bg-surface-container-high disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-1.5 rounded-lg border border-border-subtle bg-secondary text-on-secondary font-label-sm text-xs">1</button>
+<button class="p-1.5 rounded-lg border border-border-subtle hover:bg-surface-container-high font-label-sm text-xs">2</button>
+<button class="p-1.5 rounded-lg border border-border-subtle hover:bg-surface-container-high font-label-sm text-xs">3</button>
+<button class="p-1.5 rounded-lg border border-border-subtle hover:bg-surface-container-high">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer (Authority: Footer JSON) -->
+<footer class="w-full py-stack-md flex flex-col md:flex-row justify-between items-center gap-stack-md border-t border-border-subtle mt-section-gap">
+<p class="font-label-sm text-label-sm text-text-muted">© 2024 PC Price Radar. ข้อมูลราคาเพื่อการตัดสินใจเท่านั้น</p>
+<div class="flex gap-gutter">
+<a class="font-label-sm text-label-sm text-text-muted hover:text-primary transition-colors" href="#">ระเบียบวิธีวิจัย</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-primary transition-colors" href="#">คำสงวนสิทธิ์</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-primary transition-colors" href="#">เกี่ยวกับเรา</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-primary transition-colors" href="#">ติดต่อเรา</a>
+</div>
+</footer>
+</div>
+</main>
+</div>
+<!-- Stock Entry Modal -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-primary/40 backdrop-blur-sm transition-all" id="entryModal">
+<div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<div class="px-6 py-4 border-b border-border-subtle flex items-center justify-between">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile">เพิ่มสินค้าเข้าคลัง</h3>
+<button class="p-2 rounded-full hover:bg-surface-container-high" onclick="document.getElementById('entryModal').classList.add('hidden')">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<form class="p-6 grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<div class="md:col-span-2">
+<label class="block font-label-sm text-label-sm mb-2 text-on-surface-variant">ชื่อสินค้า (Model Name)</label>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-xl px-4 py-3 font-body-md focus:border-secondary transition-all" placeholder="เช่น NVIDIA GeForce RTX 4070 Ti" type="text"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm mb-2 text-on-surface-variant">หมวดหมู่</label>
+<select class="w-full bg-surface-container-low border border-border-subtle rounded-xl px-4 py-3 font-body-md focus:border-secondary transition-all">
+<option>Graphic Cards</option>
+<option>Processors</option>
+<option>Motherboards</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm mb-2 text-on-surface-variant">รหัสสินค้า (SKU)</label>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-xl px-4 py-3 font-body-md focus:border-secondary transition-all" placeholder="อัตโนมัติหากปล่อยว่าง" type="text"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm mb-2 text-on-surface-variant">ราคารับซื้อ (Buy Price)</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 font-body-md">฿</span>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-xl pl-8 pr-4 py-3 font-body-md focus:border-secondary transition-all" placeholder="0.00" type="number"/>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm mb-2 text-on-surface-variant">จำนวนเริ่มต้น</label>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-xl px-4 py-3 font-body-md focus:border-secondary transition-all" placeholder="1" type="number"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm mb-2 text-on-surface-variant">สภาพสินค้า</label>
+<select class="w-full bg-surface-container-low border border-border-subtle rounded-xl px-4 py-3 font-body-md focus:border-secondary transition-all">
+<option>มือสอง - เหมือนใหม่ (A)</option>
+<option>มือสอง - ดี (B)</option>
+<option>มือสอง - มีรอยบ้าง (C)</option>
+<option>ของใหม่ - ยังไม่แกะซีล (New)</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm mb-2 text-on-surface-variant">แหล่งที่มา</label>
+<input class="w-full bg-surface-container-low border border-border-subtle rounded-xl px-4 py-3 font-body-md focus:border-secondary transition-all" placeholder="ชื่อลูกค้า / ร้านส่ง" type="text"/>
+</div>
+<div class="md:col-span-2 pt-stack-md flex gap-stack-md">
+<button class="flex-1 px-6 py-3 border border-border-subtle rounded-xl font-body-md hover:bg-surface-container-high transition-colors" onclick="document.getElementById('entryModal').classList.add('hidden')" type="button">ยกเลิก</button>
+<button class="flex-1 px-6 py-3 bg-secondary text-on-secondary rounded-xl font-body-md font-bold shadow-lg hover:shadow-xl hover:opacity-90 transition-all" type="submit">ยืนยันการเพิ่ม</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Decorative Atmosphere (Small inline script for row hover effects) -->
+<script>
+        // Micro-interaction for table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'scale(1.002)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Simple modal close on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('entryModal');
+            if (event.target == modal) {
+                modal.classList.add('hidden');
+            }
+        }
+    </script>
+</body></html>

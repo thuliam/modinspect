@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 10px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        .ambient-hover:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transform: translateY(-1px);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#6063ee",
+                        "on-tertiary-fixed-variant": "#005049",
+                        "on-primary-fixed": "#131b2e",
+                        "on-primary-container": "#7c839b",
+                        "border-subtle": "#E2E8F0",
+                        "surface-container-low": "#f2f4f6",
+                        "outline": "#76777d",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "primary": "#000000",
+                        "surface-container-highest": "#e0e3e5",
+                        "outline-variant": "#c6c6cd",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-background": "#191c1e",
+                        "on-surface": "#191c1e",
+                        "tertiary-fixed-dim": "#6bd8cb",
+                        "tertiary-container": "#00201d",
+                        "surface": "#f7f9fb",
+                        "on-tertiary-fixed": "#00201d",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#dae2fd",
+                        "surface-container-lowest": "#ffffff",
+                        "text-muted": "#64748B",
+                        "risk-red": "#DC2626",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#e1e0ff",
+                        "tertiary-fixed": "#89f5e7",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "status-amber": "#D97706",
+                        "on-surface-variant": "#45464d",
+                        "background": "#f7f9fb",
+                        "status-violet": "#7C3AED",
+                        "surface-container": "#eceef0",
+                        "on-secondary-fixed": "#07006c",
+                        "on-secondary-container": "#fffbff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary": "#000000",
+                        "surface-tint": "#565e74",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e0e3e5",
+                        "secondary": "#4648d4",
+                        "status-blue": "#2563EB",
+                        "market-teal": "#0D9488",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#0c9488",
+                        "inverse-surface": "#2d3133",
+                        "primary-container": "#131b2e",
+                        "inverse-primary": "#bec6e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "stack-md": "16px",
+                        "container-max": "1280px",
+                        "section-gap": "64px",
+                        "gutter": "24px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["IBM Plex Sans Thai"],
+                        "data-table": ["IBM Plex Sans"],
+                        "headline-lg": ["IBM Plex Sans Thai"],
+                        "price-display": ["IBM Plex Sans"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                        "body-md": ["IBM Plex Sans Thai"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                        "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container-low dark:bg-inverse-surface border-r border-border-subtle dark:border-outline-variant flex flex-col py-stack-md z-50">
+<div class="px-stack-md mb-10">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-inverse-primary leading-tight">Price Radar Admin</h1>
+<p class="font-label-sm text-label-sm text-on-primary-container tracking-wider">Hardware Intelligence</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Data Quality Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-body-md">Observation Review</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md">Product Master</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-body-md">Product Aliases</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-secondary dark:text-secondary-fixed-dim font-bold border-r-4 border-secondary opacity-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md">Source Health</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
+<span class="font-body-md">Import Jobs</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-border-subtle pt-stack-md">
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-sm">Settings</span>
+</a>
+<div class="px-stack-md py-stack-md flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-bold truncate">Admin User Avatar</p>
+<p class="text-[10px] text-on-primary-container">System Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-72 min-h-screen flex flex-col bg-surface overflow-y-auto h-screen custom-scrollbar">
+<!-- Top App Bar Shell -->
+<header class="flex justify-between items-center px-gutter py-stack-md bg-surface-container-lowest dark:bg-surface-container-low border-b border-border-subtle dark:border-outline-variant sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Source Health</h2>
+<div class="h-6 w-px bg-border-subtle"></div>
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Real-time Monitoring</span>
+</div>
+<div class="flex items-center gap-stack-md flex-1 max-w-xl px-12">
+<div class="relative w-full">
+<input class="w-full bg-surface-container border border-border-subtle px-10 py-2 rounded-lg text-sm focus:outline-none focus:border-secondary transition-all" placeholder="Search data sources..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-transform active:scale-95 duration-100">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-transform active:scale-95 duration-100">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="history">history</span>
+</button>
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-transform active:scale-95 duration-100">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-gutter space-y-gutter flex-1">
+<!-- Health Overview Chart (Bento Style) -->
+<div class="grid grid-cols-12 gap-gutter">
+<div class="col-span-8 glass-card rounded-xl p-stack-md relative overflow-hidden h-80">
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div>
+<h3 class="font-headline-lg text-2xl font-bold">Crawler Health Trend</h3>
+<p class="text-sm text-text-muted">Global success rate across all integrated platforms (Last 24h)</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-market-teal/10 text-market-teal text-[10px] font-bold rounded-full border border-market-teal/20">98.2% AVG SUCCESS</span>
+</div>
+</div>
+<div class="absolute inset-x-0 bottom-0 h-48 px-4 pb-4">
+<!-- Simulated Chart Component -->
+<div class="w-full h-full flex items-end gap-1">
+<div class="flex-1 bg-market-teal opacity-20 rounded-t-sm" style="height: 85%"></div>
+<div class="flex-1 bg-market-teal opacity-30 rounded-t-sm" style="height: 92%"></div>
+<div class="flex-1 bg-market-teal opacity-40 rounded-t-sm" style="height: 88%"></div>
+<div class="flex-1 bg-market-teal opacity-25 rounded-t-sm" style="height: 95%"></div>
+<div class="flex-1 bg-market-teal opacity-50 rounded-t-sm" style="height: 91%"></div>
+<div class="flex-1 bg-market-teal opacity-60 rounded-t-sm" style="height: 80%"></div>
+<div class="flex-1 bg-risk-red opacity-50 rounded-t-sm" style="height: 45%"></div>
+<div class="flex-1 bg-market-teal opacity-40 rounded-t-sm" style="height: 82%"></div>
+<div class="flex-1 bg-market-teal opacity-30 rounded-t-sm" style="height: 94%"></div>
+<div class="flex-1 bg-market-teal opacity-20 rounded-t-sm" style="height: 97%"></div>
+<div class="flex-1 bg-market-teal opacity-40 rounded-t-sm" style="height: 89%"></div>
+<div class="flex-1 bg-market-teal opacity-60 rounded-t-sm" style="height: 92%"></div>
+<div class="flex-1 bg-market-teal opacity-80 rounded-t-sm" style="height: 90%"></div>
+<div class="flex-1 bg-secondary rounded-t-sm" style="height: 95%"></div>
+</div>
+</div>
+<!-- Micro interaction: scanning lines -->
+<div class="absolute inset-0 pointer-events-none overflow-hidden opacity-10">
+<div class="w-full h-px bg-secondary absolute top-1/4 animate-[pulse_3s_infinite]"></div>
+</div>
+</div>
+<div class="col-span-4 space-y-4">
+<div class="glass-card rounded-xl p-stack-md h-[calc(50%-8px)] flex flex-col justify-center ambient-hover transition-all">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 bg-market-teal/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-market-teal" data-icon="cloud_done">cloud_done</span>
+</div>
+<span class="font-label-sm text-text-muted">ACTIVE SOURCES</span>
+</div>
+<div class="text-4xl font-bold font-price-display">24 <span class="text-sm font-normal text-text-muted">/ 26 total</span></div>
+</div>
+<div class="glass-card rounded-xl p-stack-md h-[calc(50%-8px)] flex flex-col justify-center ambient-hover transition-all">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 bg-risk-red/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-risk-red" data-icon="warning">warning</span>
+</div>
+<span class="font-label-sm text-text-muted">CRITICAL ERRORS</span>
+</div>
+<div class="text-4xl font-bold font-price-display">02 <span class="text-sm font-normal text-text-muted text-risk-red">Requires Attention</span></div>
+</div>
+</div>
+</div>
+<!-- Source Management Table -->
+<section class="glass-card rounded-xl overflow-hidden shadow-sm">
+<div class="p-stack-md border-b border-border-subtle flex justify-between items-center bg-surface-container-lowest">
+<h3 class="font-headline-lg text-lg font-bold">Source Registry</h3>
+<div class="flex gap-stack-sm">
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle rounded-lg text-sm font-medium hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                            Filter Status
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                            Add New Source
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-left">
+<th class="px-6 py-4 font-label-sm text-[10px] text-text-muted uppercase tracking-widest border-b border-border-subtle">Source Identity</th>
+<th class="px-6 py-4 font-label-sm text-[10px] text-text-muted uppercase tracking-widest border-b border-border-subtle">System Status</th>
+<th class="px-6 py-4 font-label-sm text-[10px] text-text-muted uppercase tracking-widest border-b border-border-subtle">Success Rate</th>
+<th class="px-6 py-4 font-label-sm text-[10px] text-text-muted uppercase tracking-widest border-b border-border-subtle">Last Activity</th>
+<th class="px-6 py-4 font-label-sm text-[10px] text-text-muted uppercase tracking-widest border-b border-border-subtle text-right">Error Vol.</th>
+<th class="px-6 py-4 font-label-sm text-[10px] text-text-muted uppercase tracking-widest border-b border-border-subtle text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<!-- Source 1: Facebook -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-blue-50 flex items-center justify-center overflow-hidden border border-border-subtle">
+<img class="w-6 h-6 object-contain" data-alt="Official Facebook corporate logo on a clean white background, minimalist and professional for a data intelligence dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7RqLbbiGgdvxdP1_ES2YgMK0SfSyvv6sUkWlHq-cdh-gtRl7Eoequ4UxWeoFv5GPs_iOaelaSGe-LLNFA69yzcChFiWHQq9o52EHZ2uzqp5TeqYiSoTu3gdMSCU-fnts39AIet5qIlnLqFsoFM-TxlPIwKmiBDbxnEslRIvfS97IRHDO4bgyra6mEyl4vlgWFei_Fqlu5G46bh8JPk_up62POypBy1g_XMOucKbYLGE7FjXOZ9vnQMTzD4IwJFyDF4PHiSoMcQpIE"/>
+</div>
+<div>
+<p class="font-bold text-sm">Facebook Marketplace</p>
+<p class="font-label-sm text-[10px] text-text-muted">ID: SRC_FB_TH_01</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-market-teal/10 text-market-teal text-[11px] font-bold border border-market-teal/20">
+<span class="w-1.5 h-1.5 rounded-full bg-market-teal animate-pulse"></span>
+                                        ACTIVE
+                                    </span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-surface-container rounded-full max-w-[80px]">
+<div class="h-full bg-market-teal rounded-full" style="width: 98.5%"></div>
+</div>
+<span class="font-label-sm text-xs font-bold">98.5%</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm">2 mins ago</p>
+<p class="font-label-sm text-[10px] text-text-muted">Crawl Duration: 1.2s</p>
+</td>
+<td class="px-6 py-5 text-right font-label-sm font-bold">0</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-1.5 hover:bg-secondary/10 hover:text-secondary rounded transition-colors" title="Test Connection">
+<span class="material-symbols-outlined text-sm" data-icon="cable">cable</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Source 2: Shopee -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-orange-50 flex items-center justify-center overflow-hidden border border-border-subtle">
+<img class="w-6 h-6 object-contain" data-alt="High quality corporate Shopee icon used for e-commerce integration monitoring, isolated on a white background with soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyNL87MvjExs67kXe_7qY-hGEAcWzUkR7uOrZmLeAguF_D-OYXC9tuwJR2Kmkn0T_ausXU9tsHW-cciTrvibtMcbU66nZGinWYC7bQcwl7VP7GMzNg9opz9LOPghDn2NkxgDIMqJhTeg9TsFW9yzEKlWBiJDZH_3xOxeyI-uuDcZmae5O4n5id847F0oi-ucfL-wg0U68tuyFYB6_u-5WfN7dpdFKqJOOLtsR1XWEH1-YfsPimjwmx7MWDoOgVRZJqFas9fKkWpO9P"/>
+</div>
+<div>
+<p class="font-bold text-sm">Shopee Official</p>
+<p class="font-label-sm text-[10px] text-text-muted">ID: SRC_SHP_SEA_04</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-status-amber/10 text-status-amber text-[11px] font-bold border border-status-amber/20">
+<span class="w-1.5 h-1.5 rounded-full bg-status-amber"></span>
+                                        WARNING
+                                    </span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-surface-container rounded-full max-w-[80px]">
+<div class="h-full bg-status-amber rounded-full" style="width: 72%"></div>
+</div>
+<span class="font-label-sm text-xs font-bold">72.0%</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm">14 mins ago</p>
+<p class="font-label-sm text-[10px] text-text-muted">Rate Limiting Detected</p>
+</td>
+<td class="px-6 py-5 text-right font-label-sm font-bold text-status-amber">12</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-1.5 bg-secondary/5 text-secondary rounded hover:bg-secondary/10 transition-colors" title="Test Connection">
+<span class="material-symbols-outlined text-sm" data-icon="cable">cable</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Source 3: Amazon -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-slate-50 flex items-center justify-center overflow-hidden border border-border-subtle">
+<img class="w-6 h-6 object-contain" data-alt="Amazon global retail logo for a logistics and intelligence tracking interface, presented with a modern corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy4szT18qHB-rfB6r5CaAyaXrZctdJBSKyhBtSOml9Dk33e6K6rYKxHnihYDN6pJ5CmxkTtAfNgD5sTRwe2_s0LPaZhn4DeutT3TyFY9XTcZY4gunU7K8H2VQ5KFlGWlbzk01ppMxO6tZrAnBvfn-ecyDL-UARuNM-LvlIeWody9yu80YBxET6BLVV3vkSK1uj8d6MD5KgOitESah0xUyKzZ--vDxStjMYlG7nMBNKaiZF4lRDKZAUijBmYB5QShCN6yZ9husMebnL"/>
+</div>
+<div>
+<p class="font-bold text-sm">Amazon Global (PC)</p>
+<p class="font-label-sm text-[10px] text-text-muted">ID: SRC_AMZ_US_22</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-risk-red/10 text-risk-red text-[11px] font-bold border border-risk-red/20">
+<span class="w-1.5 h-1.5 rounded-full bg-risk-red"></span>
+                                        BLOCKED
+                                    </span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-surface-container rounded-full max-w-[80px]">
+<div class="h-full bg-risk-red rounded-full" style="width: 0%"></div>
+</div>
+<span class="font-label-sm text-xs font-bold">0.0%</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm">2 hours ago</p>
+<p class="font-label-sm text-[10px] text-risk-red">Proxy Authentication Failed</p>
+</td>
+<td class="px-6 py-5 text-right font-label-sm font-bold text-risk-red">142</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-1.5 bg-secondary/5 text-secondary rounded hover:bg-secondary/10 transition-colors" title="Test Connection">
+<span class="material-symbols-outlined text-sm" data-icon="cable">cable</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Source 4: Local Store API -->
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-violet-50 flex items-center justify-center overflow-hidden border border-border-subtle">
+<span class="material-symbols-outlined text-status-violet" data-icon="api">api</span>
+</div>
+<div>
+<p class="font-bold text-sm">Advice IT Store API</p>
+<p class="font-label-sm text-[10px] text-text-muted">ID: SRC_AD_API_TH</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-market-teal/10 text-market-teal text-[11px] font-bold border border-market-teal/20">
+<span class="w-1.5 h-1.5 rounded-full bg-market-teal animate-pulse"></span>
+                                        ACTIVE
+                                    </span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-surface-container rounded-full max-w-[80px]">
+<div class="h-full bg-market-teal rounded-full" style="width: 100%"></div>
+</div>
+<span class="font-label-sm text-xs font-bold">100%</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<p class="text-sm">Just now</p>
+<p class="font-label-sm text-[10px] text-text-muted">API Connection Stable</p>
+</td>
+<td class="px-6 py-5 text-right font-label-sm font-bold">0</td>
+<td class="px-6 py-5">
+<div class="flex justify-center gap-2">
+<button class="p-1.5 bg-secondary/5 text-secondary rounded hover:bg-secondary/10 transition-colors" title="Test Connection">
+<span class="material-symbols-outlined text-sm" data-icon="cable">cable</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-high rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-surface-container-low border-t border-border-subtle flex justify-between items-center">
+<p class="text-xs text-text-muted">Showing 1 to 4 of 26 integrated data sources</p>
+<div class="flex gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border-subtle bg-white text-on-surface-variant hover:bg-surface-container-high disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-secondary bg-secondary text-on-secondary text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border-subtle bg-white text-on-surface-variant text-xs hover:bg-surface-container-high">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border-subtle bg-white text-on-surface-variant text-xs hover:bg-surface-container-high">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border-subtle bg-white text-on-surface-variant hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Active Alerts Section -->
+<div class="grid grid-cols-3 gap-gutter">
+<div class="col-span-1 glass-card rounded-xl p-stack-md border-l-4 border-risk-red animate-[fadeIn_0.5s_ease-out]">
+<div class="flex items-start justify-between">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-risk-red mt-0.5" data-icon="gpp_maybe">gpp_maybe</span>
+<div>
+<h4 class="font-bold text-sm">Amazon Proxy Block</h4>
+<p class="text-xs text-text-muted mt-1">High detection rate on residential IPs. Proxy rotation failing.</p>
+<div class="mt-3 flex gap-2">
+<button class="text-[10px] font-bold text-secondary uppercase tracking-wider hover:underline">Reconfigure</button>
+<button class="text-[10px] font-bold text-text-muted uppercase tracking-wider hover:underline">Dismiss</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-1 glass-card rounded-xl p-stack-md border-l-4 border-status-amber">
+<div class="flex items-start justify-between">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-status-amber mt-0.5" data-icon="schedule">schedule</span>
+<div>
+<h4 class="font-bold text-sm">Shopee Latency Spike</h4>
+<p class="text-xs text-text-muted mt-1">Average response time increased from 1.2s to 4.5s.</p>
+<div class="mt-3 flex gap-2">
+<button class="text-[10px] font-bold text-secondary uppercase tracking-wider hover:underline">Analyze</button>
+<button class="text-[10px] font-bold text-text-muted uppercase tracking-wider hover:underline">Dismiss</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-1 flex flex-col justify-center items-center glass-card rounded-xl border-dashed border-2 bg-transparent hover:bg-white/50 transition-colors cursor-pointer p-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant mb-2" data-icon="add_circle">add_circle</span>
+<span class="font-label-sm text-text-muted">CONFIGURE ALERT RULE</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Connection Test Toast (Simulated Interaction) -->
+<div class="fixed bottom-6 right-6 translate-y-20 opacity-0 bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-lg shadow-xl transition-all duration-300 flex items-center gap-3 z-[100]" id="testToast">
+<span class="material-symbols-outlined text-market-teal" data-icon="check_circle">check_circle</span>
+<p class="text-sm font-medium">Connection Test: <span class="font-bold">Advice IT Store API</span> is reaching successfully.</p>
+</div>
+<script>
+        // Micro-interactions for buttons
+        document.querySelectorAll('[title="Test Connection"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const toast = document.getElementById('testToast');
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                }, 4000);
+            });
+        });
+    </script>
+</body></html>

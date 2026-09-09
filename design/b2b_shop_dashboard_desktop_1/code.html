@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Price Radar | B2B Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Injection -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#191c1e",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary": "#4648d4",
+                    "secondary-container": "#6063ee",
+                    "surface-bright": "#f7f9fb",
+                    "surface-variant": "#e0e3e5",
+                    "error-container": "#ffdad6",
+                    "status-amber": "#D97706",
+                    "on-secondary": "#ffffff",
+                    "text-muted": "#64748B",
+                    "on-primary-container": "#7c839b",
+                    "on-surface": "#191c1e",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "tertiary-fixed": "#89f5e7",
+                    "on-surface-variant": "#45464d",
+                    "on-primary-fixed": "#131b2e",
+                    "primary-fixed-dim": "#bec6e0",
+                    "primary-container": "#131b2e",
+                    "tertiary-container": "#00201d",
+                    "risk-red": "#DC2626",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#76777d",
+                    "inverse-primary": "#bec6e0",
+                    "surface-dim": "#d8dadc",
+                    "market-teal": "#0D9488",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed": "#dae2fd",
+                    "surface-container-high": "#e6e8ea",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eceef0",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#e1e0ff",
+                    "surface-tint": "#565e74",
+                    "outline-variant": "#c6c6cd",
+                    "on-secondary-container": "#fffbff",
+                    "tertiary": "#000000",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface": "#f7f9fb",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "on-tertiary-container": "#0c9488",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "background": "#f7f9fb",
+                    "on-secondary-fixed": "#07006c",
+                    "status-blue": "#2563EB",
+                    "primary": "#000000",
+                    "border-subtle": "#E2E8F0",
+                    "status-violet": "#7C3AED",
+                    "on-tertiary-fixed": "#00201d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "stack-md": "16px",
+                    "base": "4px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "section-gap": "64px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "price-display": ["IBM Plex Sans"],
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-xl": ["IBM Plex Sans Thai"],
+                    "headline-lg": ["IBM Plex Sans Thai"],
+                    "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                    "data-table": ["IBM Plex Sans"],
+                    "body-md": ["IBM Plex Sans Thai"]
+            },
+            "fontSize": {
+                    "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'IBM Plex Sans Thai', sans-serif; background-color: #f7f9fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .data-grid-border { border-color: #E2E8F0; }
+        .card-hover:hover { 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); 
+            transform: translateY(-1px);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e0e3e5; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-background text-on-background">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface dark:bg-surface-dim border-r border-border-subtle dark:border-outline-variant flex flex-col h-full py-stack-md px-base z-50">
+<div class="px-4 mb-8">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">Price Radar</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Hardware Intelligence</p>
+</div>
+<nav class="flex-1 space-y-1 px-2">
+<!-- Active: Market Overview -->
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg font-bold transition-transform duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm">Market Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory Management</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-sm text-label-sm">B2B Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm">Admin Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high dark:hover:bg-surface-container rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-sm text-label-sm">User Logs</span>
+</a>
+</nav>
+<div class="mt-auto px-2 space-y-1">
+<div class="p-3 bg-surface-container rounded-lg mb-4">
+<p class="font-label-sm text-label-sm font-bold text-on-surface mb-1">B2B Dashboard</p>
+<button class="w-full py-2 bg-secondary text-on-secondary rounded-lg font-bold text-label-sm hover:opacity-90 transition-opacity">Upgrade Plan</button>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-sm text-label-sm">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- Top Navigation -->
+<header class="h-16 flex items-center justify-between px-gutter bg-surface-container-lowest border-b border-border-subtle sticky top-0 z-40">
+<div class="flex items-center gap-gutter">
+<div class="relative">
+<span class="absolute inset-y-0 left-3 flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-full text-body-md focus:ring-2 focus:ring-secondary focus:border-secondary w-80 outline-none transition-all" placeholder="ค้นหา Inventory..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="material-symbols-outlined hover:text-secondary transition-colors" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined hover:text-secondary transition-colors" data-icon="account_circle">account_circle</button>
+</div>
+<div class="h-8 w-px bg-border-subtle"></div>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-secondary transition-colors">
+<span class="font-label-sm text-label-sm">Language</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="language">language</span>
+</button>
+</div>
+</header>
+<!-- Dashboard Content -->
+<div class="p-gutter max-w-container-max mx-auto space-y-gutter">
+<!-- Header & Quick Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-stack-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">ภาพรวมร้านค้า (B2B Dashboard)</h2>
+<p class="text-text-muted font-body-md">ข้อมูลล่าสุดเมื่อ: 12 ต.ค. 2024, 14:30 น.</p>
+</div>
+<div class="flex gap-stack-sm">
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle bg-white text-secondary font-bold rounded-lg card-hover transition-all text-label-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="upload_file">upload_file</span>
+                        Upload CSV
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle bg-white text-secondary font-bold rounded-lg card-hover transition-all text-label-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="download">download</span>
+                        Export Report
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary font-bold rounded-lg hover:opacity-90 transition-all text-label-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="notifications_active">notifications_active</span>
+                        Set Alerts
+                    </button>
+</div>
+</div>
+<!-- Market Overview Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<!-- Card 1: Value -->
+<div class="bg-white p-stack-md border border-border-subtle rounded-xl card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-text-muted font-label-sm">Total Inventory Value</span>
+<span class="material-symbols-outlined text-secondary" data-icon="inventory">inventory</span>
+</div>
+<p class="font-price-display text-price-display text-on-background">฿1,420,500</p>
+</div>
+<div class="mt-4 flex items-center gap-1 text-market-teal font-label-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+<span>+4.2% vs เดือนก่อน</span>
+</div>
+</div>
+<!-- Card 2: Margin -->
+<div class="bg-white p-stack-md border border-border-subtle rounded-xl card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-text-muted font-label-sm">Estimated Margin</span>
+<span class="material-symbols-outlined text-market-teal" data-icon="payments">payments</span>
+</div>
+<p class="font-price-display text-price-display text-on-background">18.4%</p>
+</div>
+<div class="mt-4 flex items-center gap-1 text-text-muted font-label-sm">
+<span>ประมาณการกำไรสุทธิ</span>
+</div>
+</div>
+<!-- Card 3: Price Drops -->
+<div class="bg-white p-stack-md border border-border-subtle rounded-xl card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-text-muted font-label-sm">Price Drop Alerts</span>
+<span class="material-symbols-outlined text-risk-red" data-icon="warning">warning</span>
+</div>
+<p class="font-price-display text-price-display text-on-background">12 รายการ</p>
+</div>
+<div class="mt-4 flex items-center gap-1 text-risk-red font-label-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="arrow_downward">arrow_downward</span>
+<span>ราคากลางลดลงฉับพลัน</span>
+</div>
+</div>
+<!-- Card 4: Aging -->
+<div class="bg-white p-stack-md border border-border-subtle rounded-xl card-hover transition-all flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-2">
+<span class="text-text-muted font-label-sm">Stock Aging (Avg)</span>
+<span class="material-symbols-outlined text-status-amber" data-icon="history">history</span>
+</div>
+<p class="font-price-display text-price-display text-on-background">42 วัน</p>
+</div>
+<div class="mt-4 w-full h-2 bg-surface-container rounded-full overflow-hidden flex">
+<div class="h-full bg-market-teal w-[60%]"></div>
+<div class="h-full bg-status-amber w-[25%]"></div>
+<div class="h-full bg-risk-red w-[15%]"></div>
+</div>
+</div>
+</div>
+<!-- Middle Section: Table and Market Movers -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Market Insight Table -->
+<div class="lg:col-span-2 bg-white border border-border-subtle rounded-xl overflow-hidden shadow-sm">
+<div class="p-4 border-b border-border-subtle flex justify-between items-center">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold">Market Price Comparison</h3>
+<div class="flex gap-2">
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-[20px]" data-icon="filter_list">filter_list</span></button>
+<button class="p-1 hover:bg-surface-container rounded"><span class="material-symbols-outlined text-[20px]" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-border-subtle">
+<th class="px-4 py-3 font-label-sm text-label-sm text-text-muted uppercase">Product Name</th>
+<th class="px-4 py-3 font-label-sm text-label-sm text-text-muted uppercase text-right">My Price</th>
+<th class="px-4 py-3 font-label-sm text-label-sm text-text-muted uppercase text-right">Market Median</th>
+<th class="px-4 py-3 font-label-sm text-label-sm text-text-muted uppercase text-right">Diff (%)</th>
+<th class="px-4 py-3 font-label-sm text-label-sm text-text-muted uppercase text-center">Risk</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle font-data-table text-data-table">
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-4 py-4 font-bold">RTX 3080 10GB (Used)</td>
+<td class="px-4 py-4 text-right">฿14,500</td>
+<td class="px-4 py-4 text-right">฿13,200</td>
+<td class="px-4 py-4 text-right text-risk-red">+9.8%</td>
+<td class="px-4 py-4 text-center">
+<span class="px-2 py-1 bg-error-container text-risk-red text-[10px] font-bold rounded uppercase">High Price</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-4 py-4 font-bold">Ryzen 5 5600X</td>
+<td class="px-4 py-4 text-right">฿4,200</td>
+<td class="px-4 py-4 text-right">฿4,450</td>
+<td class="px-4 py-4 text-right text-market-teal">-5.6%</td>
+<td class="px-4 py-4 text-center">
+<span class="px-2 py-1 bg-tertiary-container/10 text-market-teal text-[10px] font-bold rounded uppercase">Competitive</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-4 py-4 font-bold">DDR4 16GB 3200MHz</td>
+<td class="px-4 py-4 text-right">฿1,100</td>
+<td class="px-4 py-4 text-right">฿1,150</td>
+<td class="px-4 py-4 text-right text-text-muted">-4.3%</td>
+<td class="px-4 py-4 text-center">
+<span class="px-2 py-1 bg-surface-container-high text-text-muted text-[10px] font-bold rounded uppercase">Neutral</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-4 py-4 font-bold">GTX 1660 Super</td>
+<td class="px-4 py-4 text-right">฿3,800</td>
+<td class="px-4 py-4 text-right">฿3,500</td>
+<td class="px-4 py-4 text-right text-status-amber">+8.5%</td>
+<td class="px-4 py-4 text-center">
+<span class="px-2 py-1 bg-status-amber/10 text-status-amber text-[10px] font-bold rounded uppercase">Review Needed</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-4 py-4 font-bold">i7-12700K</td>
+<td class="px-4 py-4 text-right">฿8,900</td>
+<td class="px-4 py-4 text-right">฿9,200</td>
+<td class="px-4 py-4 text-right text-market-teal">-3.2%</td>
+<td class="px-4 py-4 text-center">
+<span class="px-2 py-1 bg-tertiary-container/10 text-market-teal text-[10px] font-bold rounded uppercase">Competitive</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right Rail: Market Movers & Charts -->
+<div class="space-y-gutter">
+<!-- Market Movers Section -->
+<div class="bg-white border border-border-subtle rounded-xl p-4 shadow-sm">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold mb-4">Market Movers (Thai)</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-secondary-fixed rounded flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="memory">memory</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm font-bold">RTX 4070 Ti</p>
+<p class="text-[10px] text-text-muted">High Demand</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-market-teal font-bold">+฿1,200</p>
+<p class="text-[10px] text-market-teal">Rising</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 hover:bg-surface-container-low rounded-lg transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-error-container/30 rounded flex items-center justify-center text-risk-red">
+<span class="material-symbols-outlined" data-icon="videogame_asset">videogame_asset</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm font-bold">RTX 3060</p>
+<p class="text-[10px] text-text-muted">Overstock Alert</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-risk-red font-bold">-฿800</p>
+<p class="text-[10px] text-risk-red">Falling</p>
+</div>
+</div>
+</div>
+</div>
+<!-- GPU Market Trend Chart Placeholder -->
+<div class="bg-white border border-border-subtle rounded-xl p-4 shadow-sm relative overflow-hidden h-48">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-label-sm text-label-sm font-bold">GPU Index Trend</h3>
+<p class="text-[10px] text-text-muted">30-Day Market Pulse</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-50" data-icon="insights">insights</span>
+</div>
+<!-- Simple CSS Graph Representation -->
+<div class="absolute bottom-4 left-4 right-4 h-20 flex items-end gap-1">
+<div class="flex-1 bg-secondary opacity-20 rounded-t h-[40%]"></div>
+<div class="flex-1 bg-secondary opacity-30 rounded-t h-[50%]"></div>
+<div class="flex-1 bg-secondary opacity-20 rounded-t h-[45%]"></div>
+<div class="flex-1 bg-secondary opacity-40 rounded-t h-[60%]"></div>
+<div class="flex-1 bg-secondary opacity-50 rounded-t h-[75%]"></div>
+<div class="flex-1 bg-secondary opacity-70 rounded-t h-[90%]"></div>
+<div class="flex-1 bg-secondary opacity-80 rounded-t h-[85%]"></div>
+<div class="flex-1 bg-secondary opacity-100 rounded-t h-[95%]"></div>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-white via-transparent pointer-events-none"></div>
+</div>
+</div>
+</div>
+<!-- Footer Area -->
+<footer class="w-full py-stack-md border-t border-border-subtle flex flex-col md:flex-row justify-between items-center gap-stack-md mt-10">
+<div class="text-on-surface-variant">
+<p class="font-body-md text-body-md opacity-70">© 2024 Used PC Price Radar. All rights reserved.</p>
+</div>
+<div class="flex gap-6">
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Methodology</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary transition-colors" href="#">Contact Us</a>
+</div>
+</footer>
+</div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple dashboard interaction logic
+        document.querySelectorAll('.card-hover').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.borderColor = '#4648d4';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.borderColor = '#E2E8F0';
+            });
+        });
+
+        // Search highlight logic
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.02]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.02]');
+        });
+    </script>
+</body></html>

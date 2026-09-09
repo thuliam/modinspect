@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'IBM Plex Sans Thai', sans-serif; background-color: #f7f9fb; color: #191c1e; }
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+        .price-radar-indicator { transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .chart-bar { transition: height 1s ease-out; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#6bd8cb",
+                        "status-violet": "#7C3AED",
+                        "inverse-surface": "#2d3133",
+                        "secondary": "#4648d4",
+                        "secondary-fixed": "#e1e0ff",
+                        "outline-variant": "#c6c6cd",
+                        "on-surface": "#191c1e",
+                        "status-blue": "#2563EB",
+                        "on-background": "#191c1e",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "on-secondary-container": "#fffbff",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-dim": "#d8dadc",
+                        "primary-container": "#131b2e",
+                        "tertiary-fixed": "#89f5e7",
+                        "primary-fixed-dim": "#bec6e0",
+                        "outline": "#76777d",
+                        "market-teal": "#0D9488",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#00201d",
+                        "surface-tint": "#565e74",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "background": "#f7f9fb",
+                        "tertiary": "#000000",
+                        "secondary-container": "#6063ee",
+                        "on-tertiary-fixed-variant": "#005049",
+                        "inverse-primary": "#bec6e0",
+                        "text-muted": "#64748B",
+                        "risk-red": "#DC2626",
+                        "surface-container": "#eceef0",
+                        "on-tertiary-container": "#0c9488",
+                        "border-subtle": "#E2E8F0",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#7c839b",
+                        "surface": "#f7f9fb",
+                        "status-amber": "#D97706",
+                        "primary": "#000000",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "primary-fixed": "#dae2fd",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#00201d",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed": "#07006c",
+                        "surface-bright": "#f7f9fb",
+                        "on-surface-variant": "#45464d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "base": "4px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "16px",
+                        "stack-md": "16px",
+                        "section-gap": "64px"
+                    },
+                    "fontFamily": {
+                        "price-display": ["IBM Plex Sans"],
+                        "headline-lg": ["IBM Plex Sans Thai"],
+                        "data-table": ["IBM Plex Sans"],
+                        "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-xl": ["IBM Plex Sans Thai"],
+                        "body-md": ["IBM Plex Sans Thai"]
+                    },
+                    "fontSize": {
+                        "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                        "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest border-b border-border-subtle h-16 flex items-center justify-between px-gutter max-w-container-max mx-auto transition-transform duration-300">
+<div class="flex items-center gap-stack-md">
+<img alt="PC Price Radar Logo" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLubTKzdQLtVcj7YGoeA3UGtL7Rimlq1gOHKuQqX6IVBaIGVm46SBnYOcbA73XkDxwXapVQsI9BgUJR2lIhTNUOwBWNTQ_mrTq6WM40ZEZ9ut1AKa98SIlf3SsA0NV_BwMBKxfzDzzLHHzSDw9N4YL24TqPZnAqWFhUqvr2iru9IjfjgYQvcurk_0ymSa2n-dH11W11h2wKhsF3khnvET5J1x0ZvjWGE3Qo1NHY1nve-rnuozQXzHe0M80o"/>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">PC Price Radar</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-body-md text-secondary font-bold border-b-2 border-secondary pb-1" href="#">เช็กราคา</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">เช็กดีล</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">จัดสเปก</a>
+<a class="font-body-md text-on-surface-variant hover:text-secondary transition-colors" href="#">สำหรับร้านค้า</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-secondary scale-95 active:scale-90 transition-transform">language</button>
+</div>
+</header>
+<main class="mt-20 px-gutter max-w-container-max mx-auto pb-section-gap">
+<!-- Breadcrumb & Product Header -->
+<div class="mb-stack-md">
+<nav class="flex items-center gap-2 font-label-sm text-text-muted mb-4">
+<span>CPU</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span>AMD</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface">Ryzen 7 5700X3D</span>
+</nav>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h1 class="font-headline-xl text-headline-xl mb-2">AMD Ryzen 7 5700X3D</h1>
+<div class="flex gap-4">
+<span class="px-3 py-1 bg-surface-container-high rounded-full font-label-sm text-label-sm">SOCKET AM4</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-full font-label-sm text-label-sm">8 CORES / 16 THREADS</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle rounded-lg font-body-md hover:bg-surface-container transition-all active:scale-95">
+<span class="material-symbols-outlined">favorite</span> บันทึก
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 border border-border-subtle rounded-lg font-body-md hover:bg-surface-container transition-all active:scale-95">
+<span class="material-symbols-outlined">compare_arrows</span> เปรียบเทียบ
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary rounded-lg font-body-md hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined">share</span> แชร์
+                    </button>
+</div>
+</div>
+</div>
+<!-- Bento Layout Start -->
+<div class="bento-grid mt-8">
+<!-- Main Price Summary Card -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-border-subtle rounded-xl p-6 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="font-label-sm text-label-sm text-text-muted mb-1">ราคาตลาดโดยประมาณ (MEDIAN)</p>
+<div class="flex items-baseline gap-2">
+<span class="font-price-display text-price-display text-primary">฿8,250</span>
+<span class="font-body-md text-text-muted">มือสอง</span>
+</div>
+</div>
+<div class="text-right">
+<div class="inline-flex items-center gap-2 px-2 py-1 bg-status-amber/10 text-status-amber rounded font-label-sm text-label-sm mb-2">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+                            ความเชื่อมั่น: Medium-Low
+                        </div>
+<p class="font-label-sm text-label-sm text-text-muted">อัปเดตเมื่อ 2 วันที่แล้ว</p>
+</div>
+</div>
+<!-- Price Distribution Visualization -->
+<div class="mt-12 mb-8">
+<div class="flex justify-between font-label-sm text-label-sm text-text-muted mb-4">
+<span>ต่ำสุด ฿7,500</span>
+<span>สูงสุด ฿8,600</span>
+</div>
+<div class="relative h-3 w-full flex rounded-full overflow-hidden mb-2">
+<div class="h-full w-[20%] bg-risk-red/80" title="Below Reference"></div>
+<div class="h-full w-[40%] bg-market-teal" title="Market Range"></div>
+<div class="h-full w-[25%] bg-status-amber/80" title="Slightly Above"></div>
+<div class="h-full w-[15%] bg-status-violet/80" title="Premium"></div>
+<!-- Radar Indicator -->
+<div class="absolute top-1/2 left-[55%] -translate-y-1/2 -translate-x-1/2 price-radar-indicator">
+<div class="w-6 h-6 bg-white border-2 border-primary rounded-full shadow-lg flex items-center justify-center">
+<div class="w-2 h-2 bg-primary rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-4 font-label-sm text-[10px] text-text-muted text-center pt-2">
+<div>ราคาถูกพิเศษ</div>
+<div class="text-market-teal font-bold">ราคากลางตลาด</div>
+<div>ราคาสูงเล็กน้อย</div>
+<div>ราคาพรีเมียม</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 pt-6 border-t border-border-subtle">
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">จำนวนตัวอย่าง</p>
+<p class="font-headline-lg-mobile text-headline-lg-mobile font-bold">6 รายการ</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">ราคาแกว่ง (Range)</p>
+<p class="font-headline-lg-mobile text-headline-lg-mobile font-bold">฿1,100</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-text-muted">แหล่งข้อมูล</p>
+<p class="font-headline-lg-mobile text-headline-lg-mobile font-bold">Marketplace</p>
+</div>
+</div>
+</div>
+<!-- Price History Mini Chart -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-lowest border border-border-subtle rounded-xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile">แนวโน้มราคา</h3>
+<select class="bg-transparent border-none font-label-sm text-label-sm text-secondary focus:ring-0">
+<option>30 วันล่าสุด</option>
+<option>90 วันล่าสุด</option>
+</select>
+</div>
+<div class="h-40 flex items-end justify-between gap-1">
+<div class="chart-bar w-full bg-surface-container-high hover:bg-secondary-fixed transition-colors rounded-t" style="height: 80%"></div>
+<div class="chart-bar w-full bg-surface-container-high hover:bg-secondary-fixed transition-colors rounded-t" style="height: 75%"></div>
+<div class="chart-bar w-full bg-surface-container-high hover:bg-secondary-fixed transition-colors rounded-t" style="height: 90%"></div>
+<div class="chart-bar w-full bg-surface-container-high hover:bg-secondary-fixed transition-colors rounded-t" style="height: 85%"></div>
+<div class="chart-bar w-full bg-secondary transition-colors rounded-t" style="height: 70%"></div>
+<div class="chart-bar w-full bg-surface-container-high hover:bg-secondary-fixed transition-colors rounded-t" style="height: 65%"></div>
+<div class="chart-bar w-full bg-surface-container-high hover:bg-secondary-fixed transition-colors rounded-t" style="height: 68%"></div>
+</div>
+<div class="flex justify-between font-label-sm text-[10px] text-text-muted mt-4">
+<span>1 พ.ย.</span>
+<span>วันนี้</span>
+</div>
+<p class="mt-6 font-body-md text-text-muted text-sm">
+<span class="text-risk-red font-bold">▼ 2.4%</span> เทียบกับเดือนก่อนหน้า เนื่องจากเริ่มมีรุ่น 9000 series เข้ามาแทนที่
+                </p>
+</div>
+<!-- Deal Input Widget -->
+<div class="col-span-12 lg:col-span-5 bg-primary-container text-on-primary rounded-xl p-8 shadow-xl">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-2 text-white">เจอราคามาเท่าไร?</h3>
+<p class="font-body-md text-on-primary-container mb-6">ใส่ราคาที่คุณพบเพื่อวิเคราะห์ความคุ้มค่าแบบ Real-time</p>
+<div class="space-y-4">
+<div>
+<label class="font-label-sm text-label-sm mb-2 block">ราคาที่พบ (THB)</label>
+<input class="w-full bg-white/10 border-white/20 rounded-lg p-3 text-white focus:border-secondary focus:ring-1 focus:ring-secondary placeholder:text-white/30 font-price-display" placeholder="เช่น 7900" type="number"/>
+</div>
+<div>
+<label class="font-label-sm text-label-sm mb-2 block">สภาพสินค้า</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2 px-4 border border-white/20 rounded-lg font-body-md hover:bg-white/10 transition-all bg-white/20">มือสอง</button>
+<button class="py-2 px-4 border border-white/20 rounded-lg font-body-md hover:bg-white/10 transition-all">ของใหม่</button>
+</div>
+</div>
+<button class="w-full py-4 bg-secondary text-on-secondary rounded-lg font-headline-lg-mobile font-bold hover:scale-[1.02] active:scale-95 transition-transform shadow-lg">วิเคราะห์ดีลนี้</button>
+</div>
+</div>
+<!-- Used vs New Comparison -->
+<div class="col-span-12 lg:col-span-7 bg-surface-container-lowest border border-border-subtle rounded-xl p-8">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-6">เปรียบเทียบ มือสอง vs มือหนึ่ง</h3>
+<div class="flex flex-col md:flex-row gap-8">
+<div class="flex-1">
+<p class="font-label-sm text-label-sm text-text-muted mb-2">ตลาดมือสอง (ปัจจุบัน)</p>
+<div class="text-price-display font-price-display text-primary">฿7,500 - 8,600</div>
+<p class="text-sm text-text-muted mt-2">ประหยัดได้สูงสุด 25% เมื่อเทียบกับมือหนึ่ง</p>
+</div>
+<div class="hidden md:block w-px bg-border-subtle"></div>
+<div class="flex-1">
+<p class="font-label-sm text-label-sm text-text-muted mb-2">ราคาเปิดตัว / ของใหม่</p>
+<div class="text-price-display font-price-display text-text-muted line-through">฿9,900</div>
+<div class="text-xl font-bold text-secondary">฿8,990 (Lazada/Shopee)</div>
+</div>
+</div>
+<div class="mt-8 p-4 bg-market-teal/5 rounded-lg border border-market-teal/20">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal">info</span>
+<p class="font-body-md text-sm text-on-surface">
+<strong class="text-market-teal">บทวิเคราะห์:</strong> ราคา Ryzen 7 5700X3D มือสองยังค่อนข้างใกล้เคียงกับของใหม่ในช่วงจัดโปรโมชั่น หากราคาต่างกันน้อยกว่า 800 บาท แนะนำให้ซื้อของใหม่เพื่อประกันที่อุ่นใจกว่า
+                        </p>
+</div>
+</div>
+</div>
+<!-- Buyer Checklist -->
+<div class="col-span-12 lg:col-span-6 bg-surface-container-lowest border border-border-subtle rounded-xl p-8">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-status-amber">fact_check</span>
+                    Checklist ก่อนโอนเงิน (CPU)
+                </h3>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal">check_circle</span>
+<div>
+<p class="font-bold font-body-md">ตรวจสอบ Pin ด้านหลัง</p>
+<p class="text-sm text-text-muted">สำหรับ AM4 ต้องไม่มีขาพับหรืองอแม้แต่จุดเดียว</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal">check_circle</span>
+<div>
+<p class="font-bold font-body-md">ขอหลักฐาน Benchmark</p>
+<p class="text-sm text-text-muted">ผลเทส Cinebench R23 หรือ CPU-Z Stress Test พร้อมระบุชื่อคนขาย</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal">check_circle</span>
+<div>
+<p class="font-bold font-body-md">เช็กประกัน (Warranty)</p>
+<p class="text-sm text-text-muted">ขอดูหน้าเว็บเช็กประกัน SVOA, Synnex หรือตัวแทนจำหน่าย</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Data Limitation Notice -->
+<div class="col-span-12 lg:col-span-6 bg-error-container/20 border border-error/10 rounded-xl p-8 flex items-center">
+<div class="flex gap-6 items-start">
+<div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div>
+<h4 class="font-bold text-error mb-2">ข้อจำกัดของข้อมูล</h4>
+<p class="font-body-md text-sm text-on-error-container/80 leading-relaxed">
+                            ข้อมูลราคาชุดนี้มาจากการสังเกตการณ์ราคาตั้งขาย (Asking Price) ในกลุ่ม Marketplace และเว็บบอร์ด จำนวน 6 รายการ ซึ่งอาจไม่ใช่ราคาที่มีการซื้อขายจริง 
+                            <br/><br/>
+<strong>เนื่องจากกลุ่มตัวอย่างน้อย:</strong> เราแนะนำให้ใช้ข้อมูลนี้เพื่อการอ้างอิงเบื้องต้นเท่านั้น ไม่ควรใช้เป็นเกณฑ์ตัดสินใจหลักเพียงอย่างเดียว
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-border-subtle mt-section-gap py-section-gap">
+<div class="max-w-container-max mx-auto px-gutter flex flex-col md:flex-row justify-between items-start gap-stack-md">
+<div>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary mb-2">PC Price Radar</h2>
+<p class="font-label-sm text-label-sm text-text-muted max-w-sm">
+                    เครื่องมือวิเคราะห์ตลาดฮาร์ดแวร์คอมพิวเตอร์ที่แม่นยำและเป็นกลางที่สุดในไทย สำหรับผู้ประกอบพีซีและร้านค้ามืออาชีพ
+                </p>
+</div>
+<div class="flex gap-12">
+<div class="flex flex-col gap-3">
+<span class="font-label-sm font-bold text-primary">เกี่ยวกับเรา</span>
+<a class="font-label-sm text-text-muted hover:text-primary transition-colors" href="#">ระเบียบวิธีวิจัย</a>
+<a class="font-label-sm text-text-muted hover:text-primary transition-colors" href="#">คำสงวนสิทธิ์</a>
+<a class="font-label-sm text-text-muted hover:text-primary transition-colors" href="#">เกี่ยวกับเรา</a>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-sm font-bold text-primary">บริการ</span>
+<a class="font-label-sm text-text-muted hover:text-primary transition-colors" href="#">เช็กราคา</a>
+<a class="font-label-sm text-text-muted hover:text-primary transition-colors" href="#">จัดสเปก</a>
+<a class="font-label-sm text-text-muted hover:text-primary transition-colors" href="#">ติดต่อเรา</a>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter mt-12 pt-6 border-t border-border-subtle flex justify-between items-center">
+<p class="font-label-sm text-label-sm text-text-muted">© 2024 PC Price Radar. ข้อมูลราคาเพื่อการตัดสินใจเท่านั้น</p>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-text-muted hover:text-primary cursor-pointer">qr_code_2</span>
+<span class="material-symbols-outlined text-text-muted hover:text-primary cursor-pointer">share</span>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for the radar indicator
+        window.addEventListener('DOMContentLoaded', () => {
+            const indicator = document.querySelector('.price-radar-indicator');
+            if (indicator) {
+                // Random slightly wobble to signify it's live data
+                setInterval(() => {
+                    const randomShift = (Math.random() - 0.5) * 1.5;
+                    indicator.style.transform = `translateY(-50%) translateX(calc(-50% + ${randomShift}px))`;
+                }, 3000);
+            }
+
+            // Animate chart bars on load
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach((bar, index) => {
+                const targetHeight = bar.style.height;
+                bar.style.height = '0%';
+                setTimeout(() => {
+                    bar.style.height = targetHeight;
+                }, 100 * index);
+            });
+        });
+    </script>
+</body></html>

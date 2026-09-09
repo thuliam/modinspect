@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contact Requests | Price Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .active-request {
+            background-color: theme('colors.secondary-container');
+            color: theme('colors.on-secondary-container');
+        }
+        /* Custom scrollbar for data-centric UI */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#e0e3e5",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#d8dadc",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#2f2ebe",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#89f5e7",
+                      "on-surface": "#191c1e",
+                      "risk-red": "#DC2626",
+                      "secondary-fixed-dim": "#c0c1ff",
+                      "status-violet": "#7C3AED",
+                      "status-blue": "#2563EB",
+                      "surface-bright": "#f7f9fb",
+                      "outline": "#76777d",
+                      "surface-tint": "#565e74",
+                      "on-tertiary-fixed-variant": "#005049",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "primary-fixed-dim": "#bec6e0",
+                      "tertiary-container": "#00201d",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-secondary-container": "#fffbff",
+                      "tertiary": "#000000",
+                      "secondary-fixed": "#e1e0ff",
+                      "border-subtle": "#E2E8F0",
+                      "on-tertiary-container": "#0c9488",
+                      "surface-container-lowest": "#ffffff",
+                      "status-amber": "#D97706",
+                      "primary": "#000000",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed-dim": "#6bd8cb",
+                      "surface-container-low": "#f2f4f6",
+                      "text-muted": "#64748B",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-tertiary": "#ffffff",
+                      "secondary-container": "#6063ee",
+                      "outline-variant": "#c6c6cd",
+                      "error": "#ba1a1a",
+                      "inverse-primary": "#bec6e0",
+                      "surface-container": "#eceef0",
+                      "on-background": "#191c1e",
+                      "surface": "#f7f9fb",
+                      "market-teal": "#0D9488",
+                      "primary-container": "#131b2e",
+                      "secondary": "#4648d4",
+                      "on-surface-variant": "#45464d",
+                      "surface-container-high": "#e6e8ea",
+                      "on-primary-container": "#7c839b",
+                      "background": "#f7f9fb",
+                      "on-secondary-fixed": "#07006c",
+                      "inverse-surface": "#2d3133",
+                      "error-container": "#ffdad6",
+                      "primary-fixed": "#dae2fd",
+                      "on-primary-fixed": "#131b2e",
+                      "on-tertiary-fixed": "#00201d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "stack-md": "16px",
+                      "section-gap": "64px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "headline-xl": ["IBM Plex Sans Thai"],
+                      "body-md": ["IBM Plex Sans Thai"],
+                      "price-display": ["IBM Plex Sans"],
+                      "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                      "data-table": ["IBM Plex Sans"],
+                      "label-sm": ["JetBrains Mono"],
+                      "headline-lg": ["IBM Plex Sans Thai"]
+              },
+              "fontSize": {
+                      "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest border-b border-border-subtle h-16">
+<nav class="max-w-container-max mx-auto px-margin-mobile md:px-gutter h-full flex items-center justify-between">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">Price Radar</span>
+<div class="hidden md:flex gap-gutter ml-stack-md">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors" href="#">Check Price</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors" href="#">Check Deal</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors" href="#">Spec Builder</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors" href="#">Local Match</a>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="material-symbols-outlined text-secondary scale-95 active:opacity-80 transition-all" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-secondary scale-95 active:opacity-80 transition-all" data-icon="account_circle">account_circle</button>
+</div>
+</nav>
+</header>
+<main class="flex-grow pt-16 flex flex-col md:flex-row max-w-container-max mx-auto w-full overflow-hidden">
+<!-- Two-Pane Layout Container -->
+<div class="flex w-full h-[calc(100vh-64px)] overflow-hidden">
+<!-- Left Pane: Inbox List -->
+<aside class="w-full md:w-96 border-r border-border-subtle flex flex-col bg-surface overflow-hidden">
+<div class="p-stack-md border-b border-border-subtle bg-surface-container-lowest">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface mb-2">คำขอติดต่อ</h2>
+<div class="relative">
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-body-md focus:ring-2 focus:ring-secondary transition-all" placeholder="ค้นหาตามชื่อสินค้าหรือผู้ซื้อ..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant" data-icon="search">search</span>
+</div>
+</div>
+<div class="flex-grow overflow-y-auto">
+<!-- List Item: Active -->
+<div class="p-stack-md border-b border-border-subtle cursor-pointer hover:bg-surface-container-high transition-colors bg-secondary-container bg-opacity-5">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-sm text-label-sm text-secondary uppercase">New Request</span>
+<span class="font-label-sm text-label-sm text-text-muted">14:20</span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface truncate">ธนากร ว. (Thanakorn)</h4>
+<p class="font-label-sm text-label-sm text-secondary font-bold mb-1">RTX 3080 Gaming OC 10GB</p>
+<p class="text-body-md text-on-surface-variant line-clamp-1 italic">"สนใจครับ ขอทราบประวัติการใช้งานหน่อยครับ..."</p>
+<div class="mt-2 flex gap-2">
+<span class="px-2 py-0.5 bg-status-blue bg-opacity-10 text-status-blue rounded-full text-[10px] font-bold uppercase tracking-wider">Verification: High</span>
+</div>
+</div>
+<!-- List Item -->
+<div class="p-stack-md border-b border-border-subtle cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Pending</span>
+<span class="font-label-sm text-label-sm text-text-muted">เมื่อวานนี้</span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface truncate">Somchai S.</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Ryzen 7 5800X</p>
+<p class="text-body-md text-on-surface-variant line-clamp-1">"ราคานี้รวมส่งไหมครับ หรือว่าต้องไปรับเอง?"</p>
+</div>
+<!-- List Item: Accepted -->
+<div class="p-stack-md border-b border-border-subtle cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-sm text-label-sm text-market-teal uppercase">Accepted</span>
+<span class="font-label-sm text-label-sm text-text-muted">2 วันที่แล้ว</span>
+</div>
+<h4 class="font-body-md font-bold text-on-surface truncate">Napat K.</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">MacBook Pro M1 2020</p>
+<p class="text-body-md text-on-surface-variant line-clamp-1">ติดต่อเรียบร้อยแล้ว เบอร์โทร: 08x-xxx-xxxx</p>
+</div>
+</div>
+</aside>
+<!-- Right Pane: Detail View -->
+<section class="hidden md:flex flex-col flex-grow bg-surface-bright overflow-hidden">
+<div class="flex-grow overflow-y-auto p-gutter space-y-stack-md">
+<!-- Header Section -->
+<div class="flex justify-between items-start border-b border-border-subtle pb-stack-md">
+<div class="flex gap-stack-md">
+<div class="w-16 h-16 rounded-xl bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A macro studio photograph of an NVIDIA GeForce RTX 3080 graphics card with intricate cooling fins and triple fans, professionally lit against a clean white backdrop, symbolizing high-end computer hardware. The lighting is crisp and modern, matching a minimalist SaaS dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_De9o7GyuSVTXRva92t5GGXQz2HzlwBSroQ16-ZW8kxloAi074wcQ9eb7YtxrmtaIk1qBY69x9o_cjMIX_wEcmivFadzF1Hu2X3liWFT0WSvtrQYxeCUSxFxDFHEDjugm6Bt80hfzCOVGJRsYXmkrELzqSMcl3LSJiNw6KG8mOS7syN6U2h-lUMtWYTRKvAdbnxKOZi-IecSy_OuZN4uct1tU0v9rlgq5XsjiDleh3ajQcSEirEGEFMNL_oTmv0uLBjo250FSZQy5"/>
+</div>
+<div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface">RTX 3080 Gaming OC 10GB</h3>
+<p class="font-price-display text-price-display text-secondary">฿18,500 <span class="font-label-sm text-label-sm text-on-surface-variant ml-2">Market Price Avg: ฿17,900</span></p>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="px-3 py-1 bg-secondary text-white rounded-full text-label-sm font-bold">NEW REQUEST</span>
+<span class="text-label-sm text-text-muted">Received Oct 24, 14:20</span>
+</div>
+</div>
+<!-- Buyer Profile Card -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-md">
+<div class="col-span-2 space-y-stack-md">
+<div class="bg-white p-stack-md rounded-xl border border-border-subtle shadow-sm">
+<div class="flex items-center gap-stack-md mb-stack-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+</div>
+<div>
+<h4 class="font-body-md font-bold text-on-surface">ธนากร ว. (Thanakorn W.)</h4>
+<div class="flex gap-2 mt-1">
+<span class="px-2 py-0.5 bg-market-teal bg-opacity-10 text-market-teal rounded-lg text-[10px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                                KYC VERIFIED
+                                            </span>
+<span class="px-2 py-0.5 bg-surface-container text-on-surface-variant rounded-lg text-[10px] font-bold">5+ SUCCESSFUL DEALS</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-stack-md rounded-lg border border-outline-variant italic text-on-surface-variant">
+                                    "สนใจครับ ขอทราบประวัติการใช้งานหน่อยครับ เคยเอาไปขุดไหม หรือใช้เล่นเกมอย่างเดียวครับ? ถ้าสภาพสวยผมพร้อมรับเองเย็นนี้แถว Central World ครับ"
+                                </div>
+</div>
+<!-- Meeting Proposal -->
+<div class="bg-white p-stack-md rounded-xl border border-border-subtle shadow-sm">
+<h5 class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-stack-md">Meeting Details (Suggested)</h5>
+<div class="flex flex-wrap gap-stack-md">
+<div class="flex items-center gap-2 flex-grow min-w-[200px] p-stack-sm bg-surface rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="location_on">location_on</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-muted">Location</span>
+<span class="font-body-md font-medium">ปทุมวัน, กรุงเทพฯ (3.2 กม.)</span>
+</div>
+</div>
+<div class="flex items-center gap-2 flex-grow min-w-[200px] p-stack-sm bg-surface rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="schedule">schedule</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-muted">Proposed Time</span>
+<span class="font-body-md font-medium">วันนี้, 18:30 - 19:30</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Info -->
+<div class="col-span-1 space-y-stack-md">
+<!-- Safety Card -->
+<div class="bg-status-amber bg-opacity-5 border border-status-amber border-opacity-20 p-stack-md rounded-xl">
+<div class="flex items-center gap-2 mb-2 text-status-amber">
+<span class="material-symbols-outlined" data-icon="gpp_maybe">gpp_maybe</span>
+<span class="font-label-sm font-bold uppercase">ข้อแนะนำความปลอดภัย</span>
+</div>
+<p class="text-label-sm text-on-surface-variant leading-relaxed">
+                                    โปรดนัดพบในที่สาธารณะที่มีผู้คนพลุกพล่านและมีแสงสว่างเพียงพอ เช่น ห้างสรรพสินค้า หรือสถานีรถไฟฟ้า ตรวจสอบสินค้าอย่างละเอียดก่อนชำระเงินเสมอ
+                                </p>
+</div>
+<!-- Quick Stats Card -->
+<div class="bg-white p-stack-md rounded-xl border border-border-subtle shadow-sm">
+<h5 class="font-label-sm text-label-sm text-text-muted uppercase mb-3">Market Confidence</h5>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden mb-2">
+<div class="h-full bg-market-teal" style="width: 85%;"></div>
+</div>
+<div class="flex justify-between text-label-sm">
+<span class="font-bold text-market-teal">High (85%)</span>
+<span class="text-on-surface-variant">Safe Buyer</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="p-stack-md bg-white border-t border-border-subtle flex flex-wrap items-center justify-between gap-stack-md">
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-4 py-2 border border-error text-error font-bold rounded-lg hover:bg-error hover:text-white transition-all scale-95 active:opacity-80">
+<span class="material-symbols-outlined text-[18px]" data-icon="block">block</span>
+                            รายงาน / บล็อก
+                        </button>
+</div>
+<div class="flex gap-stack-md">
+<button class="px-6 py-2 border border-outline-variant font-bold rounded-lg hover:bg-surface-container transition-all scale-95 active:opacity-80">
+                            ปฏิเสธ
+                        </button>
+<button class="px-6 py-2 border border-secondary text-secondary font-bold rounded-lg hover:bg-secondary-fixed transition-all scale-95 active:opacity-80">
+                            เสนอราคาใหม่
+                        </button>
+<button class="px-8 py-2 bg-secondary text-white font-bold rounded-lg hover:opacity-90 shadow-md shadow-secondary/20 transition-all scale-95 active:opacity-80">
+                            ยอมรับและเปิดเผยเบอร์ติดต่อ
+                        </button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer for context and methodology links -->
+<footer class="bg-surface-container border-t border-border-subtle">
+<div class="max-w-container-max mx-auto py-stack-md px-margin-mobile md:px-gutter flex flex-col md:flex-row justify-between items-center gap-stack-md">
+<span class="font-label-sm text-label-sm text-text-muted">© 2024 Used PC Price Radar. All rights reserved.</span>
+<div class="flex gap-stack-md">
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary" href="#">Methodology</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary" href="#">Terms of Service</a>
+<a class="font-label-sm text-label-sm text-text-muted hover:text-secondary" href="#">Privacy Policy</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interactions for list item selection
+        const listItems = document.querySelectorAll('aside .cursor-pointer');
+        listItems.forEach(item => {
+            item.addEventListener('click', () => {
+                listItems.forEach(i => i.classList.remove('bg-secondary-container', 'bg-opacity-5'));
+                item.classList.add('bg-secondary-container', 'bg-opacity-5');
+            });
+        });
+    </script>
+</body></html>

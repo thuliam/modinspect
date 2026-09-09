@@ -1,0 +1,55 @@
+<?php
+declare(strict_types=1);
+require dirname(__DIR__) . '/app/bootstrap.php';
+
+use App\Controllers\DealCheckerController;
+use App\Controllers\HomeController;
+use App\Controllers\PriceController;
+use App\Controllers\ModuleController;
+use App\Controllers\AdminController;
+use App\Controllers\AuthController;
+use App\Core\Router;
+
+$router=new Router();
+$router->get('/',[HomeController::class,'index']);
+$router->get('/price',[PriceController::class,'index']);
+$router->get('/price/{slug}',[PriceController::class,'show']);
+$router->get('/deal-checker',[DealCheckerController::class,'form']);
+$router->post('/deal-checker',[DealCheckerController::class,'store']);
+$router->get('/deal-checker/result/{uuid}',[DealCheckerController::class,'result']);
+$router->get('/methodology',[HomeController::class,'methodology']);
+$router->get('/compare/{slug}',[ModuleController::class,'compare']);
+$router->get('/compare',[ModuleController::class,'compare']);
+$router->get('/build',[ModuleController::class,'build']);
+$router->post('/build',[ModuleController::class,'storeBuild']);
+$router->get('/build/{slug}',[ModuleController::class,'build']);
+$router->get('/seller-price-advisor',[ModuleController::class,'sellerAdvisor']);
+$router->get('/guide/{slug}',[ModuleController::class,'guide']);
+$router->get('/seller',[ModuleController::class,'sellerDashboard']);
+$router->get('/local-match',[ModuleController::class,'localMatch']);
+$router->get('/market-report',[ModuleController::class,'marketReport']);
+$router->get('/shop',[ModuleController::class,'shop']);
+$router->get('/shop/inventory',[ModuleController::class,'inventory']);
+$router->get('/login',[AuthController::class,'loginForm']);
+$router->post('/login',[AuthController::class,'login']);
+$router->post('/logout',[AuthController::class,'logout']);
+$router->get('/admin',[AdminController::class,'index']);
+$router->get('/admin/products',[AdminController::class,'products']);
+$router->get('/admin/product-aliases',[AdminController::class,'aliases']);
+$router->get('/admin/price-observations',[AdminController::class,'observations']);
+$router->get('/admin/review-queue',[AdminController::class,'review']);
+$router->get('/admin/review-analytics',[AdminController::class,'reviewAnalytics']);
+$router->post('/admin/review-queue/decision',[AdminController::class,'reviewDecision']);
+$router->post('/admin/review-queue/correction',[AdminController::class,'reviewCorrection']);
+$router->get('/admin/price-indices',[AdminController::class,'indices']);
+$router->get('/admin/sources',[AdminController::class,'sources']);
+$router->post('/admin/sources/action',[AdminController::class,'sourceAction']);
+$router->get('/admin/collector-jobs',[AdminController::class,'jobs']);
+$router->post('/admin/collector-jobs/requeue',[AdminController::class,'requeueJob']);
+$router->get('/admin/articles',[AdminController::class,'articles']);
+$router->get('/admin/audit-logs',[AdminController::class,'audits']);
+
+$basePath=rtrim(dirname($_SERVER['SCRIPT_NAME']),'/\\');
+$uri=parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH) ?: '/';
+if ($basePath && $basePath!=='/') $uri=substr($uri,strlen($basePath)) ?: '/';
+$router->dispatch($_SERVER['REQUEST_METHOD'],$uri);

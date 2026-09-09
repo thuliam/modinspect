@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Price Radar Admin - Data Quality Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c6c6cd",
+                    "surface": "#f7f9fb",
+                    "inverse-primary": "#bec6e0",
+                    "on-tertiary": "#ffffff",
+                    "status-violet": "#7C3AED",
+                    "on-error-container": "#93000a",
+                    "text-muted": "#64748B",
+                    "secondary-fixed": "#e1e0ff",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "tertiary-container": "#00201d",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary": "#4648d4",
+                    "on-tertiary-fixed": "#00201d",
+                    "inverse-surface": "#2d3133",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#565e74",
+                    "surface-container-high": "#e6e8ea",
+                    "border-subtle": "#E2E8F0",
+                    "tertiary-fixed": "#89f5e7",
+                    "on-primary-container": "#7c839b",
+                    "market-teal": "#0D9488",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#fffbff",
+                    "surface-container-low": "#f2f4f6",
+                    "status-amber": "#D97706",
+                    "error": "#ba1a1a",
+                    "status-blue": "#2563EB",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "on-background": "#191c1e",
+                    "primary-container": "#131b2e",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "surface-variant": "#e0e3e5",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#6063ee",
+                    "surface-container": "#eceef0",
+                    "primary-fixed": "#dae2fd",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#000000",
+                    "on-secondary-fixed": "#07006c",
+                    "risk-red": "#DC2626",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "outline": "#76777d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#0c9488",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary": "#000000",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-surface-variant": "#45464d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "base": "4px",
+                    "stack-md": "16px",
+                    "section-gap": "64px"
+            },
+            "fontFamily": {
+                    "body-md": ["IBM Plex Sans Thai"],
+                    "price-display": ["IBM Plex Sans"],
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                    "headline-lg": ["IBM Plex Sans Thai"],
+                    "data-table": ["IBM Plex Sans"],
+                    "headline-xl": ["IBM Plex Sans Thai"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+        .sidebar-active {
+            font-variation-settings: 'FILL' 1;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container-low dark:bg-inverse-surface border-r border-border-subtle dark:border-outline-variant flex flex-col py-stack-md z-50">
+<div class="px-stack-md mb-8">
+<div class="flex items-center gap-stack-sm mb-base">
+<span class="material-symbols-outlined text-primary font-bold text-3xl" data-icon="radar">radar</span>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-inverse-primary leading-none">Price Radar</h1>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70 tracking-widest uppercase">Hardware Intelligence</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active Tab: Data Quality Dashboard -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-secondary dark:text-secondary-fixed-dim font-bold border-r-4 border-secondary bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined sidebar-active" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Data Quality Dashboard</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-body-md text-body-md">Observation Review</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md text-body-md">Product Master</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-body-md text-body-md">Product Aliases</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md text-body-md">Source Health</span>
+</a>
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
+<span class="font-body-md text-body-md">Import Jobs</span>
+</a>
+</nav>
+<div class="mt-auto px-stack-md space-y-1">
+<a class="flex items-center gap-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<div class="flex items-center gap-3 pt-6 mt-6 border-t border-border-subtle">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-white font-bold">
+                    AD
+                </div>
+<div>
+<p class="font-label-sm text-on-surface font-bold">Admin User</p>
+<p class="text-[10px] text-text-muted uppercase tracking-tighter font-bold">Systems Architect</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-72 flex flex-col h-screen">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-40 bg-surface-container-lowest dark:bg-surface-container-low border-b border-border-subtle dark:border-outline-variant px-gutter py-stack-md flex justify-between items-center h-20">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-lg text-headline-lg font-extrabold text-primary dark:text-primary-fixed tracking-tight">Data Quality Monitor</h2>
+<div class="h-6 w-px bg-border-subtle mx-2"></div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container rounded-lg border border-border-subtle">
+<span class="w-2 h-2 rounded-full bg-market-teal animate-pulse"></span>
+<span class="font-label-sm text-on-surface-variant">Systems Operational</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center bg-surface-container-low border border-border-subtle rounded-lg px-3 py-1.5 w-64 group focus-within:border-secondary transition-all">
+<span class="material-symbols-outlined text-text-muted text-sm mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full font-body-md placeholder:text-text-muted/60" placeholder="Search records or sources..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="hover:text-secondary transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-risk-red rounded-full"></span>
+</button>
+<button class="hover:text-secondary transition-colors">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+<button class="hover:text-secondary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-gutter space-y-8">
+<!-- Summary Bento Grid -->
+<section class="grid grid-cols-4 gap-6">
+<!-- New Observations -->
+<div class="bg-white border border-border-subtle p-stack-md rounded-lg hover:shadow-xl hover:shadow-black/[0.04] transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-secondary/10 rounded text-secondary">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</div>
+<span class="font-label-sm text-market-teal bg-market-teal/10 px-2 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> 12%
+                        </span>
+</div>
+<p class="font-label-sm text-text-muted mb-1">New Observations Today</p>
+<p class="font-price-display text-price-display text-on-surface">1,240</p>
+</div>
+<!-- Valid Rate -->
+<div class="bg-white border border-border-subtle p-stack-md rounded-lg hover:shadow-xl hover:shadow-black/[0.04] transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-market-teal/10 rounded text-market-teal">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</div>
+<span class="font-label-sm text-text-muted bg-surface-container px-2 py-0.5 rounded">Goal: 95%</span>
+</div>
+<p class="font-label-sm text-text-muted mb-1">Valid Rate</p>
+<p class="font-price-display text-price-display text-on-surface">94.2%</p>
+</div>
+<!-- Duplicate Rate -->
+<div class="bg-white border border-border-subtle p-stack-md rounded-lg hover:shadow-xl hover:shadow-black/[0.04] transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-status-amber/10 rounded text-status-amber">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</div>
+<span class="font-label-sm text-risk-red bg-risk-red/10 px-2 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span> +0.4%
+                        </span>
+</div>
+<p class="font-label-sm text-text-muted mb-1">Duplicate Rate</p>
+<p class="font-price-display text-price-display text-on-surface">3.8%</p>
+</div>
+<!-- Low-Confidence -->
+<div class="bg-white border border-border-subtle p-stack-md rounded-lg hover:shadow-xl hover:shadow-black/[0.04] transition-all">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-risk-red/10 rounded text-risk-red">
+<span class="material-symbols-outlined" data-icon="assignment_late">assignment_late</span>
+</div>
+<button class="font-label-sm text-secondary hover:underline">Review All</button>
+</div>
+<p class="font-label-sm text-text-muted mb-1">Low-Confidence Records</p>
+<p class="font-price-display text-price-display text-on-surface">42 <span class="text-sm font-normal text-text-muted">items</span></p>
+</div>
+</section>
+<!-- Charts Section -->
+<section class="grid grid-cols-5 gap-6">
+<!-- Bar Chart: Observation Volume -->
+<div class="col-span-3 bg-white border border-border-subtle p-stack-md rounded-lg h-96 flex flex-col">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-lg text-lg font-bold text-on-surface">Observation Volume by Source</h3>
+<div class="flex gap-2">
+<span class="font-label-sm px-3 py-1 border border-border-subtle rounded cursor-pointer hover:bg-surface-container">24h</span>
+<span class="font-label-sm px-3 py-1 bg-secondary text-white rounded cursor-pointer">7d</span>
+</div>
+</div>
+<div class="flex-1 flex items-end justify-around gap-4 pt-10">
+<!-- Simulated Bar: Facebook -->
+<div class="w-full max-w-[48px] flex flex-col items-center gap-2 group">
+<div class="w-full bg-secondary/80 group-hover:bg-secondary rounded-t transition-all" style="height: 85%;">
+<div class="opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] p-1 rounded -top-8 relative text-center">4.2k</div>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted truncate w-full text-center">Facebook</span>
+</div>
+<!-- Simulated Bar: Shopee -->
+<div class="w-full max-w-[48px] flex flex-col items-center gap-2 group">
+<div class="w-full bg-market-teal/80 group-hover:bg-market-teal rounded-t transition-all" style="height: 60%;">
+<div class="opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] p-1 rounded -top-8 relative text-center">3.1k</div>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted truncate w-full text-center">Shopee</span>
+</div>
+<!-- Simulated Bar: AI Search -->
+<div class="w-full max-w-[48px] flex flex-col items-center gap-2 group">
+<div class="w-full bg-status-violet/80 group-hover:bg-status-violet rounded-t transition-all" style="height: 95%;">
+<div class="opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] p-1 rounded -top-8 relative text-center">4.8k</div>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted truncate w-full text-center">AI Search</span>
+</div>
+<!-- Simulated Bar: Amazon -->
+<div class="w-full max-w-[48px] flex flex-col items-center gap-2 group">
+<div class="w-full bg-secondary/40 group-hover:bg-secondary/60 rounded-t transition-all" style="height: 40%;">
+<div class="opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] p-1 rounded -top-8 relative text-center">2.0k</div>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted truncate w-full text-center">Amazon</span>
+</div>
+<!-- Simulated Bar: Direct Feed -->
+<div class="w-full max-w-[48px] flex flex-col items-center gap-2 group">
+<div class="w-full bg-secondary/40 group-hover:bg-secondary/60 rounded-t transition-all" style="height: 70%;">
+<div class="opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] p-1 rounded -top-8 relative text-center">3.5k</div>
+</div>
+<span class="font-label-sm text-[10px] text-text-muted truncate w-full text-center">Direct Feed</span>
+</div>
+</div>
+</div>
+<!-- Line Chart: Normalization Accuracy -->
+<div class="col-span-2 bg-white border border-border-subtle p-stack-md rounded-lg h-96 flex flex-col overflow-hidden relative">
+<h3 class="font-headline-lg text-lg font-bold text-on-surface mb-2">Normalization Accuracy</h3>
+<p class="font-label-sm text-text-muted mb-8">AI matching confidence over 7 days</p>
+<div class="flex-1 relative">
+<!-- Abstract Wave Pattern (Simulated Chart) -->
+<div class="absolute inset-x-0 bottom-10 h-40">
+<svg class="w-full h-full text-market-teal overflow-visible" viewbox="0 0 400 100">
+<path d="M0,80 Q50,70 100,75 T200,50 T300,60 T400,45" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"></path>
+<path d="M0,80 Q50,70 100,75 T200,50 T300,60 T400,45 V100 H0 Z" fill="currentColor" fill-opacity="0.05"></path>
+<circle cx="100" cy="75" fill="white" r="4" stroke="currentColor" stroke-width="2"></circle>
+<circle cx="200" cy="50" fill="white" r="4" stroke="currentColor" stroke-width="2"></circle>
+<circle cx="300" cy="60" fill="white" r="4" stroke="currentColor" stroke-width="2"></circle>
+<circle cx="400" cy="45" fill="currentColor" r="6"></circle>
+</svg>
+</div>
+<div class="flex justify-between items-center mt-auto pb-4 absolute bottom-0 inset-x-0 font-label-sm text-[10px] text-text-muted px-2">
+<span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+</div>
+</div>
+<div class="absolute top-20 right-6 flex flex-col items-end">
+<span class="text-3xl font-bold text-market-teal">98.1%</span>
+<span class="font-label-sm text-[10px] text-market-teal uppercase tracking-widest">Peak Confidence</span>
+</div>
+</div>
+</section>
+<!-- Bottom Section: Queues & Source Health -->
+<section class="grid grid-cols-12 gap-6">
+<!-- Critical Issues Table -->
+<div class="col-span-8 bg-white border border-border-subtle rounded-lg overflow-hidden flex flex-col">
+<div class="p-stack-md border-b border-border-subtle flex justify-between items-center">
+<div class="flex items-center gap-3">
+<h3 class="font-headline-lg text-lg font-bold text-on-surface">Critical Issues</h3>
+<span class="bg-risk-red text-white text-[10px] font-bold px-2 py-0.5 rounded-full">12 NEW</span>
+</div>
+<button class="text-secondary font-label-sm flex items-center gap-1 hover:bg-secondary/5 px-2 py-1 rounded transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span> Filter
+                        </button>
+</div>
+<div class="flex-1 overflow-x-auto">
+<table class="w-full text-left font-data-table text-data-table border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-text-muted uppercase tracking-widest text-[10px] font-bold">
+<th class="px-stack-md py-3">Source</th>
+<th class="px-stack-md py-3">Raw Title</th>
+<th class="px-stack-md py-3">Detected Issue</th>
+<th class="px-stack-md py-3">Confidence</th>
+<th class="px-stack-md py-3 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-subtle">
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-stack-md py-4">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-[10px] text-white">FB</span>
+<span class="font-medium">Facebook Marketplace</span>
+</div>
+</td>
+<td class="px-stack-md py-4 text-on-surface max-w-xs truncate">RTX 3080 Super Cheap Deal (Must Go)</td>
+<td class="px-stack-md py-4">
+<span class="text-status-amber bg-status-amber/10 px-2 py-1 rounded-full text-[11px] font-bold">Suspected Duplicate</span>
+</td>
+<td class="px-stack-md py-4">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-status-amber h-full" style="width: 42%;"></div>
+</div>
+<span class="text-[10px] text-text-muted">42.1% Match</span>
+</td>
+<td class="px-stack-md py-4 text-right">
+<button class="p-1 text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:bg-secondary/10 rounded">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-stack-md py-4">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-status-violet flex items-center justify-center text-[10px] text-white">AI</span>
+<span class="font-medium">AI Search Spider</span>
+</div>
+</td>
+<td class="px-stack-md py-4 text-on-surface max-w-xs truncate">999.00 USD - Deposit ONLY</td>
+<td class="px-stack-md py-4">
+<span class="text-risk-red bg-risk-red/10 px-2 py-1 rounded-full text-[11px] font-bold">Deposit Price</span>
+</td>
+<td class="px-stack-md py-4">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-risk-red h-full" style="width: 88%;"></div>
+</div>
+<span class="text-[10px] text-text-muted">88.4% Confidence</span>
+</td>
+<td class="px-stack-md py-4 text-right">
+<button class="p-1 text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:bg-secondary/10 rounded">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest transition-colors group">
+<td class="px-stack-md py-4">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-market-teal flex items-center justify-center text-[10px] text-white">SH</span>
+<span class="font-medium">Shopee TH</span>
+</div>
+</td>
+<td class="px-stack-md py-4 text-on-surface max-w-xs truncate">การ์ดจอ VGA รุ่นใหม่ล่าสุด แรงๆ</td>
+<td class="px-stack-md py-4">
+<span class="text-text-muted bg-surface-container px-2 py-1 rounded-full text-[11px] font-bold">Unknown Product</span>
+</td>
+<td class="px-stack-md py-4">
+<div class="w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-text-muted h-full" style="width: 12%;"></div>
+</div>
+<span class="text-[10px] text-text-muted">No Map Found</span>
+</td>
+<td class="px-stack-md py-4 text-right">
+<button class="p-1 text-secondary opacity-0 group-hover:opacity-100 transition-opacity hover:bg-secondary/10 rounded">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Source Health Monitor -->
+<div class="col-span-4 bg-white border border-border-subtle rounded-lg flex flex-col">
+<div class="p-stack-md border-b border-border-subtle flex justify-between items-center">
+<h3 class="font-headline-lg text-lg font-bold text-on-surface">Source Health</h3>
+<span class="material-symbols-outlined text-text-muted cursor-pointer hover:text-primary" data-icon="refresh">refresh</span>
+</div>
+<div class="p-2 space-y-1">
+<!-- Healthy Source -->
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded group transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-market-teal"></div>
+<div>
+<p class="font-body-md text-sm font-medium">Shopee API</p>
+<p class="text-[10px] text-text-muted">Last Run: 4 mins ago</p>
+</div>
+</div>
+<span class="text-[10px] text-market-teal font-bold group-hover:block hidden">RESCAN</span>
+</div>
+<!-- Amber Source -->
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded group transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-status-amber"></div>
+<div>
+<p class="font-body-md text-sm font-medium">Lazada Web Scraper</p>
+<p class="text-[10px] text-text-muted">Last Run: 2 hours ago</p>
+</div>
+</div>
+<span class="text-[10px] text-secondary font-bold group-hover:block hidden">DEBUG</span>
+</div>
+<!-- Healthy Source -->
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded group transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-market-teal"></div>
+<div>
+<p class="font-body-md text-sm font-medium">Facebook Graph Feed</p>
+<p class="text-[10px] text-text-muted">Last Run: 12 mins ago</p>
+</div>
+</div>
+<span class="text-[10px] text-market-teal font-bold group-hover:block hidden">RESCAN</span>
+</div>
+<!-- Red Source -->
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded group transition-colors bg-risk-red/5">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-risk-red animate-pulse"></div>
+<div>
+<p class="font-body-md text-sm font-medium">Amazon Seller Central</p>
+<p class="text-[10px] text-risk-red font-bold">AUTH_FAILURE: API Key Expired</p>
+</div>
+</div>
+<span class="text-[10px] text-risk-red font-bold">FIX</span>
+</div>
+<!-- Healthy Source -->
+<div class="flex items-center justify-between p-3 hover:bg-surface-container-low rounded group transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-market-teal"></div>
+<div>
+<p class="font-body-md text-sm font-medium">Direct CSV Bulk Import</p>
+<p class="text-[10px] text-text-muted">Last Run: 1 day ago</p>
+</div>
+</div>
+<span class="text-[10px] text-market-teal font-bold group-hover:block hidden">UPLOAD</span>
+</div>
+</div>
+<div class="mt-auto p-4 border-t border-border-subtle">
+<button class="w-full py-2 bg-surface-container text-on-surface-variant font-label-sm text-[11px] font-bold tracking-widest rounded hover:bg-surface-container-high transition-colors">VIEW SYSTEM LOGS</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- FAB for Critical Quick Actions -->
+<button class="fixed bottom-8 right-8 bg-secondary text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all group flex items-center gap-2 overflow-hidden max-w-[56px] hover:max-w-[200px]">
+<span class="material-symbols-outlined shrink-0" data-icon="add">add</span>
+<span class="whitespace-nowrap font-label-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity">Add New Source</span>
+</button>
+<script>
+        // Micro-interactions and atmospheric logic
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', (e) => {
+                if(el.getAttribute('href') === '#') e.preventDefault();
+            });
+        });
+
+        // Simulating some dynamic values
+        setInterval(() => {
+            const lowConf = document.querySelector('.font-price-display');
+            // Logic to slightly jitter values for feeling of live dashboard if needed
+        }, 5000);
+    </script>
+</body></html>

@@ -1,0 +1,8 @@
+<section class="container page narrow"><span class="eyebrow">DEAL CHECKER</span><h1>ราคาที่เจอ อยู่ตรงไหนของตลาด?</h1><p class="lead">กรอกรุ่น ราคา และข้อมูลประกอบ ระบบจะแสดงตำแหน่งราคาโดยไม่ตัดสินแทนคุณ</p>
+<?php foreach($errors as $error): ?><div class="alert"><?= htmlspecialchars($error) ?></div><?php endforeach; ?>
+<form method="post" class="card form"><input type="hidden" name="_token" value="<?= \App\Core\Csrf::token() ?>">
+<label>สินค้า<select name="product_id" required><option value="">เลือกรุ่นสินค้า</option><?php foreach($products as $p): ?><option value="<?= (int)$p['id'] ?>" <?= (string)($_GET['product']??'')===(string)$p['id']?'selected':'' ?>><?= htmlspecialchars($p['full_name']) ?></option><?php endforeach; ?></select></label>
+<div class="two"><label>ราคาที่พบ (บาท)<input type="number" name="user_price" min="1" max="10000000" step="1" value="<?= htmlspecialchars((string)($_GET['user_price']??'')) ?>" required></label><label>สภาพ<select name="condition_level"><option value="unknown">ไม่ระบุ</option><option value="like_new">เหมือนใหม่</option><option value="good">ดี</option><option value="fair">พอใช้</option><option value="poor">มีตำหนิ</option></select></label></div>
+<label>ประกันคงเหลือ (เดือน)<input type="number" name="warranty_months" min="0" max="120"></label>
+<fieldset><legend>หลักฐานและอุปกรณ์</legend><label class="check"><input type="checkbox" name="has_box"> มีกล่อง</label><label class="check"><input type="checkbox" name="has_receipt"> มีใบเสร็จ</label><label class="check"><input type="checkbox" name="has_benchmark"> มีผลทดสอบ</label></fieldset>
+<label class="check"><input type="checkbox" name="consent"> ยินยอมให้นำข้อมูลที่ไม่ระบุตัวตนไปปรับปรุงดัชนีราคา</label><button>ประเมินตำแหน่งราคา</button></form></section>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'IBM+Plex+Sans+Thai', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .price-gradient {
+            background: linear-gradient(90deg, #DC2626 0%, #0D9488 30%, #0D9488 70%, #7C3AED 100%);
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<title>จัดสเปกมือสอง - PC Price Radar</title>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar Strategy: Hidden on mobile sub-page per rules, but we'll use the minimalist header requested -->
+<header class="fixed top-0 left-0 right-0 z-50 glass-header border-b border-border-subtle h-16 flex items-center px-4 justify-between">
+<div class="flex items-center gap-3">
+<button class="p-2 -ml-2 text-on-surface active:scale-90 transition-transform">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">จัดสเปกมือสอง</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-muted">info</span>
+</div>
+</header>
+<main class="pt-20 pb-32 px-4 max-w-md mx-auto">
+<!-- Budget Categories Selection -->
+<section class="mb-8 overflow-x-auto pb-2 flex gap-2 no-scrollbar">
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-secondary text-on-secondary font-body-md text-body-md flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+                Starter
+            </button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-body-md text-body-md flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">layers</span>
+                Mid-range
+            </button>
+<button class="flex-shrink-0 px-4 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-body-md text-body-md flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">diamond</span>
+                High-end
+            </button>
+</section>
+<!-- Compatibility Status -->
+<div class="mb-6 p-4 bg-market-teal/10 border border-market-teal/20 rounded-xl flex items-center gap-3">
+<span class="material-symbols-outlined text-market-teal" data-weight="fill">check_circle</span>
+<p class="font-body-md text-body-md text-market-teal font-medium">อุปกรณ์รองรับกันทุกชิ้นส่วน</p>
+</div>
+<!-- Vertical Component List -->
+<div class="space-y-4">
+<!-- CPU Card -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm active:scale-[0.98] transition-all cursor-pointer group">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">memory</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-text-muted">CPU</span>
+<h3 class="font-body-md text-body-md font-bold text-on-surface">Core i5-12400F</h3>
+</div>
+</div>
+<div class="text-right">
+<p class="font-price-display text-[18px] text-secondary">฿3,400</p>
+<p class="font-label-sm text-label-sm text-risk-red">-15% จากปีก่อน</p>
+</div>
+</div>
+<!-- Market Context Visualizer -->
+<div class="mt-4 space-y-2">
+<div class="flex justify-between items-center text-[11px] font-label-sm text-text-muted px-1">
+<span>ถูกผิดปกติ</span>
+<span>ราคากลางตลาด</span>
+<span>แพง</span>
+</div>
+<div class="relative h-2 rounded-full price-gradient overflow-visible">
+<!-- Radar Indicator -->
+<div class="absolute left-[35%] -top-1 w-4 h-4 bg-white border-2 border-primary rounded-full shadow-md z-10"></div>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<span class="px-2 py-0.5 rounded bg-market-teal/10 text-market-teal font-label-sm text-label-sm">ราคาดีเยี่ยม (Good Deal)</span>
+<span class="material-symbols-outlined text-[14px] text-text-muted">history</span>
+</div>
+</div>
+</div>
+<!-- GPU Card -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm active:scale-[0.98] transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-3">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">developer_board</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-text-muted">GRAPHIC CARD</span>
+<h3 class="font-body-md text-body-md font-bold text-on-surface">RTX 3060 Ti 8GB</h3>
+</div>
+</div>
+<div class="text-right">
+<p class="font-price-display text-[18px] text-secondary">฿8,500</p>
+<p class="font-label-sm text-label-sm text-market-teal">Market Price</p>
+</div>
+</div>
+<div class="mt-2 h-1 bg-surface-container-high rounded-full overflow-hidden">
+<div class="w-[60%] h-full bg-market-teal"></div>
+</div>
+</div>
+<!-- Mainboard Card -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm active:scale-[0.98] transition-all cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">settings_input_component</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-text-muted">MAINBOARD</span>
+<h3 class="font-body-md text-body-md font-bold text-on-surface">B660M-K DDR4</h3>
+</div>
+</div>
+<div class="text-right">
+<p class="font-price-display text-[18px] text-secondary">฿2,200</p>
+</div>
+</div>
+</div>
+<!-- Warning Card Example (Incompatibility) -->
+<div class="bg-surface-container-lowest border-2 border-status-amber rounded-xl p-4 shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-status-amber/10 flex items-center justify-center text-status-amber">
+<span class="material-symbols-outlined">database</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-status-amber">RAM</span>
+<div class="flex items-center gap-2">
+<h3 class="font-body-md text-body-md font-bold text-on-surface">ยังไม่ได้เลือก</h3>
+<span class="material-symbols-outlined text-[18px] text-status-amber" data-weight="fill">warning</span>
+</div>
+</div>
+</div>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-lg font-body-md text-body-md">เลือก</button>
+</div>
+<p class="mt-3 font-label-sm text-[11px] text-status-amber">ต้องการ DDR4 สำหรับเมนบอร์ดที่คุณเลือก</p>
+</div>
+<!-- RAM Options Preview (As if expanded) -->
+<div class="space-y-2 pl-4 border-l-2 border-border-subtle">
+<div class="flex items-center justify-between p-3 bg-surface border border-border-subtle rounded-lg">
+<div>
+<p class="font-body-md text-body-md font-medium">16GB (8x2) 3200MHz</p>
+<p class="font-label-sm text-label-sm text-text-muted">Avg: ฿1,200</p>
+</div>
+<span class="material-symbols-outlined text-text-muted">add_circle</span>
+</div>
+</div>
+<!-- Case Card -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl p-4 shadow-sm opacity-60">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-text-muted">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-text-muted">CASE</span>
+<h3 class="font-body-md text-body-md font-medium text-on-surface-variant">ยังไม่ได้เลือกอุปกรณ์</h3>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Bottom Summary Bar -->
+<div class="fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-border-subtle px-4 pt-4 pb-6 safe-bottom shadow-[0_-8px_24px_rgba(0,0,0,0.05)] z-[60]">
+<div class="max-w-md mx-auto flex items-center justify-between gap-4">
+<div class="flex-1">
+<p class="font-label-sm text-label-sm text-text-muted mb-0.5">งบประมาณประมาณการ</p>
+<div class="flex items-baseline gap-1">
+<span class="font-price-display text-[22px] text-primary">฿22,000</span>
+<span class="text-text-muted">-</span>
+<span class="font-price-display text-[22px] text-primary">฿25,500</span>
+</div>
+</div>
+<button class="flex items-center gap-2 bg-secondary text-on-secondary px-6 h-12 rounded-xl font-body-md text-body-md font-bold shadow-lg shadow-secondary/20 active:scale-95 transition-transform">
+<span>สรุปสเปก</span>
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+</button>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.active\\:scale-\\[0\\.98\\]').forEach(card => {
+            card.addEventListener('click', () => {
+                // Simplified feedback for selection
+                card.classList.add('border-secondary');
+                setTimeout(() => {
+                    card.classList.remove('border-secondary');
+                }, 200);
+            });
+        });
+    </script>
+</body></html>

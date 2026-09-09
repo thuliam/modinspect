@@ -1,0 +1,7 @@
+<section class="container page admin-page"><?php require __DIR__.'/_nav.php'; ?>
+<div class="section-head"><div><span class="eyebrow">PRODUCT MASTER</span><h1>จัดการข้อมูลสินค้า</h1></div><button class="disabled-control" type="button" disabled>เพิ่มสินค้า — ยังไม่เปิดใช้งาน</button></div>
+<div class="notice">Product Master แก้ไขผ่าน seed/migration ใน milestone นี้ ยังไม่มี UI สำหรับสร้างหรือแก้ไขสินค้า</div>
+<div class="card table-card"><table><thead><tr><th>ID</th><th>สินค้า</th><th>หมวด/แบรนด์</th><th>ค่ากลาง</th><th>Samples</th><th>Confidence</th><th>สถานะ</th></tr></thead><tbody>
+<?php foreach($products as $index=>$p): ?><tr><td>#<?= (int)$p['id'] ?></td><td><div class="admin-product"><img src="<?= $base ?>/assets/images/admin-<?= min($index+2,4) ?>.jpg" alt="<?= htmlspecialchars($p['full_name']) ?>"><span><b><?= htmlspecialchars($p['full_name']) ?></b><small><?= htmlspecialchars($p['slug']) ?></small></span></div></td><td><?= htmlspecialchars($p['category'].' / '.$p['brand']) ?></td><td><?= $p['median'] ? '฿'.number_format((float)$p['median']) : 'ข้อมูลตลาดยังไม่เพียงพอ' ?></td><td><?= (int)$p['valid_sample_size'] ?></td><td><span class="badge"><?= htmlspecialchars($p['confidence_label']??'-') ?></span></td><td><?= $p['is_active']?'Active':'Inactive' ?></td></tr><?php endforeach; ?>
+<?php if(!$products): ?><tr><td colspan="7" class="empty-cell">ยังไม่มีสินค้าใน Product Master</td></tr><?php endif; ?>
+</tbody></table></div></section>

@@ -1,0 +1,15 @@
+{
+  "Product Master": "Slow-changing canonical product facts such as category, brand, model, specifications, lifecycle, aliases, and variants.",
+  "Market Observation": "Time-sensitive market fact such as asking price, condition, warranty, source, evidence level, and observed timestamp.",
+  "Candidate": "Unaccepted raw listing/search result collected from a provider or fixture.",
+  "Evidence": "Private/admin proof supporting a candidate or observation, such as URL, snippet, screenshot path, or fetched page metadata.",
+  "Extraction": "Structured fields produced from evidence by rules or AI; not accepted market truth.",
+  "Green Lane": "High-confidence validation result. During calibration it is still review-gated.",
+  "Amber Lane": "Ambiguous validation result requiring human review.",
+  "Red Lane": "Rejected/quarantined result due to invalid listing type, weak evidence, duplicate, or invalid price.",
+  "Price Snapshot": "Deterministic Q1/median/Q3 and confidence calculation from accepted observations.",
+  "Community Data Feedback Loop": "Approved future architecture where users submit price/product/spec/staleness/sold-price feedback as evidence and market signals, not votes.",
+  "Community Submission": "Future user-submitted feedback record with structured fields, optional evidence, confidence dimensions, review status, and audit trail.",
+  "Community Confidence Score": "Future derived confidence from evidence, contributor trust, consensus, and freshness dimensions. It must never directly update price snapshots.",
+  "SOLD_PRICE_REPORT": "Future community feedback type for reported final transaction price evidence. It is not verified sold-price truth until separately validated."
+}

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'IBM Plex Sans Thai', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .data-font { font-family: 'IBM Plex Sans', sans-serif; }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#dae2fd",
+                    "primary": "#000000",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "secondary": "#4648d4",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed": "#89f5e7",
+                    "inverse-surface": "#2d3133",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-background": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "risk-red": "#DC2626",
+                    "on-secondary-fixed": "#07006c",
+                    "status-blue": "#2563EB",
+                    "status-amber": "#D97706",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "text-muted": "#64748B",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "on-tertiary-fixed": "#00201d",
+                    "surface": "#f7f9fb",
+                    "outline-variant": "#c6c6cd",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary": "#000000",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-container": "#00201d",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary-fixed": "#131b2e",
+                    "on-surface-variant": "#45464d",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#e1e0ff",
+                    "on-primary-container": "#7c839b",
+                    "on-surface": "#191c1e",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "surface-variant": "#e0e3e5",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#565e74",
+                    "on-tertiary-container": "#0c9488",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#fffbff",
+                    "inverse-primary": "#bec6e0",
+                    "outline": "#76777d",
+                    "border-subtle": "#E2E8F0",
+                    "market-teal": "#0D9488",
+                    "secondary-container": "#6063ee",
+                    "primary-container": "#131b2e",
+                    "surface-container": "#eceef0",
+                    "status-violet": "#7C3AED",
+                    "on-secondary-fixed-variant": "#2f2ebe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "base": "4px",
+                    "container-max": "1280px",
+                    "stack-sm": "8px",
+                    "margin-mobile": "16px",
+                    "section-gap": "64px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["IBM Plex Sans Thai"],
+                    "data-table": ["IBM Plex Sans"],
+                    "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                    "headline-lg": ["IBM Plex Sans Thai"],
+                    "price-display": ["IBM Plex Sans"],
+                    "label-sm": ["JetBrains Mono"],
+                    "headline-xl": ["IBM Plex Sans Thai"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-gutter h-16 max-w-container-max mx-auto bg-surface-container-lowest dark:bg-primary-container border-b border-border-subtle dark:border-outline-variant">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-on-primary-fixed">PC Price Radar</span>
+<div class="hidden md:flex gap-6 ml-8">
+<a class="text-secondary font-bold border-b-2 border-secondary pb-1 dark:text-secondary-fixed dark:border-secondary-fixed transition-colors font-body-md text-body-md" href="#">เช็กราคา</a>
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">เช็กดีล</a>
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">จัดสเปก</a>
+<a class="text-on-surface-variant dark:text-on-primary-fixed-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors font-body-md text-body-md" href="#">สำหรับร้านค้า</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed cursor-pointer scale-95 active:scale-90 transition-transform" data-icon="language">language</span>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="mt-24 mb-section-gap px-gutter max-w-container-max mx-auto">
+<!-- Result Header Section -->
+<header class="mb-12">
+<div class="flex items-center gap-2 mb-4">
+<span class="font-label-sm text-label-sm text-secondary px-3 py-1 bg-secondary-fixed rounded-full">CPU ANALYSIS</span>
+<span class="font-label-sm text-label-sm text-status-violet px-3 py-1 bg-surface-container-high rounded-full">PREMIUM RANGE</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-primary mb-2">AMD Ryzen 7 5700X3D</h1>
+<p class="font-headline-lg text-headline-lg text-on-surface-variant max-w-3xl leading-snug">
+                ราคานี้อยู่เหนือค่ากลางประมาณ <span class="text-status-violet">8%</span> และอยู่ในระดับพรีเมียม
+            </p>
+</header>
+<!-- Bento Grid Layout for Insights -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Main Distribution Panel -->
+<section class="lg:col-span-8 bg-surface-container-lowest border border-border-subtle p-8 rounded-xl shadow-sm">
+<div class="flex justify-between items-end mb-10">
+<div>
+<span class="font-label-sm text-label-sm text-text-muted mb-1 block">ราคาเป้าหมายของคุณ</span>
+<div class="flex items-baseline gap-2">
+<span class="font-price-display text-price-display text-primary">8,900</span>
+<span class="font-body-md text-body-md text-on-surface-variant">THB</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-sm text-label-sm text-text-muted mb-1 block">ความมั่นใจข้อมูล</span>
+<div class="flex items-center gap-1 text-market-teal">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span>
+<span class="font-label-sm text-label-sm">HIGH CONFIDENCE</span>
+</div>
+</div>
+</div>
+<!-- Price Distribution Bar (The Radar) -->
+<div class="relative py-12">
+<!-- Distribution Visual -->
+<div class="h-4 w-full rounded-full flex overflow-hidden bg-surface-container">
+<div class="h-full bg-risk-red/20 w-[15%]"></div>
+<div class="h-full bg-market-teal w-[50%]"></div>
+<div class="h-full bg-status-amber w-[20%]"></div>
+<div class="h-full bg-status-violet w-[15%]"></div>
+</div>
+<!-- Market Range Markers -->
+<div class="absolute top-10 left-[15%] h-8 border-l border-outline-variant"></div>
+<div class="absolute top-[72px] left-[15%] -translate-x-1/2 text-center">
+<span class="font-label-sm text-label-sm text-text-muted">7,500</span>
+</div>
+<div class="absolute top-10 left-[65%] h-8 border-l border-outline-variant"></div>
+<div class="absolute top-[72px] left-[65%] -translate-x-1/2 text-center">
+<span class="font-label-sm text-label-sm text-text-muted">8,600</span>
+</div>
+<!-- Current Price Radar Indicator -->
+<div class="absolute -top-4 left-[85%] -translate-x-1/2 flex flex-col items-center">
+<div class="bg-primary text-on-primary px-3 py-1 rounded text-xs font-bold mb-1">YOUR PRICE</div>
+<div class="w-1 h-24 bg-primary"></div>
+<div class="w-3 h-3 bg-primary rounded-full -mt-1.5 border-2 border-white"></div>
+</div>
+<!-- Legend -->
+<div class="mt-20 grid grid-cols-4 gap-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-risk-red"></div>
+<span class="font-label-sm text-label-sm text-text-muted">Outlier Low</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-market-teal"></div>
+<span class="font-label-sm text-label-sm text-text-muted">Market Price</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-status-amber"></div>
+<span class="font-label-sm text-label-sm text-text-muted">Above Market</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-status-violet"></div>
+<span class="font-label-sm text-label-sm text-text-muted">Premium</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Metrics Sidebar -->
+<aside class="lg:col-span-4 flex flex-col gap-6">
+<!-- Median Card -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-text-muted mb-2 uppercase">Median Market Price</p>
+<p class="font-price-display text-price-display text-primary">8,250 <span class="text-sm font-normal">THB</span></p>
+</div>
+<div class="bg-surface-container p-3 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-icon="equalizer">equalizer</span>
+</div>
+</div>
+<!-- Difference Card -->
+<div class="bg-secondary-fixed/30 border border-secondary/10 p-6 rounded-xl">
+<p class="font-label-sm text-label-sm text-secondary mb-2 uppercase">Difference from Median</p>
+<div class="flex items-baseline gap-2">
+<span class="font-price-display text-price-display text-secondary">+650</span>
+<span class="font-body-md text-body-md text-secondary">THB</span>
+</div>
+<div class="mt-2 flex items-center gap-1 text-secondary font-bold">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="font-body-md text-body-md">8.2% Premium</span>
+</div>
+</div>
+<!-- Comparison Teaser -->
+<div class="bg-primary-container text-on-primary-fixed p-6 rounded-xl relative overflow-hidden group">
+<div class="relative z-10">
+<p class="font-label-sm text-label-sm text-on-primary-container mb-2">เปรียบเทียบมือหนึ่ง</p>
+<p class="font-body-md text-body-md mb-4">มือหนึ่งปัจจุบันราคา <span class="font-bold">11,200 THB</span></p>
+<button class="flex items-center gap-2 font-label-sm text-label-sm text-secondary bg-white px-4 py-2 rounded-lg hover:bg-secondary-fixed transition-colors">
+                            VIEW NEW VS USED
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10 transform rotate-12 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[120px]" data-icon="memory">memory</span>
+</div>
+</div>
+</aside>
+<!-- Detailed Analysis Section -->
+<section class="lg:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Justification Checklist -->
+<div class="bg-surface-container-lowest border border-border-subtle p-8 rounded-xl">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-status-amber" data-icon="info_i">info</span>
+                        ความสมเหตุสมผลของราคา
+                    </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">ราคาอาจสมเหตุสมผลหากมีปัจจัยเหล่านี้ประกอบ:</p>
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md">ประกันศูนย์ไทยเหลือมากกว่า 1 ปี</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md">อุปกรณ์ครบกล่อง รวมถึงซองและคู่มือ</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md">มีใบเสร็จตัวจริงจากการซื้อครั้งแรก</span>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-market-teal" data-icon="check_circle">check_circle</span>
+<span class="font-body-md text-body-md">ไม่เคยผ่านการ Overclock หรือขุดเหรียญ</span>
+</li>
+</ul>
+</div>
+<!-- Negotiation & Next Steps -->
+<div class="flex flex-col gap-6">
+<!-- Negotiation Guidance -->
+<div class="bg-surface-container-high/50 border border-border-subtle p-8 rounded-xl">
+<h3 class="font-label-sm text-label-sm text-text-muted mb-4 uppercase">คำแนะนำในการต่อรอง</h3>
+<p class="font-body-md text-body-md mb-2">เป้าหมายที่ควรต่อรองให้ลงมา:</p>
+<div class="flex items-center gap-4">
+<span class="font-price-display text-price-display text-market-teal">8,200 - 8,400</span>
+<span class="font-body-md text-body-md text-text-muted">THB</span>
+</div>
+</div>
+<!-- Next Steps -->
+<div class="bg-surface-container-lowest border border-border-subtle p-8 rounded-xl flex-grow">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-4">สิ่งที่ควรขอจากผู้ขาย</h3>
+<div class="space-y-3">
+<label class="flex items-center gap-3 p-3 hover:bg-surface transition-colors rounded-lg cursor-pointer">
+<input class="rounded border-outline text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="font-body-md text-body-md">รูปถ่ายซีเรียลนัมเบอร์ตรงกับกล่อง</span>
+</label>
+<label class="flex items-center gap-3 p-3 hover:bg-surface transition-colors rounded-lg cursor-pointer">
+<input class="rounded border-outline text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="font-body-md text-body-md">ผลการทดสอบ Cinebench (ความร้อน)</span>
+</label>
+<label class="flex items-center gap-3 p-3 hover:bg-surface transition-colors rounded-lg cursor-pointer">
+<input class="rounded border-outline text-secondary focus:ring-secondary" type="checkbox"/>
+<span class="font-body-md text-body-md">ภาพวิดีโอแสดงการใช้งานจริง</span>
+</label>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Action Bar -->
+<div class="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 p-6 bg-surface-container-lowest border border-border-subtle rounded-xl">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-6 py-3 bg-secondary text-on-secondary rounded-full hover:shadow-lg transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="save">save</span>
+<span class="font-body-md text-body-md">บันทึกผลการวิเคราะห์</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-3 border border-outline text-on-surface rounded-full hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+<span class="font-body-md text-body-md">แชร์ผล</span>
+</button>
+</div>
+<div class="flex items-center gap-3 text-text-muted">
+<span class="material-symbols-outlined" data-icon="update">update</span>
+<span class="font-label-sm text-label-sm">ข้อมูลอัปเดตเมื่อ: 2 ชั่วโมงที่แล้ว</span>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-gutter flex flex-col md:flex-row justify-between items-start gap-stack-md max-w-container-max mx-auto bg-surface-container-low dark:bg-primary-container border-t border-border-subtle dark:border-outline-variant">
+<div class="flex flex-col gap-4">
+<span class="font-headline-lg text-headline-lg font-bold text-primary dark:text-on-primary-fixed">PC Price Radar</span>
+<p class="font-label-sm text-label-sm text-text-muted dark:text-on-primary-fixed-variant max-w-xs">© 2024 PC Price Radar. ข้อมูลราคาเพื่อการตัดสินใจเท่านั้น</p>
+</div>
+<div class="flex flex-wrap gap-8">
+<div class="flex flex-col gap-3">
+<span class="font-label-sm text-label-sm font-bold text-primary dark:text-on-primary-fixed">RESOURCES</span>
+<a class="font-label-sm text-label-sm text-text-muted dark:text-on-primary-fixed-variant hover:text-primary dark:hover:text-on-primary-fixed transition-opacity opacity-80 hover:opacity-100" href="#">ระเบียบวิธีวิจัย</a>
+<a class="font-label-sm text-label-sm text-text-muted dark:text-on-primary-fixed-variant hover:text-primary dark:hover:text-on-primary-fixed transition-opacity opacity-80 hover:opacity-100" href="#">คำสงวนสิทธิ์</a>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-sm text-label-sm font-bold text-primary dark:text-on-primary-fixed">COMPANY</span>
+<a class="font-label-sm text-label-sm text-text-muted dark:text-on-primary-fixed-variant hover:text-primary dark:hover:text-on-primary-fixed transition-opacity opacity-80 hover:opacity-100" href="#">เกี่ยวกับเรา</a>
+<a class="font-label-sm text-label-sm text-text-muted dark:text-on-primary-fixed-variant hover:text-primary dark:hover:text-on-primary-fixed transition-opacity opacity-80 hover:opacity-100" href="#">ติดต่อเรา</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple interaction for checkboxes to show 'checked' state visually
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if(this.checked) {
+                    this.parentElement.classList.add('bg-secondary-fixed/20');
+                } else {
+                    this.parentElement.classList.remove('bg-secondary-fixed/20');
+                }
+            });
+        });
+    </script>
+</body></html>

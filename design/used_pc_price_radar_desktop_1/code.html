@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="light" lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Used PC Price Radar | เช็กราคาคอมมือสองก่อนซื้อ</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed": "#e1e0ff",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e0e3e5",
+                    "status-violet": "#7C3AED",
+                    "on-background": "#191c1e",
+                    "primary": "#000000",
+                    "surface-tint": "#565e74",
+                    "background": "#f7f9fb",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#131b2e",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "tertiary-container": "#00201d",
+                    "status-blue": "#2563EB",
+                    "on-secondary-fixed": "#07006c",
+                    "surface-bright": "#f7f9fb",
+                    "on-primary-container": "#7c839b",
+                    "on-secondary-container": "#fffbff",
+                    "surface-container-high": "#e6e8ea",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "secondary-container": "#6063ee",
+                    "border-subtle": "#E2E8F0",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-container": "#0c9488",
+                    "outline-variant": "#c6c6cd",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-fixed": "#00201d",
+                    "risk-red": "#DC2626",
+                    "primary-fixed-dim": "#bec6e0",
+                    "text-muted": "#64748B",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "surface-container-low": "#f2f4f6",
+                    "on-surface": "#191c1e",
+                    "market-teal": "#0D9488",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#bec6e0",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "surface-variant": "#e0e3e5",
+                    "on-surface-variant": "#45464d",
+                    "primary-container": "#131b2e",
+                    "surface-dim": "#d8dadc",
+                    "outline": "#76777d",
+                    "primary-fixed": "#dae2fd",
+                    "secondary": "#4648d4",
+                    "status-amber": "#D97706",
+                    "surface-container": "#eceef0",
+                    "tertiary-fixed": "#89f5e7",
+                    "surface": "#f7f9fb",
+                    "tertiary": "#000000",
+                    "on-primary-fixed-variant": "#3f465c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "section-gap": "64px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "base": "4px",
+                    "stack-md": "16px",
+                    "margin-mobile": "16px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-xl": ["IBM Plex Sans Thai"],
+                    "data-table": ["IBM Plex Sans"],
+                    "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                    "headline-lg": ["IBM Plex Sans Thai"],
+                    "price-display": ["IBM Plex Sans"],
+                    "body-md": ["IBM Plex Sans Thai"],
+                    "label-sm": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body { background-color: #f7f9fb; font-family: 'IBM Plex Sans Thai', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .radar-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(70, 72, 212, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(70, 72, 212, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(70, 72, 212, 0); }
+        }
+        .bento-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+        .card-hover:hover { transform: translateY(-4px); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="text-on-background">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-gutter h-16 max-w-container-max mx-auto bg-surface-container-lowest border-b border-border-subtle">
+<div class="flex items-center gap-stack-md">
+<img alt="Used PC Price Radar Logo" class="h-10 w-10 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfJj2FY7VWv4jjoKQqXNim4sP5JLHw04jEjGdtAOcd2XnJntoba0dkku42jKKeBJV3hq-QZUao8AwMy5Xk9SHRxPRGV00n1viZQVhDQgx2zASIyNG-0lJaur6QOtQ3fbFDz1GMaL4jbsy19XGF0wm5g_XzGScFWXeWCBZA1DQNqQUoT_tjs7daVPUbBgy-S0r-U4lqQrFC-4XxNrOSKYpcR8g15DeFoJE4Ma9cXrkwKcyFVc_zW8dQVyPwU50wmGiv_VNrJr7EiVaL"/>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">PC Price Radar</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-secondary font-bold border-b-2 border-secondary pb-1 font-body-md text-body-md transition-colors hover:text-secondary" href="#">เช็กราคา</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">เช็กดีล</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">จัดสเปกมือสอง</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-secondary transition-colors" href="#">สำหรับร้านค้า</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-secondary scale-95 active:scale-90 transition-transform">language</button>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-lg font-body-md text-body-md hover:opacity-90 transition-opacity">เข้าสู่ระบบ</button>
+</div>
+</nav>
+<main class="pt-16">
+<!-- Hero Section -->
+<section class="relative min-h-[600px] flex items-center justify-center overflow-hidden py-section-gap">
+<div class="absolute inset-0 z-0 opacity-10">
+
+</div>
+<div class="relative z-10 max-w-container-max mx-auto px-gutter text-center">
+<div class="inline-flex items-center gap-2 bg-secondary-fixed text-on-secondary-fixed px-4 py-1.5 rounded-full mb-8">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label-sm text-label-sm">REAL-TIME MARKET DATA</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-primary mb-6 max-w-4xl mx-auto">
+                    เช็กราคาคอมมือสอง <span class="text-secondary">ก่อนจ่ายเงินจริง</span>
+</h1>
+<p class="font-body-md text-body-md text-text-muted mb-12 max-w-2xl mx-auto">
+                    ดูช่วงราคาตลาด จำนวนตัวอย่าง และความสดของข้อมูลประกอบการตัดสินใจ <br/>ขับเคลื่อนด้วยระบบ AI วิเคราะห์ราคาจากทั่วไทย
+                </p>
+<!-- Search Bar Container -->
+<div class="max-w-3xl mx-auto bg-surface-container-lowest p-2 rounded-xl shadow-md border border-border-subtle flex flex-col md:flex-row gap-2">
+<div class="flex-grow flex items-center px-4 gap-3 border-r-0 md:border-r border-border-subtle">
+<span class="material-symbols-outlined text-text-muted">search</span>
+<input class="w-full border-none focus:ring-0 font-body-md text-body-md bg-transparent" placeholder="ค้นหา CPU, GPU, RAM, SSD หรือชื่อรุ่น เช่น RTX 3070" type="text"/>
+</div>
+<div class="flex gap-2 p-1">
+<button class="bg-secondary text-on-secondary px-8 py-3 rounded-lg font-body-md text-body-md font-bold flex items-center gap-2 hover:opacity-90 transition-all">
+                            เช็กราคา
+                        </button>
+<button class="border border-border-subtle text-on-surface px-6 py-3 rounded-lg font-body-md text-body-md flex items-center gap-2 hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined">image</span>
+                            อัปโหลดรูป
+                        </button>
+</div>
+</div>
+<div class="mt-8 flex justify-center items-center gap-6 text-text-muted">
+<span class="font-label-sm text-label-sm">มาแรงตอนนี้:</span>
+<div class="flex gap-3">
+<span class="bg-surface-container-high px-3 py-1 rounded text-label-sm font-label-sm cursor-pointer hover:bg-secondary-fixed transition-colors">RTX 4070 Ti</span>
+<span class="bg-surface-container-high px-3 py-1 rounded text-label-sm font-label-sm cursor-pointer hover:bg-secondary-fixed transition-colors">i5-13600K</span>
+<span class="bg-surface-container-high px-3 py-1 rounded text-label-sm font-label-sm cursor-pointer hover:bg-secondary-fixed transition-colors">DDR5 32GB</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Market Transparency Statistics -->
+<section class="max-w-container-max mx-auto px-gutter mb-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 bg-primary-container p-8 rounded-2xl">
+<div class="flex flex-col items-center text-center md:border-r border-on-primary-fixed-variant last:border-0 p-4">
+<span class="font-label-sm text-label-sm text-on-primary-container mb-2">รุ่นที่ติดตาม</span>
+<div class="font-price-display text-price-display text-on-primary">250+</div>
+<span class="font-body-md text-body-md text-on-primary-fixed-variant">Active Models</span>
+</div>
+<div class="flex flex-col items-center text-center md:border-r border-on-primary-fixed-variant last:border-0 p-4">
+<span class="font-label-sm text-label-sm text-on-primary-container mb-2">DATA POINTS</span>
+<div class="font-price-display text-price-display text-on-primary">15,482+</div>
+<span class="font-body-md text-body-md text-on-primary-fixed-variant">Market Observations</span>
+</div>
+<div class="flex flex-col items-center text-center last:border-0 p-4">
+<span class="font-label-sm text-label-sm text-on-primary-container mb-2">อัปเดตล่าสุด</span>
+<div class="font-price-display text-price-display text-on-primary">สดใหม่</div>
+<span class="font-body-md text-body-md text-on-primary-fixed-variant">วันนี้, 10:24 น.</span>
+</div>
+</div>
+</section>
+<!-- Popular Categories Grid -->
+<section class="max-w-container-max mx-auto px-gutter mb-section-gap">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-8 text-center">หมวดหมู่ยอดนิยม</h2>
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
+<!-- CPU -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl text-center card-hover cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-4 text-secondary">
+<span class="material-symbols-outlined">memory</span>
+</div>
+<span class="font-body-md text-body-md font-bold block mb-1">CPU</span>
+<span class="font-label-sm text-label-sm text-text-muted">84 รุ่น</span>
+</div>
+<!-- GPU -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl text-center card-hover cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-4 text-secondary">
+<span class="material-symbols-outlined">view_in_ar</span>
+</div>
+<span class="font-body-md text-body-md font-bold block mb-1">GPU</span>
+<span class="font-label-sm text-label-sm text-text-muted">112 รุ่น</span>
+</div>
+<!-- RAM -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl text-center card-hover cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-4 text-secondary">
+<span class="material-symbols-outlined">developer_board</span>
+</div>
+<span class="font-body-md text-body-md font-bold block mb-1">RAM</span>
+<span class="font-label-sm text-label-sm text-text-muted">45 รุ่น</span>
+</div>
+<!-- SSD/HDD -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl text-center card-hover cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-4 text-secondary">
+<span class="material-symbols-outlined">database</span>
+</div>
+<span class="font-body-md text-body-md font-bold block mb-1">Storage</span>
+<span class="font-label-sm text-label-sm text-text-muted">32 รุ่น</span>
+</div>
+<!-- Mainboard -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl text-center card-hover cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-4 text-secondary">
+<span class="material-symbols-outlined">settings_input_component</span>
+</div>
+<span class="font-body-md text-body-md font-bold block mb-1">Board</span>
+<span class="font-label-sm text-label-sm text-text-muted">68 รุ่น</span>
+</div>
+<!-- PSU -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl text-center card-hover cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-4 text-secondary">
+<span class="material-symbols-outlined">electric_bolt</span>
+</div>
+<span class="font-body-md text-body-md font-bold block mb-1">PSU</span>
+<span class="font-label-sm text-label-sm text-text-muted">24 รุ่น</span>
+</div>
+<!-- Complete PC -->
+<div class="bg-surface-container-lowest border border-border-subtle p-6 rounded-xl text-center card-hover cursor-pointer">
+<div class="w-12 h-12 bg-secondary-fixed rounded-full flex items-center justify-center mx-auto mb-4 text-secondary">
+<span class="material-symbols-outlined">desktop_windows</span>
+</div>
+<span class="font-body-md text-body-md font-bold block mb-1">Set PC</span>
+<span class="font-label-sm text-label-sm text-text-muted">Custom</span>
+</div>
+</div>
+</section>
+<!-- How it Works -->
+<section class="bg-surface-container-low py-section-gap mb-section-gap">
+<div class="max-w-container-max mx-auto px-gutter">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-12 text-center">วิธีใช้งานใน 3 ขั้นตอน</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full border-2 border-secondary flex items-center justify-center mb-6 font-price-display text-price-display text-secondary">1</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-3">ค้นหา</h3>
+<p class="font-body-md text-body-md text-text-muted">พิมพ์ชื่อรุ่นอุปกรณ์ที่คุณสนใจในช่องค้นหา ระบบจะดึงข้อมูลจากแหล่งประกาศยอดนิยมทั่วไทย</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full border-2 border-secondary flex items-center justify-center mb-6 font-price-display text-price-display text-secondary">2</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-3">ดูข้อมูลราคา</h3>
+<p class="font-body-md text-body-md text-text-muted">ตรวจสอบความโปร่งใสผ่านกราฟช่วงราคา (Radar Distribution) เพื่อดูว่าราคาที่พบถูกหรือแพงกว่าตลาด</p>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full border-2 border-secondary flex items-center justify-center mb-6 font-price-display text-price-display text-secondary">3</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-3">ตัดสินใจ</h3>
+<p class="font-body-md text-body-md text-text-muted">เปรียบเทียบกับดีลอื่นๆ หรือใช้ Deal Checker ของเราช่วยประเมินความคุ้มค่าก่อนซื้อ</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Deal Checker Teaser -->
+<section class="max-w-container-max mx-auto px-gutter mb-section-gap">
+<div class="bg-surface-container-lowest border border-secondary p-10 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+<div class="absolute -right-20 -bottom-20 w-64 h-64 bg-secondary opacity-5 rounded-full"></div>
+<div class="relative z-10 max-w-xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">เจอดีลที่น่าสงสัย?</h2>
+<p class="font-body-md text-body-md text-text-muted mb-0">ลองใช้ <strong>Deal Checker</strong> ประเมินความคุ้มค่าและความเป็นไปได้ของราคา เพื่อป้องกันมิจฉาชีพและสินค้าที่ราคาไม่เป็นธรรม</p>
+</div>
+<button class="relative z-10 bg-secondary text-on-secondary px-10 py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">rule_folder</span>
+                    ใช้ Deal Checker
+                </button>
+</div>
+</section>
+<!-- Sponsored Products -->
+<section class="max-w-container-max mx-auto px-gutter mb-section-gap">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-headline-lg text-headline-lg text-primary">สินค้าแนะนำจากพาร์ทเนอร์</h2>
+<span class="font-label-sm text-label-sm text-text-muted">ADVERTISEMENT</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<!-- Sponsored Card 1 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl overflow-hidden card-hover">
+<div class="w-full h-48 bg-cover bg-center" data-alt="High-end NVIDIA GeForce RTX 4080 graphics card shown in a professional product studio lighting, minimalist dark tech aesthetic with subtle indigo reflections on its metallic finish. Focus on the cooling fans and heatsink architecture." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBbrELMqVaaudBbUbHV1I6lffT6ewSIX2QKEY_9HDtNdwNPtGd1_hnU4qirCYSYc-KItwBXWBZRi4-xoUWbKYq3t8jrJcuFtEnW08AJbm96tZfkimscEcCKR0CAKrr8JMXx2vaRaO4AUtoyVXeAdMiM9c4TB1F2RYcz6Z_SVNDqshqk3D-OhbQOAyTOjNTDVSa-YiOCkLBC7U14IBVwZr3btHSHJ4mLRbzZSf6maSpCsSg2HHIloz1nxC22wnJ1iRrnQVD6eamnezhs')"></div>
+<div class="p-6">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded">NEW STOCK</span>
+<span class="font-label-sm text-label-sm text-market-teal font-bold">คุ้มค่าที่สุด</span>
+</div>
+<h3 class="font-body-md text-body-md font-bold mb-1">RTX 4080 Brand New</h3>
+<p class="text-label-sm font-label-sm text-text-muted mb-4">โดย ExtremePC Shop</p>
+<div class="flex items-center justify-between">
+<span class="font-price-display text-price-display text-secondary">฿34,900</span>
+<button class="material-symbols-outlined text-text-muted hover:text-secondary">open_in_new</button>
+</div>
+</div>
+</div>
+<!-- Sponsored Card 2 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl overflow-hidden card-hover">
+<div class="w-full h-48 bg-cover bg-center" data-alt="Sleek modern PC power supply unit (PSU) 850W Gold certified with modular cables laid out. Minimalist tech photography style, bright environment, clean surface, focusing on the efficiency badge and solid build quality." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBcPlkyYgpM9cd6jR7XAb2IDkxahIaGW3s7Xkh_x0O4IPi-tsGvYsD9simbemA8CrLjd9oW5Huj40CS-mOAn-KGSJ7gx1jJYW102vghIe-4B_QA_IbZtT5T8ZQRo-RraFJiaYqb80C4rCehyp0slq5AUqVOzk1CcLo5CMiUjf0m_LA8P3p464b4-NQRvBjHxu9DJBBJQfHW9vvfZeyNU_bbE0MAPOPfrudG6u3ZKiQZeQ7k8KSZHDAbxkUH9HQ5a_ac37_aHVp3aOFa')"></div>
+<div class="p-6">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">USED-GRADE A</span>
+</div>
+<h3 class="font-body-md text-body-md font-bold mb-1">Corsair RM850x (2021)</h3>
+<p class="text-label-sm font-label-sm text-text-muted mb-4">โดย SecondLife PC</p>
+<div class="flex items-center justify-between">
+<span class="font-price-display text-price-display text-secondary">฿2,450</span>
+<button class="material-symbols-outlined text-text-muted hover:text-secondary">open_in_new</button>
+</div>
+</div>
+</div>
+<!-- Sponsored Card 3 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl overflow-hidden card-hover">
+<div class="w-full h-48 bg-cover bg-center" data-alt="AMD Ryzen 9 series processor in its retail packaging box, professional electronics product photography, soft diffused lighting, tech-focused composition emphasizing high-performance computing capabilities." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDslFyQ_ynqQgKHLdmO2svTzLXXg0QAumX6lkNGIz8HmSNk6hiBSMizsI5b9o05eC13F7-4QUb86tjylMfp2S6JAP6-0bmQYmfQxCwp4j_LIBl2katQsU7fC57oNnTDI513TOJ9PGydQ8SbjtIAYHSD2KXg9Yja4rQBEr4IYI-ziT5Jmx0uW9tgyHYtuyyJzWa4H7oNjmdYsqzFlXVoVx3nt1mqVD9DZLnY3ZO7v243JHDryJ2oj9lKceYHdpO5Yu7bYrjEot26ZOvB')"></div>
+<div class="p-6">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm bg-risk-red/10 text-risk-red px-2 py-0.5 rounded">LIMITED TIME</span>
+</div>
+<h3 class="font-body-md text-body-md font-bold mb-1">Ryzen 9 5900X</h3>
+<p class="text-label-sm font-label-sm text-text-muted mb-4">โดย IHAVECPU (Lazada)</p>
+<div class="flex items-center justify-between">
+<span class="font-price-display text-price-display text-secondary">฿8,900</span>
+<button class="material-symbols-outlined text-text-muted hover:text-secondary">open_in_new</button>
+</div>
+</div>
+</div>
+<!-- Sponsored Card 4 -->
+<div class="bg-surface-container-lowest border border-border-subtle rounded-xl overflow-hidden card-hover">
+<div class="w-full h-48 bg-cover bg-center" data-alt="Premium DDR5 RAM modules with sophisticated RGB lighting elements, shot in a high-tech studio setup, clean lines, professional hardware showcase, focus on the heat spreader texture and build quality." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC8Y65uakLNxah90gD6uXLqnX71Dt5F0npqOC7cbN5eH95zJVHfBqKmi1vd5lbDkI3Q9_Ag_MQ9QO-N3DxMMUlpIb1w51AeLvtf458-OU5TWMnejoGmL6b-6cIuC97krKk1d_icv6tCc4WsemZMbAC1cgODyLNgIpCClUcmwJkuQycVdS_qcVC68dtke6khibiNRsC_Nz4nNzJdfxHUPnX-zqgDb5s1RrKzJ4S2sg4Te78t9v8U0PjOINsUQR6gKSUf0X3ahbk2r1vf')"></div>
+<div class="p-6">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded">HOT DEAL</span>
+</div>
+<h3 class="font-body-md text-body-md font-bold mb-1">DDR5 32GB (16x2) 6000MHz</h3>
+<p class="text-label-sm font-label-sm text-text-muted mb-4">โดย PC Outlet</p>
+<div class="flex items-center justify-between">
+<span class="font-price-display text-price-display text-secondary">฿3,800</span>
+<button class="material-symbols-outlined text-text-muted hover:text-secondary">open_in_new</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-border-subtle pt-16 pb-8">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-3 mb-6">
+<img alt="Used PC Price Radar Logo" class="h-8 w-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfJj2FY7VWv4jjoKQqXNim4sP5JLHw04jEjGdtAOcd2XnJntoba0dkku42jKKeBJV3hq-QZUao8AwMy5Xk9SHRxPRGV00n1viZQVhDQgx2zASIyNG-0lJaur6QOtQ3fbFDz1GMaL4jbsy19XGF0wm5g_XzGScFWXeWCBZA1DQNqQUoT_tjs7daVPUbBgy-S0r-U4lqQrFC-4XxNrOSKYpcR8g15DeFoJE4Ma9cXrkwKcyFVc_zW8dQVyPwU50wmGiv_VNrJr7EiVaL"/>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">PC Price Radar</span>
+</div>
+<p class="font-body-md text-body-md text-text-muted mb-6">
+                        แพลตฟอร์มวิเคราะห์ราคาตลาดคอมพิวเตอร์มือสองอันดับหนึ่งของไทย โปร่งใส แม่นยำ และสดใหม่
+                    </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">qr_code_2</span>
+</a>
+<a class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center hover:bg-secondary hover:text-on-secondary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">share</span>
+</a>
+</div>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-bold mb-6">บริการของเรา</h4>
+<ul class="space-y-4 font-body-md text-body-md text-text-muted">
+<li><a class="hover:text-secondary transition-colors" href="#">เช็กราคาตลาด</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">Deal Checker</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">จัดสเปกมือสอง</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">ลงโฆษณา</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-bold mb-6">ความช่วยเหลือ</h4>
+<ul class="space-y-4 font-body-md text-body-md text-text-muted">
+<li><a class="hover:text-secondary transition-colors" href="#">ระเบียบวิธีวิจัย</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">คำแนะนำการซื้อขาย</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">ติดต่อเรา</a></li>
+<li><a class="hover:text-secondary transition-colors" href="#">คำถามที่พบบ่อย</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-body-md text-body-md font-bold mb-6">จดหมายข่าว</h4>
+<p class="font-label-sm text-label-sm text-text-muted mb-4">รับข้อมูลราคาตลาดและดีลเด็ดประจำสัปดาห์</p>
+<div class="flex gap-2">
+<input class="flex-grow bg-surface-container-lowest border border-border-subtle rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-secondary focus:border-secondary outline-none" placeholder="อีเมลของคุณ" type="email"/>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-body-md text-body-md">ติดตาม</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border-subtle gap-4">
+<span class="font-label-sm text-label-sm text-text-muted">© 2024 PC Price Radar. ข้อมูลราคาเพื่อการตัดสินใจเท่านั้น</span>
+<div class="flex gap-6 font-label-sm text-label-sm text-text-muted">
+<a class="hover:text-secondary" href="#">นโยบายความเป็นส่วนตัว</a>
+<a class="hover:text-secondary" href="#">เงื่อนไขการใช้งาน</a>
+<a class="hover:text-secondary" href="#">คำสงวนสิทธิ์</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for search focus
+        const searchInput = document.querySelector('input[type="text"]');
+        const searchContainer = searchInput.closest('div.max-w-3xl');
+        
+        searchInput.addEventListener('focus', () => {
+            searchContainer.classList.add('ring-2', 'ring-secondary/20', 'border-secondary');
+        });
+        
+        searchInput.addEventListener('blur', () => {
+            searchContainer.classList.remove('ring-2', 'ring-secondary/20', 'border-secondary');
+        });
+
+        // Simple Fade-in Animation Observer
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+            observer.observe(section);
+        });
+    </script>
+</body></html>

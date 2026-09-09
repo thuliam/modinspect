@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Observation Review | Price Radar Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config Execution -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c6c6cd",
+                    "surface": "#f7f9fb",
+                    "inverse-primary": "#bec6e0",
+                    "on-tertiary": "#ffffff",
+                    "status-violet": "#7C3AED",
+                    "on-error-container": "#93000a",
+                    "text-muted": "#64748B",
+                    "secondary-fixed": "#e1e0ff",
+                    "on-tertiary-fixed-variant": "#005049",
+                    "tertiary-container": "#00201d",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary": "#4648d4",
+                    "on-tertiary-fixed": "#00201d",
+                    "inverse-surface": "#2d3133",
+                    "background": "#f7f9fb",
+                    "surface-tint": "#565e74",
+                    "surface-container-high": "#e6e8ea",
+                    "border-subtle": "#E2E8F0",
+                    "tertiary-fixed": "#89f5e7",
+                    "on-primary-container": "#7c839b",
+                    "market-teal": "#0D9488",
+                    "tertiary-fixed-dim": "#6bd8cb",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#fffbff",
+                    "surface-container-low": "#f2f4f6",
+                    "status-amber": "#D97706",
+                    "error": "#ba1a1a",
+                    "status-blue": "#2563EB",
+                    "on-surface": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "on-background": "#191c1e",
+                    "primary-container": "#131b2e",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-secondary-fixed-variant": "#2f2ebe",
+                    "surface-variant": "#e0e3e5",
+                    "primary-fixed-dim": "#bec6e0",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#6063ee",
+                    "surface-container": "#eceef0",
+                    "primary-fixed": "#dae2fd",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#000000",
+                    "on-secondary-fixed": "#07006c",
+                    "risk-red": "#DC2626",
+                    "secondary-fixed-dim": "#c0c1ff",
+                    "outline": "#76777d",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#0c9488",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary": "#000000",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "on-surface-variant": "#45464d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "base": "4px",
+                    "stack-md": "16px",
+                    "section-gap": "64px"
+            },
+            "fontFamily": {
+                    "body-md": ["IBM Plex Sans Thai", "sans-serif"],
+                    "price-display": ["IBM Plex Sans", "sans-serif"],
+                    "label-sm": ["JetBrains Mono", "monospace"],
+                    "headline-lg": ["IBM Plex Sans Thai", "sans-serif"],
+                    "data-table": ["IBM Plex Sans", "sans-serif"],
+                    "headline-xl": ["IBM Plex Sans Thai", "sans-serif"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                    "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .active-tab-indicator {
+            box-shadow: inset -4px 0 0 0 #4648d4;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e0e3e5;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-secondary-fixed selection:text-secondary">
+<!-- SideNavBar (Execution from JSON) -->
+<aside class="fixed left-0 top-0 h-screen w-72 bg-surface-container-low dark:bg-inverse-surface border-r border-border-subtle dark:border-outline-variant flex flex-col h-full py-stack-md z-50">
+<div class="px-stack-md mb-stack-md">
+<div class="font-headline-lg text-headline-lg font-bold text-primary dark:text-inverse-primary leading-none">Price Radar Admin</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">Hardware Intelligence</div>
+</div>
+<nav class="flex-grow space-y-1 overflow-y-auto">
+<!-- Data Quality Dashboard -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Data Quality Dashboard</span>
+</a>
+<!-- Observation Review (ACTIVE) -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-secondary dark:text-secondary-fixed-dim font-bold border-r-4 border-secondary bg-surface-container-high transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check" style="font-variation-settings: 'FILL' 1;">fact_check</span>
+<span class="font-body-md text-body-md">Observation Review</span>
+</a>
+<!-- Product Master -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-body-md text-body-md">Product Master</span>
+</a>
+<!-- Product Aliases -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="label">label</span>
+<span class="font-body-md text-body-md">Product Aliases</span>
+</a>
+<!-- Source Health -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-body-md text-body-md">Source Health</span>
+</a>
+<!-- Import Jobs -->
+<a class="flex items-center gap-stack-md px-stack-md py-stack-sm text-on-surface-variant dark:text-surface-variant hover:text-secondary hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_sync">cloud_sync</span>
+<span class="font-body-md text-body-md">Import Jobs</span>
+</a>
+</nav>
+<div class="px-stack-md pt-stack-md border-t border-border-subtle mt-auto space-y-1">
+<a class="flex items-center gap-stack-md py-stack-sm text-on-surface-variant hover:text-secondary" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+<a class="flex items-center gap-stack-md py-stack-sm text-on-surface-variant hover:text-secondary" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<div class="flex items-center gap-stack-md py-stack-md">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</div>
+<div>
+<div class="font-label-sm text-label-sm font-bold">Admin User</div>
+<div class="text-[10px] text-text-muted">Lead Data Analyst</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-72 flex flex-col h-screen">
+<!-- TopAppBar (Execution from JSON) -->
+<header class="sticky top-0 z-40 bg-surface-container-lowest dark:bg-surface-container-low border-b border-border-subtle dark:border-outline-variant flex justify-between items-center px-gutter py-stack-md">
+<div class="flex items-center gap-stack-md">
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Data Quality Monitor</h1>
+<div class="h-6 w-[1px] bg-outline-variant mx-2"></div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-text-muted">Review Queue</span>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="relative group">
+<input class="w-64 pl-10 pr-4 py-2 bg-surface-container border border-border-subtle rounded-lg font-body-md text-sm focus:ring-1 focus:ring-secondary focus:border-secondary outline-none transition-all" placeholder="Search observations..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-text-muted" data-icon="search">search</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors duration-200">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</button>
+</div>
+</header>
+<!-- Content Area: Split View -->
+<div class="flex-grow flex overflow-hidden">
+<!-- Left Panel: Source Evidence -->
+<section class="w-1/2 overflow-y-auto border-r border-border-subtle p-gutter bg-surface-container-lowest">
+<div class="flex items-center justify-between mb-stack-md">
+<h2 class="font-headline-lg text-[20px] font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="visibility">visibility</span>
+                        Source Evidence
+                    </h2>
+<span class="font-label-sm text-label-sm text-text-muted px-2 py-1 bg-surface-container-high rounded">ID: OBS-88219</span>
+</div>
+<!-- Screenshot Container -->
+<div class="relative aspect-video bg-surface-dim rounded-xl overflow-hidden border border-border-subtle mb-stack-md group shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A clean, high-resolution screenshot of a Facebook Marketplace listing for a computer component. The image shows a graphics card (RTX 3070) in its original packaging on a wooden desk. Professional lighting creates soft shadows. The UI of the marketplace is visible in the background, featuring clean white and blue accents of a modern social commerce platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYficOgf9GnWVT5lX7lMwIpQwneMeMEKEjyM5YSzWYACw_3pihf0XzKGq8SvuXSCgEFQexorslpuG46QwuKJTKEEu4o2obrG006sUDkAqGdJSeAFCzBc6n0--LPeE_RNP11wBc33mbEVVQfyFgptXn-tNENZUNJ5u4GIoebcPL6M08Wug8FZwtttijIMvQRdgx9u_8fg3r2lk9IO7y0Fbd1pvBWy1qwjUum-fPwcCLlN9-IsLErVpQvYETGUskulGqd0lCfA0mfbbU"/>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-stack-md">
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="zoom_in">zoom_in</span>
+</button>
+<button class="p-2 bg-white rounded-full text-primary hover:bg-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Raw Metadata -->
+<div class="grid grid-cols-2 gap-stack-md">
+<div class="p-stack-md bg-white border border-border-subtle rounded-xl">
+<div class="font-label-sm text-[10px] text-text-muted uppercase mb-1">Raw Title</div>
+<div class="font-headline-lg text-[18px] text-primary">ขาย RTX 3070 TUF สวยๆ</div>
+</div>
+<div class="p-stack-md bg-white border border-border-subtle rounded-xl">
+<div class="font-label-sm text-[10px] text-text-muted uppercase mb-1">Raw Price</div>
+<div class="font-price-display text-price-display text-primary">8,500 THB</div>
+</div>
+<div class="p-stack-md bg-white border border-border-subtle rounded-xl">
+<div class="font-label-sm text-[10px] text-text-muted uppercase mb-1">Source</div>
+<div class="flex items-center gap-2 font-body-md text-primary">
+<span class="material-symbols-outlined text-[#1877F2]" data-icon="facebook" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+                            Facebook Marketplace
+                        </div>
+</div>
+<div class="p-stack-md bg-white border border-border-subtle rounded-xl">
+<div class="font-label-sm text-[10px] text-text-muted uppercase mb-1">Captured</div>
+<div class="flex items-center gap-2 font-body-md text-primary">
+<span class="material-symbols-outlined text-text-muted" data-icon="schedule">schedule</span>
+                            2 hours ago
+                        </div>
+</div>
+</div>
+<!-- Technical Details -->
+<div class="mt-stack-md p-stack-md bg-surface-container-high/50 border border-border-subtle rounded-xl">
+<h3 class="font-label-sm text-label-sm font-bold mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="description">description</span>
+                        ORIGINAL DESCRIPTION
+                    </h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">
+                        ใช้งานปกติ ประกันเหลือ 1 ปี อุปกรณ์ครบกล่อง ไม่เคยผ่านการขุด ใช้งานเล่นเกมอย่างเดียวครับ สภาพสวยๆ สนใจทักแชทได้เลยครับ นัดรับบางนาได้
+                    </p>
+</div>
+</section>
+<!-- Right Panel: Normalized Data Edit Form -->
+<section class="w-1/2 overflow-y-auto p-gutter bg-surface">
+<div class="flex items-center justify-between mb-stack-md">
+<h2 class="font-headline-lg text-[20px] font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="auto_fix_high">auto_fix_high</span>
+                        Normalized Data
+                    </h2>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-amber/10 text-status-amber border border-status-amber/20">
+<span class="material-symbols-outlined text-[16px]" data-icon="verified_user">verified_user</span>
+<span class="font-label-sm text-label-sm">82% Confidence</span>
+</div>
+</div>
+</div>
+<div class="space-y-stack-md">
+<!-- Product Selection -->
+<div class="space-y-base">
+<label class="font-label-sm text-label-sm text-text-muted uppercase">Product Master Record</label>
+<div class="relative">
+<div class="flex items-center bg-white border border-border-subtle rounded-lg p-3 group focus-within:border-secondary focus-within:ring-1 focus-within:ring-secondary transition-all">
+<span class="material-symbols-outlined text-secondary mr-3" data-icon="memory">memory</span>
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 font-body-md text-primary" type="text" value="ASUS TUF Gaming GeForce RTX 3070 8GB"/>
+<span class="material-symbols-outlined text-text-muted" data-icon="arrow_drop_down">arrow_drop_down</span>
+</div>
+<!-- Autocomplete Simulation -->
+<div class="mt-1 absolute w-full bg-white border border-border-subtle rounded-lg shadow-lg z-10 hidden">
+<div class="p-2 hover:bg-surface-container transition-colors cursor-pointer text-sm">ASUS TUF Gaming GeForce RTX 3070 OC Edition 8GB</div>
+<div class="p-2 hover:bg-surface-container transition-colors cursor-pointer text-sm">ASUS ROG Strix GeForce RTX 3070 8GB</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-stack-md">
+<!-- Variant -->
+<div class="space-y-base">
+<label class="font-label-sm text-label-sm text-text-muted uppercase">Variant</label>
+<select class="w-full bg-white border border-border-subtle rounded-lg p-3 font-body-md text-primary appearance-none focus:ring-1 focus:ring-secondary outline-none">
+<option selected="">OC Edition</option>
+<option>Base Edition</option>
+<option>V2 (LHR)</option>
+</select>
+</div>
+<!-- Condition -->
+<div class="space-y-base">
+<label class="font-label-sm text-label-sm text-text-muted uppercase">Condition detected</label>
+<div class="flex items-center bg-white border border-border-subtle rounded-lg p-3 font-body-md text-primary">
+<span class="material-symbols-outlined text-market-teal mr-2" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                                Good
+                            </div>
+</div>
+</div>
+<!-- Quality Flags -->
+<div class="p-stack-md bg-error-container/20 border border-error/20 rounded-xl">
+<div class="flex items-center gap-2 mb-stack-sm text-error">
+<span class="material-symbols-outlined text-[18px]" data-icon="report_problem">report_problem</span>
+<span class="font-label-sm text-label-sm font-bold">ISSUES FLAGGED</span>
+</div>
+<div class="flex items-center justify-between text-on-error-container bg-white border border-error/10 p-2 rounded-lg text-sm">
+<span>'Serial mismatch with sticker'</span>
+<button class="text-error hover:bg-error/10 p-1 rounded transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Price Analysis Mini-Widget -->
+<div class="p-stack-md bg-white border border-border-subtle rounded-xl shadow-sm">
+<div class="flex justify-between items-end mb-4">
+<div>
+<div class="font-label-sm text-[10px] text-text-muted uppercase">Market Valuation</div>
+<div class="text-2xl font-bold text-primary">8,500 <span class="text-sm font-normal text-text-muted">THB</span></div>
+</div>
+<div class="text-right">
+<span class="px-2 py-1 bg-market-teal/10 text-market-teal font-label-sm text-[10px] rounded-full">-15% Under Market</span>
+</div>
+</div>
+<!-- Price Distribution Bar -->
+<div class="relative h-2 w-full bg-surface-container rounded-full flex overflow-hidden">
+<div class="h-full bg-risk-red w-1/4"></div>
+<div class="h-full bg-market-teal w-1/2"></div>
+<div class="h-full bg-status-amber w-1/4"></div>
+</div>
+<div class="flex justify-between mt-1 font-label-sm text-[10px] text-text-muted">
+<span>Outlier</span>
+<span>Fair Market</span>
+<span>Premium</span>
+</div>
+<!-- Indicator -->
+<div class="relative h-4 mt-[-12px]">
+<div class="absolute left-[35%] w-0.5 h-6 bg-primary"></div>
+<div class="absolute left-[35%] mt-6 translate-x-[-50%] font-label-sm text-[10px] font-bold text-primary">CURRENT</div>
+</div>
+</div>
+</div>
+<!-- Sticky Action Footer -->
+<div class="mt-section-gap pt-stack-md border-t border-border-subtle grid grid-cols-2 gap-stack-sm">
+<button class="group flex items-center justify-center gap-2 py-3 bg-secondary text-white rounded-lg font-bold hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="done_all">done_all</span>
+                        Approve
+                        <span class="ml-2 px-1.5 py-0.5 bg-white/20 rounded font-label-sm text-[10px] group-hover:bg-white/30">[A]</span>
+</button>
+<button class="group flex items-center justify-center gap-2 py-3 border border-outline text-on-surface rounded-lg font-bold hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+                        Mark Duplicate
+                        <span class="ml-2 px-1.5 py-0.5 bg-surface-container-highest rounded font-label-sm text-[10px] group-hover:bg-outline/20">[D]</span>
+</button>
+<button class="group flex items-center justify-center gap-2 py-3 border border-error/50 text-error rounded-lg font-bold hover:bg-error/5 transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="delete_forever">delete_forever</span>
+                        Reject / Exclude
+                        <span class="ml-2 px-1.5 py-0.5 bg-error/10 rounded font-label-sm text-[10px] group-hover:bg-error/20">[R]</span>
+</button>
+<button class="group flex items-center justify-center gap-2 py-3 border border-outline text-on-surface rounded-lg font-bold hover:bg-surface-container-high transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="update">update</span>
+                        Later Review
+                        <span class="ml-2 px-1.5 py-0.5 bg-surface-container-highest rounded font-label-sm text-[10px] group-hover:bg-outline/20">[L]</span>
+</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Keyboard Shortcut Interaction Script -->
+<script>
+        document.addEventListener('keydown', (e) => {
+            const activeElement = document.activeElement;
+            if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'SELECT' || activeElement.tagName === 'TEXTAREA') {
+                return;
+            }
+
+            const key = e.key.toLowerCase();
+            const actionMap = {
+                'a': () => animateAction('Approve', 'bg-secondary'),
+                'r': () => animateAction('Reject', 'bg-error'),
+                'd': () => animateAction('Duplicate', 'bg-outline'),
+                'l': () => animateAction('Later', 'bg-outline')
+            };
+
+            if (actionMap[key]) {
+                actionMap[key]();
+            }
+        });
+
+        function animateAction(type, color) {
+            console.log(`Action: ${type}`);
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-8 right-8 ${color} text-white px-6 py-3 rounded-xl shadow-xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-[100]`;
+            toast.innerHTML = `<span class="material-symbols-outlined">info</span> Action Performed: ${type}`;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-20', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+    </script>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "[{\"title\":\"AMD Ryzen 7 5700X3D มือสอง\",\"snippet\":\"ประกาศขาย CPU มือสอง ราคา 7500 บาท มี URL อ้างอิง\",\"url\":\"https://example.test/live/5700x3d-good\",\"source\":\"fixture-live-search\",\"price_text\":\"7500 บาท\",\"observed_at\":\"2026-09-07 11:00:00\",\"evidence_level\":\"C\"},{\"title\":\"Ryzen 5700X3D + B550 bundle\",\"snippet\":\"รายการรวมบอร์ด ต้องตรวจสอบก่อนใช้เป็นราคาชิ้นเดียว\",\"url\":\"https://example.test/live/5700x3d-bundle\",\"source\":\"fixture-live-search\",\"price_text\":\"10500\",\"observed_at\":\"2026-09-07 11:02:00\",\"evidence_level\":\"D\"},{\"title\":\"รับซื้อ 5700X3D งบ 6000\",\"snippet\":\"โพสต์รับซื้อ ไม่ใช่ประกาศขาย\",\"url\":\"https://example.test/live/5700x3d-wanted\",\"source\":\"fixture-live-search\",\"price_text\":\"6000\",\"observed_at\":\"2026-09-07 11:03:00\",\"evidence_level\":\"D\"}]"
+          }
+        ]
+      }
+    }
+  ]
+}

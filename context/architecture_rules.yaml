@@ -1,0 +1,87 @@
+pricing:
+  llm_authoritative: false
+  asking_and_sold_separate: true
+  accepted_observations_only: true
+  snapshot_reproducibility_required: true
+  historical_snapshots_immutable: true
+  snapshot_provenance_required_for_new_snapshots: true
+  snapshot_confidence_method_version: confidence-v1
+  snapshot_confidence_deterministic: true
+  snapshot_confidence_changes_price_values: false
+  historical_confidence_reproducible_from_snapshot_time_inputs: true
+  review_corrections_overwrite_source_evidence: false
+  accepted_observations_derive_from_reviewed_values: true
+  community_submissions_direct_price_updates_allowed: false
+  category_invalid_quality_flags_excluded_from_snapshots: true
+
+collection:
+  provider_independent: true
+  staging_required: true
+  evidence_required: true
+  live_collection_enabled: false
+  paid_provider_calls_enabled: false
+  source_bypass_allowed: false
+  mock_db_persistence_enabled: true
+  coverage_planner_enabled: true
+  mock_scheduled_runner_enabled: true
+  failed_jobs_auto_retry: false
+  collection_run_summary_persistence_enabled: true
+  source_policy_enabled: true
+  source_incident_logging_enabled: true
+  source_health_reporting_enabled: true
+  live_provider_infrastructure_enabled: true
+  first_live_provider: gemini
+  live_provider_execution_requires_user_approval: true
+  offline_evidence_import_enabled: true
+  offline_import_creates_trusted_observations_directly: false
+  acquisition_adapters_converge_on_review_pipeline: true
+  community_signals_future_planner_input: true
+  category_validation_network_free: true
+
+cost:
+  zero_cost_poc_policy_enabled: true
+  external_spend_target_thb: 0
+  paid_api_allowed_without_owner_approval: false
+  paid_data_source_allowed_without_owner_approval: false
+  paid_infrastructure_allowed_without_owner_approval: false
+  paid_crawler_or_search_service_allowed_without_owner_approval: false
+  subscription_upgrade_allowed_without_owner_approval: false
+  metered_provider_requires_owner_approval: true
+  billing_or_credit_card_exposure_requires_owner_approval: true
+  paid_or_free_trial_billing_auto_enable_allowed: false
+  cost_owner_approval_blocker: OWNER_APPROVAL_REQUIRED
+
+review:
+  auto_accept_enabled: false
+  community_feedback_is_evidence_not_vote: true
+  calibration_analytics_enabled: true
+  fixture_metrics_prove_live_quality: false
+  calibration_distinguishes_fixture_from_live: true
+  bulk_auto_approval_allowed: false
+  validation_versions:
+    generic: generic-validation-v1
+    cpu: cpu-validation-v1
+    gpu: gpu-validation-v1
+  lanes:
+    - green
+    - amber
+    - red
+
+auth:
+  admin_routes_require_authentication: true
+  admin_authorization_server_side: true
+  ui_visibility_authorization_boundary: false
+  authenticated_actor_required_for_human_mutations: true
+  password_hashing_uses_php_password_hash: true
+  credential_or_session_secret_logging_allowed: false
+  default_admin_credentials_allowed: false
+
+privacy:
+  seller_pii_minimization: true
+  raw_evidence_public_by_default: false
+
+stack:
+  language: PHP
+  minimum_php: "8.1"
+  framework: "custom MVC"
+  database_access: PDO

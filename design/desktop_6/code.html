@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html lang="th"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Methodology - Price Radar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed": "#89f5e7",
+                        "status-violet": "#7C3AED",
+                        "primary-fixed-dim": "#bec6e0",
+                        "tertiary-fixed-dim": "#6bd8cb",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "on-primary-fixed": "#131b2e",
+                        "on-secondary-fixed-variant": "#2f2ebe",
+                        "secondary-fixed-dim": "#c0c1ff",
+                        "risk-red": "#DC2626",
+                        "on-tertiary-container": "#0c9488",
+                        "border-subtle": "#E2E8F0",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#131b2e",
+                        "on-error": "#ffffff",
+                        "status-blue": "#2563EB",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "tertiary": "#000000",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-container": "#6063ee",
+                        "on-surface-variant": "#45464d",
+                        "on-tertiary-fixed-variant": "#005049",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#bec6e0",
+                        "market-teal": "#0D9488",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary-fixed": "#00201d",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-fixed": "#e1e0ff",
+                        "background": "#f7f9fb",
+                        "surface-container-high": "#e6e8ea",
+                        "surface": "#f7f9fb",
+                        "primary": "#000000",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary-container": "#00201d",
+                        "on-primary-container": "#7c839b",
+                        "status-amber": "#D97706",
+                        "primary-fixed": "#dae2fd",
+                        "text-muted": "#64748B",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "on-secondary-fixed": "#07006c",
+                        "inverse-surface": "#2d3133",
+                        "secondary": "#4648d4",
+                        "on-background": "#191c1e",
+                        "outline": "#76777d",
+                        "surface-container": "#eceef0",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#fffbff",
+                        "surface-bright": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "base": "4px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "section-gap": "64px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["IBM Plex Sans Thai"],
+                        "headline-lg": ["IBM Plex Sans Thai"],
+                        "data-table": ["IBM Plex Sans"],
+                        "price-display": ["IBM Plex Sans"],
+                        "headline-lg-mobile": ["IBM Plex Sans Thai"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-md": ["IBM Plex Sans Thai"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.25", "fontWeight": "600"}],
+                        "data-table": ["14px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                        "price-display": ["28px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'IBM Plex Sans Thai', sans-serif; background-color: #f7f9fb; color: #191c1e; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .data-grid-pattern {
+            background-image: radial-gradient(circle, #E2E8F0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .flow-line {
+            background: repeating-linear-gradient(90deg, #4648d4 0, #4648d4 10px, transparent 10px, transparent 20px);
+        }
+    </style>
+</head>
+<body class="bg-background">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 left-0 w-full z-50 bg-surface-container-lowest flex items-center justify-between px-margin-mobile md:px-gutter max-w-container-max mx-auto h-16 border-b border-border-subtle">
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">Price Radar</span>
+<div class="hidden md:flex gap-6 ml-8">
+<a class="text-on-surface-variant hover:text-secondary transition-colors font-medium" href="#">Check Price</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors font-medium" href="#">Check Deal</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors font-medium" href="#">Spec Builder</a>
+<a class="text-primary border-b-2 border-secondary font-bold pb-1" href="#">Methodology</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-secondary scale-95 active:opacity-80 transition-all">notifications</button>
+<button class="material-symbols-outlined text-secondary scale-95 active:opacity-80 transition-all">account_circle</button>
+</div>
+</nav>
+<main class="pt-24 pb-section-gap max-w-container-max mx-auto px-margin-mobile md:px-gutter">
+<!-- Hero Section -->
+<header class="mb-section-gap relative overflow-hidden rounded-xl border border-border-subtle bg-surface-container-lowest p-stack-md md:p-12">
+<div class="absolute top-0 right-0 w-1/3 h-full opacity-10 pointer-events-none data-grid-pattern"></div>
+<div class="relative z-10 max-w-2xl">
+<span class="font-label-sm text-label-sm text-secondary mb-4 block uppercase tracking-widest">Principles</span>
+<h1 class="font-headline-xl text-headline-xl text-primary mb-6">ความโปร่งใสคือหัวใจของข้อมูลเรา</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Price Radar รวบรวมข้อมูลราคาขายมือสองจากแหล่งประกาศสาธารณะทั่วประเทศ เพื่อสร้างดัชนีราคาตลาดที่เป็นกลาง 
+                    เราไม่ได้กำหนดราคาเอง แต่เราสะท้อนความเป็นจริงของตลาดผ่านชุดข้อมูลขนาดใหญ่ (Big Data) ที่ผ่านการคัดกรองอย่างเข้มงวด
+                </p>
+</div>
+</header>
+<!-- Data Journey Flow -->
+<section class="mb-section-gap">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-12 text-center md:text-left">เส้นทางการเดินทางของข้อมูล (Data Journey)</h2>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter relative">
+<!-- Connectors for Desktop -->
+<div class="hidden md:block absolute top-1/2 left-0 w-full h-[1px] bg-border-subtle -translate-y-1/2 z-0"></div>
+<!-- Step 1 -->
+<div class="relative z-10 bg-surface-container-lowest border border-border-subtle p-stack-md rounded-lg group hover:shadow-lg transition-shadow">
+<div class="w-12 h-12 bg-secondary/10 text-secondary rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">cloud_download</span>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">รวบรวมข้อมูล</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Web Scraping จาก Marketplace และ Community ต่างๆ แบบ Real-time</p>
+</div>
+<!-- Step 2 -->
+<div class="relative z-10 bg-surface-container-lowest border border-border-subtle p-stack-md rounded-lg group hover:shadow-lg transition-shadow">
+<div class="w-12 h-12 bg-market-teal/10 text-market-teal rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">filter_alt</span>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">คัดกรอง &amp; Normalize</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">จัดระเบียบโครงสร้างข้อมูลชื่อรุ่น สเปก และตัดข้อมูลที่ไม่เกี่ยวข้องออก</p>
+</div>
+<!-- Step 3 -->
+<div class="relative z-10 bg-surface-container-lowest border border-border-subtle p-stack-md rounded-lg group hover:shadow-lg transition-shadow">
+<div class="w-12 h-12 bg-status-amber/10 text-status-amber rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-2">ประเมินความมั่นใจ</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">คำนวณ Confidence Score ตามจำนวนชุดข้อมูลและความหลากหลายของแหล่งที่มา</p>
+</div>
+<!-- Step 4 -->
+<div class="relative z-10 bg-secondary text-on-primary border border-secondary p-stack-md rounded-lg group shadow-xl">
+<div class="w-12 h-12 bg-white/20 text-white rounded-full flex items-center justify-center mb-4">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile mb-2">คำนวณดัชนี</h3>
+<p class="font-body-md text-body-md text-white/80 text-sm">ประมวลผลออกมาเป็นราคากลาง ช่วงราคา และระดับความคุ้มค่า</p>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Calculation & Filtering -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter mb-section-gap">
+<!-- Price Calculation (Median/Quartile) -->
+<div class="lg:col-span-7 bg-white border border-border-subtle rounded-xl p-8 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary">functions</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">การคำนวณราคาแบบมืออาชีพ</h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">
+                        เราเลือกใช้ค่า **Median (มัธยฐาน)** และ **Quartiles (Q1, Q3)** แทนค่าเฉลี่ย (Mean) 
+                        เพราะตลาดสินค้ามือสองมีความแปรปรวนสูงจากประกาศหลอกลวง (Scams) หรือสินค้าที่ขายราคาสูงเกินจริง
+                    </p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-lg border border-outline-variant">
+<div class="flex justify-between items-end mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Low (Q1)</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">Median</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">High (Q3)</span>
+</div>
+<!-- Distribution Bar Visual -->
+<div class="h-8 w-full flex rounded-full overflow-hidden border border-border-subtle">
+<div class="h-full bg-risk-red/40 w-[20%]"></div>
+<div class="h-full bg-market-teal/40 w-[60%] flex items-center justify-center">
+<div class="w-[2px] h-full bg-secondary shadow-[0_0_8px_rgba(70,72,212,0.5)] z-10"></div>
+</div>
+<div class="h-full bg-status-violet/40 w-[20%]"></div>
+</div>
+<div class="mt-4 grid grid-cols-3 gap-4 text-center">
+<div class="text-[10px] font-label-sm text-on-surface-variant">ตัด Outliers ฝั่งราคาถูกผิดปกติออก</div>
+<div class="text-[10px] font-label-sm text-secondary font-bold uppercase">ช่วงราคาที่แนะนำ</div>
+<div class="text-[10px] font-label-sm text-on-surface-variant">สินค้าสภาพนางฟ้าหรือประกันยาว</div>
+</div>
+</div>
+</div>
+<!-- Data Filtering -->
+<div class="lg:col-span-5 bg-surface-container-highest border border-border-subtle rounded-xl p-8">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-risk-red">cleaning_services</span>
+<h2 class="font-headline-lg text-headline-lg text-primary">การกรองข้อมูลขยะ</h2>
+</div>
+<ul class="space-y-4">
+<li class="flex items-start gap-4 p-4 bg-white/50 rounded-lg border border-border-subtle">
+<span class="material-symbols-outlined text-risk-red mt-1" style="font-variation-settings: 'FILL' 1;">cancel</span>
+<div>
+<p class="font-bold font-body-md text-primary">Deposit prices</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">การประกาศราคาจอง (เช่น 500.-) ไม่ถูกนำมาคำนวณ</p>
+</div>
+</li>
+<li class="flex items-start gap-4 p-4 bg-white/50 rounded-lg border border-border-subtle">
+<span class="material-symbols-outlined text-risk-red mt-1" style="font-variation-settings: 'FILL' 1;">cancel</span>
+<div>
+<p class="font-bold font-body-md text-primary">Defective products</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">รายการที่เป็นงานช่าง อะไหล่ หรือเสีย จะถูกคัดออก</p>
+</div>
+</li>
+<li class="flex items-start gap-4 p-4 bg-white/50 rounded-lg border border-border-subtle">
+<span class="material-symbols-outlined text-risk-red mt-1" style="font-variation-settings: 'FILL' 1;">cancel</span>
+<div>
+<p class="font-bold font-body-md text-primary">Whole PC listings</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">คัดแยกการขายแยกชิ้นออกจากการขายเหมายกเครื่อง</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Confidence & Freshness Guide -->
+<section class="mb-section-gap">
+<div class="text-center mb-12">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">ทำความเข้าใจ Badge ของเรา</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mx-auto">สัญลักษณ์ที่ช่วยให้คุณตัดสินใจได้แม่นยำขึ้นบนพื้นฐานของปริมาณข้อมูล</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- High Confidence -->
+<div class="bg-white border border-border-subtle p-stack-md rounded-xl text-center">
+<div class="inline-flex items-center gap-1 px-3 py-1 bg-market-teal/10 text-market-teal rounded-full font-label-sm text-label-sm mb-4">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+                        High Confidence
+                    </div>
+<p class="font-body-md text-body-md text-on-surface">ข้อมูล &gt; 50 รายการล่าสุด</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-2">จากอย่างน้อย 3 แหล่งที่มา ราคาเฉลี่ยมีความเสถียรสูง</p>
+</div>
+<!-- Medium Confidence -->
+<div class="bg-white border border-border-subtle p-stack-md rounded-xl text-center">
+<div class="inline-flex items-center gap-1 px-3 py-1 bg-status-amber/10 text-status-amber rounded-full font-label-sm text-label-sm mb-4">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                        Fresh Updates
+                    </div>
+<p class="font-body-md text-body-md text-on-surface">ข้อมูลอัปเดตภายใน 24 ชม.</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-2">ข้อมูลอาจจะน้อยแต่มีความสดใหม่ สะท้อนกระแสตลาดล่าสุด</p>
+</div>
+<!-- Low Confidence -->
+<div class="bg-white border border-border-subtle p-stack-md rounded-xl text-center">
+<div class="inline-flex items-center gap-1 px-3 py-1 bg-status-violet/10 text-status-violet rounded-full font-label-sm text-label-sm mb-4">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">inventory</span>
+                        Limited Data
+                    </div>
+<p class="font-body-md text-body-md text-on-surface">สินค้ารุ่นหายาก / ข้อมูลน้อย</p>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mt-2">ควรใช้ความระมัดระวังในการเทียบราคา เนื่องจากปริมาณตัวอย่างต่ำ</p>
+</div>
+</div>
+</section>
+<!-- Limitations & Disclaimer -->
+<section class="bg-primary-container text-on-primary-container p-8 rounded-xl border border-outline flex flex-col md:flex-row items-center gap-8">
+<div class="flex-1">
+<h2 class="font-headline-lg text-headline-lg text-white mb-4">ข้อจำกัดของข้อมูล (Limitations)</h2>
+<div class="space-y-4 opacity-80">
+<p class="font-body-md text-body-md">ข้อมูลทั้งหมดบน Price Radar คือ **Asking Prices** (ราคาที่มีการประกาศขาย) ไม่ใช่ **Final Sold Prices** (ราคาที่มีการจบการขายจริง) ซึ่งในโลกความเป็นจริงอาจมีการต่อรองราคาเกิดขึ้น</p>
+<p class="font-body-md text-body-md">ระบบของเราทำงานโดยอัตโนมัติ แม้เราจะมีการกรองอย่างดีที่สุด แต่ขอแนะนำให้ผู้ใช้ตรวจสอบความน่าเชื่อถือของผู้ขายในแต่ละแพลตฟอร์มด้วยตัวเองเสมอ</p>
+</div>
+</div>
+<div class="hidden md:block w-48 h-48">
+
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-margin-mobile md:px-gutter max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-stack-md border-t border-border-subtle bg-surface-container mt-12">
+<div class="flex flex-col items-center md:items-start">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-surface mb-2">Price Radar</span>
+<p class="font-body-md text-body-md text-text-muted text-sm">© 2024 Used PC Price Radar. All rights reserved.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-6">
+<a class="text-primary underline font-medium font-label-sm" href="#">Methodology</a>
+<a class="text-text-muted hover:text-secondary transition-colors font-label-sm" href="#">Terms of Service</a>
+<a class="text-text-muted hover:text-secondary transition-colors font-label-sm" href="#">Privacy Policy</a>
+<a class="text-text-muted hover:text-secondary transition-colors font-label-sm" href="#">Contact Us</a>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for active cards
+        document.querySelectorAll('.rounded-lg').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'transform 0.2s ease-out';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body></html>
