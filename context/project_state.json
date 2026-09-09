@@ -138,6 +138,6 @@
     "Category validation rules are fixture-calibrated and need real reviewed market cases after the first live POC",
     "Review calibration analytics can recognize imported REAL evidence, but no committed/live reviewed sample exists; current seeded values remain fixture/mock baseline only",
     "Phase 4A responsive assessment is code-level only; no browser screenshot/pixel validation has been performed",
-    "No Git repository is present in this working directory"
+    "Git repository exists locally; current OFFICE handoff branch is office and should be verified after pull on STUDIO"
   ]
 }
