@@ -78,6 +78,17 @@ Public UI should show:
 
 Admin UI may show component scores, reason codes, weights, caps, and source distribution.
 
+## Phase 4B Public Components
+
+The Phase 4B public flow uses these conventions for Home, Price Index/Search, Product Detail, and Deal Checker:
+
+- Product cards show product identity first, then `ช่วงราคาที่พบ`, `ราคากลาง`, confidence label, and sample count when market data is sufficient.
+- Product cards and detail pages show `ข้อมูลตลาดยังไม่เพียงพอ` instead of inventing price ranges when accepted data is not sufficient.
+- Confidence badges keep `HIGH`, `MEDIUM`, or `LOW` visible alongside Thai explanatory text; numeric scores stay secondary/Admin-only.
+- Public detail pages should not expose raw observation IDs, calculation hashes, validation rule versions, or provenance internals.
+- Deal Checker wording must remain neutral: below range, in range, slightly above range, premium asking price, or insufficient data.
+- Primary public navigation should keep Price Index/Search, Deal Checker, and Methodology prominent; prototype modules stay secondary or clearly marked as coming soon.
+
 ## Review Lanes
 
 - GREEN: strong product resolution, valid standalone component evidence, no critical flags.

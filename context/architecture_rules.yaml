@@ -85,3 +85,38 @@ stack:
   minimum_php: "8.1"
   framework: "custom MVC"
   database_access: PDO
+
+development_environment:
+  current_topology: 'CLIENT Codex CLI -> N:\modinspect -> STUDIO Laragon -> shared Cloud DEV DB'
+  repository_path: 'N:\modinspect'
+  resolved_share: '\\192.168.1.10\www\modinspect'
+  runtime_target: "STUDIO Laragon Apache 2.4.68 / PHP 8.3.33"
+  old_office_xampp_path_authoritative: false
+  expected_php: "8.3.x"
+  document_root: 'C:\laragon\www\modinspect\public'
+  front_controller: "public/index.php"
+  application_url: "http://192.168.1.10/modinspect/public/"
+  ssl_temporarily_disabled: true
+  ssl_disabled_reason: "vpnserver_x64 owns TCP/443"
+
+database_environment:
+  shared_dev_db_enabled: true
+  shared_dev_db_provider: "HostAtom DirectAdmin Cloud MariaDB"
+  shared_dev_db_host: "thsv16.hostatom.com"
+  shared_dev_db_port: 3306
+  shared_dev_db_name: "thuliam_modinspect"
+  shared_dev_db_password_storage: ".env only"
+  shared_dev_db_is_production: false
+  automated_tests_may_mutate_shared_dev_db: false
+  automated_tests_require_isolated_test_db: true
+  do_not_reimport_without_schema_inspection: true
+test_database_environment:
+  env_file: ".env.testing"
+  host: "127.0.0.1"
+  database: "modinspect_test"
+  bootstrap_command: "php tests/bootstrap_test_db.php --fresh"
+  runner_command: "php tests/run.php"
+  cloud_host_blocked: "thsv16.hostatom.com"
+  cloud_database_blocked: "thuliam_modinspect"
+  fail_closed_error: "UNSAFE_TEST_DATABASE_BLOCKED"
+  tests_rewrite_application_env: false

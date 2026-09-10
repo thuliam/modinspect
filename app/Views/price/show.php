@@ -1,62 +1,151 @@
-<?php $hasMarketSnapshot=!empty($product['median']) && (int)($product['valid_sample_size']??0)>0 && (int)($product['accepted_observation_count']??0)>0; $manifest=json_decode((string)($product['calculation_manifest'] ?? ''),true) ?: []; $confidence=$manifest['confidence'] ?? []; $components=$confidence['components'] ?? []; ?>
-<section class="container product-page">
-<div class="breadcrumbs"><?= htmlspecialchars($product['category_name']) ?> › <?= htmlspecialchars($product['brand_name']) ?> › <?= htmlspecialchars($product['model_name']) ?></div>
-<div class="product-heading">
-    <div><h1><?= htmlspecialchars($product['full_name']) ?></h1><div class="spec-chips"><span><?= htmlspecialchars($product['generation']??'HARDWARE') ?></span><span><?= htmlspecialchars($product['spec_summary']??'') ?></span></div></div>
-    <div class="heading-actions">
-        <button class="ghost disabled-control" type="button" disabled><span class="material-symbols-outlined">bookmark</span> บันทึก — กำลังพัฒนา</button>
-        <a class="button ghost" href="<?= $base ?>/compare/<?= $product['slug'] ?>"><span class="material-symbols-outlined">compare_arrows</span> เปรียบเทียบ</a>
-        <button class="disabled-control" type="button" disabled><span class="material-symbols-outlined">share</span> แชร์ — กำลังพัฒนา</button>
-    </div>
-</div>
+<?php
+if (!function_exists('mi_public_confidence_label')) {
+    function mi_public_confidence_label(?string $label): string
+    {
+        return match (strtolower((string) $label)) {
+            'high' => 'HIGH · น่าเชื่อถือสูง',
+            'medium' => 'MEDIUM · ใช้ประกอบการตัดสินใจ',
+            'low' => 'LOW · ข้อมูลยังจำกัด',
+            default => 'ข้อมูลยังไม่พอ',
+        };
+    }
+}
 
-<?php if(!$hasMarketSnapshot): ?>
-<div class="empty">
-    <h2>ข้อมูลตลาดยังไม่เพียงพอ</h2>
-    <p>สินค้านี้ยังไม่มีข้อมูลที่ผ่านการตรวจแล้วเพียงพอ จึงไม่แสดงตัวเลขตลาดเป็นความจริงปัจจุบัน</p>
-    <?php if(!empty($product['median'])): ?><p class="muted">มีข้อมูลดิบ/ทดสอบในระบบ แต่ยังไม่ผ่านการยอมรับสำหรับ public price index</p><?php endif; ?>
-</div>
-<?php else: ?>
-<div class="top-data-grid">
-    <div class="card price-dashboard">
-        <div class="price-top">
-            <div><span class="meta">ราคาตลาดโดยประมาณ (MEDIAN)</span><div class="big-price">฿<?= number_format((float)$product['median']) ?> <small>มือสอง</small></div></div>
-            <div><span class="confidence-chip">ความเชื่อมั่น: <?= htmlspecialchars(strtoupper((string)$product['confidence_label'])) ?></span><small>Snapshot <?= htmlspecialchars($product['last_calculated_at'] ?? '-') ?></small></div>
+if (!function_exists('mi_public_confidence_reason')) {
+    function mi_public_confidence_reason(array $confidence): string
+    {
+        $reasons = array_values(array_filter($confidence['reasons'] ?? []));
+        if ($reasons) {
+            return implode(' · ', array_slice($reasons, 0, 3));
+        }
+
+        return 'พิจารณาจากจำนวนข้อมูล ความสด และความหลากหลายของแหล่งข้อมูล';
+    }
+}
+
+$hasMarketSnapshot = !empty($product['median'])
+    && (int) ($product['valid_sample_size'] ?? 0) > 0
+    && (int) ($product['accepted_observation_count'] ?? 0) > 0;
+$manifest = json_decode((string) ($product['calculation_manifest'] ?? ''), true) ?: [];
+$confidence = $manifest['confidence'] ?? [];
+$confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insufficient'));
+?>
+<section class="container product-page mi-product-detail">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="<?= $base ?>/price">เช็กราคา</a>
+        <span>›</span>
+        <span><?= htmlspecialchars($product['category_name']) ?></span>
+        <span>›</span>
+        <span><?= htmlspecialchars($product['brand_name']) ?></span>
+    </nav>
+
+    <header class="mi-product-hero">
+        <div>
+            <span class="eyebrow"><?= htmlspecialchars($product['category_name']) ?></span>
+            <h1><?= htmlspecialchars($product['full_name']) ?></h1>
+            <div class="spec-chips">
+                <?php if (!empty($product['brand_name'])): ?><span><?= htmlspecialchars($product['brand_name']) ?></span><?php endif; ?>
+                <?php if (!empty($product['generation'])): ?><span><?= htmlspecialchars($product['generation']) ?></span><?php endif; ?>
+                <?php if (!empty($product['spec_summary'])): ?><span><?= htmlspecialchars($product['spec_summary']) ?></span><?php endif; ?>
+            </div>
         </div>
-        <div class="range-labels"><span>Q1 ฿<?= number_format((float)$product['q1']) ?></span><span>Q3 ฿<?= number_format((float)$product['q3']) ?></span></div>
-        <div class="draft-distribution"><i></i></div>
-        <div class="zone-labels"><span>ต่ำผิดปกติ</span><span>ช่วงตลาด</span><span>สูงเล็กน้อย</span><span>พรีเมียม</span></div>
-        <div class="price-stats">
-            <div><small>จำนวนตัวอย่าง</small><b><?= (int)$product['valid_sample_size'] ?> รายการ</b></div>
-            <div><small>ช่วง Q3-Q1</small><b>฿<?= number_format((float)$product['q3']-(float)$product['q1']) ?></b></div>
-            <div><small>ประเภทข้อมูล</small><b>Asking</b></div>
-            <div><small>ความสด</small><b><?= number_format((float)($product['fresh_sample_ratio'] ?? 0),1) ?>%</b></div>
+        <a class="button ghost" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>">เช็กดีลรุ่นนี้</a>
+    </header>
+
+    <?php if (!$hasMarketSnapshot): ?>
+        <div class="mi-detail-grid no-data-detail">
+            <article class="card mi-product-summary-card">
+                <h2>ข้อมูลสินค้า</h2>
+                <dl class="mi-context-list">
+                    <div><dt>หมวดหมู่</dt><dd><?= htmlspecialchars($product['category_name'] ?? '-') ?></dd></div>
+                    <div><dt>แบรนด์</dt><dd><?= htmlspecialchars($product['brand_name'] ?? '-') ?></dd></div>
+                    <div><dt>รุ่น</dt><dd><?= htmlspecialchars($product['model_name'] ?? $product['full_name']) ?></dd></div>
+                    <div><dt>เจเนอเรชัน/บริบท</dt><dd><?= htmlspecialchars($product['generation'] ?? '-') ?></dd></div>
+                    <div><dt>สเปกย่อ</dt><dd><?= htmlspecialchars($product['spec_summary'] ?? '-') ?></dd></div>
+                </dl>
+            </article>
+
+            <aside class="mi-empty-state product-empty">
+                <span class="price-status-badge">ยังไม่มีราคาตลาด</span>
+                <h2>ข้อมูลตลาดยังไม่เพียงพอ</h2>
+                <p>ModInspect ยังไม่มีข้อมูลที่ผ่านการตรวจสอบมากพอสำหรับรุ่นนี้ จึงไม่สร้างช่วงราคาหรือราคากลางให้ดูเหมือนเป็นราคาตลาดจริง</p>
+                <p>คุณยังสามารถใช้ Deal Checker เพื่อบันทึกราคาที่เจอได้ แต่ผลลัพธ์จะแจ้งอย่างตรงไปตรงมาว่ายังเทียบตลาดไม่ได้</p>
+                <div class="mi-actions">
+                    <a class="button" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>">ใช้ Deal Checker</a>
+                    <a class="button ghost" href="<?= $base ?>/price">ค้นหารุ่นอื่น</a>
+                    <a class="button ghost" href="<?= $base ?>/methodology">อ่านวิธีคำนวณ</a>
+                </div>
+            </aside>
         </div>
-        <?php if($confidence): ?><div class="notice">เหตุผล: <?= htmlspecialchars(implode(' · ',array_slice($confidence['reasons'] ?? [],0,4))) ?></div><?php endif; ?>
-    </div>
-    <div class="card trend-card">
-        <div class="section-head"><h2>แนวโน้มราคา</h2><span>30 วันล่าสุด</span></div>
-        <?php if($history): ?><div class="bar-chart"><?php foreach($history as $point): ?><i style="height:<?= max(8,min(100,(int)(((float)$point['median']/max(1,(float)$product['median']))*70))) ?>%"></i><?php endforeach; ?></div><?php else: ?><div class="empty">ยังไม่มี history เพียงพอ</div><?php endif; ?>
-    </div>
-</div>
-<div class="middle-grid">
-    <form class="dark-deal" action="<?= $base ?>/deal-checker" method="get">
-        <h2>เจอราคามาเท่าไหร่?</h2>
-        <p>ส่งต่อไป Deal Checker เพื่อประเมินกับชุดข้อมูลราคาที่ผ่านการตรวจแล้ว</p>
-        <input type="hidden" name="product" value="<?= (int)$product['id'] ?>">
-        <label>ราคาที่พบ (THB)<input name="user_price" placeholder="เช่น 7900"></label>
-        <button>เปิด Deal Checker</button>
-    </form>
-    <div class="card used-new">
-        <h2>ขอบเขตข้อมูล</h2>
-        <p>ดัชนีนี้สะท้อนราคาประกาศมือสองที่ผ่าน human review แล้ว ไม่ใช่ราคาปิดดีลจริงหรือราคาของใหม่</p>
-        <?php if($components): ?><div class="notice">Confidence v1: sample <?= number_format((float)($components['sample']['score'] ?? 0),0) ?> · freshness <?= number_format((float)($components['freshness']['score'] ?? 0),0) ?> · sources <?= number_format((float)($components['source_diversity']['score'] ?? 0),0) ?> · evidence <?= number_format((float)($components['evidence_quality']['score'] ?? 0),0) ?></div><?php endif; ?>
-        <div class="notice">หากตัวอย่างน้อยหรือหลักฐานไม่สด ระบบจะลดความมั่นใจและไม่ auto-accept ข้อมูลใหม่</div>
-    </div>
-</div>
-<div class="bottom-grid">
-    <div class="card checklist"><h2>Checklist ก่อนโอนเงิน</h2><?php foreach(['ตรวจรุ่นให้ตรงกับประกาศ','ขอหลักฐาน Benchmark','เช็กประกันและ serial'] as $x): ?><div><i>✓</i><span><b><?= $x ?></b><small>ขอหลักฐานและตรวจสอบกับผู้ขายก่อนชำระเงิน</small></span></div><?php endforeach; ?></div>
-    <div class="limitation"><i>!</i><div><h3>ข้อจำกัดของข้อมูล</h3><p>ข้อมูลราคาชุดนี้มาจากราคาตั้งขาย จำนวน <?= (int)$product['valid_sample_size'] ?> รายการ และยังต้องใช้ดุลยพินิจร่วมกับสภาพสินค้าและประกัน</p></div></div>
-</div>
-<?php endif; ?>
+    <?php else: ?>
+        <div class="mi-detail-grid">
+            <article class="card mi-price-answer-card">
+                <div class="mi-price-label">ช่วงราคาที่พบ</div>
+                <div class="mi-market-range">฿<?= number_format((float) $product['q1']) ?>-<?= number_format((float) $product['q3']) ?></div>
+                <div class="mi-median-line">
+                    <span>ราคากลาง</span>
+                    <strong>฿<?= number_format((float) $product['median']) ?></strong>
+                </div>
+                <div class="mi-range-bar" aria-hidden="true"><span></span></div>
+                <p>ราคานี้มาจากราคาประกาศมือสองที่ผ่านการตรวจสอบ ไม่ใช่ราคาปิดดีลจริง และอาจต่างตามสภาพ ประกัน อุปกรณ์ และบริการของผู้ขาย</p>
+            </article>
+
+            <aside class="card mi-confidence-card">
+                <span class="confidence-badge confidence-<?= htmlspecialchars($confidenceClass) ?>">
+                    <?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?>
+                </span>
+                <p><?= htmlspecialchars(mi_public_confidence_reason($confidence)) ?></p>
+                <dl class="mi-context-list">
+                    <div><dt>จำนวนตัวอย่าง</dt><dd><?= (int) $product['valid_sample_size'] ?> รายการ</dd></div>
+                    <div><dt>ข้อมูลล่าสุด</dt><dd><?= htmlspecialchars($product['last_calculated_at'] ?? '-') ?></dd></div>
+                    <div><dt>ความสดของข้อมูล</dt><dd><?= number_format((float) ($product['fresh_sample_ratio'] ?? 0), 1) ?>%</dd></div>
+                    <div><dt>ประเภทข้อมูล</dt><dd>ราคาประกาศ</dd></div>
+                </dl>
+            </aside>
+        </div>
+
+        <div class="mi-secondary-grid">
+            <form class="card mi-deal-cta" action="<?= $base ?>/deal-checker" method="get">
+                <h2>เจอราคาประกาศของรุ่นนี้?</h2>
+                <p>ใส่ราคาที่คุณเจอเพื่อดูว่าอยู่ต่ำกว่า อยู่ในช่วง หรือสูงกว่าช่วงราคาที่พบ</p>
+                <input type="hidden" name="product" value="<?= (int) $product['id'] ?>">
+                <label for="detail-user-price">ราคาที่พบ (บาท)</label>
+                <div class="mi-inline-form">
+                    <input id="detail-user-price" name="user_price" inputmode="numeric" placeholder="เช่น 7900">
+                    <button type="submit">เปิด Deal Checker</button>
+                </div>
+            </form>
+
+            <article class="card mi-method-card">
+                <h2>เข้าใจข้อมูลนี้</h2>
+                <p>ช่วงราคาที่พบช่วยให้เห็นกรอบตลาดโดยประมาณ ส่วนความน่าเชื่อถือบอกคุณภาพของข้อมูล ไม่ใช่คำตัดสินว่าดีลนั้นดีหรือไม่ดี</p>
+                <a class="button ghost" href="<?= $base ?>/methodology">อ่านวิธีคำนวณ</a>
+            </article>
+        </div>
+
+        <section class="card mi-history-card">
+            <div class="mi-section-head compact">
+                <div>
+                    <span class="eyebrow">Price History</span>
+                    <h2>ประวัติราคากลาง</h2>
+                </div>
+                <span class="muted">แสดงเมื่อมีข้อมูลย้อนหลัง</span>
+            </div>
+            <?php if ($history): ?>
+                <div class="history mi-history-list">
+                    <?php foreach ($history as $point): ?>
+                        <div>
+                            <span><?= htmlspecialchars($point['snapshot_date'] ?? $point['created_at'] ?? '-') ?></span>
+                            <strong>฿<?= number_format((float) $point['median']) ?></strong>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="mini-empty">
+                    <strong>ยังไม่มีข้อมูลย้อนหลังเพียงพอ</strong>
+                    <span>หน้ารุ่นนี้จะแสดงประวัติเมื่อมีชุดข้อมูลราคาหลายช่วงเวลา</span>
+                </div>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
 </section>

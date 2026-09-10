@@ -1,16 +1,77 @@
-<section class="draft-hero"><div class="container hero-center">
-<span class="live-chip"><span class="material-symbols-outlined">monitoring</span> REVIEWED PRICE DATA</span>
-<h1>เช็กราคาคอมมือสอง <em>ก่อนจ่ายเงินจริง</em></h1>
-<p>ดูช่วงราคาตลาดเมื่อมีข้อมูลที่ผ่านการตรวจแล้วเพียงพอ และบอกตรงเมื่อข้อมูลยังไม่พร้อม</p>
-<form class="draft-search" action="<?= $base ?>/price" method="get"><span class="material-symbols-outlined">search</span><input name="q" placeholder="ค้นหา CPU, GPU หรือรุ่นสินค้า" required><button>เช็กราคา</button><span class="button ghost disabled-control">อัปโหลดรูป — ยังไม่เปิดใช้งาน</span></form>
-<div class="suggestions">แนะนำตอนนี้: <a href="<?= $base ?>/price?q=5700X3D">5700X3D</a><a href="<?= $base ?>/price?q=RTX+3070">RTX 3070</a><a href="<?= $base ?>/price?q=RX+6700">RX 6700</a></div>
-</div></section>
-<section class="container market-strip">
-    <div><small>รุ่นติดตาม</small><b><?= (int)$stats['products'] ?></b><span>Product Master</span></div>
-    <div><small>REVIEW QUEUE</small><b><?= (int)$stats['pending'] ?></b><span>Human-controlled</span></div>
-    <div><small>REVIEWED DATA</small><b><?= (int)$stats['accepted_observations'] ?></b><span>แหล่งคำนวณราคา</span></div>
+<section class="mi-hero">
+    <div class="container mi-hero-grid">
+        <div class="mi-hero-copy">
+            <span class="eyebrow">ModInspect</span>
+            <h1>เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง</h1>
+            <p class="lead">ค้นหารุ่น CPU/GPU มือสอง ดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และใช้ Deal Checker เปรียบเทียบราคาที่คุณเจออย่างเป็นกลาง</p>
+            <form class="mi-search" action="<?= $base ?>/price" method="get">
+                <label for="home-search">ค้นหารุ่นสินค้า</label>
+                <div>
+                    <input id="home-search" name="q" placeholder="เช่น Ryzen 7 5700X3D หรือ RTX 3070" required>
+                    <button type="submit">เช็กราคา</button>
+                </div>
+            </form>
+            <div class="mi-quick-links" aria-label="Search examples">
+                <span>ตัวอย่าง:</span>
+                <a href="<?= $base ?>/price?q=5700X3D">5700X3D</a>
+                <a href="<?= $base ?>/price?q=RTX+3070">RTX 3070</a>
+                <a href="<?= $base ?>/price?q=RX+6700">RX 6700</a>
+            </div>
+            <p class="mi-data-note">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
+        </div>
+    </div>
 </section>
-<section class="container category-section"><h2>หมวดหมู่ยอดนิยม</h2><div class="category-grid"><?php foreach([['memory','CPU',$stats['cpu_products'].' รุ่น'],['developer_board','GPU',$stats['gpu_products'].' รุ่น'],['view_module','RAM','กำลังพัฒนา'],['database','Storage','กำลังพัฒนา'],['settings_input_component','Board','กำลังพัฒนา'],['bolt','PSU','กำลังพัฒนา'],['monitor','Set PC','กำลังพัฒนา']] as $c): ?><a href="<?= $base ?>/price?category=<?= urlencode(strtolower($c[1])) ?>"><i class="material-symbols-outlined"><?= $c[0] ?></i><b><?= $c[1] ?></b><small><?= htmlspecialchars((string)$c[2]) ?></small></a><?php endforeach; ?></div></section>
-<section class="how-section"><div class="container"><h2>วิธีใช้งานใน 3 ขั้นตอน</h2><div class="how-grid"><div><i>1</i><h3>ค้นหา</h3><p>พิมพ์ชื่อรุ่นอุปกรณ์ที่คุณสนใจ</p></div><div><i>2</i><h3>ดูข้อมูลราคา</h3><p>ระบบจะแสดงช่วงราคาเฉพาะเมื่อมีข้อมูลที่ผ่านการตรวจแล้ว</p></div><div><i>3</i><h3>ตัดสินใจ</h3><p>ใช้ Deal Checker และข้อจำกัดของข้อมูลประกอบการตรวจสินค้าเอง</p></div></div></div></section>
-<section class="container deal-banner"><div><h2>เจอดีลที่น่าสงสัย?</h2><p>ลองใช้ <b>Deal Checker</b> ประเมินตำแหน่งราคาเมื่อสินค้านั้นมีข้อมูลตลาดเพียงพอ</p></div><a class="button" href="<?= $base ?>/deal-checker"><span class="material-symbols-outlined">fact_check</span> ใช้ Deal Checker</a></section>
-<section class="container partner-section"><div class="section-head"><h2>สินค้าแนะนำจากพาร์ทเนอร์</h2><span class="meta">ยังไม่เปิดใช้งาน</span></div><div class="empty">พื้นที่โฆษณา/พาร์ทเนอร์ยังไม่เชื่อม backend จึงไม่แสดงข้อเสนอปลอม</div></section>
+
+<section class="container mi-section">
+    <div class="mi-section-head">
+        <div>
+            <span class="eyebrow">Price Index</span>
+            <h2>เลือกดูรุ่นสินค้า</h2>
+            <p>เปิดหน้ารุ่นสินค้าได้แม้ยังไม่มีราคาตลาด เพื่อดูสเปก สถานะข้อมูล และทางเลือกถัดไป</p>
+        </div>
+        <a class="button ghost" href="<?= $base ?>/price">ดูทั้งหมด</a>
+    </div>
+    <?php if ($products): ?>
+        <div class="cards mi-card-grid">
+            <?php foreach ($products as $product) require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
+        </div>
+    <?php else: ?>
+        <div class="mi-empty-state">
+            <h3>ข้อมูลตลาดยังไม่เพียงพอ</h3>
+            <p>ยังไม่มีสินค้าที่พร้อมแสดงเป็นรายการยอดนิยม ลองค้นหารุ่นที่ต้องการหรืออ่านวิธีคำนวณราคา</p>
+            <div class="mi-actions">
+                <a class="button" href="<?= $base ?>/price">ค้นหาสินค้า</a>
+                <a class="button ghost" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
+            </div>
+        </div>
+    <?php endif; ?>
+</section>
+
+<section class="mi-process-band">
+    <div class="container mi-process-grid">
+        <div>
+            <span>1</span>
+            <h3>ค้นหารุ่น</h3>
+            <p>เริ่มจากชื่อรุ่นหรือรหัสยอดนิยม เช่น 5700X3D, RTX 3070</p>
+        </div>
+        <div>
+            <span>2</span>
+            <h3>ดูช่วงราคา</h3>
+            <p>ถ้ามีข้อมูลเพียงพอ ระบบจะแสดงช่วงราคาที่พบ ราคากลาง และความน่าเชื่อถือ</p>
+        </div>
+        <div>
+            <span>3</span>
+            <h3>เช็กดีล</h3>
+            <p>ใส่ราคาที่เจอเพื่อเทียบกับตลาด โดยยังต้องดูสภาพ ประกัน และอุปกรณ์ประกอบเอง</p>
+        </div>
+    </div>
+</section>
+
+<section class="container mi-cta-band">
+    <div>
+        <span class="eyebrow">Deal Checker</span>
+        <h2>เจอราคาประกาศแล้วไม่แน่ใจ?</h2>
+        <p>เปรียบเทียบราคาที่คุณเจอกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p>
+    </div>
+    <a class="button" href="<?= $base ?>/deal-checker">เปิด Deal Checker</a>
+</section>

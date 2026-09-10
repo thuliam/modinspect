@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 return [
-    'name' => 'Used PC Price Radar',
+    'name' => 'ModInspect',
     'base_url' => rtrim($_ENV['APP_URL'] ?? 'http://localhost/modinspect/public', '/'),
     'db' => [
         'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',

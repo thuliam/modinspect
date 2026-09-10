@@ -264,18 +264,48 @@ Important metrics include:
 
 ---
 
-## Run with XAMPP
+## Run with Laragon / STUDIO
 
 1. Copy `.env.example` to `.env` and adjust database credentials if needed.
-2. In phpMyAdmin, import `database/schema.sql`, then `database/seed.sql`.
-3. Ensure Apache `mod_rewrite` is enabled and `AllowOverride All` applies to the XAMPP `htdocs` directory.
-4. Open:
+2. On STUDIO, the project is served by Laragon from `C:\laragon\www\modinspect` and is edited from the client as `N:\modinspect`.
+3. The current shared DEV database is HostAtom/DirectAdmin Cloud MariaDB: `thsv16.hostatom.com:3306` / `thuliam_modinspect`.
+4. Store the DB password only in local `.env`. Do not commit, print, or document it.
+5. Ensure Apache `mod_rewrite` is enabled and `AllowOverride All` applies to the Laragon project directory.
+6. Open:
 
 ```text
-http://localhost/modinspect/public/
+http://192.168.1.10/modinspect/public/
 ```
 
+Laragon SSL is temporarily disabled because `vpnserver_x64` owns TCP/443. Do not re-enable or change HTTPS as part of ordinary development tasks.
+
 The default base URL is configurable with `APP_URL`.
+
+## Automated Tests
+
+Automated tests must never use the shared Cloud DEV database.
+
+Use a local isolated TEST database:
+
+```text
+DB_HOST=127.0.0.1
+DB_DATABASE=modinspect_test
+```
+
+1. Copy `.env.testing.example` to `.env.testing` and adjust local MySQL credentials if needed.
+2. Bootstrap or rebuild the local test DB:
+
+```text
+php tests/bootstrap_test_db.php --fresh
+```
+
+3. Run the sequential test suite:
+
+```text
+php tests/run.php
+```
+
+Tests load `.env.testing` through `tests/bootstrap.php` and fail closed with `UNSAFE_TEST_DATABASE_BLOCKED` if the Cloud DEV host `thsv16.hostatom.com` or Cloud DEV database `thuliam_modinspect` is detected.
 
 ---
 

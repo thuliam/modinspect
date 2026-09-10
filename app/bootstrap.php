@@ -3,7 +3,13 @@ declare(strict_types=1);
 
 define('ROOT_PATH', dirname(__DIR__));
 
-$envFile = ROOT_PATH . '/.env';
+$envFileName = defined('MODINSPECT_ENV_FILE')
+    ? (string) MODINSPECT_ENV_FILE
+    : (string) ($_ENV['MODINSPECT_ENV_FILE'] ?? getenv('MODINSPECT_ENV_FILE') ?: '.env');
+$normalizedEnvFile = str_replace('\\', '/', $envFileName);
+$envFile = preg_match('/^[A-Za-z]:\//', $normalizedEnvFile) || str_starts_with($normalizedEnvFile, '/')
+    ? $normalizedEnvFile
+    : ROOT_PATH . '/' . ltrim($normalizedEnvFile, '/');
 if (is_file($envFile)) {
     foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
         if (str_starts_with(trim($line), '#') || !str_contains($line, '=')) continue;

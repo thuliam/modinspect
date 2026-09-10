@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 define('MODINSPECT_TESTING', true);
 
-require dirname(__DIR__) . '/app/bootstrap.php';
+require __DIR__ . '/bootstrap.php';
 
 use App\Controllers\AdminController;
 use App\Core\Database;

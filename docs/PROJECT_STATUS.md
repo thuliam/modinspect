@@ -4,6 +4,16 @@
 
 - Current Blueprint version: `ModInspect_Master_Blueprint_v1.1.md`
 - Historical Blueprint: `ModInspect_Master_Blueprint_v1.0.md`
+- Current development topology:
+  - Codex CLI is operated from the client side against STUDIO project files at `N:\modinspect`.
+  - `N:\modinspect` resolves to `\\192.168.1.10\www\modinspect`.
+  - STUDIO runtime target is Laragon Apache/PHP; the old OFFICE/XAMPP path is not authoritative for this environment.
+  - Application document root should be `N:\modinspect\public`, with `public/index.php` as the front controller.
+  - OFFICE and STUDIO now share a HostAtom/DirectAdmin Cloud MariaDB DEV database at `thsv16.hostatom.com:3306` / `thuliam_modinspect`.
+  - The Cloud DEV password is local secret material only and must stay out of Git, documentation, logs, and chat transcripts.
+  - Automated DB-mutating regression tests must not run against shared Cloud DEV; they now load `.env.testing` and require an isolated local TEST database.
+  - Current application URL: `http://192.168.1.10/modinspect/public/`.
+  - Laragon SSL is temporarily disabled because `vpnserver_x64` owns TCP/443. Do not re-enable/change HTTPS during ordinary development tasks.
 - Current ADR baseline:
   - `docs/decisions/ADR-005-community-feedback-is-evidence-not-voting.md`
 - Current architecture principles:
@@ -30,9 +40,9 @@
 
 ## 2. Current Phase
 
-- Active milestone: Phase 4A — UX/UI Product Audit & Design Foundation
-- Status: PASS
-- Why this milestone exists: ModInspect has strong backend/data capability, but the public and Admin UX needed a product-design audit, terminology cleanup, honest hierarchy, design-system baseline, and zero-cost policy before deeper public MVP polish.
+- Active milestone: Phase 4B — Public UX/UI MVP Refinement
+- Status: OWNER VISUAL REVIEW REJECTED / FIX ROUND READY FOR OWNER REVIEW
+- Why this milestone exists: ModInspect has strong backend/data capability, but the primary public flow needed to feel like a coherent consumer product rather than a technical data prototype.
 
 ## 3. Completed Milestones
 
@@ -297,6 +307,42 @@ Major artifacts:
 - `docs/USER_FLOWS.md`
 - `tests/ux_structure_test.php`
 
+### Phase 4B — Public UX/UI MVP Refinement
+
+Status: OWNER VISUAL REVIEW REJECTED / FIX ROUND READY FOR OWNER REVIEW
+
+Key outcomes:
+
+- Primary public navigation now prioritizes `เช็กราคา`, Deal Checker, and Methodology.
+- Home page now leads with the approved ModInspect identity/tagline, a prominent product search, real current counts, and a focused Deal Checker CTA.
+- Price Index now has a clearer search/filter panel, CPU/GPU quick filters, result summary, and product cards that emphasize observed range, median/reference price, confidence, sample count, and insufficient-data states.
+- Product Detail now puts product identity, observed market range, median/reference price, confidence label/reason, sample/freshness context, and Deal Checker handoff before secondary history/methodology content.
+- Deal Checker form/result wording is neutral and avoids seller-judgment language.
+- Public views use APP_URL/base-path-safe links and continue to work under `http://192.168.1.10/modinspect/public/`.
+- No pricing formula, confidence algorithm, schema, collection, review, or provider behavior was changed.
+- Owner visual review is still required for Home, Price Index, Product Detail, and Deal Checker before the design direction is considered final.
+
+Fix round after owner visual rejection:
+
+- Product cards now remain compact and browsable without accepted market-price data.
+- Every rendered Price Index product card exposes a Product Detail action even when no price snapshot exists.
+- The repeated large product-list empty-state panels were replaced by compact `ยังไม่มีราคาตลาด` / `ข้อมูลราคายังไม่เพียงพอ` status text.
+- Product Detail now treats no-data products as first-class pages with product facts, honest market-data status, and Deal Checker availability.
+- Home no longer puts dataset telemetry in the hero; the hero prioritizes tagline, search, product discovery, and Deal Checker.
+- Admin login link remains available for local POC use but is visually secondary to the public navigation.
+
+Major artifacts:
+
+- `app/Views/layouts/header.php`
+- `app/Views/layouts/footer.php`
+- `app/Views/components/product-card.php`
+- `app/Views/home/index.php`
+- `app/Views/price/index.php`
+- `app/Views/price/show.php`
+- `app/Views/deal/form.php`
+- `app/Views/deal/result.php`
+- `public/assets/app.css`
+
 ## 4. Current System Capabilities
 
 | Domain | Status | What works now |
@@ -314,8 +360,8 @@ Major artifacts:
 | Price Engine | IMPLEMENTED | Deterministic asking-price snapshots from eligible approved observations; critical category-invalid quality flags are excluded from normal cohorts; confidence-v1 explains snapshot data quality. |
 | Snapshot Provenance | IMPLEMENTED | New snapshots have formula/cohort/confidence versions, manifest, hash, included/excluded membership, and confidence component provenance. |
 | Admin UI | PARTIAL | Dashboard, sources, jobs, review queue, observations, indices are wired and auth/RBAC protected; production hardening and batch tools are missing. |
-| Public UI | PARTIAL | Public price/search/detail/deal/compare/build/report pages render honest data/empty states; many advanced modules remain prototype/disabled. |
-| UX/UI Design Foundation | IMPLEMENTED | Phase 4A audit, design-system baseline, user-flow docs, terminology cleanup, offline asset dependency cleanup, and owner visual-review list exist. |
+| Public UI | PARTIAL | Primary public Home -> Price Index/Search -> Product Detail -> Deal Checker flow has Phase 4B refinement; advanced modules remain prototype/disabled and visually secondary. |
+| UX/UI Design Foundation | IMPLEMENTED | Phase 4A audit, design-system baseline, user-flow docs, terminology cleanup, offline asset dependency cleanup, and owner visual-review list exist; Phase 4B public component refinements are documented. |
 | Live Provider Infrastructure | PARTIAL | Gemini adapter, registry, preflight, dry-run, and guards exist; no real credentials or live execution. |
 | Community Feedback Architecture | DOCUMENTED ONLY | Approved in Blueprint v1.1 and ADR-005; no runtime/schema/UI implementation. |
 
@@ -411,6 +457,30 @@ Data classification:
 ## 7. Test Status
 
 - Latest full regression result: PASS.
+- Phase 4B public runtime verification on STUDIO URL, 2026-09-11:
+  - `GET /` returned 200.
+  - `GET /price` returned 200.
+  - `GET /price/amd-radeon-rx-6600-xt` returned 200 and showed the honest insufficient-data state.
+  - `GET /deal-checker` returned 200.
+  - `GET /login` returned 200.
+  - `GET /admin` returned 302 to `/login` for unauthenticated users.
+  - Rendered public pages were checked for obvious PHP errors and selected internal terms (`candidate`, `cohort`, `extraction`, `calculation hash`, `provenance`, raw observation language); none were found in the checked pages.
+  - No DB-mutating regression suite was run from the CLIENT shell during Phase 4B.
+  - Cloud DEV destructive mutations caused by Phase 4B checks: zero.
+- Phase 4B fix-round verification after owner visual rejection:
+  - Price Index rendered 41 product cards.
+  - Price Index rendered 41 product-detail actions.
+  - Price Index rendered zero repeated `.mini-empty` product-list panels.
+  - Product Detail for `amd-radeon-rx-6600-xt` returned 200 and showed product facts, insufficient-data status, and Deal Checker link.
+  - Deal Checker GET route remained renderable and preselected product query parameters.
+  - Read-only Cloud DEV admin-user probe found zero admin users; it did not print password hashes or secrets and self-deleted.
+  - No Deal Checker POST or DB-mutating regression was run against Cloud DEV.
+- STUDIO bootstrap safety note, 2026-09-11: local infrastructure verified Laragon Apache 2.4.68 / PHP 8.3.33, application `.env`, Cloud MariaDB 10.6.27 PDO connectivity, current Cloud schema, `/`, `/price`, `/login`, and unauthenticated `/admin` redirect protection. The shared Cloud DEV database `thuliam_modinspect` must not be used as the destructive automated test database.
+- Safe tests/checks performed during STUDIO bootstrap:
+  - Git inspection with per-command `safe.directory`: branch `main`, HEAD `dd646f95a4d547ac8b340144cd611101a610873c`, clean before this documentation update.
+  - Environment/config inspection confirmed actual env names: `APP_URL`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `MODINSPECT_LIVE_COLLECTION_ENABLED`, `MODINSPECT_PAID_PROVIDER_CALLS_ENABLED`, `GEMINI_PROVIDER_ENABLED`, `GEMINI_API_KEY`.
+  - Test mutation audit found DB-heavy tests use transactions plus `INSERT`/`UPDATE`; test bootstrap now forces `.env.testing` and blocks Cloud DEV host/name.
+  - Full regression is intended to run sequentially through `php tests/run.php` after bootstrapping local `modinspect_test`.
 - Latest verified full regression suite:
   - `tests/syntax_check.php`
   - `tests/phase0_pipeline_test.php`
@@ -492,7 +562,7 @@ Data classification:
 - MEDIUM: Review calibration analytics have no live reviewed sample yet; current values are fixture/mock baseline only.
 - MEDIUM: Offline import is CLI-only; no browser upload or import review screen exists.
 - MEDIUM: Phase 3H is blocked until an owner-supplied REAL CSV/JSON batch is placed under `storage/import/` or `var/import/`.
-- MEDIUM: Phase 4A responsive review is code-level only; owner visual review is still required on the priority pages before full redesign.
+- MEDIUM: Phase 4B owner visual review was rejected once; fix round is ready for renewed owner review of Home, Price Index, Product Detail, and Deal Checker.
 - MEDIUM: Active hands-on review time is not captured; current latency is review-created to decision timestamp only where available.
 - LOW: Legacy price snapshots created before Phase 3A have no membership provenance.
 - LOW: Legacy snapshots before Phase 3E have no confidence component manifest.
@@ -569,6 +639,21 @@ Admin auth state:
 
 ## 12. Current Blockers
 
+STUDIO Cloud DB bootstrap is PASS according to local infrastructure verification:
+
+- `.env` exists and points application DEV to `thsv16.hostatom.com:3306` / `thuliam_modinspect`.
+- PHP/PDO Cloud connection is verified.
+- Cloud MariaDB version is `10.6.27`.
+- Current ModInspect schema is verified.
+- `/`, `/price`, `/login` render successfully.
+- `/admin` redirects unauthenticated users to `/login`.
+- No destructive Cloud DEV mutation occurred during bootstrap.
+
+Test DB isolation implementation:
+
+- Automated tests must use local `modinspect_test` through `.env.testing`.
+- `tests/bootstrap.php` blocks Cloud DEV host/name with `UNSAFE_TEST_DATABASE_BLOCKED`.
+- Use `php tests/bootstrap_test_db.php --fresh` before `php tests/run.php`.
 Live Provider POC is blocked by:
 
 - No real Gemini API key configured.
@@ -590,19 +675,19 @@ Phase 3H Reviewed Offline REAL Calibration Batch is blocked by:
 
 ## 13. Next Recommended Milestone
 
-Phase 4A Owner Visual Review Gate.
+Phase 4B Owner Visual Review Gate.
 
 Objective:
 
-- Owner manually reviews the six priority screens identified by the UX audit and decides which P1/P2 design recommendations should become the next implementation scope.
+- Owner manually reviews the four primary public screens refined in Phase 4B and decides whether the direction is approved before another UX/UI milestone starts.
 
 Why now:
 
-- Phase 4A was intentionally code-level and conservative. Visual approval is needed before a larger public/Admin redesign pass.
+- Phase 4B implementation was verified by HTTP/content checks, but final visual approval must come from rendered owner review.
 
 Prerequisites:
 
-- Open the local app and inspect Home, Price Index/Search, Product Detail, Deal Checker, Admin Dashboard, and Review Queue.
+- Open the local app and inspect Home, Price Index/Search, Product Detail, and Deal Checker at desktop/tablet/mobile widths where practical.
 - Keep `docs/UX_UI_AUDIT.md` open as the issue checklist.
 
 Explicit non-goals:
@@ -628,7 +713,7 @@ Do not assume previous chat context exists.
 
 ## 15. Last Updated
 
-- Timestamp: 2026-09-09 18:10 ICT
-- Milestone that last updated this file: Phase 4A — UX/UI Product Audit & Design Foundation
+- Timestamp: 2026-09-11 ICT
+- Milestone that last updated this file: Phase 4B Public UX/UI MVP Refinement fix round
 - Latest migration: `012_admin_auth_rbac.sql`
-- Latest verified regression status: PASS after Phase 4A structural UX regression checks
+- Latest verified regression status: PASS after Phase 4A structural UX regression checks; Phase 4B and the fix round used HTTP/content/read-only checks only and no DB-mutating STUDIO regression run was executed against shared Cloud DEV
