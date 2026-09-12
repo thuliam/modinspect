@@ -126,10 +126,18 @@ condition_hint
 warranty_hint
 external_listing_id
 product_hint
+merchant
+ingestion_note
 notes
 ```
 
 Structured fields are acquisition hints only. Existing extraction, resolver, validation, review, and correction code remains authoritative.
+
+`title` must contain the actual public listing title only. Do not concatenate importer provenance notes, privacy notes, merchant labels, or collection comments into `title`.
+
+`listing_text` should contain public listing description text when it exists. If the source only provides a title, leave `listing_text` empty and use `merchant`, `ingestion_note`, `source_url`, `source_reference`, and `notes` for non-title metadata.
+
+Known ModInspect-generated importer/privacy notes are normalized out of Admin display titles and are not appended to future offline-import candidate titles.
 
 ## Privacy
 

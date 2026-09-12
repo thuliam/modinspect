@@ -1,2 +1,2 @@
-source_type,source_url,source_reference,title,listing_text,observed_at,displayed_price,currency,source_domain,seller_type,condition_hint,warranty_hint,external_listing_id,notes
-template_test,https://example.test/listing/rtx3070-template,,TEST DATA RTX 3070 มือสอง,ขายการ์ดจอ RTX 3070 ใช้งานปกติ ราคา 8500 บาท,2026-09-09 12:00:00,8500,THB,example.test,individual,good,,template-csv-001,Template TEST DATA only
+﻿"source_type","source_url","source_reference","title","listing_text","observed_at","displayed_price","currency","source_domain","seller_type","condition_hint","warranty_hint","external_listing_id","merchant","ingestion_note","notes"
+"template_test","https://example.test/listing/rtx3070-template","","TEST DATA RTX 3070 มือสอง","ขายการ์ดจอ RTX 3070 ใช้งานปกติ ราคา 8500 บาท","2026-09-09 12:00:00","8500","THB","example.test","individual","good","","template-csv-001","","Public listing title captured only; seller PII not stored.","Template TEST DATA only"

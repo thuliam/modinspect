@@ -40,9 +40,9 @@
 
 ## 2. Current Phase
 
-- Active milestone: Phase 4B — Public UX/UI MVP Refinement
-- Status: OWNER VISUAL REVIEW REJECTED / FIX ROUND READY FOR OWNER REVIEW
-- Why this milestone exists: ModInspect has strong backend/data capability, but the primary public flow needed to feel like a coherent consumer product rather than a technical data prototype.
+- Active milestone: Phase 3H-R1 - REAL Batch Title/Provenance Quality Gate
+- Status: HUMAN REVIEW CONSOLE ACCEPTED; TITLE DISPLAY NORMALIZATION FIXED; WAITING FOR OWNER HUMAN REVIEW
+- Why this milestone exists: Phase 4B public visual work is paused until enough reviewed REAL data exists to meaningfully inspect the public price experience.
 
 ## 3. Completed Milestones
 
@@ -356,10 +356,10 @@ Major artifacts:
 | Review Pipeline | IMPLEMENTED | Pending observations can be corrected, approved, rejected, or excluded with audit trail and validation quality flags. |
 | Review Analytics | IMPLEMENTED | Lifecycle, lane outcome, clean-Green precision, correction, quality-flag, source/provider yield, and readiness reports are available by CLI and Admin. |
 | Offline Evidence Import | IMPLEMENTED | CSV/JSON local files import through the provider-neutral pipeline with dry-run, TEST/REAL classification, source policy, dedupe, provenance, and review-gated output. |
-| Reviewed Offline REAL Calibration | NOT STARTED | Protocol exists, but no owner-supplied REAL CSV/JSON batch is present under the approved ignored import location. |
+| Reviewed Offline REAL Calibration | PARTIAL | First public Priceza REAL CSV batch imported through the offline pipeline; 42 REAL observations are pending human review, with zero auto-approvals and no price snapshot generation. |
 | Price Engine | IMPLEMENTED | Deterministic asking-price snapshots from eligible approved observations; critical category-invalid quality flags are excluded from normal cohorts; confidence-v1 explains snapshot data quality. |
 | Snapshot Provenance | IMPLEMENTED | New snapshots have formula/cohort/confidence versions, manifest, hash, included/excluded membership, and confidence component provenance. |
-| Admin UI | PARTIAL | Dashboard, sources, jobs, review queue, observations, indices are wired and auth/RBAC protected; production hardening and batch tools are missing. |
+| Admin UI | PARTIAL | Dashboard, sources, jobs, observations, indices, and the Phase 3H-R1 human review console are wired and auth/RBAC protected; production hardening and batch tools are missing. |
 | Public UI | PARTIAL | Primary public Home -> Price Index/Search -> Product Detail -> Deal Checker flow has Phase 4B refinement; advanced modules remain prototype/disabled and visually secondary. |
 | UX/UI Design Foundation | IMPLEMENTED | Phase 4A audit, design-system baseline, user-flow docs, terminology cleanup, offline asset dependency cleanup, and owner visual-review list exist; Phase 4B public component refinements are documented. |
 | Live Provider Infrastructure | PARTIAL | Gemini adapter, registry, preflight, dry-run, and guards exist; no real credentials or live execution. |
@@ -425,33 +425,33 @@ Major artifacts:
 
 ## 6. Current Data State
 
-Representative current DB counts from the latest verified project handoff and subsequent transactional test runs:
+Representative current Cloud DEV DB counts from the 2026-09-12 Phase 3H-R1 read-only/import verification:
 
 | Metric | Count |
 |---|---:|
-| products | 21+ active CPU/GPU POC products, plus other seeded products |
+| products | 41 total; CPU 10, GPU 11, motherboard 12, PSU 2, RAM 2, storage 2, case 1, cooling 1 |
 | collector jobs queued | 0 |
 | collector jobs running | 0 |
-| collector jobs completed | 24 |
+| collector jobs completed | 24 coverage jobs; 68 collector jobs total after offline REAL import jobs |
 | collector jobs failed | 0 |
-| candidates / raw observations | 18 |
-| evidence | 18 |
-| extractions | 18 |
-| reviews | 18 |
-| observations | 11 |
+| candidates / raw observations | 60 |
+| evidence | 60 |
+| extractions | 60 |
+| reviews | 60 |
+| observations | 53 |
 | accepted observations | 0 |
-| snapshots | existing seeded/legacy rows plus any manually generated local snapshots |
-| collection runs | 2 |
-| users | 0 until an initial admin is created by CLI |
+| snapshots | 41 legacy rows; no public-eligible REAL snapshot from this batch |
+| collection runs | 3 |
+| users | 1 active Admin user |
 
 Data classification:
 
 - Product/catalog data: MIXED seeded/test POC data.
 - Collection pipeline rows: MOCK / TEST.
-- Accepted observations: currently none in representative seeded state.
+- Accepted observations: 0.
 - Live provider data: NOT PRESENT.
-- Offline imported real data: not committed; Phase 3G tests use transactional local files and roll back DB changes.
-- Reviewed offline REAL calibration batch: NOT PRESENT / WAITING_FOR_REAL_SAMPLE.
+- Offline imported real data: 42 raw/evidence/extraction/review rows from `offline_real_priceza_com`.
+- Reviewed offline REAL calibration batch: IMPORTED / WAITING_FOR_HUMAN_REVIEW.
 - Community feedback data: NOT PRESENT.
 
 ## 7. Test Status
@@ -475,6 +475,68 @@ Data classification:
   - Deal Checker GET route remained renderable and preselected product query parameters.
   - Read-only Cloud DEV admin-user probe found zero admin users; it did not print password hashes or secrets and self-deleted.
   - No Deal Checker POST or DB-mutating regression was run against Cloud DEV.
+- Phase 3H-R1 first REAL calibration batch verification, 2026-09-12:
+  - Dry run of `storage/import/real_calibration_batch.csv` with `--dataset=real --dry-run --limit=50`: 42 valid, 0 invalid, 0 duplicates, 0 source-policy blocked.
+  - Actual import with `--dataset=real --limit=50`: 42 candidates, 42 evidence rows, 42 extraction runs, 42 review decisions, 42 pending price observations.
+  - Validation lanes: 37 green, 5 amber, 0 red.
+  - Post-import dry run: 42 duplicate rows, 0 estimated new candidates.
+  - `cli/review_calibration_report.php --provider=offline_file_import`: dataset REAL, sample size 42, pending reviews 42, mock/test records 0.
+  - `cli/data_integrity_check.php`: `ok=true`, `problem_count=0`.
+  - `cli/auth_status.php`: users 0, enabled admins 0; no hashes or secrets printed.
+  - Client HTTP check of `/admin/review-queue` returned 500 from Apache/PHP 7.4.30, which conflicted with expected STUDIO PHP 8.3.33 and blocked browser review until the runtime was restored.
+- Phase 3H-R1 runtime/readiness verification after STUDIO repair, 2026-09-12:
+  - Temporary HTTP diagnostic endpoint confirmed active document root `C:/laragon/www/modinspect/public`.
+  - Apache-served runtime: `Apache/2.4.68 (Win64) OpenSSL/3.0.21 PHP/8.3.33`.
+  - Apache-served PHP: `8.3.33`, SAPI `apache2handler`.
+  - Loaded Apache PHP ini: `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.ini`.
+  - `GET /` returned 200.
+  - `GET /login` returned 200.
+  - `GET /admin` returned 302 to `/login` for unauthenticated users.
+  - `GET /admin/review-queue` returned 302 to `/login` for unauthenticated users.
+  - Read-only review render check confirmed 42 REAL labels, 11 MOCK_TEST labels, validation lane display, correction form, and approve/reject/exclude controls for an active authorized admin-shaped user.
+  - Temporary diagnostic/render-check files were deleted.
+- Phase 3H-R1 Human Review Console Fix verification, 2026-09-12:
+  - Review Queue now defaults to `dataset=REAL`, `status=pending`, 25 rows per page, and attention sorting with AMBER rows first.
+  - Read-only queue probe confirmed default queue composition: 42 REAL pending rows, 25 shown on page 1, first row AMBER, MOCK_TEST filter total 11, AMBER filter total 5.
+  - Read-only render probe confirmed queue rows expose Review links but do not render correction or decision forms; the Review Detail page renders source navigation, collapsed correction form, decision actions, listing/asking price label, and technical details disclosure.
+  - HTTP route checks through STUDIO Apache/PHP 8.3.33 confirmed `/admin/review-queue`, `/admin/review-queue?dataset=REAL&status=pending`, and `/admin/review/1` redirect to `/login` while unauthenticated and do not return 500.
+  - `cli/auth_status.php` read-only output now shows 1 active Admin user; no password hashes, tokens, or secrets were printed.
+  - `cli/review_calibration_report.php --provider=offline_file_import` still shows 42 pending REAL reviews, 37 green, 5 amber, 0 red, 0 approved, 0 rejected, 0 excluded, and 0 corrected.
+- Admin UI Rebuild - Concept Design System verification, 2026-09-12:
+  - Concept reference inspected from `X:\concept` / `\\192.168.1.10\htdocs\concept`: `README.md`, `index.html`, `pages/data-tables.html`, `pages/general-table.html`, `pages/form-elements.html`, `pages/cards.html`, `pages/tabs.html`, `pages/login.html`, and `pages/user-profile.html`.
+  - Admin layout now uses a Concept-style fixed top navbar, left dark sidebar, grouped navigation, content workspace, cards, readable tables, badges, and Bootstrap forms.
+  - Admin login now uses a centered Concept-style login card with clear labels, validation alert area, and public-site link.
+  - Review Queue remains defaulted to `dataset=REAL`, `status=pending`, 25 rows per page, AMBER-first sorting, and compact queue rows with a Review action.
+  - Review Detail remains one-record focused with summary, original evidence, extraction/resolution, collapsed correction controls, and explicit approve/reject/exclude actions.
+  - Products, Aliases, Observations, Review Analytics, Price Index, Sources, Imports, Articles, and Audit views were migrated into the shared Admin shell.
+  - Local admin assets are isolated under `public/assets/admin/` and limited to Bootstrap 4, jQuery, Font Awesome, DataTables Bootstrap adapter, and ModInspect admin CSS/JS.
+  - DataTables styling assets are local; the JS initializer is guarded because the Concept reference's core DataTables script was CDN-referenced and no CDN/external call was added.
+  - Temporary Apache-served render probe confirmed PHP `8.3.33`, SAPI `apache2handler`, and successful authenticated render of all rebuilt Admin views; the probe was deleted and now returns 404.
+  - HTTP route checks through STUDIO confirmed `/` and `/login` return 200, and all discoverable Admin GET routes redirect unauthenticated users to `/login` instead of returning 500.
+  - Read-only render/count verification confirmed 42 REAL pending reviews, 11 MOCK_TEST pending reviews, and REAL lanes 37 GREEN / 5 AMBER / 0 RED.
+  - No review decisions, correction actions, price snapshot recalculations, Cloud DEV destructive operations, live provider calls, or paid services were executed.
+- Admin UI Owner Visual Review Fix Round, 2026-09-12:
+  - Owner rejected the first Admin UI rebuild for two visible usability defects: dark sidebar menu text rendered dark/black, and Review Queue rows had no product/listing visual identity.
+  - Root cause of the sidebar defect was CSS specificity: Bootstrap's `.navbar-light .navbar-nav .nav-link` color overrode the initial `.mi-admin-sidebar .nav-link` rule.
+  - Sidebar contrast rules now target `.mi-admin-sidebar .navbar-light .navbar-nav .nav-link` and related hover/focus/active/icon states so all menu labels and icons remain readable on the dark sidebar.
+  - Existing image audit found Product Master `products.image_path` and local `public/assets/images/*` category/product assets; no dedicated listing thumbnail/image URL column exists in `raw_price_observations` or `market_evidence`, and current offline import CSV/JSON headers do not include thumbnail URLs.
+  - Review Queue now renders a 64px image slot before each record. It uses an existing Product Master image when the local file exists, otherwise a neutral category icon placeholder.
+  - No REAL listing thumbnails were fabricated, backfilled, or persisted.
+  - Visual QA used installed Chrome headless screenshots from the STUDIO UAT URL at 1366x900 and 1440x900. Screenshots confirmed readable normal/active sidebar states, readable menu icons/labels, compact queue thumbnails, preserved price/action hierarchy, and no obvious overlap.
+  - The temporary token-guarded visual QA endpoint was deleted after screenshots and verified absent.
+  - REAL records modified: zero. Review decisions executed: zero. Price snapshots modified: zero. Cloud destructive operations: zero. External API/provider calls: zero. New external spend: 0 THB.
+- Admin UI Review Detail Fix Round, 2026-09-13:
+  - Owner accepted Review Queue; Review Detail remained not accepted due to excessive empty space and decision controls being too low in the workflow.
+  - Review Detail now uses a focused evidence/resolution workspace with a desktop decision sidebar.
+  - Approve / Reject / Exclude controls are visible in the first desktop viewport for the checked REAL AMBER sample.
+  - Correction controls now live in a compact collapsed `Edit / Correct Data` disclosure instead of a large empty card.
+  - The duplicate `Open Source` action was removed; Original Market Evidence has the single primary source-navigation action.
+  - Product imagery is labeled `Product Master image` because current REAL evidence does not store listing thumbnails.
+  - Observation #2111 AMBER/LOW_CONFIDENCE root cause was verified read-only: extraction confidence and stored observation confidence show 95%, but deterministic product resolution recomputed to confidence `0.8637` by `alias_contains`, below the Green threshold of `0.95`.
+  - LOW_CONFIDENCE reviewer copy now describes product-resolution confidence instead of implying the visible extraction score was low.
+  - Validation version markers remain in Advanced / Technical Details instead of the primary warning list.
+  - Chrome headless visual QA checked Review Detail at 1366x900 and 1440x900.
+  - REAL records modified: zero. Review decisions executed: zero. Price snapshots modified: zero. Cloud destructive operations: zero. External API/provider calls: zero. New external spend: 0 THB.
 - STUDIO bootstrap safety note, 2026-09-11: local infrastructure verified Laragon Apache 2.4.68 / PHP 8.3.33, application `.env`, Cloud MariaDB 10.6.27 PDO connectivity, current Cloud schema, `/`, `/price`, `/login`, and unauthenticated `/admin` redirect protection. The shared Cloud DEV database `thuliam_modinspect` must not be used as the destructive automated test database.
 - Safe tests/checks performed during STUDIO bootstrap:
   - Git inspection with per-command `safe.directory`: branch `main`, HEAD `dd646f95a4d547ac8b340144cd611101a610873c`, clean before this documentation update.
@@ -559,9 +621,10 @@ Data classification:
 - MEDIUM: No sold-price-specific public/reporting UI yet.
 - MEDIUM: Category-specific validation rules are fixture-calibrated and need real reviewed cases after live POC.
 - MEDIUM: Confidence-v1 thresholds are deterministic and tested but still need calibration against real reviewed observations.
-- MEDIUM: Review calibration analytics have no live reviewed sample yet; current values are fixture/mock baseline only.
+- MEDIUM: Review calibration analytics now have an imported REAL pending sample, but no live reviewed sample yet; precision/yield remain unmeasured until human decisions are recorded.
 - MEDIUM: Offline import is CLI-only; no browser upload or import review screen exists.
-- MEDIUM: Phase 3H is blocked until an owner-supplied REAL CSV/JSON batch is placed under `storage/import/` or `var/import/`.
+- MEDIUM: Admin UI Rebuild - Concept Design System visual fix round is ready for owner visual review before any REAL record is approved/rejected/excluded/corrected.
+- MEDIUM: Phase 3H-R1 is waiting for human review after importing 42 REAL observations.
 - MEDIUM: Phase 4B owner visual review was rejected once; fix round is ready for renewed owner review of Home, Price Index, Product Detail, and Deal Checker.
 - MEDIUM: Active hands-on review time is not captured; current latency is review-created to decision timestamp only where available.
 - LOW: Legacy price snapshots created before Phase 3A have no membership provenance.
@@ -585,7 +648,7 @@ Admin auth state:
 
 - Local account auth: implemented.
 - Default admin credentials: not shipped.
-- Current persistent users in representative DB: 0.
+- Current persistent Cloud DEV users: 1 active Admin user.
 - Initial admin creation: `php cli/create_admin_user.php --email=admin@example.com --password-env=MODINSPECT_ADMIN_PASSWORD`.
 
 ## 10. Locked Product / Architecture Decisions
@@ -635,7 +698,7 @@ Admin auth state:
 | API/Data products | NOT IMPLEMENTED |
 | Live provider execution | WAITING FOR CREDENTIALS / APPROVAL |
 | Browser upload import UI | NOT IMPLEMENTED |
-| Reviewed offline REAL calibration batch | WAITING_FOR_REAL_SAMPLE |
+| Reviewed offline REAL calibration batch | IMPORTED / WAITING_FOR_HUMAN_REVIEW |
 
 ## 12. Current Blockers
 
@@ -668,34 +731,37 @@ Production/public deployment is blocked by:
 - No external security review.
 - No production backup/access policy.
 
-Phase 3H Reviewed Offline REAL Calibration Batch is blocked by:
+Phase 3H-R1 First REAL Market Calibration Batch is waiting on:
 
-- No owner-supplied REAL CSV/JSON evidence batch found under `storage/import/` or `var/import/`.
-- Existing files under `storage/import/test/` are test-generated fixtures and must not be relabeled as REAL.
+- Human review of 42 imported REAL observations from `offline_real_priceza_com`.
+- The Human Review Console is owner-accepted.
+- A 2026-09-13 read-only title/provenance audit found the first-batch CSV `title` values were clean, but `listing_text` carried ModInspect-generated ingestion/privacy notes that were concatenated into stored raw titles during import.
+- Raw evidence remains immutable; Review Queue and Review Detail now show normalized display titles while Advanced / Technical Details preserves raw contaminated evidence.
+- All 42 Priceza rows are asking/listing-price evidence from Priceza search pages, not sold/final transactions and not merchant listing-page provenance.
 
 ## 13. Next Recommended Milestone
 
-Phase 4B Owner Visual Review Gate.
+Owner Human Review Of The First REAL Calibration Batch.
 
 Objective:
 
-- Owner manually reviews the four primary public screens refined in Phase 4B and decides whether the direction is approved before another UX/UI milestone starts.
+- Owner uses the accepted Human Review Console to approve, reject, exclude, or correct the 42 pending REAL observations one at a time.
 
 Why now:
 
-- Phase 4B implementation was verified by HTTP/content checks, but final visual approval must come from rendered owner review.
+- The first REAL sample is imported, visually reviewable, and title display contamination is fixed without mutating raw evidence; no public snapshot can be valid until owner-approved human review occurs.
 
 Prerequisites:
 
-- Open the local app and inspect Home, Price Index/Search, Product Detail, and Deal Checker at desktop/tablet/mobile widths where practical.
-- Keep `docs/UX_UI_AUDIT.md` open as the issue checklist.
+- Owner logs in with the existing active Admin account and starts from `/admin/review-queue?dataset=REAL&status=pending`.
+- Keep `docs/REAL_CALIBRATION_REPORT.md` open for batch details.
 
 Explicit non-goals:
 
 - No Gemini/live API request.
 - No paid service or billing-enabled provider.
-- No full visual redesign until owner review is complete.
 - No auto-accept.
+- Do not resume Phase 4B until REAL accepted observations and usable public snapshots exist.
 
 ## 14. Resume Instructions
 
@@ -713,7 +779,7 @@ Do not assume previous chat context exists.
 
 ## 15. Last Updated
 
-- Timestamp: 2026-09-11 ICT
-- Milestone that last updated this file: Phase 4B Public UX/UI MVP Refinement fix round
+- Timestamp: 2026-09-13 ICT
+- Milestone that last updated this file: Phase 3H-R1 - REAL Batch Title/Provenance Quality Gate
 - Latest migration: `012_admin_auth_rbac.sql`
-- Latest verified regression status: PASS after Phase 4A structural UX regression checks; Phase 4B and the fix round used HTTP/content/read-only checks only and no DB-mutating STUDIO regression run was executed against shared Cloud DEV
+- Latest verified regression status: PASS for title/provenance quality gate checks: Apache-served PHP 8.3.33 read-only class/load probe, normalized Review Queue/Detail title checks, raw-evidence preservation check, read-only REAL pending count of 42, GET route checks for `/`, `/login`, `/admin/review-queue`, and `/admin/review/2111`; no destructive Cloud DEV test/reset/reseed was run

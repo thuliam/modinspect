@@ -11,7 +11,9 @@
       "currency": "THB",
       "condition_hint": "good",
       "warranty_hint": "6 months",
+      "merchant": "Example merchant",
       "external_listing_id": "template-json-001",
+      "ingestion_note": "Public listing title captured only; seller PII not stored.",
       "notes": "Template TEST DATA only"
     }
   ]

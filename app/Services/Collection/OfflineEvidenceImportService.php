@@ -10,6 +10,7 @@ use App\Models\CollectionPipeline;
 use App\Services\Extraction\RuleBasedListingExtractor;
 use App\Services\ProductResolver\ProductResolver;
 use App\Services\Providers\OfflineFileProvider;
+use App\Services\Review\ListingTitleNormalizer;
 use App\Services\Validation\ObservationValidator;
 use PDO;
 
@@ -25,6 +26,7 @@ final class OfflineEvidenceImportService
     private CollectionPipeline $pipeline;
     private RuleBasedListingExtractor $extractor;
     private ObservationValidator $validator;
+    private ListingTitleNormalizer $titleNormalizer;
 
     public function __construct()
     {
@@ -33,6 +35,7 @@ final class OfflineEvidenceImportService
         $this->pipeline = new CollectionPipeline();
         $this->extractor = new RuleBasedListingExtractor();
         $this->validator = new ObservationValidator(false);
+        $this->titleNormalizer = new ListingTitleNormalizer();
     }
 
     public function import(string $file, string $dataset = 'test', bool $dryRun = false, int $limit = 100): array
@@ -111,8 +114,7 @@ final class OfflineEvidenceImportService
             }
 
             $candidate = $this->candidateFromRecord($record, $dataset, $runId, $sourceName);
-            $hash = $this->candidateHash($candidate);
-            if ($this->isDuplicate($sourceKey, $hash)) {
+            if ($this->isDuplicateAny($sourceKey, $this->candidateHashes($candidate, $record, $sourceName))) {
                 $summary['duplicate_rows']++;
                 continue;
             }
@@ -243,6 +245,8 @@ final class OfflineEvidenceImportService
         $errors = [];
         $title = trim((string)($record['title'] ?? ''));
         $text = trim((string)($record['listing_text'] ?? ''));
+        $actualTitle = $this->titleNormalizer->normalize($title);
+        $actualText = $this->titleNormalizer->normalize($text);
         $url = trim((string)($record['source_url'] ?? ''));
         $reference = trim((string)($record['source_reference'] ?? $record['external_listing_id'] ?? ''));
         $currency = strtoupper(trim((string)($record['currency'] ?? 'THB')));
@@ -250,6 +254,7 @@ final class OfflineEvidenceImportService
         $observedAt = trim((string)($record['observed_at'] ?? ''));
 
         if ($title === '' && $text === '') $errors[] = 'MISSING_TITLE_OR_TEXT';
+        if ($actualTitle === '' && $actualText === '') $errors[] = 'MISSING_ACTUAL_LISTING_TITLE_OR_TEXT';
         if (mb_strlen($title, 'UTF-8') > self::MAX_TITLE_LENGTH) $errors[] = 'TITLE_TOO_LONG';
         if (mb_strlen($text, 'UTF-8') > self::MAX_TEXT_LENGTH) $errors[] = 'LISTING_TEXT_TOO_LONG';
         if ($url !== '' && !filter_var($url, FILTER_VALIDATE_URL)) $errors[] = 'INVALID_URL';
@@ -272,8 +277,8 @@ final class OfflineEvidenceImportService
 
     private function candidateFromRecord(array $record, string $dataset, string $runId, string $sourceName): SearchCandidate
     {
-        $title = trim((string)($record['title'] ?? ''));
-        $text = trim((string)($record['listing_text'] ?? ''));
+        $title = $this->titleNormalizer->normalize((string)($record['title'] ?? ''));
+        $text = $this->titleNormalizer->normalize((string)($record['listing_text'] ?? ''));
         $combined = trim($title . ' ' . $text);
         if (mb_strlen($combined, 'UTF-8') > 490) {
             $combined = mb_substr($combined, 0, 490, 'UTF-8');
@@ -301,6 +306,8 @@ final class OfflineEvidenceImportService
                 'row' => (int)$record['_row'],
                 'source_reference' => $reference ?: null,
                 'source_domain' => $record['source_domain'] ?? null,
+                'merchant' => trim((string)($record['merchant'] ?? '')) ?: null,
+                'ingestion_note' => trim((string)($record['ingestion_note'] ?? '')) ?: null,
             ]
         );
     }
@@ -312,6 +319,8 @@ final class OfflineEvidenceImportService
             'IMPORT_RUN_ID=' . $runId,
             'DATASET=' . strtoupper($dataset),
             'ROW=' . (string)$record['_row'],
+            isset($record['merchant']) && trim((string)$record['merchant']) !== '' ? 'MERCHANT=' . trim((string)$record['merchant']) : null,
+            isset($record['ingestion_note']) && trim((string)$record['ingestion_note']) !== '' ? 'INGESTION_NOTE=' . trim((string)$record['ingestion_note']) : null,
             isset($record['notes']) ? 'NOTES=' . trim((string)$record['notes']) : null,
         ])));
     }
@@ -399,9 +408,49 @@ final class OfflineEvidenceImportService
         return (int)$stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Future imports use normalized candidate titles, but duplicate checks also
+     * recognize the legacy title+listing_text hash used by the first REAL batch.
+     */
+    private function candidateHashes(SearchCandidate $candidate, array $record, string $sourceName): array
+    {
+        $hashes = [$this->candidateHash($candidate)];
+        $legacyTitle = $this->legacyCombinedTitle($record);
+        if ($legacyTitle !== '' && $legacyTitle !== $candidate->title) {
+            $hashes[] = $this->candidateHashForValues($sourceName, $candidate->url, $legacyTitle, $candidate->priceText);
+        }
+        return array_values(array_unique($hashes));
+    }
+
+    private function legacyCombinedTitle(array $record): string
+    {
+        $title = trim((string)($record['title'] ?? ''));
+        $text = trim((string)($record['listing_text'] ?? ''));
+        $combined = trim($title . ' ' . $text);
+        if (mb_strlen($combined, 'UTF-8') > 490) {
+            $combined = mb_substr($combined, 0, 490, 'UTF-8');
+        }
+        return $combined;
+    }
+
+    private function isDuplicateAny(string $sourceKey, array $hashes): bool
+    {
+        foreach ($hashes as $hash) {
+            if ($this->isDuplicate($sourceKey, $hash)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function candidateHash(SearchCandidate $candidate): string
     {
-        return hash('sha256', $candidate->sourceName . '|' . ($candidate->url ?? '') . '|' . $candidate->title . '|' . (string)$candidate->priceText);
+        return $this->candidateHashForValues($candidate->sourceName, $candidate->url, $candidate->title, $candidate->priceText);
+    }
+
+    private function candidateHashForValues(string $sourceName, ?string $url, string $title, ?string $priceText): string
+    {
+        return hash('sha256', $sourceName . '|' . ($url ?? '') . '|' . $title . '|' . (string)$priceText);
     }
 
     private function looksMockOrTest(array $record): bool

@@ -127,3 +127,95 @@ Keep `calculation hash`, `validation rule version`, raw observation IDs, and det
 ## Current Status
 
 Phase 4A documents the baseline and applies only low-risk consistency fixes. Full visual validation requires owner review of the pages listed in `docs/UX_UI_AUDIT.md`.
+
+## Admin UI Rebuild - Concept Design System
+
+Updated: 2026-09-12
+
+Status: READY FOR OWNER VISUAL REVIEW.
+
+Reference:
+
+- Concept Bootstrap 4 Admin Dashboard Template by Colorlib.
+- Local reference inspected from `X:\concept` / `\\192.168.1.10\htdocs\concept`.
+- Attribution is preserved in `public/assets/admin/README.md`; copied assets remain limited to the admin namespace.
+
+Admin shell:
+
+- Fixed top navbar with ModInspect Admin branding, current page context, public-site link, logged-in identity, role, and logout action.
+- Persistent dark left sidebar on desktop with grouped navigation: Dashboard, Catalog, Market Data, Collection, Content, and System.
+- Content pages use a page title/context area followed by cards, tables, filters, or forms.
+- Admin-specific CSS/JS lives under `public/assets/admin/` and does not replace the public frontend design layer.
+
+Admin technology:
+
+- Bootstrap 4 markup and local Bootstrap assets.
+- jQuery for sidebar toggle, tooltips, and lightweight table filtering.
+- Font Awesome for navigation and action icons.
+- DataTables Bootstrap styling assets are local; runtime initialization is guarded because the Concept reference used a CDN for the core DataTables script and the zero-cost POC should not add CDN/external calls.
+
+Review console:
+
+- Review Queue defaults to REAL + pending, paginates at 25 records, and sorts AMBER before GREEN.
+- Queue rows show only ID, dataset, product, listing title, asking/listing price, source, validation lane, warning count, observed date, and Review action.
+- Review Detail shows one observation with summary, original evidence, extraction/resolution, collapsed correction controls, and explicit approve/reject/exclude actions.
+- GREEN remains a review acceleration signal only; it never means auto-approved.
+- AMBER reasons must be human-readable, with raw rule details in collapsible Advanced / Technical Details.
+
+Admin tables:
+
+- Default columns should be operationally meaningful; hide hashes, raw JSON, and long provenance payloads behind detail or disclosure patterns.
+- Use text plus badge color for dataset, review status, source health, and validation lane.
+- Keep actions in the rightmost column and use primary, secondary, and danger styling consistently.
+
+## Admin UI Visual Fix Round
+
+Updated: 2026-09-12
+
+Status: READY FOR OWNER VISUAL REVIEW.
+
+Sidebar contrast:
+
+- The dark sidebar must override Bootstrap's `.navbar-light .navbar-nav .nav-link` color with admin-sidebar-specific selectors.
+- Normal menu labels use light neutral text on the dark navy background.
+- Icons use the same readable contrast family as labels.
+- Hover, focus, and active states use a stronger blue-tinted background, visible left rail, and white text/icons.
+- Section headings stay muted but legible; they must never render as black on the dark sidebar.
+
+Review Queue thumbnails:
+
+- Queue rows include a compact 64px visual slot before the observation ID.
+- Priority is existing Product Master image, then category placeholder icon.
+- Existing Product Master images come from `products.image_path` and local files under `public/assets/images/`.
+- Current REAL Priceza/offline import evidence does not store listing thumbnail URLs, and current CSV/JSON import headers do not define thumbnail/image fields.
+- Do not fabricate listing images or mutate pending REAL evidence for decoration.
+- Future thumbnail capture should add explicit public thumbnail provenance to the offline import contract and persistence model before any UI backfill.
+
+## Admin Review Detail Fix Round
+
+Updated: 2026-09-13
+
+Status: READY FOR OWNER VISUAL REVIEW.
+
+Review Detail layout:
+
+- Keep Review Queue accepted; do not redesign it unless a shared component bug requires it.
+- Review Detail should use a main evidence/resolution workspace plus a right-side decision panel on desktop.
+- Approve / Reject / Exclude is the primary page action and should be reachable in the first desktop viewport for normal records.
+- The decision panel may be sticky on desktop, but must not float over or hide content.
+- Correction controls are secondary and must stay collapsed by default in a compact `Edit / Correct Data` disclosure.
+- Do not reserve a full empty panel for collapsed correction controls.
+
+Source and imagery semantics:
+
+- Original Market Evidence owns the single primary `Open Source` action.
+- Do not duplicate source CTA buttons across the header and evidence card.
+- Product Master imagery must be labeled `Product Master image`.
+- Do not imply Product Master imagery is a listing photo or source/evidence thumbnail.
+
+Validation presentation:
+
+- GREEN means validation found no critical issue; it still requires explicit human review.
+- AMBER must show a human-readable reason near the decision action.
+- Validation version markers, rule IDs, and raw payloads belong in collapsed Advanced / Technical Details.
+- LOW_CONFIDENCE should identify the failing confidence dimension when available. Observation #2111 is AMBER because product-resolution confidence recomputed to `0.8637`, below the Green threshold of `0.95`, even though extraction confidence and stored observation confidence display as 95%.

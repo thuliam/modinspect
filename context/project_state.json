@@ -1,6 +1,6 @@
 {
     "project":  "ModInspect",
-    "phase":  "Phase 4B Public UX/UI MVP Refinement owner visual review was rejected; fix round is ready for renewed owner review; Phase 3H reviewed offline REAL calibration batch remains waiting for owner-supplied REAL sample; Phase 2D-B controlled live collection not started because no real Gemini API key is configured",
+    "phase":  "Phase 3H-R1 REAL Batch Title/Provenance Quality Gate is fixed; Human Review Console is owner-accepted; the first REAL market calibration batch remains imported in Cloud DEV with 42 pending REAL observations and zero review decisions executed; Phase 4B Public UX/UI remains paused until REAL accepted observations and usable public snapshots exist; Phase 2D-B controlled live collection not started because no real Gemini API key is configured",
     "implemented":  [
                         "Custom PHP MVC router/bootstrap",
                         "PDO database connection",
@@ -82,6 +82,15 @@
                         "Offline import CLI with dry-run, row validation, explicit TEST/REAL dataset classification, source-policy enforcement, duplicate re-import protection, import provenance, and collection run audit",
                         "Imported REAL evidence remains pending for human review and can use Phase 3B corrections, Phase 3A snapshot provenance, and Phase 3F calibration analytics after approval",
                         "Phase 3H REAL calibration protocol documented in docs/REAL_CALIBRATION_PROTOCOL.md",
+                        "Phase 3H-R1 first REAL Priceza calibration batch imported through offline import with 42 pending REAL observations and zero auto-approvals",
+                        "Admin review queue rows now carry an explicit REAL/MOCK_TEST/UNKNOWN dataset label for human review separation",
+                        "Phase 3H-R1 Human Review Console separates a compact filtered queue from focused Review Detail pages, defaults to REAL pending, paginates at 25 rows, and keeps correction controls out of queue rows",
+                        "Phase 3H-R1 STUDIO HTTP runtime verified on Laragon Apache 2.4.68 with Apache-served PHP 8.3.33 after old XAMPP/PHP 7.4 mismatch",
+                        "Admin UI Rebuild - Concept Design System with shared Bootstrap 4 Admin shell, fixed top navbar, dark left sidebar, rebuilt login, dashboard, review queue/detail, products, aliases, observations, analytics, price index, sources, imports, articles, and audit views",
+                        "Admin UI visual fix round: sidebar CSS specificity corrected for readable dark-sidebar text/icons and Review Queue rows now use existing Product Master image thumbnails with category icon fallback",
+                        "Admin Review Detail fix round: decision controls moved into a right-side desktop panel, correction collapsed into a compact disclosure, duplicate source CTA removed, Product Master image labeling clarified, and LOW_CONFIDENCE copy aligned to product-resolution confidence without changing validation semantics",
+                        "Phase 3H-R1 title/provenance quality gate: Review Queue and Detail use deterministic normalized listing-title display for known ModInspect importer/privacy metadata while preserving immutable raw evidence in Advanced details",
+                        "Offline REAL import hygiene guard: future candidate titles normalize title/listing_text separately, merchant and ingestion_note remain separate metadata, and duplicate checks recognize both normalized and legacy first-batch hashes",
                         "Phase 4A public/Admin UX audit documented in docs/UX_UI_AUDIT.md",
                         "Phase 4A design-system baseline documented in docs/DESIGN_SYSTEM.md",
                         "Phase 4A user-flow baseline documented in docs/USER_FLOWS.md",
@@ -115,12 +124,12 @@
                     "Community Data Feedback Loop is approved architecture only and has no schema/routes/controllers/services/UI implementation"
                 ],
     "waiting":  [
-                    "Phase 3H requires an owner-supplied REAL CSV/JSON evidence batch under ignored storage/import/ or var/import/ before import/review/calibration metrics can run",
-                    "Existing files under storage/import/test/ are test-generated fixtures and must not be relabeled as REAL",
+                    "Phase 3H-R1 requires owner human review of 42 imported REAL observations from offline_real_priceza_com before any public snapshot is recalculated",
+                    "Cloud DEV has one active Admin account; Human Review Console is owner-accepted and ready for one-by-one human decisions",
                     "Phase 4B owner visual review was rejected once; fix round requires renewed owner review of Home, Price Index/Search, Product Detail, and Deal Checker before design direction is approved"
                 ],
     "next_priorities":  [
-                            "Owner visual review of the four Phase 4B public screens before starting Phase 4C or another UX/UI milestone"
+                            "Owner starts human review at /admin/review-queue?dataset=REAL&status=pending"
                         ],
     "deferred":  [
                      "Phase 4.5 Community Data Feedback Loop implementation",
@@ -140,8 +149,11 @@
                         "Native HTTP transport exists for Phase 2D-B but automated tests use fixtures/fakes only",
                         "Legacy price snapshots created before Phase 3A/3E have no observation membership or confidence provenance",
                         "Category validation rules are fixture-calibrated and need real reviewed market cases after the first live POC",
-                        "Review calibration analytics can recognize imported REAL evidence, but no committed/live reviewed sample exists; current seeded values remain fixture/mock baseline only",
+                        "Review calibration analytics can recognize imported REAL evidence, but the first REAL sample is still pending human review so live precision/yield are unmeasured",
+                        "The Human Review Console is owner-accepted, but the 42 REAL observations remain pending; do not bulk approve or auto-approve rows",
+                        "The first REAL Priceza batch has search-page provenance, not listing-page or sold-transaction provenance; all 42 values remain asking/listing-price evidence",
                         "Phase 4B responsive assessment is code/HTTP-level only; no owner screenshot/pixel validation has been performed",
+                        "CLIENT HTTP checks on 2026-09-12 previously returned 500 from XAMPP Apache/PHP 7.4.30 for /admin/review-queue; later checks confirmed Laragon Apache 2.4.68 with Apache-served PHP 8.3.33 restored",
                         "STUDIO runtime cannot be assumed from old OFFICE/XAMPP paths; inspect actual Laragon PHP/Apache paths before running PHP or documenting route health",
                         "Laragon SSL is temporarily disabled because vpnserver_x64 owns TCP/443; do not change HTTPS during environment bootstrap or test isolation work",
                         "Test DB bootstrap uses modinspect.sql because raw SQL migrations do not have a reliable migration tracking table"

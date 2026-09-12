@@ -29,11 +29,44 @@ final class AdminController extends Controller {
         }
         return true;
     }
-    public function index(): void { if(!$this->requirePermission('admin.dashboard.view')) return; $d=new Dashboard();$this->render('dashboard','Admin Data Quality',$d->adminStats()+['products'=>$d->products(),'sources'=>$d->sources()]); }
+    public function index(): void { if(!$this->requirePermission('admin.dashboard.view')) return; $d=new Dashboard();$this->render('dashboard','Admin Data Quality',$d->adminStats()+['products'=>$d->products(),'sources'=>$d->sources(),'recent_imports'=>$d->recentImportRuns()]); }
     public function products(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('products','Product Master',['products'=>$d->products()]); }
     public function aliases(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('aliases','Product Aliases',['aliases'=>$d->aliases()]); }
     public function observations(): void { if(!$this->requirePermission('review.view')) return; $d=new Dashboard();$this->render('observations','Price Observations',['observations'=>$d->observations($_GET['status']??null,trim((string)($_GET['q']??''))),'status'=>$_GET['status']??'','q'=>trim((string)($_GET['q']??''))]); }
-    public function review(): void { if(!$this->requirePermission('review.view')) return; $d=new Dashboard();$this->render('review','Observation Review',['observations'=>$d->reviewObservations(),'summary'=>$d->reviewSummary(),'products'=>$d->reviewProductOptions()]); }
+    public function review(): void {
+        if(!$this->requirePermission('review.view')) return;
+        $d=new Dashboard();
+        $filters=$this->reviewFilters();
+        $this->render('review','Observation Review',[
+            'queue'=>$d->reviewQueue($filters),
+            'summary'=>$d->reviewQueueSummary(),
+            'products'=>$d->reviewProductOptions(),
+            'sources'=>$d->reviewSourceOptions(),
+            'filters'=>$filters,
+        ]);
+    }
+    public function reviewDetail(string $id): void {
+        if(!$this->requirePermission('review.view')) return;
+        $observationId=filter_var($id,FILTER_VALIDATE_INT);
+        if(!$observationId){
+            http_response_code(404);
+            $this->render('placeholder','Review record not found',['description'=>'Observation ID is invalid.']);
+            return;
+        }
+        $d=new Dashboard();
+        $observation=$d->reviewObservationDetail((int)$observationId);
+        if(!$observation){
+            http_response_code(404);
+            $this->render('placeholder','Review record not found',['description'=>'Observation not found.']);
+            return;
+        }
+        $backPath=$this->safeReviewReturnPath((string)($_GET['return_to'] ?? ''),'/admin/review-queue');
+        $this->render('review-detail','Review Observation #'.(int)$observation['id'],[
+            'observation'=>$observation,
+            'products'=>$d->reviewProductOptions(),
+            'back_path'=>$backPath,
+        ]);
+    }
     public function reviewAnalytics(): void { if(!$this->requirePermission('review.analytics.view')) return; $filters=['category'=>$_GET['category']??null,'source_id'=>$_GET['source_id']??null,'provider'=>$_GET['provider']??null,'from'=>$_GET['from']??null,'to'=>$_GET['to']??null,'lane'=>$_GET['lane']??null,'outcome'=>$_GET['outcome']??null]; $this->render('review-analytics','Review Analytics',['report'=>(new ReviewCalibrationService())->report($filters)]); }
     public function reviewCorrection(): void {
         if(!$this->requirePermission('review.correct')) return;
@@ -43,7 +76,7 @@ final class AdminController extends Controller {
         $value=$_POST['corrected_value']??null;
         $reason=trim((string)($_POST['reason']??''));
         if($id) (new Dashboard())->correctObservation((int)$id,$field,$value,$reason,(int)$this->user()['id']);
-        $this->redirect('/admin/review-queue');
+        $this->redirect($this->safeReviewReturnPath((string)($_POST['return_to'] ?? ''),$id ? '/admin/review/'.(int)$id : '/admin/review-queue'));
     }
     public function reviewDecision(): void {
         if(!$this->requirePermission('review.decide')) return;
@@ -51,7 +84,7 @@ final class AdminController extends Controller {
         $id=filter_input(INPUT_POST,'observation_id',FILTER_VALIDATE_INT);
         $decision=(string)($_POST['decision']??'');
         if($id) (new Dashboard())->decideObservation((int)$id,$decision,trim((string)($_POST['notes']??'')),(int)$this->user()['id']);
-        $this->redirect('/admin/review-queue');
+        $this->redirect($this->safeReviewReturnPath((string)($_POST['return_to'] ?? ''),$id ? '/admin/review/'.(int)$id : '/admin/review-queue'));
     }
     public function requeueJob(): void {
         if(!$this->requirePermission('collection.jobs.requeue')) return;
@@ -81,4 +114,34 @@ final class AdminController extends Controller {
     public function indices(): void { if(!$this->requirePermission('snapshots.view')) return; $d=new Dashboard();$this->render('indices','Price Indices',['products'=>$d->products()]); }
     public function articles(): void { if(!$this->requirePermission('products.view')) return; $this->render('placeholder','Articles',['description'=>'จัดการบทความ SEO, buying guides และสถานะการเผยแพร่']); }
     public function audits(): void { if(!$this->requirePermission('audit.view')) return; $d=new Dashboard();$this->render('audits','Audit Logs',['audits'=>$d->audits()]); }
+    private function reviewFilters(): array {
+        $dataset=strtoupper(trim((string)($_GET['dataset'] ?? 'REAL')));
+        if(!in_array($dataset,['REAL','MOCK_TEST','UNKNOWN','ALL'],true)) $dataset='REAL';
+        $status=strtolower(trim((string)($_GET['status'] ?? 'pending')));
+        if(!in_array($status,['pending','approved','rejected','excluded','all'],true)) $status='pending';
+        $lane=strtolower(trim((string)($_GET['lane'] ?? '')));
+        if(!in_array($lane,['','green','amber','red'],true)) $lane='';
+        $sort=strtolower(trim((string)($_GET['sort'] ?? 'attention')));
+        if(!in_array($sort,['attention','newest','oldest','price_asc','price_desc'],true)) $sort='attention';
+        $productId=filter_input(INPUT_GET,'product_id',FILTER_VALIDATE_INT) ?: null;
+        $sourceId=filter_input(INPUT_GET,'source_id',FILTER_VALIDATE_INT) ?: null;
+        $page=filter_input(INPUT_GET,'page',FILTER_VALIDATE_INT) ?: 1;
+        return [
+            'dataset'=>$dataset,
+            'status'=>$status,
+            'lane'=>$lane,
+            'sort'=>$sort,
+            'product_id'=>$productId,
+            'source_id'=>$sourceId,
+            'q'=>trim((string)($_GET['q'] ?? '')),
+            'page'=>max(1,$page),
+            'per_page'=>25,
+        ];
+    }
+    private function safeReviewReturnPath(string $path,string $fallback): string {
+        $path=trim($path);
+        if($path==='' || $path[0] !== '/' || str_starts_with($path,'//')) return $fallback;
+        if(preg_match('#^/admin/review-queue(\?.*)?$#',$path) || preg_match('#^/admin/review/[0-9]+(\?.*)?$#',$path)) return $path;
+        return $fallback;
+    }
 }

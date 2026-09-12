@@ -1,7 +1,64 @@
-<section class="container page admin-page"><?php require __DIR__.'/_nav.php'; ?>
-<div class="section-head"><div><span class="eyebrow">PRODUCT MASTER</span><h1>จัดการข้อมูลสินค้า</h1></div><button class="disabled-control" type="button" disabled>เพิ่มสินค้า — ยังไม่เปิดใช้งาน</button></div>
-<div class="notice">Product Master แก้ไขผ่าน seed/migration ใน milestone นี้ ยังไม่มี UI สำหรับสร้างหรือแก้ไขสินค้า</div>
-<div class="card table-card"><table><thead><tr><th>ID</th><th>สินค้า</th><th>หมวด/แบรนด์</th><th>ค่ากลาง</th><th>Samples</th><th>Confidence</th><th>สถานะ</th></tr></thead><tbody>
-<?php foreach($products as $index=>$p): ?><tr><td>#<?= (int)$p['id'] ?></td><td><div class="admin-product"><img src="<?= $base ?>/assets/images/admin-<?= min($index+2,4) ?>.jpg" alt="<?= htmlspecialchars($p['full_name']) ?>"><span><b><?= htmlspecialchars($p['full_name']) ?></b><small><?= htmlspecialchars($p['slug']) ?></small></span></div></td><td><?= htmlspecialchars($p['category'].' / '.$p['brand']) ?></td><td><?= $p['median'] ? '฿'.number_format((float)$p['median']) : 'ข้อมูลตลาดยังไม่เพียงพอ' ?></td><td><?= (int)$p['valid_sample_size'] ?></td><td><span class="badge"><?= htmlspecialchars($p['confidence_label']??'-') ?></span></td><td><?= $p['is_active']?'Active':'Inactive' ?></td></tr><?php endforeach; ?>
-<?php if(!$products): ?><tr><td colspan="7" class="empty-cell">ยังไม่มีสินค้าใน Product Master</td></tr><?php endif; ?>
-</tbody></table></div></section>
+<?php
+$short=function(mixed $value,int $limit=120): string {
+    $text=trim((string)$value);
+    return strlen($text)>$limit ? substr($text,0,$limit-3).'...' : $text;
+};
+?>
+<div class="mi-page-header">
+    <div>
+        <span class="mi-breadcrumb">Admin / Catalog</span>
+        <h1>Products</h1>
+        <p>Canonical Product Master records used by resolution, review, and price snapshots.</p>
+    </div>
+    <button class="btn btn-outline-secondary disabled-control" type="button" disabled><i class="fas fa-plus mr-2"></i>Add Product</button>
+</div>
+
+<div class="card mi-table-card">
+    <div class="card-header">
+        <div class="mi-table-toolbar mb-0">
+            <h2>Product Master</h2>
+            <input class="form-control mi-table-search js-table-filter" data-target="#products-table" placeholder="Search products, brands, categories">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table id="products-table" class="table table-hover mi-admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Key Specification</th>
+                    <th>Market Data</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($products as $p): ?>
+                <?php
+                $marketStatus=(int)($p['approved_observation_count'] ?? 0)>0 ? 'Approved observations' : ((int)($p['pending_observation_count'] ?? 0)>0 ? 'Pending review' : 'No accepted market data');
+                $filter=strtolower(implode(' ',[$p['full_name'] ?? '',$p['brand'] ?? '',$p['category'] ?? '',$p['slug'] ?? '',$marketStatus]));
+                ?>
+                <tr data-filter-row="<?= htmlspecialchars($filter) ?>">
+                    <td>
+                        <span class="mi-row-title"><?= htmlspecialchars((string)$p['full_name']) ?></span>
+                        <span class="mi-row-subtitle"><?= htmlspecialchars((string)($p['slug'] ?? '-')) ?></span>
+                    </td>
+                    <td><?= htmlspecialchars((string)$p['brand']) ?></td>
+                    <td><?= htmlspecialchars((string)$p['category']) ?></td>
+                    <td><?= htmlspecialchars($short($p['spec_summary'] ?? $p['generation'] ?? $p['model_name'] ?? '-',90)) ?></td>
+                    <td>
+                        <span class="mi-row-title"><?= htmlspecialchars($marketStatus) ?></span>
+                        <span class="mi-row-subtitle">Pending <?= (int)($p['pending_observation_count'] ?? 0) ?> / Approved <?= (int)($p['approved_observation_count'] ?? 0) ?></span>
+                    </td>
+                    <td><span class="badge <?= (int)$p['is_active']===1 ? 'badge-success' : 'badge-secondary' ?>"><?= (int)$p['is_active']===1 ? 'Active' : 'Inactive' ?></span></td>
+                    <td><button class="btn btn-sm btn-outline-secondary disabled-control" type="button" disabled>View</button></td>
+                </tr>
+            <?php endforeach; ?>
+            <?php if(!$products): ?>
+                <tr><td colspan="7" class="text-center text-muted py-4">No Product Master records found.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

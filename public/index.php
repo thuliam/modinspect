@@ -38,6 +38,7 @@ $router->get('/admin/products',[AdminController::class,'products']);
 $router->get('/admin/product-aliases',[AdminController::class,'aliases']);
 $router->get('/admin/price-observations',[AdminController::class,'observations']);
 $router->get('/admin/review-queue',[AdminController::class,'review']);
+$router->get('/admin/review/{id}',[AdminController::class,'reviewDetail']);
 $router->get('/admin/review-analytics',[AdminController::class,'reviewAnalytics']);
 $router->post('/admin/review-queue/decision',[AdminController::class,'reviewDecision']);
 $router->post('/admin/review-queue/correction',[AdminController::class,'reviewCorrection']);

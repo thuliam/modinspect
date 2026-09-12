@@ -8,6 +8,18 @@ class Controller
         global $config;
         extract($data, EXTR_SKIP);
         $viewFile = ROOT_PATH . '/app/Views/' . $view . '.php';
+        if (str_starts_with($view, 'admin/')) {
+            require ROOT_PATH . '/app/Views/layouts/admin_header.php';
+            require $viewFile;
+            require ROOT_PATH . '/app/Views/layouts/admin_footer.php';
+            return;
+        }
+        if ($view === 'auth/login') {
+            require ROOT_PATH . '/app/Views/layouts/auth_header.php';
+            require $viewFile;
+            require ROOT_PATH . '/app/Views/layouts/auth_footer.php';
+            return;
+        }
         require ROOT_PATH . '/app/Views/layouts/header.php';
         require $viewFile;
         require ROOT_PATH . '/app/Views/layouts/footer.php';

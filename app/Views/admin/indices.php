@@ -1,6 +1,54 @@
-<section class="container page admin-page"><?php require __DIR__.'/_nav.php'; ?>
-<span class="eyebrow">PRICE ENGINE</span><h1>Price Indices</h1>
-<div class="card table-card"><table><thead><tr><th>Product</th><th>Market range</th><th>Median</th><th>Samples</th><th>Confidence</th><th>Provenance</th><th>Action</th></tr></thead><tbody>
-<?php foreach($products as $p): $hasSnapshot=!empty($p['median']) && (int)($p['valid_sample_size']??0)>0; $cb=$p['confidence_breakdown'] ?? null; $components=$cb['components'] ?? []; ?><tr><td><?= htmlspecialchars($p['full_name']) ?><small><?= $hasSnapshot ? 'Snapshot #'.(int)$p['snapshot_id'] : 'No snapshot' ?></small></td><td><?= $hasSnapshot ? '฿'.number_format((float)$p['q1']).'–฿'.number_format((float)$p['q3']) : 'ข้อมูลตลาดยังไม่เพียงพอ' ?></td><td><?= $hasSnapshot ? '฿'.number_format((float)$p['median']) : '-' ?></td><td><?= (int)$p['valid_sample_size'] ?></td><td><span class="badge"><?= htmlspecialchars(strtoupper((string)($p['confidence_label']??'insufficient'))) ?></span><?php if($cb): ?><small><?= htmlspecialchars($p['confidence_method_version'] ?? '-') ?> · score <?= number_format((float)($p['confidence_score'] ?? 0),2) ?></small><small>S <?= number_format((float)($components['sample']['score'] ?? 0),0) ?> · F <?= number_format((float)($components['freshness']['score'] ?? 0),0) ?> · D <?= number_format((float)($components['source_diversity']['score'] ?? 0),0) ?> · E <?= number_format((float)($components['evidence_quality']['score'] ?? 0),0) ?></small><small><?= htmlspecialchars(implode(' · ',array_slice($cb['reasons'] ?? [],0,3))) ?></small><?php else: ?><small>legacy confidence unavailable</small><?php endif; ?></td><td><?php if($hasSnapshot): ?><span class="badge"><?= htmlspecialchars($p['provenance_status'] ?? 'legacy_unavailable') ?></span><small><?= htmlspecialchars($p['formula_version'] ?? 'legacy-unversioned') ?> / <?= htmlspecialchars($p['cohort_version'] ?? 'legacy-unversioned') ?></small><small>included <?= (int)($p['provenance_included_count'] ?? 0) ?> · excluded <?= (int)($p['provenance_excluded_count'] ?? 0) ?></small><small><?= htmlspecialchars(substr((string)($p['calculation_hash'] ?? ''),0,12)) ?></small><?php else: ?>-<?php endif; ?></td><td><button class="small disabled-control" type="button" disabled>Recalculate — CLI only</button></td></tr><?php endforeach; ?>
-<?php if(!$products): ?><tr><td colspan="7" class="empty-cell">ยังไม่มี price index</td></tr><?php endif; ?>
-</tbody></table></div></section>
+<div class="mi-page-header">
+    <div>
+        <span class="mi-breadcrumb">Admin / Market Data</span>
+        <h1>Price Index</h1>
+        <p>Operator view of snapshot readiness. Calculation hashes remain available only in advanced provenance workflows.</p>
+    </div>
+    <button class="btn btn-outline-secondary disabled-control" type="button" disabled><i class="fas fa-sync-alt mr-2"></i>Recalculate via CLI</button>
+</div>
+
+<div class="card mi-table-card">
+    <div class="card-header">
+        <div class="mi-table-toolbar mb-0">
+            <h2>Current Snapshots</h2>
+            <input class="form-control mi-table-search js-table-filter" data-target="#indices-table" placeholder="Search product or confidence">
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table id="indices-table" class="table table-hover mi-admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Snapshot</th>
+                    <th>Price Type</th>
+                    <th>Market Range</th>
+                    <th>Samples</th>
+                    <th>Confidence</th>
+                    <th>Freshness</th>
+                    <th>Provenance</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach($products as $p): ?>
+                <?php
+                $hasSnapshot=!empty($p['median']) && (int)($p['valid_sample_size'] ?? 0)>0;
+                $filter=strtolower(implode(' ',[$p['full_name'] ?? '',$p['confidence_label'] ?? '',$p['provenance_status'] ?? '']));
+                ?>
+                <tr data-filter-row="<?= htmlspecialchars($filter) ?>">
+                    <td><span class="mi-row-title"><?= htmlspecialchars((string)$p['full_name']) ?></span><span class="mi-row-subtitle"><?= htmlspecialchars((string)($p['category'] ?? '-')) ?> / <?= htmlspecialchars((string)($p['brand'] ?? '-')) ?></span></td>
+                    <td><?= $hasSnapshot ? '#'.(int)$p['snapshot_id'] : 'No usable snapshot' ?><small><?= htmlspecialchars((string)($p['last_calculated_at'] ?? '-')) ?></small></td>
+                    <td><?= htmlspecialchars((string)($p['price_type'] ?? '-')) ?></td>
+                    <td><?= $hasSnapshot ? '฿'.number_format((float)$p['q1']).' to ฿'.number_format((float)$p['q3']) : 'Insufficient reviewed REAL data' ?></td>
+                    <td><?= (int)($p['valid_sample_size'] ?? 0) ?><small>Included <?= (int)($p['provenance_included_count'] ?? 0) ?> / Excluded <?= (int)($p['provenance_excluded_count'] ?? 0) ?></small></td>
+                    <td><span class="badge badge-light"><?= htmlspecialchars(strtoupper((string)($p['confidence_label'] ?? 'insufficient'))) ?></span><small>Score <?= number_format((float)($p['confidence_score'] ?? 0),2) ?></small></td>
+                    <td><?= number_format((float)($p['fresh_sample_ratio'] ?? 0)*100,1) ?>%</td>
+                    <td><span class="badge badge-light"><?= htmlspecialchars((string)($p['provenance_status'] ?? 'legacy_unavailable')) ?></span><small><?= htmlspecialchars((string)($p['formula_version'] ?? 'legacy-unversioned')) ?> / <?= htmlspecialchars((string)($p['cohort_version'] ?? 'legacy-unversioned')) ?></small></td>
+                </tr>
+            <?php endforeach; ?>
+            <?php if(!$products): ?>
+                <tr><td colspan="8" class="text-center text-muted py-4">No price index rows found.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
