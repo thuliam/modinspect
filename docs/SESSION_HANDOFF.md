@@ -828,3 +828,58 @@ Safety:
 Next owner action:
 
 - Retest Products Search in the authenticated UAT browser.
+
+## 26. Admin Imports Owner-Ready Input Workflow
+
+Updated during the 2026-09-13 STUDIO development session.
+
+Status:
+
+- PARTIAL pending stable UAT verification.
+- Implementation is in place for owner-readable templates, field guidance, dry-run summary, and confirm gating.
+- Public frontend redesign remains paused.
+
+Implemented:
+
+- Authenticated Admin download routes for CSV and JSON templates:
+  - `/admin/collector-jobs/template.csv`
+  - `/admin/collector-jobs/template.json`
+- Centralized import field contract in `App\Services\Collection\ImportFieldContract`.
+- Imports page now shows:
+  - Download template actions.
+  - Seven-step workflow from template download through explicit confirm.
+  - Collapsible Import Format / Field Reference.
+  - REAL vs TEST/MOCK explanation.
+  - Provenance guidance for REAL rows.
+  - Practical explanation that import templates are input formats, not data sources.
+  - Upload/Dry Run form separated from Confirm Import.
+  - Confirm Import card unlocked only after a Dry Run finds eligible rows for the saved uploaded file.
+  - Expanded dry-run/import summary with total scanned, eligible, invalid, duplicates, source-policy blocks, rows that will import, resolver hints, source distribution, validation lanes, and row-level reasons.
+- Confirm Import now reuses the exact Dry Run file path/hash/dataset/limit stored in session and rejects changed/missing files.
+
+Supported import contract summary:
+
+- Required: `observed_at`, plus at least `listing_title`, `title`, or `listing_text`.
+- REAL conditionally requires listing-level identity through `source_item_id`, `external_ref`, `source_reference`, `external_listing_id`, `source_listing_url`, or a non-search `source_url`.
+- Recommended for authoritative REAL: `source`, `source_search_url`, `source_listing_url`, `source_item_id`, `merchant`, `merchant_target_url` when public, `listing_title`, `asking_price`, `observed_at`, `evidence_snapshot_json`, `evidence_hash`.
+- Optional/legacy fields remain accepted for backward compatibility: `source_url`, `source_reference`, `title`, `displayed_price`, `external_listing_id`, `source_domain`, `source_type`, `product_hint`, `probe_run_id`, `ingestion_note`, `notes`, `condition_hint`, `warranty_hint`.
+
+Verification:
+
+- `git diff --check` passed for touched import files.
+- Temporary Apache runner first bootstrapped the isolated test database: `127.0.0.1/modinspect_test`.
+- Focused test file added: `tests/admin_import_workflow_test.php`.
+- HTTP execution of the focused test was not completed because Apache intermittently refused connections after bootstrap.
+- Temporary runner file was deleted and verified absent; HTTP check returned 404.
+
+Safety:
+
+- No Cloud DEV import was confirmed.
+- No Cloud REAL rows were modified.
+- No review decisions were executed.
+- No price snapshots were modified.
+- No public Priceza/provenance collection was performed.
+
+Next owner action:
+
+- Owner verifies Admin Imports template download and Dry Run using a safe TEST/MOCK sample file in authenticated UAT; stop before Cloud Confirm Import unless explicitly authorizing it.

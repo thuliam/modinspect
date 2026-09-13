@@ -697,7 +697,7 @@ Admin auth state:
 | B2B expansion | NOT IMPLEMENTED |
 | API/Data products | NOT IMPLEMENTED |
 | Live provider execution | WAITING FOR CREDENTIALS / APPROVAL |
-| Browser upload import UI | NOT IMPLEMENTED |
+| Browser upload import UI | IMPLEMENTED / OWNER_READY_INPUT_WORKFLOW_PENDING_UAT |
 | Reviewed offline REAL calibration batch | IMPORTED / WAITING_FOR_HUMAN_REVIEW |
 
 ## 12. Current Blockers
@@ -809,3 +809,11 @@ Do not assume previous chat context exists.
 - Safety: Cloud authoritative REAL data modified: zero; review decisions executed: zero; price snapshots modified: zero; Cloud destructive operations: zero; temporary public probe removed and verified HTTP 404.
 - Status: PARTIAL for authenticated owner Products UAT; PASS for server endpoint, browser adapter, and Products UX preservation.
 - Next: Owner retests Products Search in the authenticated UAT browser.
+
+## [2026-09-13] [AGENT: Codex] - Dev/QA/Doc
+- Done: Admin Imports - Owner-Ready Input Workflow. Added authenticated CSV and JSON template downloads generated from a centralized import field contract, added an Imports page field guide and step-by-step owner workflow, explained REAL vs TEST/MOCK semantics and where import data comes from, expanded Dry Run summary visibility, and gated Confirm Import behind the exact successful Dry Run file/hash context.
+- Files changed: `app/Services/Collection/ImportFieldContract.php`, `app/Controllers/AdminController.php`, `app/Views/admin/jobs.php`, `public/index.php`, `tests/admin_import_workflow_test.php`, `tests/run.php`, `README.md`, `docs/DESIGN_SYSTEM.md`, `docs/PROJECT_STATUS.md`, `docs/SESSION_HANDOFF.md`, `docs/REAL_CALIBRATION_PROTOCOL.md`, `context/project_state.json`.
+- Verification: The isolated test database bootstrapped as `127.0.0.1/modinspect_test`. A focused Admin import workflow test was added for template visibility/download content, upload Dry Run, pending confirmation gate, Confirm Import, and Review Queue creation under transaction rollback. HTTP execution of that focused test was blocked by intermittent Apache connection refusal after bootstrap; the temporary public runner was removed and verified HTTP 404.
+- Safety: Cloud REAL import performed during QA: zero; Cloud authoritative REAL records modified: zero; review decisions executed: zero; price snapshots modified: zero; Cloud destructive operations: zero; external paid/API calls: zero.
+- Status: PARTIAL pending owner/UAT or stable Apache execution of the focused Admin import workflow test.
+- Next: Owner opens Admin Imports and verifies CSV/JSON template download plus Dry Run summary using a safe TEST/MOCK file; stop before Confirm Import on Cloud DEV unless explicitly authorizing an import.

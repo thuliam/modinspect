@@ -421,3 +421,28 @@ provenance=LISTING_LEVEL
 ```
 
 Use this filter for the first authoritative review pass. Review priority remains Amber first, then Green; no batch auto-approval is allowed.
+
+## Admin Import Workflow
+
+Admin Imports is the owner-facing feed-data entrypoint for offline CSV/JSON evidence files.
+
+The workflow is:
+
+1. Download the CSV or JSON template from Admin Imports.
+2. Prepare a file from owner/manual collection, supported public-source collection output, or collector-generated/exported evidence.
+3. Upload the file.
+4. Choose TEST/MOCK or REAL.
+5. Run Dry Run.
+6. Review total rows, eligible rows, invalid rows, duplicates, provenance/source-policy failures, resolver hints, validation lanes, and row-level reasons.
+7. Confirm Import only after the Dry Run summary is acceptable.
+
+Confirm Import must use the exact file/hash/dataset/limit context from the reviewed Dry Run. A changed or missing file requires a new Dry Run.
+
+The template is an input format, not evidence. Placeholder rows such as `EXAMPLE-ITEM-001` or `template_test` are not business observations. REAL rows must remain traceable evidence and still enter Human Review; REAL import never means auto-approved or public-priced.
+
+Minimum implemented REAL import contract:
+
+- `observed_at` is required.
+- A visible title/text is required through `listing_title`, `title`, or `listing_text`.
+- REAL rows require listing-level identity through a source item/reference field, exact listing URL, or non-search source URL.
+- Authoritative REAL rows should include source, search URL where applicable, listing URL, source item ID, visible merchant, visible listing title, asking price, observed timestamp, immutable evidence snapshot, and evidence hash.

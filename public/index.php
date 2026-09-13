@@ -57,6 +57,8 @@ $router->get('/admin/sources/data',[AdminController::class,'sourcesData']);
 $router->post('/admin/sources/action',[AdminController::class,'sourceAction']);
 $router->get('/admin/collector-jobs',[AdminController::class,'jobs']);
 $router->get('/admin/collector-jobs/data',[AdminController::class,'jobsData']);
+$router->get('/admin/collector-jobs/template.csv',[AdminController::class,'importCsvTemplate']);
+$router->get('/admin/collector-jobs/template.json',[AdminController::class,'importJsonTemplate']);
 $router->post('/admin/collector-jobs/import-dry-run',[AdminController::class,'importDryRun']);
 $router->post('/admin/collector-jobs/import-confirm',[AdminController::class,'importConfirm']);
 $router->post('/admin/collector-jobs/requeue',[AdminController::class,'requeueJob']);

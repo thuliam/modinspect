@@ -254,3 +254,15 @@ Updated: 2026-09-13
 - For server-side tables, test requests must verify `recordsTotal`, `recordsFiltered`, and returned rows under concrete search/filter/order/page inputs.
 - Browser QA must verify the visible Search input triggers an AJAX redraw and updates table rows plus info text.
 - Authenticated owner-browser PASS can only be claimed from the actual owner-authenticated browser/session, not from endpoint checks alone.
+
+## Admin Imports Workflow Pattern
+
+Updated: 2026-09-13
+
+- Admin feed-data pages must show the operational workflow before the upload form.
+- Template/download actions belong near the workflow heading so owners do not need to infer file structure from source code.
+- Field references should be collapsible and concise: field name, required/optional status, meaning, example, and validation notes.
+- Dry Run and Confirm Import are separate actions. Confirm Import must stay unavailable until a successful Dry Run has created a current saved context.
+- Dry Run summaries should use operational language: total scanned, eligible, invalid, duplicates, provenance/source-policy failures, resolver hints, validation lanes, and rows that will not import.
+- REAL dataset copy must state that REAL evidence still requires Human Review and is not automatically public-priced.
+- Import templates are examples only; placeholder/template rows must not be presented as business observations.

@@ -8,6 +8,7 @@ use App\Models\Dashboard;
 use App\Services\Admin\AdminDataTableService;
 use App\Services\Auth\AuthService;
 use App\Services\Auth\AuthorizationService;
+use App\Services\Collection\ImportFieldContract;
 use App\Services\Collection\OfflineEvidenceImportService;
 use App\Services\Collection\SourceOperationsService;
 use App\Services\Review\ReviewCalibrationService;
@@ -115,7 +116,16 @@ final class AdminController extends Controller {
         $this->redirect('/admin/sources');
     }
     public function sources(): void { if(!$this->requirePermission('sources.view')) return; $d=new Dashboard();$this->render('sources','Source Health',['sources'=>$d->sources(),'provider_status'=>$d->providerStatus()]); }
-    public function jobs(): void { if(!$this->requirePermission('collection.jobs.view')) return; $d=new Dashboard();$this->render('jobs','Import Jobs',['jobs'=>$d->jobs(),'last_import_summary'=>$_SESSION['admin_import_summary'] ?? null]); }
+    public function jobs(): void {
+        if(!$this->requirePermission('collection.jobs.view')) return;
+        $d=new Dashboard();
+        $this->render('jobs','Import Jobs',[
+            'jobs'=>$d->jobs(),
+            'last_import_summary'=>$_SESSION['admin_import_summary'] ?? null,
+            'pending_import'=>$_SESSION['admin_import_pending'] ?? null,
+            'import_fields'=>ImportFieldContract::fields(),
+        ]);
+    }
     public function indices(): void { if(!$this->requirePermission('snapshots.view')) return; $d=new Dashboard();$this->render('indices','Price Indices',['products'=>$d->products(),'categories'=>$d->rows("SELECT id,name,slug FROM product_categories ORDER BY sort_order,name")]); }
     public function articles(): void { if(!$this->requirePermission('products.view')) return; $this->render('placeholder','Articles',['description'=>'จัดการบทความ SEO, buying guides และสถานะการเผยแพร่']); }
     public function audits(): void { if(!$this->requirePermission('audit.view')) return; $d=new Dashboard();$this->render('audits','Audit Logs',['audits'=>$d->audits()]); }
@@ -129,6 +139,8 @@ final class AdminController extends Controller {
     public function jobsData(): void { if(!$this->requirePermission('collection.jobs.view')) return; $this->json((new AdminDataTableService())->jobs($_GET,$this->baseUrl(),$this->user() ?? [])); }
     public function articlesData(): void { if(!$this->requirePermission('products.view')) return; $this->json((new AdminDataTableService())->articles($_GET,$this->baseUrl())); }
     public function auditsData(): void { if(!$this->requirePermission('audit.view')) return; $this->json((new AdminDataTableService())->audits($_GET)); }
+    public function importCsvTemplate(): void { $this->downloadImportTemplate('csv'); }
+    public function importJsonTemplate(): void { $this->downloadImportTemplate('json'); }
     public function productSave(): void {
         if(!$this->requirePermission('products.view')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/products'); }
@@ -301,15 +313,49 @@ final class AdminController extends Controller {
     private function handleImport(bool $dryRun): void {
         if(!$this->requirePermission('collection.jobs.requeue')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/collector-jobs'); }
-        $dataset=strtolower((string)($_POST['dataset'] ?? 'test')) === 'real' ? 'real' : 'test';
-        $limit=max(1,min(1000,(int)($_POST['limit'] ?? 100)));
-        $file=$this->storedUploadPath($_FILES['evidence_file'] ?? null);
-        if($file===''){
-            $this->flash('danger','Upload a CSV or JSON evidence file.');
-            $this->redirect('/admin/collector-jobs');
+        if(!$dryRun){
+            $pending=$_SESSION['admin_import_pending'] ?? null;
+            if(!is_array($pending) || empty($pending['file']) || empty($pending['hash'])){
+                $this->flash('danger','Run a successful Dry Run before confirming an import.');
+                $this->redirect('/admin/collector-jobs');
+            }
+            $file=(string)$pending['file'];
+            if(!is_file($file) || !is_readable($file) || hash_file('sha256',$file) !== (string)$pending['hash']){
+                unset($_SESSION['admin_import_pending']);
+                $this->flash('danger','The dry-run file is no longer available or has changed. Upload it and run Dry Run again.');
+                $this->redirect('/admin/collector-jobs');
+            }
+            $dataset=(string)($pending['dataset'] ?? 'test');
+            $limit=max(1,min(1000,(int)($pending['limit'] ?? 100)));
+        } else {
+            $dataset=strtolower((string)($_POST['dataset'] ?? 'test')) === 'real' ? 'real' : 'test';
+            $limit=max(1,min(1000,(int)($_POST['limit'] ?? 100)));
+            $file=$this->storedUploadPath($_FILES['evidence_file'] ?? null);
+            if($file===''){
+                unset($_SESSION['admin_import_pending']);
+                $this->flash('danger','Upload a CSV or JSON evidence file.');
+                $this->redirect('/admin/collector-jobs');
+            }
         }
         $summary=(new OfflineEvidenceImportService())->import($file,$dataset,$dryRun,$limit);
         $_SESSION['admin_import_summary']=$summary;
+        if($dryRun){
+            if((int)($summary['valid_rows'] ?? 0)>0){
+                $_SESSION['admin_import_pending']=[
+                    'file'=>$file,
+                    'hash'=>hash_file('sha256',$file),
+                    'dataset'=>$dataset,
+                    'limit'=>$limit,
+                    'name'=>basename($file),
+                    'summary'=>$summary,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                ];
+            } else {
+                unset($_SESSION['admin_import_pending']);
+            }
+        } else {
+            unset($_SESSION['admin_import_pending']);
+        }
         $this->flash(($summary['invalid_rows'] ?? 0)>0 && ($summary['valid_rows'] ?? 0)===0 ? 'danger' : 'success',($dryRun ? 'Dry run complete. ' : 'Import complete. ').'Valid rows: '.(int)($summary['valid_rows'] ?? 0).', invalid rows: '.(int)($summary['invalid_rows'] ?? 0).', duplicates: '.(int)($summary['duplicate_rows'] ?? 0).'.');
         $this->redirect('/admin/collector-jobs');
     }
@@ -321,7 +367,23 @@ final class AdminController extends Controller {
         $dir=ROOT_PATH.'/storage/import_uploads';
         if(!is_dir($dir)) mkdir($dir,0775,true);
         $target=$dir.'/admin-import-'.date('YmdHis').'-'.bin2hex(random_bytes(4)).'.'.$ext;
-        return move_uploaded_file((string)$file['tmp_name'],$target) ? $target : '';
+        $tmp=(string)($file['tmp_name'] ?? '');
+        if(move_uploaded_file($tmp,$target)) return $target;
+        if(defined('MODINSPECT_TESTING') && is_file($tmp) && copy($tmp,$target)) return $target;
+        return '';
+    }
+    private function downloadImportTemplate(string $format): void {
+        if(!$this->requirePermission('collection.jobs.view')) return;
+        $format=strtolower($format);
+        if($format==='csv'){
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename="modinspect-market-evidence-template.csv"');
+            echo ImportFieldContract::csvTemplate();
+            return;
+        }
+        header('Content-Type: application/json; charset=utf-8');
+        header('Content-Disposition: attachment; filename="modinspect-market-evidence-template.json"');
+        echo ImportFieldContract::jsonTemplate();
     }
     private function json(array $payload): void {
         header('Content-Type: application/json; charset=utf-8');

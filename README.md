@@ -7,7 +7,7 @@
 The project started under the working name **Used PC Price Radar**. The current direction is broader: instead of being only a used-part price lookup website, ModInspect is being developed around a reusable data foundation for product master data, market observations, evidence, transparent price references, deal evaluation, seller tools, and later buyer/seller matching.
 
 **Domain:** `modinspect.com`  
-**Current stage:** Local prototype + Phase 4A UX/UI product audit and design foundation; Phase 3H waits for owner-supplied REAL calibration data  
+**Current stage:** Local prototype + Admin/backoffice operational integration; REAL market evidence remains human-review gated before public pricing
 **Primary stack:** PHP 8.1+, Pure MVC, PDO, MySQL/MariaDB, Bootstrap, Apache Rewrite
 
 ---
@@ -169,6 +169,27 @@ Provider-specific logic should sit behind adapters so the core system can switch
 - Local Ollama models for low-cost extraction/classification
 
 The production system should be able to disable a provider or source without breaking Product Master, observations, or pricing logic.
+
+### Admin import workflow
+
+The owner-facing offline feed workflow lives in Admin:
+
+```text
+Admin → Imports
+```
+
+It supports CSV/JSON evidence files through the existing offline import pipeline:
+
+```text
+Template
+→ Upload
+→ Dry Run
+→ Validation Summary
+→ Explicit Confirm Import
+→ Review Queue
+```
+
+The Imports page provides downloadable CSV and JSON templates, a field reference, TEST/MOCK vs REAL dataset guidance, provenance guidance, and a confirm gate tied to the exact successful dry-run file context. REAL imports still enter Human Review and do not auto-approve observations or generate public prices.
 
 ### Zero-Cost POC policy
 

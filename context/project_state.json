@@ -1,6 +1,6 @@
 ﻿{
     "project":  "ModInspect",
-    "phase":  "Products DataTable functional server endpoint and browser-adapter proof are PASS; Products slide-down Add/Edit UX is preserved; authenticated owner Products UAT remains pending manual owner browser verification because Codex has no access to the owner authenticated browser session; backend/domain semantics are unchanged",
+    "phase":  "Admin Imports owner-ready input workflow is implemented with CSV/JSON templates, field guide, dry-run summary, and confirm gate; isolated test DB bootstrap succeeded but focused HTTP workflow execution is pending stable Apache verification; public frontend redesign remains paused",
     "implemented":  [
                         "Custom PHP MVC router/bootstrap",
                         "PDO database connection",
@@ -104,7 +104,8 @@
                         "Products Page Owner-UAT Fix: DataTable search now uses native-PDO-safe unique placeholders, the local DataTables adapter preserves search input context, browser Search redraw is verified, and Products Add/Edit uses the collapsed slide-down form",
                         "Admin DataTable QA now requires functional proof of search, pagination, sorting, and filters; JSON-shape checks alone are not sufficient",
                         "Products DataTable functional proof: server-side search, recordsFiltered, pagination, sorting, filters, and browser-adapter AJAX redraw verified with current UAT Product Master data",
-                        "Products Add/Edit slide-down UX preserved during functional DataTable fix"
+                        "Products Add/Edit slide-down UX preserved during functional DataTable fix",
+                        "Admin Imports owner-ready input workflow: centralized CSV/JSON import field contract, authenticated template downloads, field guide, REAL vs TEST/MOCK guidance, provenance guidance, dry-run summary, and confirm gate tied to exact dry-run file/hash context"
                     ],
     "approved_architecture_not_implemented":  [
                                                   "Community Data Feedback Loop",
@@ -132,13 +133,15 @@
                     "Phase 3H-R1 requires owner human review of 42 imported REAL observations from offline_real_priceza_com before any public snapshot is recalculated",
                     "Cloud DEV has one active Admin account; Human Review Console is owner-accepted and ready for one-by-one human decisions",
                     "Phase 4B owner visual review was rejected once; fix round requires renewed owner review of Home, Price Index/Search, Product Detail, and Deal Checker before design direction is approved",
-                    "Authenticated owner Products browser UAT remains waiting for manual owner verification in the existing authenticated browser session"
+                    "Authenticated owner Products browser UAT remains waiting for manual owner verification in the existing authenticated browser session",
+                    "Admin Imports owner UAT remains waiting for authenticated owner verification of template download and Dry Run; Cloud Confirm Import must not be used unless explicitly authorized"
                 ],
     "next_priorities":  [
                             "Owner starts human review at /admin/review-queue?dataset=REAL\u0026status=pending",
                             "Owner visually reviews the Products page default state and Add/Edit slide-down form behavior",
                             "Owner retests Products Search, filters, pagination/sort, and Add/Edit form in authenticated UAT",
-                            "Owner retests Products Search in the authenticated UAT browser"
+                            "Owner retests Products Search in the authenticated UAT browser",
+                            "Owner verifies Admin Imports CSV/JSON template download and Dry Run summary with a safe TEST/MOCK sample file, stopping before Cloud Confirm Import"
                         ],
     "deferred":  [
                      "Phase 4.5 Community Data Feedback Loop implementation",
@@ -167,7 +170,8 @@
                         "Laragon SSL is temporarily disabled because vpnserver_x64 owns TCP/443; do not change HTTPS during environment bootstrap or test isolation work",
                         "Test DB bootstrap uses modinspect.sql because raw SQL migrations do not have a reliable migration tracking table",
                         "Automated DataTable PASS is not authoritative unless it proves concrete search, pagination, sorting, filters, recordsTotal/recordsFiltered behavior, and browser AJAX redraw.",
-                        "Server-side DataTable automated PASS requires concrete functional proof of search, recordsFiltered, pagination, sorting, custom filters, and browser AJAX redraw; HTTP status or JSON shape alone is insufficient."
+                        "Server-side DataTable automated PASS requires concrete functional proof of search, recordsFiltered, pagination, sorting, custom filters, and browser AJAX redraw; HTTP status or JSON shape alone is insufficient.",
+                        "Admin import workflow PASS requires practical proof of template download, owner-prepared upload, Dry Run summary, exact-context Confirm Import gate, and Review Queue creation in isolated TEST DB; source-code inspection alone is insufficient."
                     ],
     "development_topology":  {
                                  "source_control":  "GitHub",
