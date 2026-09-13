@@ -783,3 +783,29 @@ Do not assume previous chat context exists.
 - Milestone that last updated this file: Phase 3H-R1 - REAL Batch Title/Provenance Quality Gate
 - Latest migration: `012_admin_auth_rbac.sql`
 - Latest verified regression status: PASS for title/provenance quality gate checks: Apache-served PHP 8.3.33 read-only class/load probe, normalized Review Queue/Detail title checks, raw-evidence preservation check, read-only REAL pending count of 42, GET route checks for `/`, `/login`, `/admin/review-queue`, and `/admin/review/2111`; no destructive Cloud DEV test/reset/reseed was run
+
+## [2026-09-13] [AGENT: Codex] - Dev/QA/Doc
+- Done: Products Page UX / Create Form Refinement. Converted the Products create/edit surface from an always-open dominant form into a collapsed slide-down card controlled by the existing top-right Add Product CTA; rebuilt the form with a Bootstrap grid, aligned the Active status switch, added Cancel/Close actions, preserved the Products server-side DataTable, and kept edit actions on the same reusable form.
+- Files changed: `app/Views/admin/products.php`, `public/assets/admin/js/admin.js`, `public/assets/admin/css/admin.css`, `docs/DESIGN_SYSTEM.md`, `docs/PROJECT_STATUS.md`, `docs/SESSION_HANDOFF.md`, `context/project_state.json`.
+- Verification: Headless Chrome rendered visual QA screenshots for default and open-form states at 390x844, 708x900, 768x1024, 1024x768, 1366x900, and 1440x900. The Products content stacks cleanly at mobile/tablet widths, desktop alignment is improved, and no Products-form-driven horizontal overflow was observed.
+- Safety: Backend/domain behavior changed: none; REAL records modified: zero; review decisions executed: zero; price snapshots modified: zero; Cloud destructive operations: zero.
+- Status: READY FOR OWNER VISUAL REVIEW for Products page only.
+- Next: Owner visually reviews the Products page default state plus Add/Edit form behavior.
+
+## [2026-09-13] [AGENT: Codex] - Dev/QA/Doc
+- Done: Products Page Owner-UAT Fix. Owner manual UAT overrode the previous automated PASS because Products DataTable Search did not work in the real browser. Root cause was two-part: repeated named SQL placeholders failed under PDO native prepares for server-side search, and the local minimal DataTables adapter debounce discarded input context so the visible Search box sent an empty search value.
+- Files changed: `app/Services/Admin/AdminDataTableService.php`, `app/Models/Dashboard.php`, `public/assets/admin/vendor/datatables/js/jquery.dataTables.min.js`, `public/assets/admin/js/admin.js`, `app/Views/admin/products.php`, `public/assets/admin/css/admin.css`, `tests/ui_integration_test.php`, `docs/DESIGN_SYSTEM.md`, `docs/PROJECT_STATUS.md`, `docs/SESSION_HANDOFF.md`, `context/project_state.json`.
+- Verification: Read-only UAT matrix through Apache/PHP 8.3.33 proved Products `recordsTotal=41`; search `5700X3D=1`, `RX 6600 XT=1`, `Intel=5`, impossible search `0`; pagination page 1/page 2 returned different row sets; product ASC/DESC and Brand sort worked; Category, Brand, Status, and combined search+filter counts worked. Browser screenshot proved visible Search `5700X3D` redrew to one row and updated info text to `Showing 1 to 1 of 1 records (filtered from 41)`.
+- Shared check: Aliases, Observations, and Review Queue server-side search endpoints returned valid filtered JSON after the native-PDO placeholder fix.
+- Visual QA: Rendered Products default, Add Product open, Search filtered, and Edit form states at 1366x900, 1440x900, 1024x768, and 768x1024.
+- Safety: Backend/domain semantics changed: none; Cloud REAL data modified: zero; review decisions executed: zero; price snapshots modified: zero; Cloud destructive operations: zero; temporary public probe removed and verified HTTP 404.
+- Status: PASS / READY FOR OWNER VERIFICATION for Products page.
+- Next: Owner retests Products page Search, filters, pagination/sort, and Add/Edit form in authenticated UAT.
+
+## [2026-09-13] [AGENT: Codex] - QA/Doc
+- Done: Re-ran Products DataTable functional proof after owner clarified Products functional UAT was still open. Confirmed the current working tree contains the fixed Products server-side search and local DataTables browser adapter behavior while preserving the slide-down Add/Edit UX.
+- Verification: Read-only Apache/PHP UAT matrix measured Products `recordsTotal=41`; search `5700X3D=1`, `RX 6600 XT=1`, `Intel=5`, impossible search `0`; pagination page 1/page 2 returned different row sets; Product ASC/DESC and Brand sorting worked; Category, Brand, Status, and combined search/filter counts worked. Browser-adapter screenshot showed visible Search `5700X3D` redrew to one row and updated info text to `Showing 1 to 1 of 1 records (filtered from 41)`.
+- Limitation: Codex still has no access to the owner's authenticated browser session (`apps=[]`, `browsers=[]`), so actual owner-authenticated Products page confirmation must be performed by the owner. No auth bypass, test credentials, or session export was attempted.
+- Safety: Cloud authoritative REAL data modified: zero; review decisions executed: zero; price snapshots modified: zero; Cloud destructive operations: zero; temporary public probe removed and verified HTTP 404.
+- Status: PARTIAL for authenticated owner Products UAT; PASS for server endpoint, browser adapter, and Products UX preservation.
+- Next: Owner retests Products Search in the authenticated UAT browser.

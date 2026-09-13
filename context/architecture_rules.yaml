@@ -120,3 +120,15 @@ test_database_environment:
   cloud_database_blocked: "thuliam_modinspect"
   fail_closed_error: "UNSAFE_TEST_DATABASE_BLOCKED"
   tests_rewrite_application_env: false
+
+qa_rules:
+  server_side_datatable_pass_requires_functional_proof: true
+  datatable_json_shape_alone_is_sufficient: false
+  datatable_required_proofs:
+    - search
+    - recordsFiltered
+    - pagination
+    - sorting
+    - custom_filters
+    - browser_ajax_redraw
+  authenticated_owner_browser_uat_requires_owner_session: true

@@ -168,6 +168,15 @@ Admin tables:
 - Use text plus badge color for dataset, review status, source health, and validation lane.
 - Keep actions in the rightmost column and use primary, secondary, and danger styling consistently.
 
+Admin server-side DataTables:
+
+- Primary Admin dataset tables must use server-side processing, not full-dataset browser pagination.
+- Standard table AJAX requests use `draw`, `start`, `length`, `search[value]`, `order`, and `columns`.
+- Standard table AJAX responses use `draw`, `recordsTotal`, `recordsFiltered`, and `data`.
+- Server-side endpoints must require the same Admin/RBAC protection as their parent pages.
+- Query implementations must paginate in SQL, count total and filtered records separately, and order only by explicit column whitelists.
+- Filter forms should compose with DataTables AJAX requests and respect the deployed `APP_URL`/base path.
+
 ## Admin UI Visual Fix Round
 
 Updated: 2026-09-12
@@ -219,3 +228,29 @@ Validation presentation:
 - AMBER must show a human-readable reason near the decision action.
 - Validation version markers, rule IDs, and raw payloads belong in collapsed Advanced / Technical Details.
 - LOW_CONFIDENCE should identify the failing confidence dimension when available. Observation #2111 is AMBER because product-resolution confidence recomputed to `0.8637`, below the Green threshold of `0.95`, even though extraction confidence and stored observation confidence display as 95%.
+
+## Products Page UX / Create Form Refinement
+
+Updated: 2026-09-13
+
+Status: READY FOR OWNER VISUAL REVIEW.
+
+Products page:
+
+- Product Master table remains the primary Products page surface.
+- The top-right `Add Product` button is the single create CTA.
+- Create/edit fields live in a collapsed slide-down card, hidden by default.
+- The same form presentation is reused for Add and Edit.
+- Product form fields use a Bootstrap grid: category, brand, model, slug; full name, generation, image path, status; then full-width key specification.
+- Active status uses an aligned switch/control inside the field grid, not a detached checkbox.
+- Product table behavior must remain server-side DataTables.
+
+## Admin DataTable QA Rule
+
+Updated: 2026-09-13
+
+- Automated DataTable PASS requires functional proof of search, pagination, sorting, and custom filters.
+- Endpoint status and JSON-shape checks alone are insufficient.
+- For server-side tables, test requests must verify `recordsTotal`, `recordsFiltered`, and returned rows under concrete search/filter/order/page inputs.
+- Browser QA must verify the visible Search input triggers an AJAX redraw and updates table rows plus info text.
+- Authenticated owner-browser PASS can only be claimed from the actual owner-authenticated browser/session, not from endpoint checks alone.

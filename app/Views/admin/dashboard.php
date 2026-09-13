@@ -9,60 +9,60 @@
 
 <div class="row mi-metric-row">
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card">
+        <a class="card mi-metric-card" href="<?= $base ?>/admin/products">
             <span>Active Products</span>
             <strong><?= (int)$products ?></strong>
             <small>CPU <?= (int)$cpu_products ?> / GPU <?= (int)$gpu_products ?></small>
-        </div>
+        </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card mi-metric-warning">
+        <a class="card mi-metric-card mi-metric-warning" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending">
             <span>REAL Pending Reviews</span>
             <strong><?= (int)$real_pending_reviews ?></strong>
             <small>Human decisions required</small>
-        </div>
+        </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card">
+        <a class="card mi-metric-card" href="<?= $base ?>/admin/review-queue?dataset=MOCK_TEST&status=pending">
             <span>MOCK/Test Pending</span>
             <strong><?= (int)$mock_test_pending_reviews ?></strong>
             <small>Separate from REAL calibration</small>
-        </div>
+        </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card">
+        <a class="card mi-metric-card" href="<?= $base ?>/admin/price-observations?dataset=REAL&status=approved">
             <span>Approved REAL</span>
             <strong><?= (int)$approved_real_observations ?></strong>
             <small>No public range until approved evidence exists</small>
-        </div>
+        </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card">
+        <a class="card mi-metric-card" href="<?= $base ?>/admin/collector-jobs">
             <span>Collection Jobs</span>
             <strong><?= (int)$jobs_completed ?></strong>
             <small>Queued <?= (int)$jobs_queued ?> / Running <?= (int)$jobs_running ?> / Failed <?= (int)$jobs_failed ?></small>
-        </div>
+        </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card">
+        <a class="card mi-metric-card" href="<?= $base ?>/admin/price-indices?provenance_status=recorded">
             <span>Public Eligible Snapshots</span>
             <strong><?= (int)$public_eligible_snapshots ?></strong>
             <small><?= (int)$latest_snapshots ?> total snapshot rows</small>
-        </div>
+        </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card">
+        <a class="card mi-metric-card" href="<?= $base ?>/admin/price-observations">
             <span>Pipeline Evidence</span>
             <strong><?= (int)$evidence ?></strong>
             <small>Candidates <?= (int)$candidates ?> / Extractions <?= (int)$extractions ?></small>
-        </div>
+        </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <div class="card mi-metric-card">
+        <a class="card mi-metric-card" href="<?= $base ?>/admin/sources">
             <span>Sources</span>
             <strong><?= (int)$sources ?></strong>
             <small>Paused/disabled <?= (int)$paused_sources ?> / incidents <?= (int)$unresolved_incidents ?></small>
-        </div>
+        </a>
     </div>
 </div>
 
@@ -77,7 +77,7 @@
                         <h3><?= (int)$real_pending_reviews ?> records waiting</h3>
                         <p>Queue defaults to REAL pending and sorts AMBER first for calibration review.</p>
                     </div>
-                    <a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-queue">Review</a>
+                    <a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending">Review</a>
                 </div>
                 <div class="mi-status-list">
                     <div><span>All pending observations</span><strong><?= (int)$pending ?></strong></div>
@@ -101,7 +101,7 @@
                                 <td><?= htmlspecialchars($run['source_name']) ?><small><?= htmlspecialchars($run['source_key']) ?></small></td>
                                 <td><?= (int)$run['candidates_created'] ?><small>evidence <?= (int)$run['evidence_created'] ?> / reviews <?= (int)$run['reviews_created'] ?></small></td>
                                 <td><span class="badge badge-success"><?= (int)$run['green_count'] ?> G</span> <span class="badge badge-warning"><?= (int)$run['amber_count'] ?> A</span> <span class="badge badge-danger"><?= (int)$run['red_count'] ?> R</span></td>
-                                <td><?= htmlspecialchars($run['finished_at']) ?></td>
+                                <td><a href="<?= $base ?>/admin/collector-jobs?run_id=<?= urlencode((string)$run['run_id']) ?>"><?= htmlspecialchars($run['finished_at']) ?></a></td>
                             </tr>
                         <?php endforeach; ?>
                         <?php if(!$recent_imports): ?><tr><td colspan="5" class="text-center text-muted py-4">No import runs yet.</td></tr><?php endif; ?>

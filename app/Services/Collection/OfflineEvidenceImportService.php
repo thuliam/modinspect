@@ -216,7 +216,7 @@ final class OfflineEvidenceImportService
                 throw new \RuntimeException('CSV_EMPTY');
             }
             $header = array_map(static fn(string $value): string => trim($value), $header);
-            $required = ['title', 'listing_text', 'observed_at'];
+            $required = ['observed_at'];
             foreach ($required as $field) {
                 if (!in_array($field, $header, true)) {
                     fclose($handle);
@@ -243,22 +243,26 @@ final class OfflineEvidenceImportService
     private function validateRecord(array $record, string $dataset): array
     {
         $errors = [];
-        $title = trim((string)($record['title'] ?? ''));
+        $title = $this->firstValue($record, ['listing_title', 'title']);
         $text = trim((string)($record['listing_text'] ?? ''));
         $actualTitle = $this->titleNormalizer->normalize($title);
         $actualText = $this->titleNormalizer->normalize($text);
-        $url = trim((string)($record['source_url'] ?? ''));
-        $reference = trim((string)($record['source_reference'] ?? $record['external_listing_id'] ?? ''));
+        $sourceListingUrl = $this->firstValue($record, ['source_listing_url']);
+        $sourceSearchUrl = $this->firstValue($record, ['source_search_url']);
+        $url = $this->firstValue($record, ['source_url', 'source_listing_url', 'source_search_url']);
+        $reference = $this->firstValue($record, ['source_item_id', 'external_ref', 'source_reference', 'external_listing_id']);
         $currency = strtoupper(trim((string)($record['currency'] ?? 'THB')));
-        $price = trim((string)($record['displayed_price'] ?? ''));
+        $price = $this->firstValue($record, ['asking_price', 'displayed_price']);
         $observedAt = trim((string)($record['observed_at'] ?? ''));
 
         if ($title === '' && $text === '') $errors[] = 'MISSING_TITLE_OR_TEXT';
         if ($actualTitle === '' && $actualText === '') $errors[] = 'MISSING_ACTUAL_LISTING_TITLE_OR_TEXT';
         if (mb_strlen($title, 'UTF-8') > self::MAX_TITLE_LENGTH) $errors[] = 'TITLE_TOO_LONG';
         if (mb_strlen($text, 'UTF-8') > self::MAX_TEXT_LENGTH) $errors[] = 'LISTING_TEXT_TOO_LONG';
-        if ($url !== '' && !filter_var($url, FILTER_VALIDATE_URL)) $errors[] = 'INVALID_URL';
-        if ($dataset === 'real' && $url === '' && $reference === '') $errors[] = 'REAL_DATASET_REQUIRES_EXTERNAL_REFERENCE';
+        foreach (['url' => $url, 'source_listing_url' => $sourceListingUrl, 'source_search_url' => $sourceSearchUrl] as $field => $value) {
+            if ($value !== '' && !filter_var($value, FILTER_VALIDATE_URL)) $errors[] = 'INVALID_' . strtoupper($field);
+        }
+        if ($dataset === 'real' && !$this->hasListingLevelReference($sourceListingUrl, $url, $reference)) $errors[] = 'REAL_DATASET_REQUIRES_LISTING_LEVEL_REFERENCE';
         if ($dataset === 'real' && $this->looksMockOrTest($record)) $errors[] = 'REAL_DATASET_CANNOT_USE_MOCK_TEST_SOURCE';
         if (!in_array($currency, self::SUPPORTED_CURRENCIES, true)) $errors[] = 'UNSUPPORTED_CURRENCY';
         if ($price !== '') {
@@ -277,21 +281,21 @@ final class OfflineEvidenceImportService
 
     private function candidateFromRecord(array $record, string $dataset, string $runId, string $sourceName): SearchCandidate
     {
-        $title = $this->titleNormalizer->normalize((string)($record['title'] ?? ''));
+        $title = $this->titleNormalizer->normalize($this->firstValue($record, ['listing_title', 'title']));
         $text = $this->titleNormalizer->normalize((string)($record['listing_text'] ?? ''));
         $combined = trim($title . ' ' . $text);
         if (mb_strlen($combined, 'UTF-8') > 490) {
             $combined = mb_substr($combined, 0, 490, 'UTF-8');
         }
-        $url = trim((string)($record['source_url'] ?? ''));
-        $reference = trim((string)($record['source_reference'] ?? $record['external_listing_id'] ?? ''));
+        $url = $this->firstValue($record, ['source_listing_url', 'source_url', 'source_search_url']);
+        $reference = $this->firstValue($record, ['source_item_id', 'external_ref', 'source_reference', 'external_listing_id']);
         if ($url === '' && $reference !== '') {
             $url = 'offline-ref://' . rawurlencode($reference);
         }
         return new SearchCandidate(
             $sourceName,
             $combined,
-            trim((string)($record['displayed_price'] ?? '')) ?: null,
+            $this->firstValue($record, ['asking_price', 'displayed_price']) ?: null,
             $url ?: null,
             date('Y-m-d H:i:s', strtotime((string)$record['observed_at'])),
             $dataset === 'real' ? 'B' : 'C',
@@ -305,8 +309,17 @@ final class OfflineEvidenceImportService
                 'dataset' => strtoupper($dataset),
                 'row' => (int)$record['_row'],
                 'source_reference' => $reference ?: null,
+                'source' => $this->firstValue($record, ['source']) ?: null,
+                'source_search_url' => $this->firstValue($record, ['source_search_url']) ?: null,
+                'source_listing_url' => $this->firstValue($record, ['source_listing_url']) ?: null,
+                'source_item_id' => $this->firstValue($record, ['source_item_id']) ?: null,
+                'external_ref' => $this->firstValue($record, ['external_ref']) ?: null,
+                'probe_run_id' => $this->firstValue($record, ['probe_run_id']) ?: null,
                 'source_domain' => $record['source_domain'] ?? null,
                 'merchant' => trim((string)($record['merchant'] ?? '')) ?: null,
+                'merchant_target_url' => $this->firstValue($record, ['merchant_target_url']) ?: null,
+                'evidence_snapshot_json' => $this->firstValue($record, ['evidence_snapshot_json']) ?: null,
+                'evidence_hash' => $this->firstValue($record, ['evidence_hash']) ?: null,
                 'ingestion_note' => trim((string)($record['ingestion_note'] ?? '')) ?: null,
             ]
         );
@@ -319,7 +332,19 @@ final class OfflineEvidenceImportService
             'IMPORT_RUN_ID=' . $runId,
             'DATASET=' . strtoupper($dataset),
             'ROW=' . (string)$record['_row'],
+            $this->firstValue($record, ['source']) !== '' ? 'SOURCE=' . $this->firstValue($record, ['source']) : null,
+            $this->firstValue($record, ['source_search_url']) !== '' ? 'SOURCE_SEARCH_URL=' . $this->firstValue($record, ['source_search_url']) : null,
+            $this->firstValue($record, ['source_listing_url']) !== '' ? 'SOURCE_LISTING_URL=' . $this->firstValue($record, ['source_listing_url']) : null,
+            $this->firstValue($record, ['source_item_id']) !== '' ? 'SOURCE_ITEM_ID=' . $this->firstValue($record, ['source_item_id']) : null,
+            $this->firstValue($record, ['external_ref', 'source_reference', 'external_listing_id']) !== '' ? 'EXTERNAL_REF=' . $this->firstValue($record, ['external_ref', 'source_reference', 'external_listing_id']) : null,
+            $this->firstValue($record, ['probe_run_id']) !== '' ? 'PROBE_RUN_ID=' . $this->firstValue($record, ['probe_run_id']) : null,
+            $this->firstValue($record, ['listing_title', 'title']) !== '' ? 'LISTING_TITLE=' . $this->firstValue($record, ['listing_title', 'title']) : null,
+            $this->firstValue($record, ['asking_price', 'displayed_price']) !== '' ? 'ASKING_PRICE=' . $this->firstValue($record, ['asking_price', 'displayed_price']) : null,
+            trim((string)($record['observed_at'] ?? '')) !== '' ? 'OBSERVED_AT=' . trim((string)$record['observed_at']) : null,
             isset($record['merchant']) && trim((string)$record['merchant']) !== '' ? 'MERCHANT=' . trim((string)$record['merchant']) : null,
+            $this->firstValue($record, ['merchant_target_url']) !== '' ? 'MERCHANT_TARGET_URL=' . $this->firstValue($record, ['merchant_target_url']) : null,
+            $this->firstValue($record, ['evidence_hash']) !== '' ? 'EVIDENCE_HASH=' . $this->firstValue($record, ['evidence_hash']) : null,
+            $this->firstValue($record, ['evidence_snapshot_json']) !== '' ? 'EVIDENCE_SNAPSHOT_JSON=' . $this->firstValue($record, ['evidence_snapshot_json']) : null,
             isset($record['ingestion_note']) && trim((string)$record['ingestion_note']) !== '' ? 'INGESTION_NOTE=' . trim((string)$record['ingestion_note']) : null,
             isset($record['notes']) ? 'NOTES=' . trim((string)$record['notes']) : null,
         ])));
@@ -328,8 +353,9 @@ final class OfflineEvidenceImportService
     private function sourceKey(array $record, string $dataset): string
     {
         $domain = strtolower(trim((string)($record['source_domain'] ?? '')));
-        if ($domain === '' && !empty($record['source_url']) && filter_var((string)$record['source_url'], FILTER_VALIDATE_URL)) {
-            $domain = strtolower((string)(parse_url((string)$record['source_url'], PHP_URL_HOST) ?: 'offline'));
+        $sourceUrl = $this->firstValue($record, ['source_listing_url', 'source_url', 'source_search_url']);
+        if ($domain === '' && $sourceUrl !== '' && filter_var($sourceUrl, FILTER_VALIDATE_URL)) {
+            $domain = strtolower((string)(parse_url($sourceUrl, PHP_URL_HOST) ?: 'offline'));
         }
         if ($domain === '') {
             $domain = 'offline_reference';
@@ -341,8 +367,9 @@ final class OfflineEvidenceImportService
     private function sourceName(array $record, string $dataset): string
     {
         $domain = trim((string)($record['source_domain'] ?? ''));
-        if ($domain === '' && !empty($record['source_url']) && filter_var((string)$record['source_url'], FILTER_VALIDATE_URL)) {
-            $domain = (string)(parse_url((string)$record['source_url'], PHP_URL_HOST) ?: 'offline reference');
+        $sourceUrl = $this->firstValue($record, ['source_listing_url', 'source_url', 'source_search_url']);
+        if ($domain === '' && $sourceUrl !== '' && filter_var($sourceUrl, FILTER_VALIDATE_URL)) {
+            $domain = (string)(parse_url($sourceUrl, PHP_URL_HOST) ?: 'offline reference');
         }
         return 'Offline ' . strtoupper($dataset) . ' Import - ' . ($domain ?: 'external reference');
     }
@@ -356,8 +383,9 @@ final class OfflineEvidenceImportService
             return $source;
         }
         $domain = trim((string)($record['source_domain'] ?? ''));
-        if ($domain === '' && !empty($record['source_url']) && filter_var((string)$record['source_url'], FILTER_VALIDATE_URL)) {
-            $domain = (string)(parse_url((string)$record['source_url'], PHP_URL_HOST) ?: '');
+        $sourceUrl = $this->firstValue($record, ['source_listing_url', 'source_url', 'source_search_url']);
+        if ($domain === '' && $sourceUrl !== '' && filter_var($sourceUrl, FILTER_VALIDATE_URL)) {
+            $domain = (string)(parse_url($sourceUrl, PHP_URL_HOST) ?: '');
         }
         $insert = $this->db->prepare(
             "INSERT INTO data_sources (source_key,name,domain,source_type,access_method,allowed_collection_method,risk_level,reliability_score,evidence_quality,freshness_expectation_days,terms_note,policy_note,is_active,is_paused,last_success_at)
@@ -424,7 +452,7 @@ final class OfflineEvidenceImportService
 
     private function legacyCombinedTitle(array $record): string
     {
-        $title = trim((string)($record['title'] ?? ''));
+        $title = $this->firstValue($record, ['listing_title', 'title']);
         $text = trim((string)($record['listing_text'] ?? ''));
         $combined = trim($title . ' ' . $text);
         if (mb_strlen($combined, 'UTF-8') > 490) {
@@ -459,9 +487,42 @@ final class OfflineEvidenceImportService
             (string)($record['source_type'] ?? ''),
             (string)($record['source_domain'] ?? ''),
             (string)($record['source_url'] ?? ''),
+            (string)($record['source_listing_url'] ?? ''),
+            (string)($record['source_search_url'] ?? ''),
             (string)($record['source_reference'] ?? ''),
+            (string)($record['external_ref'] ?? ''),
         ]));
         return str_contains($text, 'mock') || str_contains($text, 'fixture') || str_contains($text, 'test');
+    }
+
+    private function firstValue(array $record, array $fields): string
+    {
+        foreach ($fields as $field) {
+            $value = trim((string)($record[$field] ?? ''));
+            if ($value !== '') {
+                return $value;
+            }
+        }
+        return '';
+    }
+
+    private function hasListingLevelReference(string $sourceListingUrl, string $sourceUrl, string $reference): bool
+    {
+        if ($reference !== '') {
+            return true;
+        }
+        if ($sourceListingUrl !== '') {
+            return true;
+        }
+        if ($sourceUrl === '') {
+            return false;
+        }
+        $lower = strtolower($sourceUrl);
+        return !str_contains($lower, 'priceza.com/s/')
+            && !str_contains($lower, '/search?')
+            && !str_contains($lower, 'search')
+            && !str_contains($lower, 'q=')
+            && !str_contains($lower, 'keyword=');
     }
 
     private function startImportJob(int $sourceId, string $runId, SearchCandidate $candidate): int

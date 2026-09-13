@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Pricing;
 
 use App\Core\Database;
+use App\Services\Provenance\ObservationProvenanceService;
 use PDO;
 
 final class PriceSnapshotService
@@ -142,11 +143,12 @@ final class PriceSnapshotService
     private function buildCohort(int $productId, string $priceType): array
     {
         $stmt = $this->db->prepare(
-            "SELECT o.id observation_id,COALESCE(o.price_value,o.asking_price) calculation_price,o.asking_price,o.price_value,o.observed_at,o.product_variant_id,o.verified_status,o.price_type,o.listing_type,o.is_deposit,o.is_defective,o.is_duplicate,o.quality_flags,o.final_weight,r.source_id,s.source_key,s.name source_name,s.domain source_domain
+            "SELECT o.id observation_id,COALESCE(o.price_value,o.asking_price) calculation_price,o.asking_price,o.price_value,o.observed_at,o.product_variant_id,o.verified_status,o.price_type,o.listing_type,o.is_deposit,o.is_defective,o.is_duplicate,o.quality_flags,o.final_weight,r.source_id,r.raw_title,r.raw_price_text,r.source_url_encrypted,r.external_reference_hash,s.source_key,s.name source_name,s.domain source_domain,e.excerpt
              ,o.evidence_level,s.evidence_quality source_evidence_quality
              FROM price_observations o
              LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id
              LEFT JOIN data_sources s ON s.id=r.source_id
+             LEFT JOIN market_evidence e ON e.raw_observation_id=r.id
              WHERE o.product_id=:product_id
              ORDER BY o.id"
         );
@@ -209,6 +211,9 @@ final class PriceSnapshotService
         if ($this->isMockSource($row)) {
             return 'MOCK_SOURCE';
         }
+        if ($this->isRealOfflineSource($row) && !(new ObservationProvenanceService())->isListingLevel($row)) {
+            return 'INSUFFICIENT_PROVENANCE';
+        }
         return null;
     }
 
@@ -218,6 +223,13 @@ final class PriceSnapshotService
         $sourceName = strtolower((string)($row['source_name'] ?? ''));
         $sourceDomain = strtolower((string)($row['source_domain'] ?? ''));
         return str_contains($sourceKey, 'mock') || str_contains($sourceName, 'mock') || str_starts_with($sourceDomain, 'mock.');
+    }
+
+    private function isRealOfflineSource(array $row): bool
+    {
+        $sourceKey = strtolower((string)($row['source_key'] ?? ''));
+        $sourceName = strtolower((string)($row['source_name'] ?? ''));
+        return str_starts_with($sourceKey, 'offline_real_') || str_contains($sourceName, 'offline real import');
     }
 
     private function calculateSnapshot(int $productId, string $priceType, array $rows, array $cohort): array

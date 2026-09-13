@@ -327,6 +327,75 @@ body.mi-admin-body {
     white-space: nowrap;
 }
 
+.mi-product-form-card {
+    border-left: 4px solid var(--mi-blue);
+}
+
+.mi-product-form-header,
+.mi-products-table-header {
+    align-items: flex-start;
+    display: flex;
+    gap: 14px;
+    justify-content: space-between;
+}
+
+.mi-product-form-header p,
+.mi-products-table-header p {
+    color: var(--mi-muted);
+    font-size: 13px;
+    margin: 4px 0 0;
+}
+
+.mi-product-form-card label,
+.mi-filter-card label,
+.mi-field-label {
+    color: #344054;
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .03em;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+}
+
+.mi-product-form-card .form-control,
+.mi-filter-card .form-control {
+    min-height: 42px;
+}
+
+.mi-product-active-switch {
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid var(--mi-border);
+    border-radius: 6px;
+    display: flex;
+    min-height: 42px;
+    padding-left: 46px;
+}
+
+.mi-product-active-switch .custom-control-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-bottom: 0;
+    text-transform: none;
+}
+
+.mi-product-active-switch .custom-control-label::before,
+.mi-product-active-switch .custom-control-label::after {
+    top: .15rem;
+}
+
+.mi-product-form-actions {
+    align-items: center;
+    background: #ffffff;
+    border-top: 1px solid var(--mi-border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 14px 18px;
+}
+
 .mi-status-list {
     display: grid;
     gap: 12px;

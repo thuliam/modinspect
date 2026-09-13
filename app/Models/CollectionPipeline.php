@@ -112,17 +112,19 @@ final class CollectionPipeline
                 return false;
             }
 
+            $evidenceContentHash = $this->evidenceContentHash($candidate);
             $evidence = $this->db->prepare(
                 "INSERT INTO market_evidence (raw_observation_id,source_id,evidence_level,evidence_type,source_url_hash,excerpt,content_hash,captured_at,is_public)
-                 VALUES (:raw_id,:source_id,:level,'fixture',:url_hash,:excerpt,:content_hash,:captured_at,0)"
+                 VALUES (:raw_id,:source_id,:level,:evidence_type,:url_hash,:excerpt,:content_hash,:captured_at,0)"
             );
             $evidence->execute([
                 'raw_id' => $rawId,
                 'source_id' => $sourceId,
                 'level' => $this->normalizeEvidenceLevel($candidate->evidenceLevel),
+                'evidence_type' => !empty($candidate->rawMetadata['evidence_snapshot_json']) ? 'page_capture' : 'fixture',
                 'url_hash' => $candidate->url ? hash('sha256', $candidate->url) : null,
                 'excerpt' => trim($candidate->title . ($candidate->snippet ? "\n" . $candidate->snippet : '')),
-                'content_hash' => hash('sha256', $candidate->title . '|' . (string)$candidate->priceText),
+                'content_hash' => $evidenceContentHash,
                 'captured_at' => $candidate->capturedAt,
             ]);
             $evidenceId = (int)$this->db->lastInsertId();
@@ -203,6 +205,19 @@ final class CollectionPipeline
     private function evidenceLevelNumber(string $level): int
     {
         return ['E' => 1, 'D' => 2, 'C' => 3, 'B' => 4, 'A' => 5][$this->normalizeEvidenceLevel($level)] ?? 3;
+    }
+
+    private function evidenceContentHash(SearchCandidate $candidate): string
+    {
+        $hash = strtolower((string)($candidate->rawMetadata['evidence_hash'] ?? ''));
+        if (preg_match('/^[a-f0-9]{64}$/', $hash) === 1) {
+            return $hash;
+        }
+        $snapshot = (string)($candidate->rawMetadata['evidence_snapshot_json'] ?? '');
+        if ($snapshot !== '') {
+            return hash('sha256', $snapshot);
+        }
+        return hash('sha256', $candidate->title . '|' . (string)$candidate->priceText);
     }
 
     /**

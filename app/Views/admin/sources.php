@@ -19,63 +19,29 @@
             <dt>Paid calls</dt><dd><?= $provider_status['paid_provider_calls_enabled'] ? 'ENABLED' : 'disabled' ?></dd>
             <dt>Blockers</dt><dd><?= htmlspecialchars(implode(', ', $provider_status['blockers']) ?: 'none') ?></dd>
         </dl>
+        <?php if(!$canControl): ?><div class="alert alert-info mb-0">Your role can view source policy and health, but cannot change source state.</div><?php endif; ?>
     </div>
 </div>
+
+<form id="sources-filters" class="card mi-admin-card mb-3 js-datatable-filters" data-target="#sources-table">
+    <div class="card-body">
+        <div class="form-row align-items-end">
+            <div class="form-group col-md-3"><label>State<select class="form-control" name="enabled"><option value="">All</option><option value="1">Enabled</option><option value="0">Paused/Disabled</option></select></label></div>
+            <div class="form-group col-md-3"><label>Provider / key<input class="form-control" name="provider" maxlength="80" placeholder="priceza, gemini, offline"></label></div>
+            <div class="form-group col-md-3"><label>Health<select class="form-control" name="health"><option value="">All</option><option value="healthy">Healthy</option><option value="degraded">Degraded</option><option value="unknown">Unknown</option></select></label></div>
+            <div class="form-group col-md-3"><button class="btn btn-primary btn-block" type="submit">Apply Filters</button></div>
+        </div>
+    </div>
+</form>
 
 <div class="card mi-table-card">
     <div class="card-header"><h2>Source Health</h2></div>
     <div class="table-responsive">
-        <table class="table table-hover mi-admin-table mb-0">
+        <table id="sources-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/sources/data" data-filters="#sources-filters" data-page-length="25">
             <thead>
-                <tr>
-                    <th>Source</th>
-                    <th>Provider</th>
-                    <th>Enabled</th>
-                    <th>Policy</th>
-                    <th>Health</th>
-                    <th>Last Activity</th>
-                    <th>Incident State</th>
-                    <th>Controls</th>
-                </tr>
+                <tr><th>Source</th><th>Provider</th><th>Enabled</th><th>Policy</th><th>Health</th><th>Last Activity</th><th>Incidents</th><th>Controls</th></tr>
             </thead>
-            <tbody>
-            <?php foreach($sources as $s): ?>
-                <?php $h=$s['health'] ?? []; $enabled=(int)$s['is_active']===1 && (int)($s['is_paused'] ?? 0)===0; ?>
-                <tr>
-                    <td><span class="mi-row-title"><?= htmlspecialchars((string)$s['name']) ?></span><span class="mi-row-subtitle"><?= htmlspecialchars((string)($s['domain'] ?? 'User supplied data')) ?></span></td>
-                    <td><?= htmlspecialchars((string)($s['source_key'] ?? '-')) ?></td>
-                    <td><span class="badge <?= $enabled ? 'badge-success' : 'badge-secondary' ?>"><?= $enabled ? 'Enabled' : 'Paused/Disabled' ?></span></td>
-                    <td><?= htmlspecialchars((string)($s['allowed_collection_method'] ?? $s['access_method'] ?? '-')) ?></td>
-                    <td><span class="badge badge-light"><?= htmlspecialchars((string)($h['status'] ?? 'unknown')) ?></span><small>Failures <?= (int)($h['consecutive_failures'] ?? 0) ?></small></td>
-                    <td><small>Success <?= htmlspecialchars((string)($h['last_success'] ?? 'Never')) ?></small><small>Failure <?= htmlspecialchars((string)($h['last_failure'] ?? 'Never')) ?></small></td>
-                    <td><?= htmlspecialchars((string)($s['pause_reason'] ?? $s['disabled_reason'] ?? 'none')) ?></td>
-                    <td>
-                        <?php if($canControl): ?>
-                            <form method="post" action="<?= $base ?>/admin/sources/action" class="source-actions">
-                                <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
-                                <input type="hidden" name="source_id" value="<?= (int)$s['id'] ?>">
-                                <input name="reason" maxlength="255" placeholder="Reason / incident note" value="Admin UI action">
-                                <?php if((int)$s['is_active']===0): ?>
-                                    <button class="btn btn-sm btn-success" name="action" value="enable">Enable</button>
-                                <?php elseif((int)($s['is_paused'] ?? 0)===1): ?>
-                                    <button class="btn btn-sm btn-primary" name="action" value="resume">Resume</button>
-                                    <button class="btn btn-sm btn-danger" name="action" value="disable">Disable</button>
-                                <?php else: ?>
-                                    <button class="btn btn-sm btn-outline-secondary" name="action" value="pause">Pause</button>
-                                    <button class="btn btn-sm btn-danger" name="action" value="disable">Disable</button>
-                                <?php endif; ?>
-                                <button class="btn btn-sm btn-outline-secondary" name="action" value="incident">Incident</button>
-                            </form>
-                        <?php else: ?>
-                            <button class="btn btn-sm btn-outline-secondary disabled-control" type="button" disabled>Controls unavailable</button>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            <?php if(!$sources): ?>
-                <tr><td colspan="8" class="text-center text-muted py-4">No source policy rows found.</td></tr>
-            <?php endif; ?>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>

@@ -2,53 +2,30 @@
     <div>
         <span class="mi-breadcrumb">Admin / Market Data</span>
         <h1>Price Index</h1>
-        <p>Operator view of snapshot readiness. Calculation hashes remain available only in advanced provenance workflows.</p>
+        <p>Operator view of snapshot readiness and public price-data availability.</p>
     </div>
     <button class="btn btn-outline-secondary disabled-control" type="button" disabled><i class="fas fa-sync-alt mr-2"></i>Recalculate via CLI</button>
 </div>
 
-<div class="card mi-table-card">
-    <div class="card-header">
-        <div class="mi-table-toolbar mb-0">
-            <h2>Current Snapshots</h2>
-            <input class="form-control mi-table-search js-table-filter" data-target="#indices-table" placeholder="Search product or confidence">
+<form id="indices-filters" class="card mi-admin-card mb-3 js-datatable-filters" data-target="#indices-table">
+    <div class="card-body">
+        <div class="form-row align-items-end">
+            <div class="form-group col-md-3"><label>Category<select class="form-control" name="category"><option value="">All</option><?php foreach($categories as $category): ?><option value="<?= htmlspecialchars((string)$category['slug']) ?>"><?= htmlspecialchars((string)$category['name']) ?></option><?php endforeach; ?></select></label></div>
+            <div class="form-group col-md-3"><label>Confidence<select class="form-control" name="confidence"><option value="">All</option><?php foreach(['high','medium','medium_low','low','insufficient'] as $confidence): ?><option value="<?= $confidence ?>"><?= htmlspecialchars($confidence) ?></option><?php endforeach; ?></select></label></div>
+            <div class="form-group col-md-3"><label>Provenance<select class="form-control" name="provenance_status"><option value="">All</option><option value="recorded">Recorded</option><option value="legacy_unavailable">Legacy unavailable</option></select></label></div>
+            <div class="form-group col-md-3"><button class="btn btn-primary btn-block" type="submit">Apply Filters</button></div>
         </div>
     </div>
+</form>
+
+<div class="card mi-table-card">
+    <div class="card-header"><h2>Current Snapshots</h2></div>
     <div class="table-responsive">
-        <table id="indices-table" class="table table-hover mi-admin-table mb-0">
+        <table id="indices-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/price-indices/data" data-filters="#indices-filters" data-page-length="25">
             <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Snapshot</th>
-                    <th>Price Type</th>
-                    <th>Market Range</th>
-                    <th>Samples</th>
-                    <th>Confidence</th>
-                    <th>Freshness</th>
-                    <th>Provenance</th>
-                </tr>
+                <tr><th>Product</th><th>Price Type</th><th>Market Range</th><th>Median</th><th>Samples</th><th>Confidence</th><th>Freshness</th><th>Provenance</th><th>Snapshot Date</th><th>Action</th></tr>
             </thead>
-            <tbody>
-            <?php foreach($products as $p): ?>
-                <?php
-                $hasSnapshot=!empty($p['median']) && (int)($p['valid_sample_size'] ?? 0)>0;
-                $filter=strtolower(implode(' ',[$p['full_name'] ?? '',$p['confidence_label'] ?? '',$p['provenance_status'] ?? '']));
-                ?>
-                <tr data-filter-row="<?= htmlspecialchars($filter) ?>">
-                    <td><span class="mi-row-title"><?= htmlspecialchars((string)$p['full_name']) ?></span><span class="mi-row-subtitle"><?= htmlspecialchars((string)($p['category'] ?? '-')) ?> / <?= htmlspecialchars((string)($p['brand'] ?? '-')) ?></span></td>
-                    <td><?= $hasSnapshot ? '#'.(int)$p['snapshot_id'] : 'No usable snapshot' ?><small><?= htmlspecialchars((string)($p['last_calculated_at'] ?? '-')) ?></small></td>
-                    <td><?= htmlspecialchars((string)($p['price_type'] ?? '-')) ?></td>
-                    <td><?= $hasSnapshot ? '฿'.number_format((float)$p['q1']).' to ฿'.number_format((float)$p['q3']) : 'Insufficient reviewed REAL data' ?></td>
-                    <td><?= (int)($p['valid_sample_size'] ?? 0) ?><small>Included <?= (int)($p['provenance_included_count'] ?? 0) ?> / Excluded <?= (int)($p['provenance_excluded_count'] ?? 0) ?></small></td>
-                    <td><span class="badge badge-light"><?= htmlspecialchars(strtoupper((string)($p['confidence_label'] ?? 'insufficient'))) ?></span><small>Score <?= number_format((float)($p['confidence_score'] ?? 0),2) ?></small></td>
-                    <td><?= number_format((float)($p['fresh_sample_ratio'] ?? 0)*100,1) ?>%</td>
-                    <td><span class="badge badge-light"><?= htmlspecialchars((string)($p['provenance_status'] ?? 'legacy_unavailable')) ?></span><small><?= htmlspecialchars((string)($p['formula_version'] ?? 'legacy-unversioned')) ?> / <?= htmlspecialchars((string)($p['cohort_version'] ?? 'legacy-unversioned')) ?></small></td>
-                </tr>
-            <?php endforeach; ?>
-            <?php if(!$products): ?>
-                <tr><td colspan="8" class="text-center text-muted py-4">No price index rows found.</td></tr>
-            <?php endif; ?>
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 </div>

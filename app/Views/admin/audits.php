@@ -1,9 +1,3 @@
-<?php
-$short=function(mixed $value,int $limit=130): string {
-    $text=trim((string)$value);
-    return strlen($text)>$limit ? substr($text,0,$limit-3).'...' : $text;
-};
-?>
 <div class="mi-page-header">
     <div>
         <span class="mi-breadcrumb">Admin / System</span>
@@ -12,31 +6,25 @@ $short=function(mixed $value,int $limit=130): string {
     </div>
 </div>
 
+<form id="audits-filters" class="card mi-admin-card mb-3 js-datatable-filters" data-target="#audits-table">
+    <div class="card-body">
+        <div class="form-row align-items-end">
+            <div class="form-group col-md-2"><label>Actor ID<input class="form-control" name="actor" inputmode="numeric"></label></div>
+            <div class="form-group col-md-2"><label>Action<input class="form-control" name="action" maxlength="120"></label></div>
+            <div class="form-group col-md-2"><label>Entity<input class="form-control" name="entity" maxlength="100"></label></div>
+            <div class="form-group col-md-2"><label>From<input class="form-control" type="date" name="from"></label></div>
+            <div class="form-group col-md-2"><label>To<input class="form-control" type="date" name="to"></label></div>
+            <div class="form-group col-md-2"><button class="btn btn-primary btn-block" type="submit">Apply</button></div>
+        </div>
+    </div>
+</form>
+
 <div class="card mi-table-card">
-    <div class="card-header"><h2>Latest Audit Events</h2></div>
+    <div class="card-header"><h2>Audit Events</h2></div>
     <div class="table-responsive">
-        <table class="table table-hover mi-admin-table mb-0">
-            <thead><tr><th>Actor</th><th>Action</th><th>Entity</th><th>Summary</th><th>Timestamp</th><th>Details</th></tr></thead>
-            <tbody>
-            <?php foreach($audits as $a): ?>
-                <tr>
-                    <td>User #<?= htmlspecialchars((string)($a['user_id'] ?? '-')) ?></td>
-                    <td><span class="badge badge-light"><?= htmlspecialchars((string)$a['action']) ?></span></td>
-                    <td><?= htmlspecialchars((string)$a['entity_type']) ?> #<?= htmlspecialchars((string)($a['entity_id'] ?? '-')) ?></td>
-                    <td><?= htmlspecialchars($short($a['after_data'] ?? $a['before_data'] ?? 'No payload')) ?></td>
-                    <td><?= htmlspecialchars((string)($a['created_at'] ?? '-')) ?></td>
-                    <td>
-                        <details class="audit-details">
-                            <summary>Open</summary>
-                            <pre><?= htmlspecialchars(json_encode(['before'=>$a['before_data'] ?? null,'after'=>$a['after_data'] ?? null],JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE)) ?></pre>
-                        </details>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            <?php if(!$audits): ?>
-                <tr><td colspan="6" class="text-center text-muted py-4">No audit logs found.</td></tr>
-            <?php endif; ?>
-            </tbody>
+        <table id="audits-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/audit-logs/data" data-filters="#audits-filters" data-page-length="25">
+            <thead><tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Entity</th><th>Summary</th><th>Details</th></tr></thead>
+            <tbody></tbody>
         </table>
     </div>
 </div>

@@ -1,6 +1,6 @@
 # Real Calibration Protocol
 
-Status: Phase 3H waiting for owner-supplied REAL sample.
+Status: Phase 3H-R1B listing-level provenance hardening active.
 
 This protocol defines the first offline REAL calibration experiment for ModInspect. It is a data/calibration procedure, not a new product feature.
 
@@ -22,6 +22,39 @@ Owner REAL file
 ```
 
 Imported REAL evidence is not verified truth. It remains pending until the normal review/correction workflow approves, rejects, or excludes it.
+
+REAL does not automatically mean authoritative. Public-price eligibility requires sufficient observation provenance: the observation must be traceable to the exact listing/result item, exact title, exact captured price, source, and capture timestamp.
+
+Authoritative REAL market evidence also requires immutable capture-time evidence. For Priceza this means URL + item ID + timestamp is not enough; ModInspect must preserve a compact immutable evidence snapshot and hash proving what the exact public result item displayed at capture time.
+
+## Provenance Quality Levels
+
+Use these levels for REAL market observations:
+
+```text
+LISTING_LEVEL
+```
+
+- Exact source listing URL, Priceza result URL, or exact source/result-item identifier is available.
+- Stored title and captured price are traceable to that item.
+- Immutable evidence snapshot and evidence hash are stored.
+- Eligible for human approval into authoritative market observations, subject to all normal validation and review rules.
+
+```text
+SEARCH_RESULT_LEVEL
+```
+
+- Only a search/results page is available.
+- The exact listing/result item cannot be independently reconstructed from stored evidence.
+- May be used for pipeline, resolver, validation, and UI calibration only.
+- Must not be used to create public market-price snapshots.
+
+```text
+GENERIC_SOURCE
+```
+
+- Source is known, but the observation cannot be independently traced to a listing/result item.
+- Not eligible for public market-price snapshots.
 
 ## Batch Identity
 
@@ -106,38 +139,64 @@ Do not place raw REAL evidence under `examples/` or `tests/`.
 
 Use the Phase 3G import contract.
 
-Preferred fields:
+Preferred fields for authoritative REAL intake:
 
 ```text
-source_type
-source_url or source_reference
-title
+source
+source_search_url
+source_listing_url
+source_item_id
+external_ref
+merchant
+merchant_target_url
+listing_title
 listing_text
+asking_price
 observed_at
+evidence_snapshot_json
+evidence_hash
+ingestion_note
 ```
 
 Optional fields:
 
 ```text
+source_type
+source_url
+source_reference
+title
 displayed_price
 currency
 source_domain
 condition_hint
 warranty_hint
 external_listing_id
-product_hint
-merchant
-ingestion_note
 notes
 ```
 
 Structured fields are acquisition hints only. Existing extraction, resolver, validation, review, and correction code remains authoritative.
 
-`title` must contain the actual public listing title only. Do not concatenate importer provenance notes, privacy notes, merchant labels, or collection comments into `title`.
+`listing_title` or legacy `title` must contain the actual public listing title only. Do not concatenate importer provenance notes, privacy notes, merchant labels, or collection comments into the title field.
 
 `listing_text` should contain public listing description text when it exists. If the source only provides a title, leave `listing_text` empty and use `merchant`, `ingestion_note`, `source_url`, `source_reference`, and `notes` for non-title metadata.
 
 Known ModInspect-generated importer/privacy notes are normalized out of Admin display titles and are not appended to future offline-import candidate titles.
+
+For future REAL imports, search-page-only rows are not sufficient for authoritative calibration. A row intended for public pricing must include `source_listing_url`, `source_item_id`, `external_ref`, `external_listing_id`, or another exact item/result reference. Do not fabricate these values from a later live search page.
+
+For future Priceza imports intended for public pricing, every row must include:
+
+- `source=priceza`
+- `source_search_url`
+- `source_listing_url=https://www.priceza.com/r/redirect?id=<source_item_id>`
+- `source_item_id`
+- `merchant`
+- `listing_title`
+- `asking_price`
+- `observed_at`
+- `merchant_target_url` when publicly obtainable without bypass
+- `evidence_snapshot_json` preserving the visible result-item fields at capture time
+- `evidence_hash` as the SHA-256 hash of that immutable snapshot
 
 ## Privacy
 
@@ -289,7 +348,7 @@ After imported but insufficiently reviewed REAL records:
 LIVE_SAMPLE_INSUFFICIENT
 ```
 
-After enough reviewed REAL records for meaningful calibration:
+After enough reviewed REAL records with LISTING_LEVEL provenance for meaningful calibration:
 
 ```text
 CALIBRATING
@@ -323,3 +382,42 @@ Do not include unnecessary seller PII or raw seller evidence in the report.
 Do not change validation rules because of one failed sample.
 
 First collect mismatch statistics. If a deterministic bug affects multiple records, document the proposed fix and test it separately. Avoid overfitting to the first REAL batch.
+
+## Priceza Authoritative Probe Selection
+
+Rows intended to become authoritative Priceza LISTING_LEVEL observations must pass selection before capture/import:
+
+- Result card must expose stable `data-productid` / source item ID.
+- Result card must expose visible title, visible price, visible merchant, item-specific `/r/redirect?id=<id>`, and merchant target URL when safely obtainable through normal public access.
+- The visible title must contain the exact target model marker for the intended Product Master.
+- The visible title must not contain another same-category model marker, nearby variant, or mixed variant context.
+- Reject whole-PC, bundle, accessory, wanted/buying, deposit/installment-only, defective/parts, laptop/mobile GPU, malformed, incomplete, and duplicate item IDs.
+- The selected result must resolve to the intended Product Master using the existing deterministic extractor, ProductResolver, and ObservationValidator.
+
+Do not weaken LISTING_LEVEL provenance to increase pass rate. If the selected item is ambiguous or fails product resolution/validation, skip it before capture or let the pipeline fail closed. Do not promote a Red/non-observation raw row into authoritative evidence.
+
+Current verified small-probe gate:
+
+- The first 8-row strengthened probe was PARTIAL because two rows were bad source item selections: Ryzen 5 5600G for Ryzen 5 5600, and RTX 4070 Super for RTX 4070.
+- The follow-up 8-row probe used tightened selection and produced 8 LISTING_LEVEL pending observations, 0 SEARCH_RESULT_LEVEL, and 0 GENERIC_SOURCE.
+
+## First Authoritative Batch Gate
+
+The first authoritative REAL batch may enter human review only after:
+
+- Dry run reports only valid REAL rows.
+- Every imported row is LISTING_LEVEL.
+- Every imported row resolves to the intended Product Master.
+- Every imported row remains pending human review.
+- SOLD count is zero unless explicit completed-sale evidence is present.
+- Public price snapshots are not recalculated during collection/import.
+
+The Admin Review Queue supports the operational filter:
+
+```text
+dataset=REAL
+status=pending
+provenance=LISTING_LEVEL
+```
+
+Use this filter for the first authoritative review pass. Review priority remains Amber first, then Green; no batch auto-approval is allowed.

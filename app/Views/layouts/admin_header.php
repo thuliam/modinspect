@@ -119,3 +119,10 @@ $groups = [
     </aside>
     <main class="dashboard-wrapper mi-admin-main">
         <div class="dashboard-content mi-admin-content">
+            <?php if(!empty($_SESSION['flash']) && is_array($_SESSION['flash'])): ?>
+                <?php $flash=$_SESSION['flash']; unset($_SESSION['flash']); ?>
+                <div class="alert alert-<?= htmlspecialchars((string)($flash['type'] ?? 'info')) ?> alert-dismissible fade show" role="alert">
+                    <?= htmlspecialchars((string)($flash['message'] ?? '')) ?>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            <?php endif; ?>

@@ -5,6 +5,7 @@ use App\Core\Database;
 use App\Services\Collection\ProviderRegistry;
 use App\Services\Collection\SourceHealthService;
 use App\Services\ProductResolver\ProductResolver;
+use App\Services\Provenance\ObservationProvenanceService;
 use App\Services\Review\ListingTitleNormalizer;
 use App\Services\Review\ReviewCorrectionService;
 use PDO;
@@ -68,7 +69,11 @@ final class Dashboard {
         $sql="SELECT o.id,o.product_id,o.raw_observation_id,o.price_type,o.asking_price,o.price_value,COALESCE(o.price_value,o.asking_price) display_price,o.currency,o.condition_level,o.listing_type,o.classification_confidence,o.verified_status,o.observed_at,o.created_at,p.full_name,p.image_path product_image_path,c.slug category_slug,r.raw_title,s.source_key,s.name source_name,".$this->datasetSqlExpression()." dataset_label FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE 1=1";
         $params=[];
         if($status && in_array($status,['pending','approved','rejected','excluded'],true)){ $sql.=" AND o.verified_status=:status"; $params['status']=$status; }
-        if($q!==''){ $sql.=" AND (p.full_name LIKE :q OR r.raw_title LIKE :q)"; $params['q']='%'.$q.'%'; }
+        if($q!==''){
+            $sql.=" AND (p.full_name LIKE :q_product OR r.raw_title LIKE :q_title)";
+            $params['q_product']='%'.$q.'%';
+            $params['q_title']='%'.$q.'%';
+        }
         $sql.=" ORDER BY o.id DESC LIMIT 100";
         return $this->rows($sql,$params);
     }
@@ -78,10 +83,10 @@ final class Dashboard {
         $offset=($page-1)*$perPage;
         $params=[];
         $where=$this->reviewWhere($filters,$params);
-        $countStmt=$this->db->prepare("SELECT COUNT(*) FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN observation_review_decisions d ON d.id=(SELECT id FROM observation_review_decisions WHERE price_observation_id=o.id ORDER BY id DESC LIMIT 1) WHERE $where");
+        $countStmt=$this->db->prepare("SELECT COUNT(*) FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id LEFT JOIN observation_review_decisions d ON d.id=(SELECT id FROM observation_review_decisions WHERE price_observation_id=o.id ORDER BY id DESC LIMIT 1) WHERE $where");
         $countStmt->execute($params);
         $total=(int)$countStmt->fetchColumn();
-        $sql="SELECT o.id,o.raw_observation_id,o.product_id,o.price_type,o.asking_price,o.price_value,COALESCE(o.price_value,o.asking_price) display_price,o.currency,o.condition_level,o.warranty_months,o.listing_type,o.classification_confidence,o.quality_flags,o.verified_status,o.observed_at,o.created_at,p.full_name,p.image_path product_image_path,c.slug category_slug,r.raw_title,r.raw_price_text,r.raw_condition_text,r.raw_warranty_text,r.source_url_encrypted,r.external_reference_hash,s.id source_id,s.name source_name,s.source_key,e.evidence_level evidence_quality,e.evidence_type,x.confidence extraction_confidence,d.lane,d.reason_codes,d.rule_result,(SELECT COUNT(*) FROM review_corrections rc WHERE rc.price_observation_id=o.id) corrections_count,".$this->datasetSqlExpression()." dataset_label FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id LEFT JOIN extraction_runs x ON x.raw_observation_id=r.id LEFT JOIN observation_review_decisions d ON d.id=(SELECT id FROM observation_review_decisions WHERE price_observation_id=o.id ORDER BY id DESC LIMIT 1) WHERE $where ORDER BY ".$this->reviewSortSql((string)($filters['sort'] ?? 'attention'))." LIMIT :limit OFFSET :offset";
+        $sql="SELECT o.id,o.raw_observation_id,o.product_id,o.price_type,o.asking_price,o.price_value,COALESCE(o.price_value,o.asking_price) display_price,o.currency,o.condition_level,o.warranty_months,o.listing_type,o.classification_confidence,o.quality_flags,o.verified_status,o.observed_at,o.created_at,p.full_name,p.image_path product_image_path,c.slug category_slug,r.raw_title,r.raw_price_text,r.raw_condition_text,r.raw_warranty_text,r.source_url_encrypted,r.external_reference_hash,s.id source_id,s.name source_name,s.source_key,e.evidence_level evidence_quality,e.evidence_type,e.excerpt,e.content_hash,x.confidence extraction_confidence,d.lane,d.reason_codes,d.rule_result,(SELECT COUNT(*) FROM review_corrections rc WHERE rc.price_observation_id=o.id) corrections_count,".$this->datasetSqlExpression()." dataset_label FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id LEFT JOIN extraction_runs x ON x.raw_observation_id=r.id LEFT JOIN observation_review_decisions d ON d.id=(SELECT id FROM observation_review_decisions WHERE price_observation_id=o.id ORDER BY id DESC LIMIT 1) WHERE $where ORDER BY ".$this->reviewSortSql((string)($filters['sort'] ?? 'attention'))." LIMIT :limit OFFSET :offset";
         $stmt=$this->db->prepare($sql);
         foreach($params as $key=>$value) $stmt->bindValue($key,$value,is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
         $stmt->bindValue(':limit',$perPage,PDO::PARAM_INT);
@@ -122,6 +127,30 @@ final class Dashboard {
         }
         return $summary;
     }
+    public function reviewBatchOptions(): array {
+        $sql="SELECT o.id,o.observed_at,e.excerpt FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id WHERE o.verified_status='pending' AND ".$this->datasetSqlExpression()."='REAL' AND ".$this->provenanceSqlExpression()."='LISTING_LEVEL' ORDER BY o.id ASC";
+        $groups=[];
+        foreach($this->rows($sql) as $row){
+            $runId=$this->evidenceMetadataValue((string)($row['excerpt'] ?? ''),'PROBE_RUN_ID');
+            $key=$runId !== '' ? $runId : '__legacy_priceza_probe_no_run_id';
+            if(!isset($groups[$key])){
+                $groups[$key]=[
+                    'value'=>$key,
+                    'run_id'=>$runId,
+                    'label'=>$this->reviewBatchLabel($key,$runId,(string)($row['excerpt'] ?? '')),
+                    'purpose'=>$this->reviewBatchPurpose($key,$runId),
+                    'count'=>0,
+                    'min_id'=>(int)$row['id'],
+                    'max_id'=>(int)$row['id'],
+                ];
+            }
+            $groups[$key]['count']++;
+            $groups[$key]['min_id']=min((int)$groups[$key]['min_id'],(int)$row['id']);
+            $groups[$key]['max_id']=max((int)$groups[$key]['max_id'],(int)$row['id']);
+        }
+        uasort($groups,fn(array $a,array $b): int => ($b['max_id'] <=> $a['max_id']));
+        return array_values($groups);
+    }
     public function reviewSummary(): array { return (new ReviewCorrectionService())->summary(); }
     public function reviewProductOptions(): array { return (new ReviewCorrectionService())->productOptions(); }
     public function reviewSourceOptions(): array { return $this->rows("SELECT id,name,source_key FROM data_sources ORDER BY name,source_key"); }
@@ -154,6 +183,7 @@ final class Dashboard {
         $reviewService=new ReviewCorrectionService();
         $finalApply=['ok'=>true,'values'=>[],'quality_flags'=>[]];
         if($decision==='approved'){
+            if($this->datasetLabelForObservation((int)$id) === 'REAL' && !(new ObservationProvenanceService())->isListingLevel($this->provenanceRowForObservation((int)$id))) return false;
             $finalApply=$reviewService->applyApprovedValues($id);
             if(($finalApply['ok'] ?? false) !== true) return false;
             $current=$this->rows("SELECT * FROM price_observations WHERE id=:id LIMIT 1",['id'=>$id])[0]??$current;
@@ -187,6 +217,20 @@ final class Dashboard {
             $where[]='d.lane=:lane';
             $params[':lane']=$lane;
         }
+        $provenance=(string)($filters['provenance'] ?? '');
+        if($provenance !== ''){
+            $where[]=$this->provenanceSqlExpression().'=:provenance';
+            $params[':provenance']=$provenance;
+        }
+        $runId=trim((string)($filters['run_id'] ?? ''));
+        if($runId !== ''){
+            if($runId === '__legacy_priceza_probe_no_run_id'){
+                $where[]="(e.excerpt IS NOT NULL AND e.excerpt NOT LIKE '%PROBE_RUN_ID=%' AND ".$this->provenanceSqlExpression()."='LISTING_LEVEL')";
+            } else {
+                $where[]='e.excerpt LIKE :run_id';
+                $params[':run_id']='%PROBE_RUN_ID='.$runId.'%';
+            }
+        }
         if(!empty($filters['product_id'])){
             $where[]='o.product_id=:product_id';
             $params[':product_id']=(int)$filters['product_id'];
@@ -197,9 +241,10 @@ final class Dashboard {
         }
         $q=trim((string)($filters['q'] ?? ''));
         if($q !== ''){
-            $where[]='(o.id=:q_id OR p.full_name LIKE :q_like OR r.raw_title LIKE :q_like)';
+            $where[]='(o.id=:q_id OR p.full_name LIKE :q_product OR r.raw_title LIKE :q_title)';
             $params[':q_id']=(int)ltrim($q,'#');
-            $params[':q_like']='%'.$q.'%';
+            $params[':q_product']='%'.$q.'%';
+            $params[':q_title']='%'.$q.'%';
         }
         return implode(' AND ',$where);
     }
@@ -229,6 +274,9 @@ final class Dashboard {
             $extractedTitle=(string)($row['extracted_data_map']['raw']['title'] ?? $row['extracted_data_map']['title'] ?? '');
             $extractedDisplayTitle=$normalizer->normalize($extractedTitle !== '' ? $extractedTitle : $rawTitle);
             $row['extracted_display_title']=$extractedDisplayTitle !== '' ? $extractedDisplayTitle : ($extractedTitle !== '' ? $extractedTitle : $rawTitle);
+            $row['provenance_quality']=(new ObservationProvenanceService())->classify($row);
+            $row['review_run_id']=$this->evidenceMetadataValue((string)($row['excerpt'] ?? ''),'PROBE_RUN_ID');
+            $row['review_purpose']=$this->reviewPurpose($row);
             if($withCorrections) $row['resolution_diagnostic']=$this->reviewResolutionDiagnostic($row);
             $row['warning_items']=$this->warningItems($row);
             if($withCorrections && $corrections){
@@ -299,8 +347,51 @@ final class Dashboard {
             'method'=>$resolution->method,
         ];
     }
+    private function provenanceRowForObservation(int $id): array {
+        $stmt=$this->db->prepare("SELECT o.id,o.asking_price,o.price_value,o.raw_observation_id,r.raw_title,r.raw_price_text,r.source_url_encrypted,r.external_reference_hash,s.source_key,s.name source_name,e.excerpt FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id WHERE o.id=:id LIMIT 1");
+        $stmt->execute(['id'=>$id]);
+        return $stmt->fetch() ?: [];
+    }
+    private function evidenceMetadataValue(string $excerpt,string $key): string {
+        $needle=strtoupper($key).'=';
+        foreach(preg_split('/\R/',$excerpt) ?: [] as $line){
+            $line=trim((string)$line);
+            if(str_starts_with(strtoupper($line),$needle)) return trim(substr($line,strlen($needle)));
+        }
+        return '';
+    }
+    private function reviewPurpose(array $row): string {
+        $excerpt=(string)($row['excerpt'] ?? '');
+        $runId=(string)($row['review_run_id'] ?? '');
+        $quality=(string)($row['provenance_quality']['quality'] ?? '');
+        if(str_starts_with($runId,'priceza-batch-') || str_contains($excerpt,'Phase 3H-R1D authoritative REAL batch')) return 'AUTHORITATIVE BATCH';
+        if(str_starts_with($runId,'priceza-probe-') || str_contains($excerpt,'Phase 3H-R1C authoritative provenance probe')) return 'PROBE / CALIBRATION';
+        if($quality === ObservationProvenanceService::SEARCH_RESULT_LEVEL) return 'OLD SEARCH_RESULT CALIBRATION';
+        if($quality === ObservationProvenanceService::LISTING_LEVEL) return 'PROBE / CALIBRATION';
+        return 'CALIBRATION / OTHER';
+    }
+    private function reviewBatchLabel(string $key,string $runId,string $excerpt): string {
+        if($key === '__legacy_priceza_probe_no_run_id') return 'Earlier Probe / Calibration';
+        if(str_starts_with($runId,'priceza-batch-') || str_contains($excerpt,'Phase 3H-R1D authoritative REAL batch')) return 'Authoritative Batch';
+        if(str_starts_with($runId,'priceza-probe-') || str_contains($excerpt,'Phase 3H-R1C authoritative provenance probe')) return 'Probe / Quality Probe';
+        return 'Review Batch';
+    }
+    private function reviewBatchPurpose(string $key,string $runId): string {
+        if(str_starts_with($runId,'priceza-batch-')) return 'AUTHORITATIVE BATCH';
+        if(str_starts_with($runId,'priceza-probe-') || $key === '__legacy_priceza_probe_no_run_id') return 'PROBE / CALIBRATION';
+        return 'CALIBRATION / OTHER';
+    }
+    private function datasetLabelForObservation(int $id): string {
+        $stmt=$this->db->prepare("SELECT s.source_key,s.name source_name FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE o.id=:id LIMIT 1");
+        $stmt->execute(['id'=>$id]);
+        $row=$stmt->fetch() ?: [];
+        return $this->datasetLabel((string)($row['source_key'] ?? ''),(string)($row['source_name'] ?? ''));
+    }
     private function datasetSqlExpression(): string {
         return "CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_real_%' OR LOWER(COALESCE(s.name,'')) LIKE '%offline real import%' THEN 'REAL' WHEN LOWER(COALESCE(s.source_key,'')) LIKE '%mock%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%test%' OR LOWER(COALESCE(s.name,'')) LIKE '%mock%' OR LOWER(COALESCE(s.name,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.name,'')) LIKE '%test%' THEN 'MOCK_TEST' ELSE 'UNKNOWN' END";
+    }
+    private function provenanceSqlExpression(): string {
+        return "CASE WHEN e.excerpt LIKE '%SOURCE=priceza%' AND e.excerpt LIKE '%SOURCE_SEARCH_URL=%' AND e.excerpt LIKE '%SOURCE_LISTING_URL=%' AND e.excerpt LIKE '%SOURCE_ITEM_ID=%' AND e.excerpt LIKE '%MERCHANT=%' AND e.excerpt LIKE '%LISTING_TITLE=%' AND e.excerpt LIKE '%ASKING_PRICE=%' AND e.excerpt LIKE '%OBSERVED_AT=%' AND e.excerpt LIKE '%EVIDENCE_SNAPSHOT_JSON=%' AND e.excerpt LIKE '%EVIDENCE_HASH=%' THEN 'LISTING_LEVEL' WHEN r.source_url_encrypted LIKE 'https://www.priceza.com/s/%' OR e.excerpt LIKE '%SOURCE_SEARCH_URL=%' OR LOWER(COALESCE(e.excerpt,'')) LIKE '%search result%' THEN 'SEARCH_RESULT_LEVEL' ELSE 'GENERIC_SOURCE' END";
     }
     private function datasetLabel(string $sourceKey,string $sourceName): string {
         $key=strtolower($sourceKey);

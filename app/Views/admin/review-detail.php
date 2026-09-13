@@ -17,6 +17,15 @@ $renderValue = function (mixed $value): string {
     if ($value === null || $value === '') return 'unknown';
     return (string)$value;
 };
+$evidenceMetadata = function (string $excerpt): array {
+    $fields = [];
+    foreach (preg_split('/\R/', $excerpt) ?: [] as $line) {
+        if (!str_contains($line, '=')) continue;
+        [$key, $value] = array_map('trim', explode('=', $line, 2));
+        if ($key !== '') $fields[strtoupper($key)] = $value;
+    }
+    return $fields;
+};
 $categoryIcon = function (string $category): string {
     return match (strtolower($category)) {
         'cpu' => 'fa-microchip',
@@ -38,6 +47,14 @@ $resolutionConfidenceLabel = is_array($resolutionDiagnostic) && isset($resolutio
     : 'unknown';
 $displayTitle = (string)($o['display_title'] ?? $o['raw_title'] ?? '-');
 $extractedDisplayTitle = (string)($o['extracted_display_title'] ?? $o['extracted_data_map']['product_name'] ?? $o['extracted_data_map']['product'] ?? $displayTitle);
+$provenanceQuality = is_array($o['provenance_quality'] ?? null) ? $o['provenance_quality'] : [
+    'label' => 'GENERIC SOURCE',
+    'quality' => 'GENERIC_SOURCE',
+    'reason' => 'Source is known, but no exact listing/result item reference is available.',
+    'fields' => [],
+];
+$provenanceFields = is_array($provenanceQuality['fields'] ?? null) ? $provenanceQuality['fields'] : [];
+$evidenceFields = $evidenceMetadata((string)($o['excerpt'] ?? ''));
 ?>
 <div class="mi-page-header">
     <div>
@@ -62,6 +79,8 @@ $extractedDisplayTitle = (string)($o['extracted_display_title'] ?? $o['extracted
         <span class="dataset-badge dataset-<?= strtolower((string)$o['dataset_label']) ?>"><?= htmlspecialchars((string)$o['dataset_label']) ?></span>
         <span class="lane-badge lane-<?= htmlspecialchars($lane) ?> mt-2"><?= htmlspecialchars(strtoupper($lane)) ?></span>
         <span class="mi-status-badge mi-status-<?= htmlspecialchars((string)$o['verified_status']) ?> mt-2"><?= htmlspecialchars((string)$o['verified_status']) ?></span>
+        <?php if (!empty($o['review_purpose'])): ?><small><?= htmlspecialchars((string)$o['review_purpose']) ?></small><?php endif; ?>
+        <?php if (!empty($o['review_run_id'])): ?><small><?= htmlspecialchars((string)$o['review_run_id']) ?></small><?php endif; ?>
     </div>
     <div>
         <h2><?= htmlspecialchars((string)$finalProductName) ?></h2>
@@ -113,6 +132,26 @@ $extractedDisplayTitle = (string)($o['extracted_display_title'] ?? $o['extracted
                     <b><?= htmlspecialchars($renderValue($o['raw_warranty_text'] ?? null)) ?></b>
                 </div>
             </div>
+            <div class="<?= ($provenanceQuality['quality'] ?? '') === 'LISTING_LEVEL' ? 'review-green-note' : 'review-decision-alert' ?>">
+                <strong>Provenance: <?= htmlspecialchars((string)($provenanceQuality['label'] ?? 'GENERIC SOURCE')) ?></strong>
+                <?php if (($provenanceQuality['quality'] ?? '') === 'SEARCH_RESULT_LEVEL'): ?>
+                    <p>หลักฐานนี้มาจากหน้าผลการค้นหา และไม่สามารถยืนยันประกาศต้นฉบับรายรายการได้ จึงไม่ควรใช้สร้างราคาตลาด</p>
+                <?php else: ?>
+                    <p><?= htmlspecialchars((string)($provenanceQuality['reason'] ?? '')) ?></p>
+                <?php endif; ?>
+                <?php if (!empty($provenanceFields['source_item_id']) || !empty($provenanceFields['merchant'])): ?>
+                    <small><?= htmlspecialchars(trim(implode(' / ', array_filter([
+                        !empty($provenanceFields['source_item_id']) ? 'item ' . $provenanceFields['source_item_id'] : null,
+                        !empty($provenanceFields['merchant']) ? (string)$provenanceFields['merchant'] : null,
+                    ])))) ?></small>
+                <?php endif; ?>
+                <?php if (!empty($o['review_purpose']) || !empty($o['review_run_id'])): ?>
+                    <small><?= htmlspecialchars(trim(implode(' / ', array_filter([
+                        !empty($o['review_purpose']) ? (string)$o['review_purpose'] : null,
+                        !empty($o['review_run_id']) ? 'run ' . (string)$o['review_run_id'] : null,
+                    ])))) ?></small>
+                <?php endif; ?>
+            </div>
             <div class="review-source-row">
                 <span>Source reference <code><?= htmlspecialchars(substr((string)($o['external_reference_hash'] ?? ''), 0, 16) ?: '-') ?></code></span>
                 <?php if ($hasSourceLink): ?>
@@ -151,6 +190,18 @@ $extractedDisplayTitle = (string)($o['extracted_display_title'] ?? $o['extracted
                     'reason_codes' => $o['reason_codes_list'] ?? [],
                     'rule_result' => $o['rule_result_data'] ?? [],
                     'resolution_diagnostic' => $o['resolution_diagnostic'] ?? null,
+                    'provenance' => [
+                        'quality' => $provenanceQuality['quality'] ?? null,
+                        'source_search_url' => $evidenceFields['SOURCE_SEARCH_URL'] ?? null,
+                        'source_listing_url' => $evidenceFields['SOURCE_LISTING_URL'] ?? null,
+                        'source_item_id' => $evidenceFields['SOURCE_ITEM_ID'] ?? null,
+                        'merchant' => $evidenceFields['MERCHANT'] ?? null,
+                        'listing_title' => $evidenceFields['LISTING_TITLE'] ?? null,
+                        'asking_price' => $evidenceFields['ASKING_PRICE'] ?? null,
+                        'observed_at' => $evidenceFields['OBSERVED_AT'] ?? null,
+                        'evidence_hash' => $evidenceFields['EVIDENCE_HASH'] ?? null,
+                        'evidence_snapshot_json' => $evidenceFields['EVIDENCE_SNAPSHOT_JSON'] ?? null,
+                    ],
                     'raw_title' => $o['raw_title'] ?? null,
                     'extracted_data' => $o['extracted_data_map'] ?? [],
                 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) ?></pre>

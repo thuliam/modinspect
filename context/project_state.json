@@ -1,6 +1,6 @@
-{
+﻿{
     "project":  "ModInspect",
-    "phase":  "Phase 3H-R1 REAL Batch Title/Provenance Quality Gate is fixed; Human Review Console is owner-accepted; the first REAL market calibration batch remains imported in Cloud DEV with 42 pending REAL observations and zero review decisions executed; Phase 4B Public UX/UI remains paused until REAL accepted observations and usable public snapshots exist; Phase 2D-B controlled live collection not started because no real Gemini API key is configured",
+    "phase":  "Products DataTable functional server endpoint and browser-adapter proof are PASS; Products slide-down Add/Edit UX is preserved; authenticated owner Products UAT remains pending manual owner browser verification because Codex has no access to the owner authenticated browser session; backend/domain semantics are unchanged",
     "implemented":  [
                         "Custom PHP MVC router/bootstrap",
                         "PDO database connection",
@@ -99,7 +99,12 @@
                         "Phase 4B primary public UX refinement for Home, Price Index/Search, Product Detail, and Deal Checker",
                         "Phase 4B public navigation simplification to prioritize price search, Deal Checker, and Methodology",
                         "Phase 4B public product cards, confidence badges, honest insufficient-data states, and responsive/focus CSS layer",
-                        "Phase 4B fix round: compact no-price product cards, visible Product Detail actions, first-class no-data Product Detail pages, reduced Home telemetry prominence, and secondary Admin link styling"
+                        "Phase 4B fix round: compact no-price product cards, visible Product Detail actions, first-class no-data Product Detail pages, reduced Home telemetry prominence, and secondary Admin link styling",
+                        "Products Page UX / Create Form Refinement: Product Master table remains primary, Add/Edit uses a collapsed slide-down Bootstrap grid form, Active status is aligned in-form, and the Products server-side DataTable is preserved",
+                        "Products Page Owner-UAT Fix: DataTable search now uses native-PDO-safe unique placeholders, the local DataTables adapter preserves search input context, browser Search redraw is verified, and Products Add/Edit uses the collapsed slide-down form",
+                        "Admin DataTable QA now requires functional proof of search, pagination, sorting, and filters; JSON-shape checks alone are not sufficient",
+                        "Products DataTable functional proof: server-side search, recordsFiltered, pagination, sorting, filters, and browser-adapter AJAX redraw verified with current UAT Product Master data",
+                        "Products Add/Edit slide-down UX preserved during functional DataTable fix"
                     ],
     "approved_architecture_not_implemented":  [
                                                   "Community Data Feedback Loop",
@@ -126,10 +131,14 @@
     "waiting":  [
                     "Phase 3H-R1 requires owner human review of 42 imported REAL observations from offline_real_priceza_com before any public snapshot is recalculated",
                     "Cloud DEV has one active Admin account; Human Review Console is owner-accepted and ready for one-by-one human decisions",
-                    "Phase 4B owner visual review was rejected once; fix round requires renewed owner review of Home, Price Index/Search, Product Detail, and Deal Checker before design direction is approved"
+                    "Phase 4B owner visual review was rejected once; fix round requires renewed owner review of Home, Price Index/Search, Product Detail, and Deal Checker before design direction is approved",
+                    "Authenticated owner Products browser UAT remains waiting for manual owner verification in the existing authenticated browser session"
                 ],
     "next_priorities":  [
-                            "Owner starts human review at /admin/review-queue?dataset=REAL&status=pending"
+                            "Owner starts human review at /admin/review-queue?dataset=REAL\u0026status=pending",
+                            "Owner visually reviews the Products page default state and Add/Edit slide-down form behavior",
+                            "Owner retests Products Search, filters, pagination/sort, and Add/Edit form in authenticated UAT",
+                            "Owner retests Products Search in the authenticated UAT browser"
                         ],
     "deferred":  [
                      "Phase 4.5 Community Data Feedback Loop implementation",
@@ -156,7 +165,9 @@
                         "CLIENT HTTP checks on 2026-09-12 previously returned 500 from XAMPP Apache/PHP 7.4.30 for /admin/review-queue; later checks confirmed Laragon Apache 2.4.68 with Apache-served PHP 8.3.33 restored",
                         "STUDIO runtime cannot be assumed from old OFFICE/XAMPP paths; inspect actual Laragon PHP/Apache paths before running PHP or documenting route health",
                         "Laragon SSL is temporarily disabled because vpnserver_x64 owns TCP/443; do not change HTTPS during environment bootstrap or test isolation work",
-                        "Test DB bootstrap uses modinspect.sql because raw SQL migrations do not have a reliable migration tracking table"
+                        "Test DB bootstrap uses modinspect.sql because raw SQL migrations do not have a reliable migration tracking table",
+                        "Automated DataTable PASS is not authoritative unless it proves concrete search, pagination, sorting, filters, recordsTotal/recordsFiltered behavior, and browser AJAX redraw.",
+                        "Server-side DataTable automated PASS requires concrete functional proof of search, recordsFiltered, pagination, sorting, custom filters, and browser AJAX redraw; HTTP status or JSON shape alone is insufficient."
                     ],
     "development_topology":  {
                                  "source_control":  "GitHub",

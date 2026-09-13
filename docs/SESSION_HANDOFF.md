@@ -699,3 +699,132 @@ Latest 2026-09-13 override:
   - Phase 2D-B â€” Controlled Live Provider POC waiting for credentials/approval
   - Phase 3H-R1 - Owner human review of imported REAL rows
 - Next intended step: Owner starts human review at `/admin/review-queue?dataset=REAL&status=pending`. Do not resume Phase 4B until REAL accepted observations and usable public snapshots exist.
+
+## 23. Products Page UX / Create Form Refinement
+
+Updated during the 2026-09-13 STUDIO development session.
+
+Status:
+
+- READY FOR OWNER VISUAL REVIEW.
+- Scope was limited to the Products page layout and interaction.
+- Public frontend redesign remains paused.
+
+Implemented:
+
+- Products create/edit form is hidden by default in a collapsed slide-down card.
+- Existing top-right Add Product button is now the single create CTA.
+- Add Product opens and resets the product form.
+- Product Edit opens the same form with existing row data and Save Changes copy.
+- Cancel / Close hides the form cleanly.
+- Form fields use a structured Bootstrap grid.
+- Active status is aligned as a switch/control inside the form grid.
+- Filters and Product Master table remain the default dominant page content.
+- Products server-side DataTable markup and endpoint are preserved.
+
+Visual QA:
+
+- Headless Chrome screenshots generated for default and form-open states.
+- Viewports checked: 390x844, 708x900, 768x1024, 1024x768, 1366x900, 1440x900.
+- Products content stacks cleanly on mobile/tablet and desktop alignment is improved.
+- No Products-form-driven horizontal overflow was observed.
+
+Safety:
+
+- Backend/domain behavior changed: none.
+- REAL records modified: zero.
+- Review decisions executed: zero.
+- Price snapshots modified: zero.
+- Cloud destructive operations: zero.
+
+Next owner action:
+
+- Visually review the Products page default state and Add/Edit form behavior.
+
+## 24. Products Page Owner-UAT Fix
+
+Updated during the 2026-09-13 STUDIO development session.
+
+Status:
+
+- PASS / READY FOR OWNER VERIFICATION.
+- Owner manual UAT correctly overrode the earlier automated DataTable PASS.
+- Products page Search is now functionally verified, not merely JSON-shape verified.
+
+Root cause:
+
+- Server-side search queries reused named placeholders such as `:search` and `:q_like` multiple times while PDO native prepares are enabled, causing `SQLSTATE[HY093]: Invalid parameter number` under real search inputs.
+- Browser Search also failed because the local minimal DataTables adapter debounce wrapper discarded `this`, so the visible Search input handler read from the wrong context and sent an empty search value.
+
+Implemented:
+
+- Admin DataTable search predicates now use unique prepared parameters per searched column.
+- Products search covers full name, model, slug, brand, category, generation, and key specification.
+- Dashboard Review Queue / Observations repeated search placeholders were fixed for native PDO.
+- Local DataTables adapter preserves debounce context and exposes a usable API object.
+- Admin filter redraw uses the server table draw API.
+- Products Add/Edit slide-down form layout remains in place.
+- `tests/ui_integration_test.php` now includes functional Products DataTable checks for search, impossible search, pagination, sorting, and filters.
+
+Verification:
+
+- Products UAT matrix: `recordsTotal=41`; `5700X3D=1`; `RX 6600 XT=1`; `Intel=5`; impossible search `0`.
+- Pagination: `length=10,start=0` and `length=10,start=10` returned different row sets.
+- Sorting: Product ASC/DESC and Brand sort returned distinct ordered results.
+- Filters: Category, Brand, Status, Category + search, Brand + search, and Category + Brand + Status all returned valid filtered counts.
+- Browser Search: visible Search input with `5700X3D` triggered redraw to one row and updated info text to `Showing 1 to 1 of 1 records (filtered from 41)`.
+- Shared smoke: Aliases, Observations, and Review Queue search endpoints returned valid filtered JSON.
+- Visual QA: 1366x900, 1440x900, 1024x768, and 768x1024 for default, Add Product open, Search filtered, and Edit form states.
+
+Safety:
+
+- Backend/domain semantics changed: none.
+- Cloud authoritative REAL data modified: zero.
+- Review decisions executed: zero.
+- Price snapshots modified: zero.
+- Cloud destructive operations: zero.
+- Temporary public UAT probe was removed and verified HTTP 404.
+
+Next owner action:
+
+- Retest Products Search, filters, pagination/sort, and Add/Edit form in authenticated UAT.
+
+## 25. Products DataTable Functional Recheck
+
+Updated during the 2026-09-13 STUDIO development session.
+
+Status:
+
+- PARTIAL for authenticated owner Products UAT because Codex has no visible authenticated browser session.
+- PASS for read-only UAT endpoint matrix.
+- PASS for browser-adapter redraw proof.
+- Products slide-down Add/Edit UX remains preserved.
+
+Functional proof:
+
+- Products `recordsTotal`: 41.
+- Search `5700X3D`: `recordsFiltered=1`, returned AMD Ryzen 7 5700X3D.
+- Search `RX 6600 XT`: `recordsFiltered=1`, returned AMD Radeon RX 6600 XT.
+- Search `Intel`: `recordsFiltered=5`, returned Intel Product Master rows.
+- Impossible search: `recordsFiltered=0`, returned no rows.
+- Pagination `start=0,length=10` and `start=10,length=10` returned different row sets.
+- Sorting Product ASC/DESC and Brand ASC returned distinct ordered results.
+- Category, Brand, Status, and combined search/filter predicates returned valid filtered counts.
+- Browser-adapter proof showed visible Search `5700X3D` redrew to one row and updated info text to `Showing 1 to 1 of 1 records (filtered from 41)`.
+
+Limitation:
+
+- `cua.getState()` returned no apps or browsers, so Codex could not operate the owner's authenticated UAT browser.
+- No password request, test Admin creation, cookie/session export, auth bypass, or diagnostic auth endpoint was used.
+
+Safety:
+
+- Cloud authoritative REAL data modified: zero.
+- Review decisions executed: zero.
+- Price snapshots modified: zero.
+- Cloud destructive operations: zero.
+- Temporary public probe removed and HTTP check returned 404.
+
+Next owner action:
+
+- Retest Products Search in the authenticated UAT browser.

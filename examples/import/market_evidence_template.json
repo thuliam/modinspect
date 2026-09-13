@@ -1,18 +1,28 @@
 {
   "records": [
     {
+      "source": "Example Marketplace",
       "source_type": "template_test",
+      "source_search_url": "https://example.test/search?q=5700x3d",
+      "source_listing_url": "https://example.test/listing/5700x3d-template",
+      "source_item_id": "template-item-001",
+      "external_ref": "template-ref-001",
       "source_url": "https://example.test/listing/5700x3d-template",
       "source_domain": "example.test",
-      "title": "TEST DATA AMD Ryzen 7 5700X3D มือสอง",
-      "listing_text": "ขาย Ryzen 7 5700X3D ใช้งานปกติ ราคา 7500 บาท ประกัน 6 เดือน",
+      "merchant": "Example merchant",
+      "merchant_target_url": "https://merchant.example.test/item/template-item-001",
+      "listing_title": "TEST DATA AMD Ryzen 7 5700X3D used",
+      "title": "TEST DATA AMD Ryzen 7 5700X3D used",
+      "listing_text": "Used Ryzen 7 5700X3D in normal working condition, asking 7500 THB, 6 months warranty.",
       "observed_at": "2026-09-09 12:00:00",
+      "asking_price": "7500",
       "displayed_price": "7500",
       "currency": "THB",
       "condition_hint": "good",
       "warranty_hint": "6 months",
-      "merchant": "Example merchant",
-      "external_listing_id": "template-json-001",
+      "external_listing_id": "template-item-001",
+      "evidence_snapshot_json": "{\"source\":\"Example Marketplace\",\"source_item_id\":\"template-item-001\",\"listing_title\":\"TEST DATA AMD Ryzen 7 5700X3D used\",\"asking_price\":\"7500\",\"merchant\":\"Example merchant\",\"observed_at\":\"2026-09-09 12:00:00\"}",
+      "evidence_hash": "2222222222222222222222222222222222222222222222222222222222222222",
       "ingestion_note": "Public listing title captured only; seller PII not stored.",
       "notes": "Template TEST DATA only"
     }

@@ -47,7 +47,15 @@ try {
             [
                 'source_type' => 'marketplace',
                 'source_url' => 'https://market.local/listing/' . $suffix . '-5700x3d-a',
-                'source_domain' => 'market.local',
+                'source' => 'priceza',
+                'source_search_url' => 'https://www.priceza.com/s/amd-ryzen-7-5700x3d',
+                'source_listing_url' => 'https://www.priceza.com/r/redirect?id=pzitem-' . $suffix . '-a',
+                'source_item_id' => 'pzitem-' . $suffix . '-a',
+                'source_domain' => 'www.priceza.com',
+                'merchant' => 'Fixture Store A',
+                'merchant_target_url' => 'https://merchant.local/listing/' . $suffix . '-a',
+                'evidence_snapshot_json' => '{"source_item_id":"fixture-a","title":"AMD Ryzen 7 5700X3D","price":"7500","merchant":"Fixture Store A"}',
+                'evidence_hash' => hash('sha256', 'fixture-a-' . $suffix),
                 'title' => 'AMD Ryzen 7 5700X3D มือสอง',
                 'listing_text' => 'ขาย 5700X3D ใช้งานปกติ ราคา 7500 บาท ประกัน 6 เดือน',
                 'observed_at' => '2026-09-09 12:00:00',
@@ -59,7 +67,15 @@ try {
             [
                 'source_type' => 'marketplace',
                 'source_url' => 'https://market.local/listing/' . $suffix . '-5700x3d-b',
-                'source_domain' => 'market.local',
+                'source' => 'priceza',
+                'source_search_url' => 'https://www.priceza.com/s/amd-ryzen-7-5700x3d',
+                'source_listing_url' => 'https://www.priceza.com/r/redirect?id=pzitem-' . $suffix . '-b',
+                'source_item_id' => 'pzitem-' . $suffix . '-b',
+                'source_domain' => 'www.priceza.com',
+                'merchant' => 'Fixture Store B',
+                'merchant_target_url' => 'https://merchant.local/listing/' . $suffix . '-b',
+                'evidence_snapshot_json' => '{"source_item_id":"fixture-b","title":"R7 5700X3D","price":"7800","merchant":"Fixture Store B"}',
+                'evidence_hash' => hash('sha256', 'fixture-b-' . $suffix),
                 'title' => 'R7 5700X3D มือสอง สวย',
                 'listing_text' => 'ปล่อย Ryzen 5700X3D ราคา 7800 ใช้งานได้ดี',
                 'observed_at' => '2026-09-09 12:00:00',
@@ -70,7 +86,15 @@ try {
             [
                 'source_type' => 'marketplace',
                 'source_url' => 'https://market.local/listing/' . $suffix . '-5700x3d-c',
-                'source_domain' => 'market.local',
+                'source' => 'priceza',
+                'source_search_url' => 'https://www.priceza.com/s/amd-ryzen-7-5700x3d',
+                'source_listing_url' => 'https://www.priceza.com/r/redirect?id=pzitem-' . $suffix . '-c',
+                'source_item_id' => 'pzitem-' . $suffix . '-c',
+                'source_domain' => 'www.priceza.com',
+                'merchant' => 'Fixture Store C',
+                'merchant_target_url' => 'https://merchant.local/listing/' . $suffix . '-c',
+                'evidence_snapshot_json' => '{"source_item_id":"fixture-c","title":"Ryzen5700x3d","price":"9500","merchant":"Fixture Store C"}',
+                'evidence_hash' => hash('sha256', 'fixture-c-' . $suffix),
                 'title' => 'Ryzen5700x3d ราคา 9500 ลดได้ 9000',
                 'listing_text' => 'ขาย 5700X3D ตัวเดียว มีราคาคุยกันได้ 9500 หรือ 9000',
                 'observed_at' => '2026-09-09 12:00:00',
@@ -101,11 +125,11 @@ try {
 
     $real = $service->import($jsonPath, 'real', false, 10);
     assert_import($real['dataset'] === 'REAL', 'Explicit REAL classification missing');
-    assert_import($real['candidates_created'] === 3, 'Expected three created candidates from JSON import');
+    assert_import($real['candidates_created'] === 3, 'Expected three created candidates from JSON import: ' . json_encode($real, JSON_UNESCAPED_UNICODE));
     assert_import($real['evidence_created'] === 3 && $real['extractions_created'] === 3 && $real['reviews_created'] === 3, 'Pipeline rows missing');
     assert_import(($real['green'] + $real['amber'] + $real['red']) === 3 && $real['amber'] >= 1, 'Expected reviewable pipeline lanes');
 
-    $sourceId = (int)$db->query("SELECT id FROM data_sources WHERE source_key='offline_real_market_local' LIMIT 1")->fetchColumn();
+    $sourceId = (int)$db->query("SELECT id FROM data_sources WHERE source_key='offline_real_www_priceza_com' LIMIT 1")->fetchColumn();
     assert_import($sourceId > 0, 'Offline real source missing');
     $pending = count_import($db, "SELECT COUNT(*) FROM price_observations o JOIN raw_price_observations r ON r.id=o.raw_observation_id WHERE r.source_id={$sourceId} AND o.verified_status='pending'");
     assert_import($pending === 3, 'REAL import must remain pending for human review');
