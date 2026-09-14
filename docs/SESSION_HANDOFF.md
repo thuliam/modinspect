@@ -835,8 +835,9 @@ Updated during the 2026-09-13 STUDIO development session.
 
 Status:
 
-- PARTIAL pending stable UAT verification.
+- PASS / IMPORTS OPERATIONALLY READY FOR OWNER UAT.
 - Implementation is in place for owner-readable templates, field guidance, dry-run summary, and confirm gating.
+- End-to-end isolated TEST workflow is verified through Apache/PHP against `.env.testing`.
 - Public frontend redesign remains paused.
 
 Implemented:
@@ -867,10 +868,18 @@ Supported import contract summary:
 Verification:
 
 - `git diff --check` passed for touched import files.
-- Temporary Apache runner first bootstrapped the isolated test database: `127.0.0.1/modinspect_test`.
-- Focused test file added: `tests/admin_import_workflow_test.php`.
-- HTTP execution of the focused test was not completed because Apache intermittently refused connections after bootstrap.
-- Temporary runner file was deleted and verified absent; HTTP check returned 404.
+- UAT `/` and `/login` returned HTTP 200 before and after the import workflow proof.
+- Root cause of the earlier failure was not an Apache runtime outage: normal UAT routes stayed healthy, local loopback URLs targeted the wrong client machine, and the temporary HTTP runner needed the existing test redirect hook to work under Apache when `MODINSPECT_TESTING` is defined.
+- Focused HTTP runner executed against active DB `127.0.0.1/modinspect_test`.
+- Safe TEST/MOCK sample created with 3 rows from `ImportFieldContract::CSV_HEADERS`.
+- Dry Run summary proved `scanned=3`, `eligible=3`, `invalid=0`, `duplicates=0`.
+- Confirm without Dry Run was blocked.
+- Confirm after the saved dry-run file changed was blocked.
+- Same-context Confirm Import created 3 pending TEST/MOCK Review Queue rows.
+- Imported TEST/MOCK rows were not auto-approved and were not exposed as REAL.
+- Approved/public-eligible observations and price snapshot row counts remained unchanged.
+- Import/Collection Jobs DataTable search, pagination, sorting, and filters passed.
+- Temporary runner files were deleted and verified HTTP 404.
 
 Safety:
 
@@ -882,4 +891,4 @@ Safety:
 
 Next owner action:
 
-- Owner verifies Admin Imports template download and Dry Run using a safe TEST/MOCK sample file in authenticated UAT; stop before Cloud Confirm Import unless explicitly authorizing it.
+- Owner performs authenticated Admin Imports UAT with a TEST/MOCK dry run first; do not confirm a REAL import until explicitly intended.

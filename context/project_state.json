@@ -1,6 +1,6 @@
 ﻿{
     "project":  "ModInspect",
-    "phase":  "Admin Imports owner-ready input workflow is implemented with CSV/JSON templates, field guide, dry-run summary, and confirm gate; isolated test DB bootstrap succeeded but focused HTTP workflow execution is pending stable Apache verification; public frontend redesign remains paused",
+    "phase":  "Admin Imports owner-ready input workflow is PASS with isolated TEST end-to-end proof through Apache/PHP: template-derived TEST file, upload, dry run, validation summary, confirm gate, confirm import, and Review Queue entry; public frontend redesign remains paused",
     "implemented":  [
                         "Custom PHP MVC router/bootstrap",
                         "PDO database connection",
@@ -105,7 +105,7 @@
                         "Admin DataTable QA now requires functional proof of search, pagination, sorting, and filters; JSON-shape checks alone are not sufficient",
                         "Products DataTable functional proof: server-side search, recordsFiltered, pagination, sorting, filters, and browser-adapter AJAX redraw verified with current UAT Product Master data",
                         "Products Add/Edit slide-down UX preserved during functional DataTable fix",
-                        "Admin Imports owner-ready input workflow: centralized CSV/JSON import field contract, authenticated template downloads, field guide, REAL vs TEST/MOCK guidance, provenance guidance, dry-run summary, and confirm gate tied to exact dry-run file/hash context"
+                        "Admin Imports owner-ready input workflow: centralized CSV/JSON import field contract, authenticated template downloads, field guide, REAL vs TEST/MOCK guidance, provenance guidance, dry-run summary, confirm gate tied to exact dry-run file/hash context, and isolated TEST end-to-end proof into pending Review Queue"
                     ],
     "approved_architecture_not_implemented":  [
                                                   "Community Data Feedback Loop",
@@ -134,14 +134,14 @@
                     "Cloud DEV has one active Admin account; Human Review Console is owner-accepted and ready for one-by-one human decisions",
                     "Phase 4B owner visual review was rejected once; fix round requires renewed owner review of Home, Price Index/Search, Product Detail, and Deal Checker before design direction is approved",
                     "Authenticated owner Products browser UAT remains waiting for manual owner verification in the existing authenticated browser session",
-                    "Admin Imports owner UAT remains waiting for authenticated owner verification of template download and Dry Run; Cloud Confirm Import must not be used unless explicitly authorized"
+                    "Admin Imports owner UAT remains waiting for authenticated owner visual verification; Cloud REAL Confirm Import must not be used unless explicitly authorized"
                 ],
     "next_priorities":  [
                             "Owner starts human review at /admin/review-queue?dataset=REAL\u0026status=pending",
                             "Owner visually reviews the Products page default state and Add/Edit slide-down form behavior",
                             "Owner retests Products Search, filters, pagination/sort, and Add/Edit form in authenticated UAT",
                             "Owner retests Products Search in the authenticated UAT browser",
-                            "Owner verifies Admin Imports CSV/JSON template download and Dry Run summary with a safe TEST/MOCK sample file, stopping before Cloud Confirm Import"
+                            "Owner performs authenticated Admin Imports UAT with a TEST/MOCK dry run first; do not confirm a REAL import until explicitly intended"
                         ],
     "deferred":  [
                      "Phase 4.5 Community Data Feedback Loop implementation",
@@ -171,7 +171,8 @@
                         "Test DB bootstrap uses modinspect.sql because raw SQL migrations do not have a reliable migration tracking table",
                         "Automated DataTable PASS is not authoritative unless it proves concrete search, pagination, sorting, filters, recordsTotal/recordsFiltered behavior, and browser AJAX redraw.",
                         "Server-side DataTable automated PASS requires concrete functional proof of search, recordsFiltered, pagination, sorting, custom filters, and browser AJAX redraw; HTTP status or JSON shape alone is insufficient.",
-                        "Admin import workflow PASS requires practical proof of template download, owner-prepared upload, Dry Run summary, exact-context Confirm Import gate, and Review Queue creation in isolated TEST DB; source-code inspection alone is insufficient."
+                        "Admin import workflow PASS requires practical proof of template download, owner-prepared upload, Dry Run summary, exact-context Confirm Import gate, and Review Queue creation in isolated TEST DB; source-code inspection alone is insufficient.",
+                        "HTTP test runners may define MODINSPECT_TESTING to make Controller::redirect throw RedirectException under Apache; production redirect behavior must remain unchanged when the constant is absent."
                     ],
     "development_topology":  {
                                  "source_control":  "GitHub",

@@ -697,7 +697,7 @@ Admin auth state:
 | B2B expansion | NOT IMPLEMENTED |
 | API/Data products | NOT IMPLEMENTED |
 | Live provider execution | WAITING FOR CREDENTIALS / APPROVAL |
-| Browser upload import UI | IMPLEMENTED / OWNER_READY_INPUT_WORKFLOW_PENDING_UAT |
+| Browser upload import UI | IMPLEMENTED / E2E_TEST_VERIFIED |
 | Reviewed offline REAL calibration batch | IMPORTED / WAITING_FOR_HUMAN_REVIEW |
 
 ## 12. Current Blockers
@@ -817,3 +817,12 @@ Do not assume previous chat context exists.
 - Safety: Cloud REAL import performed during QA: zero; Cloud authoritative REAL records modified: zero; review decisions executed: zero; price snapshots modified: zero; Cloud destructive operations: zero; external paid/API calls: zero.
 - Status: PARTIAL pending owner/UAT or stable Apache execution of the focused Admin import workflow test.
 - Next: Owner opens Admin Imports and verifies CSV/JSON template download plus Dry Run summary using a safe TEST/MOCK file; stop before Confirm Import on Cloud DEV unless explicitly authorizing an import.
+
+## [2026-09-13] [AGENT: Codex] - QA/Dev/Doc
+- Done: Completed Admin Imports end-to-end isolated TEST proof. Diagnosed the previous HTTP failure: UAT itself remained healthy, local `localhost`/`127.0.0.1` targets were the wrong machine from this client, and the HTTP runner also exposed a test harness issue where `Controller::redirect()` exited under Apache instead of throwing `RedirectException` while `MODINSPECT_TESTING` was defined. The production redirect path is unchanged unless the test constant is explicitly defined.
+- Files changed: `app/Core/Controller.php`, `tests/admin_import_workflow_test.php`, `docs/PROJECT_STATUS.md`, `docs/SESSION_HANDOFF.md`, `context/project_state.json`.
+- Verification: Apache-served UAT `/` and `/login` returned 200 before/after. Focused temporary HTTP runner executed against `.env.testing` and printed active DB `127.0.0.1/modinspect_test`. The test created a 3-row TEST/MOCK CSV from the same `ImportFieldContract::CSV_HEADERS`, proved Confirm without Dry Run is blocked, proved changed saved-file context is blocked, proved same-context Confirm imports 3 TEST/MOCK rows into pending Review Queue, proved zero auto-approvals, zero REAL exposure, unchanged approved observations, unchanged price snapshots, and Jobs/Imports DataTable search/pagination/sorting/filters.
+- Cleanup: Temporary public runners were deleted and verified HTTP 404.
+- Safety: Cloud REAL import performed: zero; Cloud authoritative REAL records modified: zero; review decisions on REAL: zero; price snapshots modified: zero; Cloud destructive operations: zero; external paid/API calls: zero.
+- Status: PASS / IMPORTS OPERATIONALLY READY FOR OWNER UAT.
+- Next: Owner performs authenticated UAT of Admin Imports with a TEST/MOCK dry run first.

@@ -26,7 +26,7 @@ class Controller
     }
     protected function redirect(string $path): never {
         global $config;
-        if (PHP_SAPI === 'cli' && defined('MODINSPECT_TESTING')) {
+        if (defined('MODINSPECT_TESTING')) {
             throw new RedirectException($path);
         }
         header('Location: ' . $config['base_url'] . $path);
