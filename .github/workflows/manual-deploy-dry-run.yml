@@ -133,11 +133,11 @@ jobs:
               summary = os.environ.get("GITHUB_STEP_SUMMARY")
               if summary:
                   with open(summary, "a", encoding="utf-8") as f:
-                      f.write("## ModInspect FTPS read-only check\\n")
-                      f.write("- Explicit TLS / certificate validation: **PASS**\\n")
-                      f.write("- FTPS login and directory listing: **PASS**\\n")
-                      f.write("- Server mutations: **NONE**\\n")
-                      f.write("- Production deployment: **NONE**\\n")
+                      f.write("## ModInspect FTPS read-only check\n")
+                      f.write("- Explicit TLS / certificate validation: **PASS**\n")
+                      f.write("- FTPS login and directory listing: **PASS**\n")
+                      f.write("- Server mutations: **NONE**\n")
+                      f.write("- Production deployment: **NONE**\n")
           finally:
               session.close()
           PY
