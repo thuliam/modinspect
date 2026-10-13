@@ -1,0 +1,82 @@
+name: ModInspect Manual Deploy - Dry Run Only
+
+# Stage 1 only: offline preflight, no FTP/SFTP connection or production mutation.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Only dry-run is permitted in this workflow"
+        type: choice
+        required: true
+        default: dry-run
+        options:
+          - dry-run
+  pull_request:
+    paths:
+      - .github/workflows/manual-deploy-dry-run.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: modinspect-preflight-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Safe PHP preflight (no network deployment)
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'dry-run' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Select PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: none
+
+      - name: Check project structure and PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r 'if (PHP_VERSION_ID < 80100) { fwrite(STDERR, "PHP 8.1+ required\n"); exit(1); }'
+          for path in public/index.php public/.htaccess app/bootstrap.php config/app.php tests/syntax_check.php; do
+            if [[ ! -f "$path" ]]; then
+              echo "::error::Missing required file: $path"
+              exit 1
+            fi
+          done
+          if [[ -e .env || -e .env.testing ]]; then
+            echo "::error::Local environment files must not be in the checkout"
+            exit 1
+          fi
+          php tests/syntax_check.php
+
+      - name: Prepare read-only deployment manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          git ls-files -- app/ config/ public/ > "$RUNNER_TEMP/modinspect-deploy-allowlist.txt"
+          if [[ ! -s "$RUNNER_TEMP/modinspect-deploy-allowlist.txt" ]]; then
+            echo "::error::Empty deployment allowlist"
+            exit 1
+          fi
+          if grep -Eq '(^|/)\.env($|\.)|(^|/)(uploads|sessions|logs|cache)/' "$RUNNER_TEMP/modinspect-deploy-allowlist.txt"; then
+            echo "::error::Sensitive/runtime files detected in deployment allowlist"
+            exit 1
+          fi
+          echo "## ModInspect deployment preflight" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Mode: **DRY RUN ONLY**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit: \`$GITHUB_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Candidate app/config/public files: $(wc -l < "$RUNNER_TEMP/modinspect-deploy-allowlist.txt")" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Not included: database dumps, docs, tests, .env, storage.zip." >> "$GITHUB_STEP_SUMMARY"
+          echo "- FTP/SFTP connections: **NONE**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Production files changed: **NONE**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Database changes: **NONE**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Hosting prerequisites pending: PHP 8.1+, safe document root to public/, writable storage, HTTPS and hosting access." >> "$GITHUB_STEP_SUMMARY"
