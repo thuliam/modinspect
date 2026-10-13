@@ -1,0 +1,68 @@
+name: ModInspect Deployment Package - Dry Run
+
+# Builds a review-only ZIP inside GitHub. NEVER connects to Hosting.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        description: "Only review-only packaging is permitted"
+        required: true
+        default: package-only
+        options:
+          - package-only
+  pull_request:
+    paths:
+      - .github/workflows/deployment-package-dry-run.yml
+      - scripts/build_deployment_package.py
+      - docs/DEPLOYMENT_PACKAGE_DRY_RUN.md
+
+permissions:
+  contents: read
+
+concurrency:
+  group: modinspect-package-preview-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Offline package and integrity verification (NO DEPLOY)
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'package-only')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout tracked project files
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up PHP 8.3 for syntax-only checks
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - name: Validate PHP syntax without database access
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/syntax_check.php
+
+      - name: Generate verified offline ZIP and manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/build_deployment_package.py
+
+      - name: Upload ZIP and hashes as GitHub artifact only
+        uses: actions/upload-artifact@v4
+        with:
+          name: modinspect-package-preview-${{ github.run_number }}
+          path: |
+            dist/modinspect-preview.zip
+            dist/manifest.json
+            dist/checksums.sha256
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 0
