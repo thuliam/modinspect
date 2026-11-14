@@ -1,0 +1,143 @@
+name: ModInspect Manual Safe Preflight
+
+# Preflight only: no remote writes, no production deployment, no database access.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Dry-run PHP validation or encrypted FTPS directory listing (read-only)"
+        type: choice
+        required: true
+        default: dry-run
+        options:
+          - dry-run
+          - ftps-read-only
+  pull_request:
+    paths:
+      - .github/workflows/manual-deploy-dry-run.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: modinspect-preflight-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Safe PHP preflight (no network deployment)
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Select PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - name: Check project structure and PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r 'if (PHP_VERSION_ID < 80100) { fwrite(STDERR, "PHP 8.1+ required\n"); exit(1); }'
+          for path in public/index.php public/.htaccess app/bootstrap.php config/app.php tests/syntax_check.php; do
+            if [[ ! -f "$path" ]]; then
+              echo "::error::Missing required file: $path"
+              exit 1
+            fi
+          done
+          if [[ -e .env || -e .env.testing ]]; then
+            echo "::error::Local environment files must not be in the checkout"
+            exit 1
+          fi
+          php tests/syntax_check.php
+
+      - name: Prepare read-only deployment manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          git ls-files -- app/ config/ public/ > "$RUNNER_TEMP/modinspect-deploy-allowlist.txt"
+          if [[ ! -s "$RUNNER_TEMP/modinspect-deploy-allowlist.txt" ]]; then
+            echo "::error::Empty deployment allowlist"
+            exit 1
+          fi
+          if grep -Eq '(^|/)\.env($|\.)|(^|/)(uploads|sessions|logs|cache)/' "$RUNNER_TEMP/modinspect-deploy-allowlist.txt"; then
+            echo "::error::Sensitive/runtime files detected in deployment allowlist"
+            exit 1
+          fi
+          echo "## ModInspect deployment preflight" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Stage: **Offline PHP checks only**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit: \`$GITHUB_SHA\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Candidate app/config/public files: $(wc -l < "$RUNNER_TEMP/modinspect-deploy-allowlist.txt")" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Not included: database dumps, docs, tests, .env, storage.zip." >> "$GITHUB_STEP_SUMMARY"
+          echo "- FTP/SFTP connections in this job: **NONE**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Production files changed: **NONE**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Database changes: **NONE**" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Hosting prerequisites pending: PHP 8.1+, safe document root to public/, writable storage, HTTPS and hosting access." >> "$GITHUB_STEP_SUMMARY"
+
+  ftps_read_only:
+    name: FTPS TLS and directory listing (NO WRITES)
+    needs: preflight
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.mode == 'ftps-read-only'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Validate TLS and read-only access
+        shell: bash
+        env:
+          FTPS_USERNAME: ${{ secrets.MODINSPECT_FTPS_USERNAME }}
+          FTPS_PASSWORD: ${{ secrets.MODINSPECT_FTPS_PASSWORD }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import ssl
+          import sys
+          from ftplib import FTP_TLS
+
+          host = "thuliamdev.com"
+          user = os.environ.get("FTPS_USERNAME", "")
+          password = os.environ.get("FTPS_PASSWORD", "")
+          if not user or not password:
+              print("FTPS credentials missing. Add MODINSPECT_FTPS_USERNAME and MODINSPECT_FTPS_PASSWORD repository secrets.", file=sys.stderr)
+              sys.exit(1)
+          if user != "modinspect@thuliamdev.com":
+              print("Unexpected FTPS account. Refusing to connect.", file=sys.stderr)
+              sys.exit(1)
+
+          # Verify server certificate and hostname with the runner's trusted CA store.
+          # FTP_TLS uses explicit FTP-over-TLS (AUTH TLS) on port 21.
+          session = FTP_TLS(context=ssl.create_default_context())
+          try:
+              session.connect(host=host, port=21, timeout=20)
+              session.login(user=user, passwd=password)
+              session.prot_p()  # Require encrypted FTP data channel too.
+              session.cwd("/")
+              session.nlst()  # Read-only directory listing.
+              session.cwd("/public")
+              entries = session.nlst()  # Read-only directory listing.
+              print("Explicit TLS: verified")
+              print("Encrypted data channel: enabled")
+              print("FTP scope: / and /public accessible")
+              print("Public directory entry count:", len(entries))
+              print("No STOR/APPE/DELE/MKD/RMD/RNFR/RNTO commands executed.")
+              summary = os.environ.get("GITHUB_STEP_SUMMARY")
+              if summary:
+                  with open(summary, "a", encoding="utf-8") as f:
+                      f.write("## ModInspect FTPS read-only check\n")
+                      f.write("- Explicit TLS / certificate validation: **PASS**\n")
+                      f.write("- FTPS login and directory listing: **PASS**\n")
+                      f.write("- Server mutations: **NONE**\n")
+                      f.write("- Production deployment: **NONE**\n")
+          finally:
+              session.close()
+          PY
