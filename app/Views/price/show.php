@@ -39,17 +39,44 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <span><?= htmlspecialchars($product['brand_name']) ?></span>
     </nav>
 
-    <header class="mi-product-hero">
-        <div>
-            <span class="eyebrow"><?= htmlspecialchars($product['category_name']) ?></span>
-            <h1><?= htmlspecialchars($product['full_name']) ?></h1>
-            <div class="spec-chips">
-                <?php if (!empty($product['brand_name'])): ?><span><?= htmlspecialchars($product['brand_name']) ?></span><?php endif; ?>
-                <?php if (!empty($product['generation'])): ?><span><?= htmlspecialchars($product['generation']) ?></span><?php endif; ?>
-                <?php if (!empty($product['spec_summary'])): ?><span><?= htmlspecialchars($product['spec_summary']) ?></span><?php endif; ?>
+    <?php
+    require_once ROOT_PATH . '/app/Views/components/hw-art.php';
+    $artType = match (strtolower(trim((string) ($product['category_name'] ?? '')))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' };
+    ?>
+    <header class="mi-product-hero row align-items-stretch">
+        <div class="col-lg-6 mb-3">
+            <div class="mi-gallery">
+                <span class="mi-gallery-badge"><i class="fas fa-<?= $hasMarketSnapshot ? 'chart-line' : 'info-circle' ?>" aria-hidden="true"></i> <?= $hasMarketSnapshot ? 'มีข้อมูลราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span>
+                <div class="mi-gallery-art"><?= mi_art($artType) ?></div>
+                <div class="mi-gallery-meta">
+                    <span><?= htmlspecialchars($product['category_name']) ?></span>
+                    <?php if (!empty($product['brand_name'])): ?><span><?= htmlspecialchars($product['brand_name']) ?></span><?php endif; ?>
+                    <?php if (!empty($product['generation'])): ?><span><?= htmlspecialchars($product['generation']) ?></span><?php endif; ?>
+                </div>
+                <small>ภาพประกอบเป็นภาพวาดประเภทสินค้า ไม่ใช่ภาพถ่ายสินค้าจริง</small>
             </div>
         </div>
-        <a class="button ghost" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>">เช็กดีลรุ่นนี้</a>
+        <div class="col-lg-6 mb-3">
+            <div class="mi-product-sum">
+                <span class="eyebrow"><?= htmlspecialchars($product['category_name']) ?></span>
+                <h1><?= htmlspecialchars($product['full_name']) ?></h1>
+                <?php if (!empty($product['spec_summary'])): ?><p class="mi-product-spec"><?= htmlspecialchars($product['spec_summary']) ?></p><?php endif; ?>
+                <?php if ($hasMarketSnapshot): ?>
+                    <?php $rangeProduct = $product; $rangeSize = 'lg'; require ROOT_PATH . '/app/Views/components/range-answer.php'; ?>
+                    <div class="mi-sum-meta">
+                        <span class="confidence-badge confidence-<?= htmlspecialchars($confidenceClass) ?>"><?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?></span>
+                        <span><i class="fas fa-database" aria-hidden="true"></i> <?= (int) $product['valid_sample_size'] ?> ตัวอย่าง</span>
+                    </div>
+                <?php else: ?>
+                    <p class="mi-sum-empty"><i class="fas fa-info-circle" aria-hidden="true"></i> ข้อมูลที่ผ่านการตรวจสอบยังไม่พอ จึงไม่แสดงช่วงราคา ระบบไม่สร้างราคาตลาดปลอม</p>
+                <?php endif; ?>
+                <div class="mi-actions">
+                    <a class="btn btn-lime" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>"><i class="fas fa-balance-scale" aria-hidden="true"></i> เช็กดีลรุ่นนี้</a>
+                    <a class="btn btn-ghost" href="<?= $base ?>/price">ค้นหารุ่นอื่น</a>
+                    <a class="btn btn-ghost" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
+                </div>
+            </div>
+        </div>
     </header>
 
     <?php if (!$hasMarketSnapshot): ?>
@@ -142,4 +169,12 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             <?php endif; ?>
         </section>
     <?php endif; ?>
+    <section class="mi-trust" aria-label="อ่านราคานี้อย่างไร">
+        <h2 class="mi-trust-title"><span class="mi-slash"></span>อ่านราคานี้อย่างไร</h2>
+        <div class="row">
+            <?php foreach ([['fa-tag', 'ราคาประกาศ', 'เป็นราคาที่ผู้ขายตั้งไว้ ไม่ใช่ราคาปิดดีล'], ['fa-microchip', 'แยกรุ่นชัดเจน', 'ไม่เฉลี่ยข้ามรุ่นหรือข้ามเจเนอเรชัน'], ['fa-file-alt', 'บอกที่มา', 'ดูจำนวนตัวอย่างและความสดของข้อมูลได้'], ['fa-search', 'ตรวจสภาพเอง', 'ต้องดูสภาพ ประกัน และอุปกรณ์ประกอบก่อนซื้อเสมอ']] as [$ic, $tt, $tx]): ?>
+                <div class="col-md-6 col-xl-3 mb-3"><div class="mi-why"><span class="mi-why-ico"><i class="fas <?= $ic ?>" aria-hidden="true"></i></span><div><h3><?= $tt ?></h3><p><?= $tx ?></p></div></div></div>
+            <?php endforeach; ?>
+        </div>
+    </section>
 </section>

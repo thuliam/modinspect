@@ -4,6 +4,11 @@
         <h1>ราคาที่เจออยู่ตรงไหนของตลาด?</h1>
         <p class="lead">เลือกสินค้า ใส่ราคาประกาศ และเพิ่มบริบทเท่าที่มี ระบบจะเปรียบเทียบกับช่วงราคาที่พบอย่างเป็นกลาง</p>
     </div>
+    <ol class="mi-flow" aria-label="ขั้นตอน">
+        <li class="active"><b>1</b><span>เลือกรุ่นและใส่ราคาที่เจอ</span></li>
+        <li><b>2</b><span>เพิ่มบริบท สภาพ และอุปกรณ์ที่ได้</span></li>
+        <li><b>3</b><span>ดูตำแหน่งราคาเทียบช่วงตลาด</span></li>
+    </ol>
 
     <div class="mi-deal-layout">
         <form method="post" class="card form mi-deal-form">
