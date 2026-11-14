@@ -1,66 +1,196 @@
-/* Public site behaviour: header shrink, mobile menu, and the decorative home point cloud. No network calls. */
+/* Public site behaviour. No network calls.
+   - header shrink + mobile menu
+   - home hero: a slowly orbiting 3D point cloud (original, canvas 2D with perspective projection)
+   - scroll reveals, count-up numbers, card parallax and pointer tilt
+   Motion modes (set early in the page head): "full", or "calm" when the OS asks for reduced motion.
+   Calm keeps fades, colour changes, the count-up and an in-place twinkle, but nothing travels. The footer button switches. */
 (function () {
-    var nav = document.querySelector('.site-header');
-    var onScroll = function () { if (nav) { nav.classList.toggle('sc', window.scrollY > 40); } };
-    addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    var root = document.documentElement;
+    var full = function () { return root.classList.contains('motion-full'); };
+    var canHover = matchMedia('(hover: hover)').matches;
 
+    /* ---------- motion toggle ---------- */
+    var toggle = document.getElementById('motion-toggle');
+    function paintToggle() {
+        if (!toggle) { return; }
+        toggle.textContent = full() ? 'เอฟเฟกต์: เต็ม' : 'เอฟเฟกต์: ลดลง';
+        toggle.setAttribute('aria-pressed', full() ? 'true' : 'false');
+        toggle.title = full() ? 'กดเพื่อลดการเคลื่อนไหว' : 'กดเพื่อเปิดเอฟเฟกต์เต็ม';
+    }
+    if (toggle) {
+        toggle.addEventListener('click', function () {
+            var next = full() ? 'calm' : 'full';
+            root.classList.remove('motion-full', 'motion-calm');
+            root.classList.add('motion-' + next);
+            try { localStorage.setItem('mi-motion', next); } catch (e) { /* storage may be blocked */ }
+            paintToggle();
+            onScroll();
+        });
+        paintToggle();
+    }
+
+    /* ---------- header + menu ---------- */
+    var header = document.querySelector('.site-header');
     var burger = document.getElementById('burger');
     var menu = document.getElementById('site-menu');
     if (burger && menu) {
+        var closeMenu = function () { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); };
         burger.addEventListener('click', function () {
             var open = menu.classList.toggle('open');
             burger.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
-        menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); } });
-        addEventListener('keydown', function (e) { if (e.key === 'Escape') { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); } });
+        menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') { closeMenu(); } });
+        addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeMenu(); } });
     }
 
+    /* ---------- scroll reveal (fade only in calm mode, via CSS) ---------- */
+    var reveals = [].slice.call(document.querySelectorAll('.reveal'));
+    if ('IntersectionObserver' in window) {
+        var rio = new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); rio.unobserve(en.target); } });
+        }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+        reveals.forEach(function (el) { rio.observe(el); });
+    } else {
+        reveals.forEach(function (el) { el.classList.add('in'); });
+    }
+
+    /* ---------- count-up (a changing number is not travel, so calm mode keeps it) ---------- */
+    var counters = [].slice.call(document.querySelectorAll('[data-count]'));
+    function runCount(el) {
+        var end = parseInt(el.getAttribute('data-count'), 10) || 0, t0 = null, dur = 1400;
+        if (end === 0) { el.textContent = '0'; return; }
+        function tick(t) {
+            if (t0 === null) { t0 = t; }
+            var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+            el.textContent = String(Math.round(end * e));
+            if (p < 1) { requestAnimationFrame(tick); }
+        }
+        el.textContent = '0';
+        requestAnimationFrame(tick);
+    }
+    if ('IntersectionObserver' in window) {
+        var cio = new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) { if (en.isIntersecting) { runCount(en.target); cio.unobserve(en.target); } });
+        }, { threshold: 0.6 });
+        counters.forEach(function (el) { cio.observe(el); });
+    }
+
+    /* ---------- scroll: header state, card column parallax ---------- */
+    var par = document.querySelector('[data-parallax]');
+    var ticking = false;
+    function onScroll() {
+        ticking = false;
+        if (header) { header.classList.toggle('sc', window.scrollY > 40); }
+        if (par) {
+            if (full() && innerWidth > 900) {
+                var r = par.getBoundingClientRect(), mid = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+                par.style.setProperty('--py', Math.max(-1, Math.min(1, mid)) * -36 + 'px');
+            } else { par.style.removeProperty('--py'); }
+        }
+    }
+    addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    addEventListener('resize', onScroll);
+    onScroll();
+
+    /* ---------- pointer tilt on cards (full mode only) ---------- */
+    if (canHover) {
+        [].slice.call(document.querySelectorAll('.vs-card')).forEach(function (card) {
+            card.addEventListener('pointermove', function (e) {
+                if (!full()) { return; }
+                var r = card.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - 0.5, py = (e.clientY - r.top) / r.height - 0.5;
+                card.style.setProperty('--rx', (-py * 5).toFixed(2) + 'deg');
+                card.style.setProperty('--ry', (px * 6).toFixed(2) + 'deg');
+            });
+            card.addEventListener('pointerleave', function () { card.style.removeProperty('--rx'); card.style.removeProperty('--ry'); });
+        });
+    }
+
+    /* ---------- hero point cloud ---------- */
     var c = document.getElementById('cloud');
     if (!c || !c.getContext) { return; }
-    var x = c.getContext('2d');
-    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var W, H, pts = [], mx = 0.5, my = 0.5;
+    var ctx = c.getContext('2d');
+    var W = 0, H = 0, dpr = 1, pts = [], mx = 0, my = 0, tmx = 0, tmy = 0, running = false, visible = true, born = 0;
 
+    function rnd(a, b) { return a + Math.random() * (b - a); }
     function gauss() { return (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 2; }
-    function dot(px, py, z, s) { pts.push({ x: px, y: py, z: z, s: s, t: Math.random() * 6.28, v: 0 }); }
+    function add(x, y, z, s, a) { pts.push({ x: x, y: y, z: z, s: s, a: a, t: Math.random() * 6.28 }); }
 
+    /* world units: x right, y down, z away from the camera. The camera sits at z = -420. */
     function build() {
-        W = c.width = c.clientWidth;
-        H = c.height = c.clientHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        W = c.clientWidth; H = c.clientHeight;
+        c.width = Math.round(W * dpr); c.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         pts = [];
-        var area = Math.max(0.35, W * H / 1300000), i, j, k;
-        for (i = 0; i < Math.round(15 * area) + 6; i++) {
-            var cx = Math.random() * W, cy = H * (0.1 + Math.random() * 0.7), n = 22 + Math.random() * 50, s = 18 + Math.random() * 46;
-            for (j = 0; j < n; j++) { dot(cx + gauss() * s * 1.6, cy + gauss() * s, 0.4 + Math.random() * 1.1, Math.random() < 0.12 ? 3 : 2); }
+        var k = Math.min(1, (W * H) / 1100000) * (W < 700 ? 0.6 : 1), i, j, n;
+        // clusters of listings spread through the depth of the scene
+        for (i = 0; i < 14; i++) {
+            var cx = rnd(-900, 900), cy = rnd(-260, 260), cz = rnd(-100, 900), sp = rnd(30, 90);
+            n = Math.round(rnd(40, 110) * k);
+            for (j = 0; j < n; j++) { add(cx + gauss() * sp * 1.7, cy + gauss() * sp, cz + gauss() * sp * 1.4, Math.random() < 0.1 ? 2.2 : 1.4, rnd(0.45, 1)); }
         }
-        for (i = 0; i < Math.round(7 * W / 1440) + 2; i++) {
-            var vx = Math.random() * W, top = H * (0.08 + Math.random() * 0.2), len = H * (0.25 + Math.random() * 0.4);
-            for (k = 0; k < len; k += 9 + Math.random() * 9) { dot(vx + (Math.random() - 0.5) * 2, top + k, 0.5 + Math.random() * 0.6, 2); }
+        // a perspective lattice below the horizon: rows of dots running away from the camera
+        for (i = -9; i <= 9; i++) {
+            for (j = 0; j < Math.round(46 * k) + 10; j++) { add(i * 120 + rnd(-3, 3), 210 + rnd(-2, 2), -60 + j * 38, 1.1, rnd(0.3, 0.7)); }
         }
-        [[W * 0.2, H * 0.22, 1], [W * 0.88, H * 0.36, -1]].forEach(function (o) {
-            for (i = 0; i < 16; i++) {
-                var ang = (Math.random() - 0.5) * 0.55 + (o[2] > 0 ? 0.05 : Math.PI - 0.05), len2 = 80 + Math.random() * 420;
-                for (k = 0; k < len2; k += 5 + Math.random() * 6) { dot(o[0] + Math.cos(ang) * k, o[1] + Math.sin(ang) * k * 0.4 + (Math.random() - 0.5) * 3, 0.4 + (1 - k / len2) * 0.9, 1.5); }
+        // dotted vertical columns
+        for (i = 0; i < 9; i++) {
+            var vx = rnd(-1000, 1000), vz = rnd(0, 900), top = rnd(-300, -60), len = rnd(160, 380);
+            for (j = 0; j < len; j += rnd(9, 15)) { add(vx, top + j, vz, 1.2, rnd(0.3, 0.7)); }
+        }
+        // two streak fans
+        [[-520, -150, 120, 1], [620, -40, 300, -1]].forEach(function (o) {
+            for (i = 0; i < 14; i++) {
+                var ang = rnd(-0.28, 0.28) + (o[3] > 0 ? 0 : Math.PI), len2 = rnd(160, 760);
+                for (j = 0; j < len2; j += rnd(7, 12)) { add(o[0] + Math.cos(ang) * j, o[1] + Math.sin(ang) * j * 0.3, o[2] + rnd(-6, 6) + j * 0.5, 1.2, rnd(0.4, 0.9) * (1 - j / len2)); }
             }
         });
-        for (i = 0; i < Math.round(130 * area) + 40; i++) { dot(Math.random() * W, H * (0.05 + Math.random() * 0.85), 0.3 + Math.random() * 0.5, 2); }
+        // dust
+        for (i = 0; i < Math.round(240 * k); i++) { add(rnd(-1200, 1200), rnd(-380, 380), rnd(-100, 1000), 1, rnd(0.2, 0.5)); }
     }
 
-    function draw(t) {
-        x.clearRect(0, 0, W, H);
-        x.fillStyle = '#dfe8e0';
-        for (var i = 0; i < pts.length; i++) {
-            var p = pts[i];
-            if (!reduce) { p.v = Math.sin(t / 1800 + p.t) * 0.12; }
-            x.globalAlpha = Math.min(1, (0.3 + 0.55 * Math.abs(Math.sin(t / 1100 + p.t))) * p.z) * 0.8;
-            x.fillRect(p.x + (mx - 0.5) * 34 * p.z + p.v * 6, p.y + (my - 0.5) * 22 * p.z + p.v * 3, p.s, p.s);
+    function frame(t) {
+        if (!running) { return; }
+        if (!born) { born = t; }
+        var move = full();
+        var yaw = move ? 0.18 + Math.sin(t / 14000) * 0.16 : 0.18;
+        mx += ((move ? tmx : 0) - mx) * 0.04; my += ((move ? tmy : 0) - my) * 0.04;
+        var cosY = Math.cos(yaw + mx * 0.12), sinY = Math.sin(yaw + mx * 0.12), f = Math.min(W, 1100) * 0.9;
+        var cxs = W * 0.62, cys = H * 0.46, i, p, x, z, zz, k, sx, sy, a, s;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = '#e6efe6';
+        var fade = Math.min(1, (t - born) / 1800);
+        for (i = 0; i < pts.length; i++) {
+            p = pts[i];
+            x = p.x * cosY - (p.z - 380) * sinY;
+            z = p.x * sinY + (p.z - 380) * cosY + 380;
+            zz = z + 420;
+            if (zz < 60) { continue; }
+            k = f / zz;
+            sx = cxs + x * k;
+            sy = cys + (p.y + my * 24) * k;
+            if (sx < -4 || sx > W + 4 || sy < -4 || sy > H + 4) { continue; }
+            a = p.a * Math.min(1, 1.2 - zz / 1900) * (0.62 + 0.38 * Math.sin(t / 900 + p.t)) * fade;
+            if (a <= 0.02) { continue; }
+            s = Math.max(1, p.s * k * 1.15);
+            ctx.globalAlpha = a;
+            ctx.fillRect(sx, sy, s, s);
         }
-        if (!reduce) { requestAnimationFrame(draw); }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(frame);
     }
+
+    function start() { if (running) { return; } running = true; requestAnimationFrame(frame); }
+    function stop() { running = false; }
 
     build();
-    addEventListener('resize', function () { build(); if (reduce) { draw(0); } });
-    addEventListener('pointermove', function (e) { mx = e.clientX / innerWidth; my = e.clientY / innerHeight; });
-    requestAnimationFrame(draw);
+    if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (visible && !document.hidden) { start(); } else { stop(); } }, { threshold: 0 }).observe(c);
+    } else { start(); }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) { stop(); } else if (visible) { start(); } });
+    var rz;
+    addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(build, 150); });
+    addEventListener('pointermove', function (e) { tmx = e.clientX / innerWidth - 0.5; tmy = e.clientY / innerHeight - 0.5; }, { passive: true });
+    c.classList.add('ready');
+    start();
 })();

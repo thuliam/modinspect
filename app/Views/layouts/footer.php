@@ -16,7 +16,10 @@
             <li><a href="<?= $base ?>/methodology">วิธีคำนวณ</a></li>
         </ul>
     </div>
-    <p class="container footer-copy">© <?= date('Y') ?> ModInspect</p>
+    <div class="container footer-copy">
+        <span>© <?= date('Y') ?> ModInspect</span>
+        <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false">เอฟเฟกต์การเคลื่อนไหว</button>
+    </div>
 </footer>
 <script src="<?= $base ?>/assets/spec-builder.js" defer></script>
 <script src="<?= $base ?>/assets/site.js?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/site.js') ?>" defer></script>

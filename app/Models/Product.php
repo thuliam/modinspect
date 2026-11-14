@@ -27,6 +27,14 @@ final class Product
         $sql .= " ORDER BY p.is_popular DESC, p.full_name";
         $stmt=$this->db->prepare($sql); $stmt->execute($params); return $stmt->fetchAll();
     }
+    /** Plain public counts for the home page: models listed, names recognised, models with an eligible price. No admin data. */
+    public function publicCounts(): array {
+        $all = $this->search();
+        $priced = count(array_filter($all, static fn(array $p): bool => !empty($p['median']) && (int)($p['valid_sample_size'] ?? 0) > 0 && (int)($p['accepted_observation_count'] ?? 0) > 0));
+        $aliases = (int)$this->db->query("SELECT COUNT(*) FROM product_aliases pa JOIN products p ON p.id=pa.product_id WHERE p.is_active=1")->fetchColumn();
+        $categories = count(array_unique(array_column($all, 'category_id')));
+        return ['models' => count($all), 'aliases' => $aliases, 'priced' => $priced, 'categories' => $categories];
+    }
     public function findBySlug(string $slug): ?array {
         $stmt=$this->db->prepare($this->select . " WHERE p.slug=:slug AND p.is_active=1 LIMIT 1");
         $stmt->execute(['slug'=>$slug]); return $stmt->fetch() ?: null;
