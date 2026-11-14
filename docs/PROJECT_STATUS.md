@@ -8,7 +8,7 @@ No production deploy, no new paid service, no mutation of shared Cloud DEV.
 | Item | Verified state |
 |---|---|
 | Source of truth | Branch `checkpoint/claude-baseline-2026-11-14` (pushed to origin on 2026-11-14, no PR yet): `5b05a31` baseline + merge `0e48e69` of `origin/main` (`4b84d19`, CI-only commits, no conflicts) + later Sprint 1 commit(s). `studio`/`office` remain `4f6713c`. Working tree `C:aragonwwwmodinspect` |
-| Uncommitted work | Only the owner-owned untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal) once the Sprint 1 commit is made. Nothing pushed |
+| Uncommitted work | Only the owner-owned untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal) (everything of mine is committed and pushed to the checkpoint branch) |
 | Runtime | Studio: Laragon Apache + PHP 8.3.33 (also 8.1, 8.4 installed), MySQL 8.4.3 local on 3306. `php` is not on the Git Bash PATH; use `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` |
 | Databases | Shared DEV (`.env`): MariaDB 10.6.28, 41 products, 108 aliases, 99 observations (88 REAL pending, 11 MOCK_TEST pending, **0 REAL approved**), 41 snapshots all `legacy_unavailable`, 70 audit rows (read-only counts, 2026-11-14). Isolated TEST (`.env.testing`): `127.0.0.1/modinspect_test`, used by every mutating test |
 | Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, **32 steps**, run twice in a row and from a freshly bootstrapped test DB (includes the real-HTTP end-to-end test) |
