@@ -1,4 +1,5 @@
 <section class="mi-hero">
+    <canvas id="cloud" aria-hidden="true"></canvas>
     <div class="container mi-hero-grid">
         <div class="mi-hero-copy">
             <span class="eyebrow">ModInspect</span>

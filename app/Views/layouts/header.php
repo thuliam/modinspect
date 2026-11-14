@@ -3,6 +3,10 @@ use App\Services\Auth\AuthService;
 
 $base = $config['base_url'];
 $authUser = $auth_user ?? (new AuthService())->currentUser();
+$requestPath = '/' . ltrim((string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH), '/');
+$relativePath = str_starts_with($requestPath, (string) $base) ? substr($requestPath, strlen((string) $base)) : $requestPath;
+$relativePath = $relativePath === '' ? '/' : $relativePath;
+$navCurrent = static fn(string $path): string => ($relativePath === $path || str_starts_with($relativePath, $path . '/')) ? ' aria-current="page"' : '';
 ?>
 <!doctype html>
 <html lang="th">
@@ -17,13 +21,15 @@ $authUser = $auth_user ?? (new AuthService())->currentUser();
 <header class="site-header">
     <div class="container nav public-nav">
         <a class="brand" href="<?= $base ?>/" aria-label="ModInspect home">
-            <img class="brand-logo" src="<?= $base ?>/assets/images/home-1.jpg" alt="">
+            <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 6h12M9 12h12M3 18h12"/><circle cx="19" cy="6" r="1.6" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="19" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>
             <span>ModInspect</span>
         </a>
-        <nav aria-label="Primary navigation">
-            <a href="<?= $base ?>/price">เช็กราคา</a>
-            <a href="<?= $base ?>/deal-checker">Deal Checker</a>
-            <a href="<?= $base ?>/methodology">วิธีคำนวณ</a>
+        <button class="burger" id="burger" type="button" aria-label="เมนู" aria-expanded="false" aria-controls="site-menu">&#9776;</button>
+        <nav class="menu" id="site-menu" aria-label="Primary navigation">
+            <a href="<?= $base ?>/price"<?= $navCurrent('/price') ?>>เช็กราคา</a>
+            <a href="<?= $base ?>/deal-checker"<?= $navCurrent('/deal-checker') ?>>Deal Checker</a>
+            <a href="<?= $base ?>/methodology"<?= $navCurrent('/methodology') ?>>วิธีคำนวณ</a>
+            <a class="gs" href="<?= $base ?>/price">เริ่มเช็กราคา</a>
         </nav>
         <?php if ($authUser): ?>
             <?php // Staff convenience only: no name/role chip and no logout form on the public site. Visitors never see an Admin entry. ?>
