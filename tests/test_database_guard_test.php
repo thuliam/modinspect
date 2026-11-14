@@ -17,9 +17,16 @@ assert_guard(strtolower((string)$db['host']) !== TestDatabaseGuard::CLOUD_HOST, 
 assert_guard(strtolower((string)$db['database']) !== TestDatabaseGuard::CLOUD_DATABASE, 'Test DB name must not be Cloud DEV');
 assert_guard(str_ends_with(strtolower((string)$db['database']), '_test'), 'Test DB name must end with _test');
 
-$appEnv = read_guard_env(dirname(__DIR__) . '/.env');
-assert_guard(($appEnv['DB_HOST'] ?? '') === TestDatabaseGuard::CLOUD_HOST, 'Application .env should remain pointed at Cloud DEV host');
-assert_guard(($appEnv['DB_DATABASE'] ?? '') === TestDatabaseGuard::CLOUD_DATABASE, 'Application .env should remain pointed at Cloud DEV database');
+// The developer machine's application .env (ignored by git) is expected to point at shared Cloud DEV, which is exactly what the
+// guard must keep tests away from. A clean checkout or CI has no such file, so only assert it when it exists.
+$appEnvPath = dirname(__DIR__) . '/.env';
+$appEnvChecked = false;
+if (is_file($appEnvPath)) {
+    $appEnv = read_guard_env($appEnvPath);
+    assert_guard(($appEnv['DB_HOST'] ?? '') === TestDatabaseGuard::CLOUD_HOST, 'Application .env should remain pointed at Cloud DEV host');
+    assert_guard(($appEnv['DB_DATABASE'] ?? '') === TestDatabaseGuard::CLOUD_DATABASE, 'Application .env should remain pointed at Cloud DEV database');
+    $appEnvChecked = true;
+}
 
 $blocked = 0;
 foreach ([
@@ -47,6 +54,7 @@ try {
 assert_guard($missingBlocked, 'Missing test environment must fail closed');
 
 echo "Test database guard test passed\n";
+echo 'Application .env check: ' . ($appEnvChecked ? 'run' : 'skipped (no .env, clean checkout/CI)') . "\n";
 
 function read_guard_env(string $path): array
 {
