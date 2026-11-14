@@ -182,6 +182,13 @@ final class OfflineEvidenceImportService
         if (preg_match('/^[A-Za-z]:[\/\\\\]/', $file)) {
             return $file;
         }
+        // Absolute POSIX (or already-resolved) paths are accepted only when they live inside the project root;
+        // otherwise the path is treated as relative to ROOT_PATH. Without this, Linux hosts cannot read files the app itself stored.
+        $normalizedFile = str_replace('\\', '/', $file);
+        $normalizedRoot = rtrim(str_replace('\\', '/', ROOT_PATH), '/') . '/';
+        if (str_starts_with($normalizedFile, $normalizedRoot) && !str_contains($normalizedFile, '/../')) {
+            return $file;
+        }
         return ROOT_PATH . DIRECTORY_SEPARATOR . ltrim($file, '/\\');
     }
 
