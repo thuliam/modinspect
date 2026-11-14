@@ -47,11 +47,30 @@
     }
 
     /* ---------- reveals ---------- */
+    // inner pages: opt their main blocks into the same reveal without touching every view
+    if (!document.body.classList.contains('is-home')) {
+        var groups = ['.mi-page-heading', '.mi-product-hero', '.mi-filter-card', '.mi-card-grid > *', '.mi-compact-list li',
+            '.mi-product-summary-card', '.mi-price-answer-card', '.mi-method-card', '.mi-history-card', '.mi-confidence-card', '.mi-deal-cta', '.mi-empty-state', 'main fieldset'];
+        var late = [];
+        groups.forEach(function (sel) {
+            [].slice.call(document.querySelectorAll('main ' + sel + ', ' + sel)).forEach(function (el, i) {
+                if (el.classList.contains('reveal') || el.closest('.reveal')) { return; }
+                el.style.transition = 'none';                 // hide instantly, then let the entrance play
+                el.classList.add('reveal');
+                el.style.setProperty('--d', Math.min(i, 8) * 70 + 'ms');
+                late.push(el);
+            });
+        });
+        if (late.length) {
+            void document.body.offsetHeight;
+            requestAnimationFrame(function () { late.forEach(function (el) { el.style.transition = ''; }); });
+        }
+    }
     var reveals = [].slice.call(document.querySelectorAll('.reveal, .split'));
     if ('IntersectionObserver' in window) {
         var rio = new IntersectionObserver(function (entries) {
             entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); rio.unobserve(en.target); } });
-        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        }, { threshold: 0.05, rootMargin: '0px 0px -6% 0px' });
         reveals.forEach(function (el) { rio.observe(el); });
     } else {
         reveals.forEach(function (el) { el.classList.add('in'); });
