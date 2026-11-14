@@ -1,6 +1,8 @@
 # ModInspect UX/UI System and Brand CI
 
-Status: **PROPOSAL, READY_FOR_OWNER_REVIEW**. Nothing here is adopted until the owner picks a direction (gate G-3).
+Status: **DIRECTION CHOSEN (G-3, owner, 2026-11-14): C "Market Board" with A's range-bar answer block.** Sections 1-2 remain proposals; section 3 and 4 token values are to be re-derived for this hybrid at implementation (Sprint 2). Not yet built.
+
+Hybrid brief: take C's look (clean white page, warm grey text, friendly rounded controls, Noto Sans Thai) and replace C's yellow-highlighted price figure with A's answer block: the Q1 / median / Q3 range drawn as a horizontal band with a median tick, figures in tabular numerals, and the asking-price caveat, sample count, freshness and confidence directly under it. Guardrails: (1) the band is the one accent on the page and must reach 3:1 contrast against its track (a pale yellow on white will not, so the accent colour is chosen at implementation with a contrast check); (2) keep the neutral, evidence-led tone so C does not drift into a marketplace look; (3) status is text plus colour, never colour alone; (4) the preview numbers were placeholders, no figure is shown without approved REAL data and the honest no-data state stays.
 "CI" in this file means **Corporate Identity**. Engineering CI is `docs/CI_TEST_MATRIX.md`.
 Existing references: `design/` prototype screens, `docs/DESIGN_SYSTEM.md` (Admin, Concept-based), `docs/UX_UI_AUDIT.md` (older).
 
