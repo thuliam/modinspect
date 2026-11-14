@@ -1482,3 +1482,7 @@ html.motion-calm body.mb .vs-card::after { transition: none; }
 body.mb .footer-copy { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 body.mb .motion-toggle { padding: 6px 12px; border: 1px solid var(--mb-line); border-radius: var(--mb-radius-sm); background: transparent; color: var(--mb-soft); font-family: var(--mb-mono); font-size: 12px; font-weight: 400; }
 body.mb .motion-toggle:hover { filter: none; transform: none; border-color: rgba(255, 255, 255, .45); color: #fff; }
+
+/* IBM Plex Mono 2.5.0 (SIL OFL 1.1), self-hosted. See docs/THIRD_PARTY_LICENSES.md. */
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/IBMPlexMono-Regular.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/IBMPlexMono-Medium.woff2") format("woff2"); }
