@@ -1,6 +1,58 @@
 ﻿{
     "project":  "ModInspect",
-    "phase":  "Admin Imports owner-ready input workflow is PASS with isolated TEST end-to-end proof through Apache/PHP: template-derived TEST file, upload, dry run, validation summary, confirm gate, confirm import, and Review Queue entry; public frontend redesign remains paused",
+    "phase":  "Sprint 0 (Recovery and Baseline) complete; Sprint 1 (Operational vertical slice) started. Phase 3H-R1 still waiting for owner human review of REAL evidence; public redesign (Sprint 2) waiting for owner visual direction",
+    "rebaseline":  {
+                       "date":  "2026-11-14",
+                       "overall_status":  "PARTIAL",
+                       "branch":  "studio",
+                       "head":  "4f6713c",
+                       "committed_this_session":  false,
+                       "origin_main_head":  "4b84d19",
+                       "studio_vs_origin_main":  "0 ahead / 2 behind (CI-only commits), local remote-tracking refs",
+                       "regression":  "MODINSPECT_ENV_FILE=.env.testing php tests/run.php exit 0, 31 steps, isolated modinspect_test",
+                       "admin_tables":  "official DataTables 1.13.11 (npm sha512 verified); table source attribute is data-source-url",
+                       "vendor_assets":  "tracked and hash-pinned: public/assets/admin/vendor/MANIFEST.json, cli/admin_vendor_manifest.php --verify",
+                       "shared_dev_read_only_counts":  {
+                                                           "as_of":  "2026-11-14",
+                                                           "products":  41,
+                                                           "aliases":  108,
+                                                           "observations":  99,
+                                                           "real_pending":  88,
+                                                           "mock_test_pending":  11,
+                                                           "real_approved":  0,
+                                                           "price_indices_legacy_unavailable":  41
+                                                       },
+                       "scorecard":  {
+                                         "overall_auto_percent":  48.2,
+                                         "overall_owner_percent":  0,
+                                         "e1_operational":  81.3,
+                                         "e2_public_ux":  13.3,
+                                         "e3_trusted_data":  33.3,
+                                         "e4_security_qa_ci":  56.3,
+                                         "e5_docs":  100
+                                     },
+                       "owner_gates":  [
+                                           "G-1 commit/branch strategy",
+                                           "G-2 Admin re-UAT after library swap",
+                                           "G-3 public visual direction",
+                                           "G-4 REAL listing-level evidence review",
+                                           "G-5 rotate credentials in raw LINE export",
+                                           "G-6 legal direction for blacklist/fee/escrow",
+                                           "G-7 Font Awesome official download approval"
+                                       ],
+                       "docs":  [
+                                    "docs/PROJECT_STATUS.md",
+                                    "docs/SESSION_HANDOFF.md",
+                                    "docs/PRODUCT_REQUIREMENTS.md",
+                                    "docs/ROADMAP.md",
+                                    "docs/SPRINT_TRACKER.md",
+                                    "docs/UX_UI_SYSTEM.md",
+                                    "docs/DATA_RESEARCH_POLICY.md",
+                                    "docs/DECISION_LOG.md",
+                                    "docs/CI_TEST_MATRIX.md"
+                                ],
+                       "release":  "HOLD; no production deploy; no new paid service"
+                   },
     "implemented":  [
                         "Custom PHP MVC router/bootstrap",
                         "PDO database connection",

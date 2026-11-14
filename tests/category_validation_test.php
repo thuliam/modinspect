@@ -195,7 +195,9 @@ try {
     assert_category_validation($result['ok'] === true, 'Correction revalidation should allow approved values');
     assert_category_validation(!in_array('BUNDLE', $result['quality_flags'], true), 'Correction revalidation should remove BUNDLE flag');
 
-    $quality = json_decode((string)shell_exec('C:\\xampp8.1\\php\\php.exe ' . escapeshellarg(dirname(__DIR__) . '\\cli\\evaluate_validation_quality.php')), true);
+    // Use the running PHP binary (no machine-specific path) and force the isolated test env file so the child never reads shared DEV.
+    putenv('MODINSPECT_ENV_FILE=' . MODINSPECT_ENV_FILE);
+    $quality = json_decode((string)shell_exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'evaluate_validation_quality.php')), true);
     assert_category_validation(($quality['passes_targets'] ?? false) === true, 'Quality evaluator should pass Phase 3C targets');
 
     echo "Category validation test passed\n";

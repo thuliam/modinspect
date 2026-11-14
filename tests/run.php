@@ -29,6 +29,7 @@ $commands = [
     ['label' => 'tests/admin_import_workflow_test.php', 'args' => ['tests/admin_import_workflow_test.php']],
     ['label' => 'tests/seeded_mock_smoke_test.php', 'args' => ['tests/seeded_mock_smoke_test.php']],
     ['label' => 'tests/ux_structure_test.php', 'args' => ['tests/ux_structure_test.php']],
+    ['label' => 'tests/admin_assets_integrity_test.php', 'args' => ['tests/admin_assets_integrity_test.php']],
     ['label' => 'cli/evaluate_validation_quality.php', 'args' => ['cli/evaluate_validation_quality.php']],
     ['label' => 'cli/auth_status.php', 'args' => ['cli/auth_status.php']],
     ['label' => 'cli/price_confidence_report.php', 'args' => ['cli/price_confidence_report.php']],

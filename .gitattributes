@@ -1,0 +1,2 @@
+# Vendor assets are hash-pinned (MANIFEST.json): never convert line endings.
+public/assets/admin/vendor/** -text

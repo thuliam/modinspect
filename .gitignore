@@ -3,7 +3,10 @@
 !.env.example
 !.env.testing.example
 
-vendor/
+# Composer vendor dir only. The admin UI libraries under public/assets/admin/vendor MUST be tracked
+# (hash-pinned by MANIFEST.json) or a clean checkout has no working admin UI.
+/vendor/
+!public/assets/admin/vendor/
 node_modules/
 
 *.log

@@ -21,7 +21,7 @@
 <div class="card mi-table-card">
     <div class="card-header"><h2>Current Snapshots</h2></div>
     <div class="table-responsive">
-        <table id="indices-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/price-indices/data" data-filters="#indices-filters" data-page-length="25">
+        <table id="indices-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/price-indices/data" data-filters="#indices-filters" data-page-length="25">
             <thead>
                 <tr><th>Product</th><th>Price Type</th><th>Market Range</th><th>Median</th><th>Samples</th><th>Confidence</th><th>Freshness</th><th>Provenance</th><th>Snapshot Date</th><th>Action</th></tr>
             </thead>

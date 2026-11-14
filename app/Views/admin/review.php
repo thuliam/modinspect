@@ -79,7 +79,7 @@ foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') ==
 <div class="card mi-table-card">
     <div class="card-header"><h2>Review Records</h2></div>
     <div class="table-responsive">
-        <table id="review-table" class="table mi-admin-table mb-0 js-server-data-table mi-review-dt" data-ajax="<?= $base ?>/admin/review-queue/data" data-filters="#review-filters" data-page-length="25">
+        <table id="review-table" class="table mi-admin-table mb-0 js-server-data-table mi-review-dt" data-source-url="<?= $base ?>/admin/review-queue/data" data-filters="#review-filters" data-page-length="25">
             <thead><tr><th>Review Item</th></tr></thead>
             <tbody></tbody>
         </table>

@@ -27,7 +27,7 @@
 <div class="card mi-table-card">
     <div class="card-header"><h2>Market Observations</h2></div>
     <div class="table-responsive">
-        <table id="observations-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/price-observations/data" data-filters="#observations-filters" data-page-length="25">
+        <table id="observations-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/price-observations/data" data-filters="#observations-filters" data-page-length="25">
             <thead>
                 <tr><th>Observation</th><th>Product</th><th>Dataset</th><th>Provenance</th><th>Price Type</th><th>Price</th><th>Source</th><th>Review Status</th><th>Date</th><th>Action</th></tr>
             </thead>

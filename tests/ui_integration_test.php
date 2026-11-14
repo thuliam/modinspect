@@ -44,7 +44,8 @@ function assert_datatable(callable $callable, string $label, array $query = []):
 
 function datatable_payload(callable $callable, array $query = []): array
 {
-    $_GET = ['draw' => 9, 'start' => 0, 'length' => 10] + $query;
+    // array_replace so caller values (start/length/etc.) override the defaults; `defaults + $query` silently dropped them.
+    $_GET = array_replace(['draw' => 9, 'start' => 0, 'length' => 10], $query);
     $_POST = [];
     $json = render_ui($callable);
     $payload = json_decode($json, true);
@@ -144,6 +145,12 @@ try {
     assert_datatable(fn() => $adminController->observationsData(), 'Observations DataTable');
     assert_datatable(fn() => $adminController->reviewData(), 'Review Queue DataTable', ['dataset' => 'REAL', 'status' => 'pending']);
     assert_datatable(fn() => $adminController->indicesData(), 'Price Index DataTable');
+    // Freshness is stored as a percentage (0-100); the Admin table once multiplied it again and showed "8,500.0%".
+    $indexPayload = datatable_payload(fn() => $adminController->indicesData(), ['length' => 100]);
+    foreach ($indexPayload['data'] as $indexRow) {
+        $freshText = trim(strip_tags((string)$indexRow[6]));
+        assert_ui((bool)preg_match('/^\d{1,3}(\.\d)?%$/', $freshText) && (float)$freshText <= 100.0, "Price Index freshness out of range: {$freshText}");
+    }
     assert_datatable(fn() => $adminController->sourcesData(), 'Sources DataTable');
     assert_datatable(fn() => $adminController->jobsData(), 'Imports DataTable');
     assert_datatable(fn() => $adminController->articlesData(), 'Articles DataTable');

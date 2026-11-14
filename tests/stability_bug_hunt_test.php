@@ -6,6 +6,7 @@ require __DIR__ . '/bootstrap.php';
 use App\Core\Database;
 use App\Models\Dashboard;
 use App\Models\Product;
+use App\Services\Auth\AuthService;
 use App\Services\Pricing\PriceSnapshotService;
 
 function assert_stability(bool $condition, string $message): void
@@ -115,11 +116,26 @@ try {
     $rawXssId = (int)$db->lastInsertId();
     $db->prepare("INSERT INTO price_observations (raw_observation_id,product_id,price_type,asking_price,currency,condition_level,listing_type,is_deposit,is_defective,is_duplicate,evidence_level,classification_confidence,verified_status,observed_at) VALUES (:raw_id,:product_id,'asking',7500,'THB','good','single_item',0,0,0,4,99,'pending',NOW())")
         ->execute(['raw_id' => $rawXssId, 'product_id' => $productId]);
+    // Admin routes enforce RBAC server-side (Phase 3D); authenticate a throwaway admin inside this rolled-back transaction.
+    $stabilityAdmin = (new AuthService())->createUser('stability-admin-' . bin2hex(random_bytes(4)) . '@example.test', 'Stability Admin', 'CorrectHorseBattery99', 'admin');
+    assert_stability(($stabilityAdmin['ok'] ?? false) === true, 'Failed to create stability test admin');
+    $_SESSION[AuthService::SESSION_USER_ID] = (int)$stabilityAdmin['user_id'];
+    $_SESSION[AuthService::SESSION_LOGIN_AT] = time();
+    $_SESSION[AuthService::SESSION_LAST_SEEN_AT] = time();
     ob_start();
     (new App\Controllers\AdminController())->review();
     $reviewHtml = (string)ob_get_clean();
     assert_stability(!str_contains($reviewHtml, $xss), 'Review UI must escape raw listing titles');
-    assert_stability(str_contains($reviewHtml, htmlspecialchars($xss, ENT_QUOTES, 'UTF-8')), 'Review UI should render escaped listing title');
+
+    // The review queue is a server-side DataTable: listing titles are rendered by the data endpoint, not the page shell.
+    $_GET = ['draw' => 1, 'start' => 0, 'length' => 100, 'dataset' => 'ALL', 'status' => 'pending'];
+    ob_start();
+    (new App\Controllers\AdminController())->reviewData();
+    $reviewPayload = json_decode((string)ob_get_clean(), true);
+    assert_stability(is_array($reviewPayload) && isset($reviewPayload['data']), 'Review queue data endpoint must return a DataTables payload');
+    $reviewRows = json_encode($reviewPayload['data'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    assert_stability(!str_contains((string)$reviewRows, $xss), 'Review queue data endpoint must not emit raw listing HTML');
+    assert_stability(str_contains((string)$reviewRows, htmlspecialchars($xss, ENT_QUOTES, 'UTF-8')), 'Review queue data endpoint should render escaped listing title');
 
     echo "Stability bug hunt test passed\n";
     echo "Duplicate review replay blocked: yes\n";

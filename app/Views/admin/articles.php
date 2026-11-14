@@ -35,7 +35,7 @@
 <div class="card mi-table-card">
     <div class="card-header"><h2>Article Library</h2></div>
     <div class="table-responsive">
-        <table id="articles-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/articles/data" data-filters="#articles-filters" data-page-length="25">
+        <table id="articles-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/articles/data" data-filters="#articles-filters" data-page-length="25">
             <thead>
                 <tr><th>Article</th><th>Slug</th><th>Status</th><th>Author</th><th>Published</th><th>Updated</th><th>Action</th></tr>
             </thead>

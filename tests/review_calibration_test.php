@@ -174,7 +174,7 @@ try {
     $html = calibration_render(fn() => (new AdminController())->reviewAnalytics());
     assert_calibration(http_response_code() === 200, 'Review analytics route should render for reviewer');
     assert_calibration(str_contains($html, 'Review Analytics'), 'Admin analytics view missing title');
-    assert_calibration(str_contains($html, 'MOCK/TEST metrics are not live-market proof'), 'Admin analytics view missing fixture warning');
+    assert_calibration(str_contains($html, 'MOCK_TEST metrics are not live-market proof'), 'Admin analytics view missing fixture warning');
 
     echo "Review calibration test passed\n";
     echo "Sample size: {$report['sample_size']}\n";

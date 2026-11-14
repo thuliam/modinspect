@@ -398,7 +398,8 @@ final class AdminDataTableService
             $hasSnapshot ? '<strong>&#3647;' . number_format((float)$row['median']) . '</strong>' : '-',
             (int)($row['valid_sample_size'] ?? 0),
             '<span class="badge badge-light">' . $this->h(strtoupper((string)($row['confidence_label'] ?? 'insufficient'))) . '</span><small>Score ' . number_format((float)($row['confidence_score'] ?? 0), 2) . '</small>',
-            number_format((float)($row['fresh_sample_ratio'] ?? 0) * 100, 1) . '%',
+            // fresh_sample_ratio is already a percentage (0-100, see SnapshotConfidenceService); do not multiply again.
+            number_format((float)($row['fresh_sample_ratio'] ?? 0), 1) . '%',
             '<span class="badge badge-light">' . $this->h($row['provenance_status'] ?? 'legacy_unavailable') . '</span>',
             $this->h($row['last_calculated_at'] ?? '-'),
             '<a class="btn btn-sm btn-outline-primary" href="' . $base . '/price/' . $this->h($row['slug'] ?? '') . '" target="_blank" rel="noopener">Public</a>',

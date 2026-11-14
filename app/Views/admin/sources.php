@@ -37,7 +37,7 @@
 <div class="card mi-table-card">
     <div class="card-header"><h2>Source Health</h2></div>
     <div class="table-responsive">
-        <table id="sources-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/sources/data" data-filters="#sources-filters" data-page-length="25">
+        <table id="sources-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/sources/data" data-filters="#sources-filters" data-page-length="25">
             <thead>
                 <tr><th>Source</th><th>Provider</th><th>Enabled</th><th>Policy</th><th>Health</th><th>Last Activity</th><th>Incidents</th><th>Controls</th></tr>
             </thead>

@@ -189,7 +189,7 @@ $errorLabel=static fn(string $value): string => ucwords(strtolower(str_replace('
 <div class="card mi-table-card">
     <div class="card-header"><h2>Import / Collection Jobs</h2></div>
     <div class="table-responsive">
-        <table id="jobs-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-ajax="<?= $base ?>/admin/collector-jobs/data" data-filters="#jobs-filters" data-page-length="25">
+        <table id="jobs-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/collector-jobs/data" data-filters="#jobs-filters" data-page-length="25">
             <thead>
                 <tr><th>Import / Job</th><th>Product</th><th>Source</th><th>Rows</th><th>Status</th><th>Attempts</th><th>Created</th><th>Finished</th><th>Action</th></tr>
             </thead>

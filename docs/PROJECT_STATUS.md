@@ -1,5 +1,34 @@
 # ModInspect Project Status
 
+## 0. Canonical Current State (2026-11-14, Asia/Bangkok, Claude takeover baseline)
+
+**Overall: PARTIAL.** Engineering baseline is verified and repaired; public experience, owner acceptance and real data are not ready.
+No production deploy, no new paid service, no mutation of shared Cloud DEV.
+
+| Item | Verified state |
+|---|---|
+| Source of truth | Local working tree `C:\laragon\www\modinspect`, branch `studio`, HEAD `4f6713c`. `studio` = `office` = `4f6713c`; `origin/main` = `4b84d19` adds only 2 CI commits (463 lines, no app code). `studio` is 0 ahead / 2 behind `origin/main` (local remote-tracking refs, last fetch unknown) |
+| Uncommitted work | Modified: `.gitignore`, 9 admin views, `admin_header.php`, `admin.js`, `AdminDataTableService.php`, 5 tests, `tests/run.php`, `docs/*`, `context/project_state.json`. New: `cli/admin_vendor_manifest.php`, `tests/admin_assets_integrity_test.php`, `public/assets/admin/vendor/` (now trackable), 7 docs. Untracked and not mine: `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal, documentation only). **Nothing committed.** |
+| Runtime | Studio: Laragon Apache + PHP 8.3.33 (also 8.1, 8.4 installed), MySQL 8.4.3 local on 3306. `php` is not on the Git Bash PATH; use `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` |
+| Databases | Shared DEV (`.env`): MariaDB 10.6.28, 41 products, 108 aliases, 99 observations (88 REAL pending, 11 MOCK_TEST pending, **0 REAL approved**), 41 snapshots all `legacy_unavailable`, 70 audit rows (read-only counts, 2026-11-14). Isolated TEST (`.env.testing`): `127.0.0.1/modinspect_test`, used by every mutating test |
+| Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, 31 steps, after repairing 5 stale tests (see Decision Log DL-005) |
+| Admin tables | Official DataTables 1.13.11 restored (was a hand-written adapter); browser-verified on an isolated server. Owner re-UAT pending |
+| Assets | `public/assets/admin/vendor/` hash-pinned by `MANIFEST.json`; clean-checkout simulation passes (356 files, no `.env`) |
+| Public site | Honest no-data states verified; mobile header and several UX defects logged in `docs/UX_UI_SYSTEM.md` |
+| CI | GitHub workflows exist only on `origin/main`; not in this tree, not run here |
+| Release | HOLD. No staging, no production isolation |
+
+Defects fixed in this baseline: stale tests (array `+` dropping `start`, missing admin session, copy drift, hard-coded
+`C:\xampp8.1\php\php.exe`), vendor assets ignored by git, DataTables adapter vs official library, `data-ajax` init collision that
+dropped filters, Admin freshness displayed as 8,500% (unit was already a percentage).
+Not fixed (logged): Font Awesome `.html` font URLs (404), login icon glyph, public mobile header, internal footer text.
+
+Owner gates: G-1 commit strategy, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
+G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.
+
+Related: `docs/PRODUCT_REQUIREMENTS.md`, `docs/ROADMAP.md`, `docs/SPRINT_TRACKER.md`, `docs/UX_UI_SYSTEM.md`,
+`docs/DATA_RESEARCH_POLICY.md`, `docs/DECISION_LOG.md`, `docs/CI_TEST_MATRIX.md`.
+
 ## 1. Current Architecture Baseline
 
 - Current Blueprint version: `ModInspect_Master_Blueprint_v1.1.md`
@@ -40,9 +69,11 @@
 
 ## 2. Current Phase
 
-- Active milestone: Phase 3H-R1 - REAL Batch Title/Provenance Quality Gate
-- Status: HUMAN REVIEW CONSOLE ACCEPTED; TITLE DISPLAY NORMALIZATION FIXED; WAITING FOR OWNER HUMAN REVIEW
-- Why this milestone exists: Phase 4B public visual work is paused until enough reviewed REAL data exists to meaningfully inspect the public price experience.
+Reconciled 2026-11-14. The September phase notes below section 3 are **historical**; this section and section 0 are canonical.
+
+- Active program: **Sprint 0 (Recovery and Baseline) complete; Sprint 1 (Operational vertical slice) started.** See `docs/ROADMAP.md` and `docs/SPRINT_TRACKER.md`.
+- Phase 3H-R1 (REAL batch title/provenance quality gate) is **still waiting for the owner's human review**; 88 REAL observations remain pending and 0 are approved.
+- Phase 4B public visual work was never visually accepted; the public redesign is Sprint 2 and needs the owner to choose a direction (`docs/UX_UI_SYSTEM.md`).
 
 ## 3. Completed Milestones
 

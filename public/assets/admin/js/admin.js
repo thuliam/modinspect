@@ -54,29 +54,29 @@
             if ($.fn.DataTable.isDataTable(this)) return;
             var instance = $table.DataTable({
                 pageLength: parseInt($table.data('page-length') || 25, 10),
+                lengthMenu: [10, 25, 50, 100],
+                autoWidth: false,
                 processing: true,
                 serverSide: true,
                 order: [],
                 ajax: {
-                    url: $table.data('ajax'),
+                    url: $table.data('source-url'),
                     type: 'GET',
-                    data: function () { return activeFilters($table); }
+                    // Official DataTables uses a returned object INSTEAD of its own request params,
+                    // so extend `d` (draw/start/length/search/order) and return that. The server does
+                    // not read `columns`, so drop it to keep the query string short.
+                    data: function (d) {
+                        delete d.columns;
+                        return $.extend(d, activeFilters($table));
+                    }
                 }
             });
             serverTables.push({ table: $table, instance: instance });
         });
 
         function redrawServerTable(item) {
-            if (item.instance && typeof item.instance.draw === 'function') {
-                item.instance.start = 0;
-                item.instance.draw();
-                return;
-            }
-            var api = item.table.data('miniDataTable');
-            if (api && typeof api.draw === 'function') {
-                api.start = 0;
-                api.draw();
-            }
+            // draw() resets paging to the first page by default (resetPaging = true).
+            item.instance.draw();
         }
 
         $('.js-datatable-filters').on('submit', function (event) {

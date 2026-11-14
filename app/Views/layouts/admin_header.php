@@ -54,7 +54,7 @@ $groups = [
 <title><?= htmlspecialchars($title ?? 'Admin') ?> - <?= htmlspecialchars($config['name']) ?> Admin</title>
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css">
-<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/datatables/css/dataTables.bootstrap4.css">
+<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/datatables/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/css/admin.css">
 </head>
 <body class="mi-admin-body">
