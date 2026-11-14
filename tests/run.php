@@ -7,6 +7,7 @@ putenv('MODINSPECT_ENV_FILE=.env.testing');
 $commands = [
     ['label' => 'tests/syntax_check.php', 'args' => ['tests/syntax_check.php']],
     ['label' => 'tests/test_database_guard_test.php', 'args' => ['tests/test_database_guard_test.php']],
+    ['label' => 'tests/timezone_consistency_test.php', 'args' => ['tests/timezone_consistency_test.php']],
     ['label' => 'tests/phase0_pipeline_test.php', 'args' => ['tests/phase0_pipeline_test.php']],
     ['label' => 'tests/phase1_catalog_test.php', 'args' => ['tests/phase1_catalog_test.php']],
     ['label' => 'tests/coverage_planner_test.php', 'args' => ['tests/coverage_planner_test.php']],

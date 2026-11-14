@@ -20,6 +20,9 @@ final class Database
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
+            // PHP runs in Asia/Bangkok (bootstrap.php). Pin the DB session to the same offset so NOW(), TIMESTAMP columns and
+            // PHP-generated times agree even when the database server itself runs in UTC (CI, many hosts).
+            self::$pdo->exec("SET time_zone = '" . date('P') . "'");
         } catch (PDOException $e) {
             throw new RuntimeException('ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาตรวจสอบไฟล์ .env', 0, $e);
         }
