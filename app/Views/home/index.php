@@ -11,41 +11,49 @@ $tools = [
 <section class="mi-hero">
     <canvas id="cloud" aria-hidden="true"></canvas>
     <div class="container mi-hero-grid">
-        <div class="mi-hero-copy">
-            <span class="eyebrow">ModInspect</span>
-            <h1><span class="nowrap">เช็กราคา</span> <span class="nowrap">เช็กสภาพ</span> <span class="nowrap">ก่อนซื้อขายคอมมือสอง</span></h1>
-            <p class="lead">ค้นหารุ่น CPU/GPU มือสอง ดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และใช้ Deal Checker เปรียบเทียบราคาที่คุณเจออย่างเป็นกลาง</p>
-            <form class="mi-search" action="<?= $base ?>/price" method="get">
-                <label for="home-search">ค้นหารุ่นสินค้า</label>
-                <div>
-                    <input id="home-search" name="q" placeholder="เช่น Ryzen 7 5700X3D หรือ RTX 3070" required>
-                    <button type="submit">เช็กราคา</button>
+        <div class="mi-hero-copy" data-hero>
+            <span class="eyebrow reveal">ModInspect</span>
+            <h1 class="split"><span class="ln"><span>เช็กราคา เช็กสภาพ</span></span><span class="ln"><span>ก่อนซื้อขายคอมมือสอง</span></span></h1>
+            <div class="mi-hero-meta">
+                <p class="lead reveal" style="--d:420ms">ค้นหารุ่น CPU/GPU มือสอง ดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และใช้ Deal Checker เปรียบเทียบราคาที่คุณเจออย่างเป็นกลาง</p>
+                <div class="mi-hero-act reveal" style="--d:560ms">
+                    <form class="mi-search" action="<?= $base ?>/price" method="get">
+                        <label for="home-search">ค้นหารุ่นสินค้า</label>
+                        <div>
+                            <input id="home-search" name="q" placeholder="เช่น Ryzen 7 5700X3D หรือ RTX 3070" required>
+                            <button type="submit">เช็กราคา</button>
+                        </div>
+                    </form>
+                    <div class="mi-quick-links" aria-label="Search examples">
+                        <span>ตัวอย่าง:</span>
+                        <a href="<?= $base ?>/price?q=5700X3D">5700X3D</a>
+                        <a href="<?= $base ?>/price?q=RTX+3070">RTX 3070</a>
+                        <a href="<?= $base ?>/price?q=RX+6700">RX 6700</a>
+                    </div>
+                    <p class="mi-data-note">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
                 </div>
-            </form>
-            <div class="mi-quick-links" aria-label="Search examples">
-                <span>ตัวอย่าง:</span>
-                <a href="<?= $base ?>/price?q=5700X3D">5700X3D</a>
-                <a href="<?= $base ?>/price?q=RTX+3070">RTX 3070</a>
-                <a href="<?= $base ?>/price?q=RX+6700">RX 6700</a>
             </div>
-            <p class="mi-data-note">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
         </div>
     </div>
+    <div class="mi-scrollcue" aria-hidden="true"><span>เลื่อนลง</span><i></i></div>
 </section>
 
 <section class="vs-services" aria-labelledby="vs-tools-title">
     <div class="container vs-services-grid">
         <div class="vs-intro">
-            <h2 id="vs-tools-title" class="reveal">เช็กราคา ก่อนตัดสินใจซื้อขาย</h2>
-            <p class="vs-bar reveal" style="--d:120ms">เริ่มจากรุ่นที่สนใจ แล้วดูช่วงราคาที่พบ ที่มาของตัวเลข และความน่าเชื่อถือ ไม่มีราคาลอยที่อธิบายที่มาไม่ได้</p>
+            <h2 id="vs-tools-title" class="split"><span class="ln"><span>เช็กราคา</span></span><span class="ln"><span>ก่อนตัดสินใจซื้อขาย</span></span></h2>
+            <p class="vs-bar reveal" style="--d:200ms">เริ่มจากรุ่นที่สนใจ แล้วดูช่วงราคาที่พบ ที่มาของตัวเลข และความน่าเชื่อถือ ไม่มีราคาลอยที่อธิบายที่มาไม่ได้</p>
+            <a class="vs-more reveal" style="--d:320ms" href="<?= $base ?>/price"><span>เปิดดูราคาทั้งหมด</span><i aria-hidden="true">→</i></a>
         </div>
-        <div class="vs-cards" data-parallax>
+        <div class="vs-cards">
             <?php foreach ($tools as $i => $tool): ?>
-                <a class="vs-card reveal" style="--d:<?= $i * 90 ?>ms" href="<?= $base . $tool['href'] ?>">
-                    <span class="vs-ico"><?= $tool['icon'] ?></span>
-                    <h3><?= htmlspecialchars($tool['title']) ?></h3>
-                    <p><?= htmlspecialchars($tool['text']) ?></p>
-                </a>
+                <div class="vs-cell">
+                    <a class="vs-card" href="<?= $base . $tool['href'] ?>">
+                        <span class="vs-top"><span class="vs-ico"><?= $tool['icon'] ?></span><span class="vs-n"><?= sprintf('%02d', $i + 1) ?></span></span>
+                        <h3><?= htmlspecialchars($tool['title']) ?></h3>
+                        <p><?= htmlspecialchars($tool['text']) ?></p>
+                    </a>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>
@@ -76,8 +84,8 @@ $tools = [
 
 <section class="vs-statement">
     <div class="container vs-two">
-        <h2 class="reveal">ค้นหา.<br>เทียบ.<br>ตัดสินใจ.</h2>
-        <div class="reveal" style="--d:120ms">
+        <h2 class="split"><span class="ln"><span>ค้นหา.</span></span><span class="ln"><span>เทียบ.</span></span><span class="ln"><span>ตัดสินใจ.</span></span></h2>
+        <div class="reveal" style="--d:160ms">
             <p class="vs-bar">ราคาที่แสดงคือราคาประกาศมือสองที่ผ่านการคัดกรอง ไม่ใช่ราคาปิดดีล ต้องดูสภาพ ประกัน และอุปกรณ์ประกอบเองเสมอ</p>
             <ol class="vs-steps">
                 <li><b>ค้นหารุ่น</b><span>เริ่มจากชื่อรุ่นหรือรหัสยอดนิยม เช่น 5700X3D, RTX 3070</span></li>
@@ -94,9 +102,9 @@ $tools = [
         <h2 id="vs-num-title" class="reveal">ตัวเลขของระบบวันนี้</h2>
         <div class="vs-num-grid">
             <div class="reveal"><b data-count="<?= (int) $counts['models'] ?>"><?= (int) $counts['models'] ?></b><span>รุ่นในฐานข้อมูล</span></div>
-            <div class="reveal" style="--d:90ms"><b data-count="<?= (int) $counts['aliases'] ?>"><?= (int) $counts['aliases'] ?></b><span>ชื่อเรียกที่ระบบรู้จัก</span></div>
-            <div class="reveal" style="--d:180ms"><b data-count="<?= (int) $counts['categories'] ?>"><?= (int) $counts['categories'] ?></b><span>หมวดสินค้า</span></div>
-            <div class="reveal" style="--d:270ms"><b data-count="<?= (int) $counts['priced'] ?>"><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีราคาผ่านการตรวจสอบ</span></div>
+            <div class="reveal" style="--d:100ms"><b data-count="<?= (int) $counts['aliases'] ?>"><?= (int) $counts['aliases'] ?></b><span>ชื่อเรียกที่ระบบรู้จัก</span></div>
+            <div class="reveal" style="--d:200ms"><b data-count="<?= (int) $counts['categories'] ?>"><?= (int) $counts['categories'] ?></b><span>หมวดสินค้า</span></div>
+            <div class="reveal" style="--d:300ms"><b data-count="<?= (int) $counts['priced'] ?>"><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีราคาผ่านการตรวจสอบ</span></div>
         </div>
         <p class="vs-num-note reveal">ตัวเลขนับจากฐานข้อมูลจริง ไม่ปัดขึ้น ถ้ายังเป็น 0 คือยังไม่มีข้อมูลที่ผ่านการตรวจสอบพอจะแสดงราคา</p>
     </div>
@@ -104,11 +112,11 @@ $tools = [
 
 <section class="vs-cta">
     <div class="container vs-two">
-        <div class="reveal">
-            <span class="eyebrow">Deal Checker</span>
-            <h2>เจอราคาประกาศแล้วไม่แน่ใจ?</h2>
+        <div>
+            <span class="eyebrow reveal">Deal Checker</span>
+            <h2 class="split"><span class="ln"><span>เจอราคาประกาศ</span></span><span class="ln"><span>แล้วไม่แน่ใจ?</span></span></h2>
         </div>
-        <div class="reveal" style="--d:120ms">
+        <div class="reveal" style="--d:160ms">
             <p class="vs-bar">เปรียบเทียบราคาที่คุณเจอกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p>
             <a class="button" href="<?= $base ?>/deal-checker">เปิด Deal Checker</a>
         </div>
