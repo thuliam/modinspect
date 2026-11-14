@@ -331,6 +331,11 @@ final class AdminController extends Controller {
             $dataset=strtolower((string)($_POST['dataset'] ?? 'test')) === 'real' ? 'real' : 'test';
             $limit=max(1,min(1000,(int)($_POST['limit'] ?? 100)));
             $file=$this->storedUploadPath($_FILES['evidence_file'] ?? null);
+            if($file==='' && (int)($_FILES['evidence_file']['size'] ?? 0) > OfflineEvidenceImportService::MAX_FILE_BYTES){
+                unset($_SESSION['admin_import_pending']);
+                $this->flash('danger','The file is larger than '.(OfflineEvidenceImportService::MAX_FILE_BYTES/1048576).' MB. Split it into smaller files.');
+                $this->redirect('/admin/collector-jobs');
+            }
             if($file===''){
                 unset($_SESSION['admin_import_pending']);
                 $this->flash('danger','Upload a CSV or JSON evidence file.');
@@ -364,6 +369,7 @@ final class AdminController extends Controller {
         $name=(string)($file['name'] ?? '');
         $ext=strtolower(pathinfo($name,PATHINFO_EXTENSION));
         if(!in_array($ext,['csv','json'],true)) return '';
+        if((int)($file['size'] ?? 0) > OfflineEvidenceImportService::MAX_FILE_BYTES) return ''; // same cap the importer enforces, checked before the file is stored
         $dir=ROOT_PATH.'/storage/import_uploads';
         if(!is_dir($dir)) mkdir($dir,0775,true);
         $target=$dir.'/admin-import-'.date('YmdHis').'-'.bin2hex(random_bytes(4)).'.'.$ext;

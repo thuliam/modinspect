@@ -65,8 +65,8 @@ function admin_import_temp_csv(array $record): string
     if ($out === false) {
         throw new RuntimeException('Cannot write import workflow fixture');
     }
-    fputcsv($out, ImportFieldContract::CSV_HEADERS);
-    fputcsv($out, array_map(static fn(string $header): string => (string)($record[$header] ?? ''), ImportFieldContract::CSV_HEADERS));
+    fputcsv($out, ImportFieldContract::CSV_HEADERS, ',', '"', '\\');
+    fputcsv($out, array_map(static fn(string $header): string => (string)($record[$header] ?? ''), ImportFieldContract::CSV_HEADERS), ',', '"', '\\');
     fclose($out);
     return $path;
 }
@@ -174,9 +174,9 @@ try {
     if ($out === false) {
         throw new RuntimeException('Cannot write multi-row import workflow fixture');
     }
-    fputcsv($out, ImportFieldContract::CSV_HEADERS);
+    fputcsv($out, ImportFieldContract::CSV_HEADERS, ',', '"', '\\');
     foreach ($records as $row) {
-        fputcsv($out, array_map(static fn(string $header): string => (string)($row[$header] ?? ''), ImportFieldContract::CSV_HEADERS));
+        fputcsv($out, array_map(static fn(string $header): string => (string)($row[$header] ?? ''), ImportFieldContract::CSV_HEADERS), ',', '"', '\\');
     }
     fclose($out);
 

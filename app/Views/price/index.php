@@ -30,9 +30,7 @@
     </div>
 
     <?php if ($products): ?>
-        <div class="cards mi-card-grid">
-            <?php foreach ($products as $product) require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
-        </div>
+        <?php require ROOT_PATH . '/app/Views/components/product-list.php'; ?>
     <?php else: ?>
         <div class="mi-empty-state">
             <h2>ไม่พบสินค้าที่ค้นหา</h2>

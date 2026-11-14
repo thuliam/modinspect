@@ -15,8 +15,9 @@ Everything from section 1 down is the **September OFFICE to STUDIO handoff and i
   - Browser testing: run `php -S 127.0.0.1:8099 -t public` with `MODINSPECT_ENV_FILE` pointing at an env file whose DB is the local test DB **and** whose `APP_URL` is `http://127.0.0.1:8099` (form actions and redirects use `APP_URL`; the default `.env.testing` URL sends logins to the Apache site on port 80). Create a throwaway admin in the test DB only.
 - Admin tables: official DataTables 1.13.11. Table source attribute is `data-source-url` (not `data-ajax`); `ajax.data` must extend the request.
 - Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction (`docs/UX_UI_SYSTEM.md`), G-4 REAL evidence review (88 pending, 0 approved), G-5 rotate credentials from the raw LINE export, G-6 legal direction (blacklist/fee/escrow stay out of scope), G-7 Font Awesome download approval.
-- Known not-done: Font Awesome `.html` font 404 (needs G-7 approval), login icon glyph, public mobile header, internal footer text, stale 25-column `examples/import/market_evidence_template.csv`, Action columns still sortable, `ci-tests.yml` never run on GitHub, no positive public price read (needs owner-approved REAL evidence).
+- Known not-done: Font Awesome `.html` font URLs (404, needs G-7), eligibility rule copied in ~10 places (S1-13), no runtime probe of `/.env` 403 (S1-14), no public POST rate limiting (S1-15), tablet header two rows tall, `ci-tests.yml` PHP matrix not yet run on GitHub, no positive public price read (needs owner-approved REAL evidence).
 - A read-only count query was run once against shared DEV (SELECT only, in a READ ONLY transaction). One evaluator CLI (`cli/evaluate_validation_quality.php`, SELECT-only) also ran against DEV by mistake of omitted env selection; it performs no writes.
+- 2026-11-14 security review: the project root had no `.htaccess`, so `.env`, `.git`, `*.sql` were downloadable on the Studio Apache; fixed by a root `.htaccess` (see `docs/SECURITY_REVIEW_2026-11-14.md`). Test PHP 8.1/8.4 locally with a temporary `php.ini` via `PHPRC` (Laragon enables no DB extension for them).
 
 ## 1. Handoff Context
 

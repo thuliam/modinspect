@@ -199,7 +199,15 @@ try {
 
     $priceHtml = render_ui(fn() => (new PriceController())->show('amd-ryzen-7-5700x3d'));
     assert_ui(str_contains($priceHtml, 'ข้อมูลตลาดยังไม่เพียงพอ') || str_contains($priceHtml, 'ราคาตลาดโดยประมาณ'), 'Price detail missing valid snapshot or empty state');
-    assert_ui(str_contains($priceHtml, 'กำลังพัฒนา'), 'Price detail missing disabled action labels');
+    // Public pages must not advertise unfinished modules, expose internal policy text or show the signed-in staff identity.
+    assert_ui(!str_contains($priceHtml, 'กำลังพัฒนา'), 'Public pages must not advertise unfinished modules');
+    assert_ui(!str_contains($priceHtml, 'External spend target'), 'Internal policy text must not appear on public pages');
+    assert_ui(!str_contains($priceHtml, 'UI Admin') && !str_contains($priceHtml, '/logout'), 'Public pages must not show the staff identity or a logout form');
+
+    // Products without an eligible snapshot are listed compactly, never as dozens of identical empty cards.
+    $listHtml = render_ui(fn() => (new PriceController())->index());
+    assert_ui(str_contains($listHtml, 'mi-compact-list'), 'Price index should list products without a snapshot compactly');
+    assert_ui(substr_count($listHtml, 'class="card product-card') <= 5, 'Price index must not render a full empty card per product');
 
     echo "UI integration test passed\n";
     echo "GET routes rendered: " . count($routes) . "\n";

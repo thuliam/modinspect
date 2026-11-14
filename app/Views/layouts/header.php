@@ -1,5 +1,4 @@
 <?php
-use App\Core\Csrf;
 use App\Services\Auth\AuthService;
 
 $base = $config['base_url'];
@@ -26,17 +25,12 @@ $authUser = $auth_user ?? (new AuthService())->currentUser();
             <a href="<?= $base ?>/deal-checker">Deal Checker</a>
             <a href="<?= $base ?>/methodology">วิธีคำนวณ</a>
         </nav>
-        <div class="nav-actions">
-            <?php if ($authUser): ?>
-                <span class="login-button"><?= htmlspecialchars($authUser['name']) ?> · <?= htmlspecialchars($authUser['role']) ?></span>
-                <form method="post" action="<?= $base ?>/logout" class="inline-form">
-                    <input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                    <button type="submit" class="ghost-button">ออกจากระบบ</button>
-                </form>
-            <?php else: ?>
-                <a class="login-button" href="<?= $base ?>/login">Admin</a>
-            <?php endif; ?>
-        </div>
+        <?php if ($authUser): ?>
+            <?php // Staff convenience only: no name/role chip and no logout form on the public site. Visitors never see an Admin entry. ?>
+            <div class="nav-actions">
+                <a class="login-button" href="<?= $base ?>/admin">หลังบ้าน</a>
+            </div>
+        <?php endif; ?>
     </div>
 </header>
 <main>

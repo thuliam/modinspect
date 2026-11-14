@@ -2,7 +2,7 @@
     <div class="container mi-hero-grid">
         <div class="mi-hero-copy">
             <span class="eyebrow">ModInspect</span>
-            <h1>เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง</h1>
+            <h1><span class="nowrap">เช็กราคา</span> <span class="nowrap">เช็กสภาพ</span> <span class="nowrap">ก่อนซื้อขายคอมมือสอง</span></h1>
             <p class="lead">ค้นหารุ่น CPU/GPU มือสอง ดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และใช้ Deal Checker เปรียบเทียบราคาที่คุณเจออย่างเป็นกลาง</p>
             <form class="mi-search" action="<?= $base ?>/price" method="get">
                 <label for="home-search">ค้นหารุ่นสินค้า</label>
@@ -32,9 +32,7 @@
         <a class="button ghost" href="<?= $base ?>/price">ดูทั้งหมด</a>
     </div>
     <?php if ($products): ?>
-        <div class="cards mi-card-grid">
-            <?php foreach ($products as $product) require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
-        </div>
+        <?php require ROOT_PATH . '/app/Views/components/product-list.php'; ?>
     <?php else: ?>
         <div class="mi-empty-state">
             <h3>ข้อมูลตลาดยังไม่เพียงพอ</h3>

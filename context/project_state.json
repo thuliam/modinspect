@@ -4,13 +4,13 @@
     "rebaseline":  {
                        "date":  "2026-11-14",
                        "overall_status":  "PARTIAL",
-                       "sprint1_engineering_slice":  "done: checkpoint commit, CI workflow authored (never run), HTTP E2E test, public price gate leak fixed (DL-007)",
+                       "sprint1_engineering_slice":  "done + security review: .htaccess exposure fix, headers/error handling, PHP 8.1/8.3/8.4 verified, public defects fixed; CI matrix not yet run on GitHub",
                        "branch":  "checkpoint/claude-baseline-2026-11-14 (pushed to origin, no PR); studio and office untouched at 4f6713c",
                        "baseline_commit":  "5b05a31 (merge of origin/main: 0e48e69; later Sprint 1 commit follows)",
                        "committed_this_session":  true,
                        "origin_main_head":  "4b84d19",
                        "studio_vs_origin_main":  "studio 0 ahead / 2 behind origin/main (CI-only); origin/main merged into the checkpoint branch locally",
-                       "regression":  "MODINSPECT_ENV_FILE=.env.testing php tests/run.php exit 0, 32 steps (incl. real-HTTP E2E), run twice and from a fresh DB, isolated modinspect_test",
+                       "regression":  "MODINSPECT_ENV_FILE=.env.testing php tests/run.php exit 0, 35 steps on PHP 8.1, 8.3, 8.4 (zero deprecations), isolated modinspect_test",
                        "admin_tables":  "official DataTables 1.13.11 (npm sha512 verified); table source attribute is data-source-url",
                        "vendor_assets":  "tracked and hash-pinned: public/assets/admin/vendor/MANIFEST.json, cli/admin_vendor_manifest.php --verify",
                        "shared_dev_read_only_counts":  {
@@ -24,12 +24,12 @@
                                                            "price_indices_legacy_unavailable":  41
                                                        },
                        "scorecard":  {
-                                         "overall_auto_percent":  55.7,
+                                         "overall_auto_percent":  64.6,
                                          "overall_owner_percent":  0,
                                          "e1_operational":  100,
-                                         "e2_public_ux":  13.3,
+                                         "e2_public_ux":  31.3,
                                          "e3_trusted_data":  44.4,
-                                         "e4_security_qa_ci":  56.3,
+                                         "e4_security_qa_ci":  78.3,
                                          "e5_docs":  100
                                      },
                        "owner_gates":  [

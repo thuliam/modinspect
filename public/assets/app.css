@@ -3,8 +3,8 @@
 @media(max-width:800px){.container{padding-left:16px;padding-right:16px}.site-header{height:auto;padding:13px 0}.nav,.footer-grid{align-items:flex-start}.nav nav{gap:12px;font-size:.9rem}.hero{padding:45px 0}.hero-grid,.detail-grid,.cards{grid-template-columns:1fr}.hero-card{margin-top:10px}.section,.page{padding-top:42px;padding-bottom:42px}.detail-grid{gap:20px}.sticky{position:static}.two{grid-template-columns:1fr}.filters{flex-wrap:wrap}.stats{grid-template-columns:1fr 1fr}.footer-grid{flex-direction:column}.check{display:flex!important;margin:8px 0}}
 .compare-grid,.zone-grid,.kpi-grid,.source-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:26px 0}.compare-grid dl,.source-grid dl{display:grid;grid-template-columns:1fr 1fr;margin:20px 0}.compare-grid dt,.source-grid dt{color:var(--muted)}.compare-grid dd,.source-grid dd{text-align:right;margin:0}.ghost{background:#fff;color:var(--indigo);border-color:#c7d2fe}.builder-layout,.article-grid,.admin-grid{display:grid;grid-template-columns:minmax(280px,1fr) minmax(0,2fr);gap:22px;margin-top:28px;align-items:start}.build-item,.total,.health-row,.queue-row{display:flex;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.build-item div{display:flex;flex-direction:column}.total{font-size:1.15rem;margin-top:12px}.zone-grid{grid-template-columns:repeat(3,1fr)}.zone-grid .featured{border:2px solid var(--indigo)}.filter-strip{display:flex;gap:12px;align-items:end;margin:24px 0}.filter-strip label{width:100%}.dashboard-actions{display:flex;gap:10px;margin:20px 0}.kpi-grid .card{display:flex;flex-direction:column}.kpi-grid b{font-size:1.8rem;font-variant-numeric:tabular-nums}.table-card{padding:0;overflow:auto;margin-top:24px}.table-card h2{padding:22px 22px 0}table{border-collapse:collapse;width:100%;min-width:760px}th,td{text-align:left;padding:14px 18px;border-bottom:1px solid var(--line);vertical-align:middle;font-variant-numeric:tabular-nums}th{background:#f2f4f6;color:#45464d;font:500 12px var(--font-mono);text-transform:uppercase}td small{display:block;color:var(--muted)}code{font-family:var(--font-mono);font-size:.85rem}.admin-page{max-width:1440px}.admin-nav{display:flex;gap:4px;overflow:auto;border-bottom:1px solid var(--line);margin:-24px 0 42px;padding-bottom:10px}.admin-nav a{white-space:nowrap;padding:7px 10px;border-radius:4px;font-size:.88rem}.admin-nav a:hover{background:#e1e0ff;color:#2f2ebe}.meter{height:8px;background:#e2e8f0;margin-bottom:18px}.meter i{display:block;height:100%;background:var(--indigo)}.review-split{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}.evidence-placeholder{height:320px;background:#e6e8ea;display:grid;place-items:center;color:var(--muted);margin:14px 0}.danger{background:#ba1a1a;border-color:#ba1a1a}.status-dot{width:11px;height:11px;border-radius:50%;background:#94a3b8}.status-dot.ok{background:var(--teal)}.empty-cell{text-align:center;color:var(--muted);padding:44px}.small{padding:6px 9px;font-size:.8rem}
 .footer-links{display:grid;grid-template-columns:repeat(2,auto);gap:4px 24px}.footer-links a{color:#bec6e0}.footer-links a:hover{color:#fff}
-@media(max-width:1000px){.compare-grid,.kpi-grid,.source-grid{grid-template-columns:repeat(2,1fr)}.nav nav a:nth-last-child(-n+2){display:none}}
-@media(max-width:800px){.builder-layout,.article-grid,.admin-grid,.review-split,.zone-grid{grid-template-columns:1fr}.compare-grid,.kpi-grid,.source-grid{grid-template-columns:1fr}.filter-strip{flex-direction:column;align-items:stretch}.admin-nav{margin-top:0}.nav nav a:nth-child(n+3){display:none}}
+@media(max-width:1000px){.compare-grid,.kpi-grid,.source-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:800px){.builder-layout,.article-grid,.admin-grid,.review-split,.zone-grid{grid-template-columns:1fr}.compare-grid,.kpi-grid,.source-grid{grid-template-columns:1fr}.filter-strip{flex-direction:column;align-items:stretch}.admin-nav{margin-top:0}}
 
 /* Draft parity layer based on the supplied screen references. */
 :root{--draft-bg:#f5f7fa;--draft-navy:#111a2d;--draft-indigo:#4b4cdd}
@@ -1151,4 +1151,57 @@ body {
         margin-left: 0;
         margin-right: 0;
     }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+   Public defect fixes (2026-11-14). Layout/behaviour only: no new colours, fonts or brand decisions (gate G-3 is open).
+   --------------------------------------------------------------------------------------------------------------- */
+.nowrap { white-space: nowrap; }
+
+h1, h2, .mi-hero-copy .lead { text-wrap: balance; }
+
+.mi-pending-block { margin-top: 8px; }
+
+.mi-pending-title { font-size: 1.1rem; margin: 28px 0 12px; }
+
+.mi-pending-note { margin: 0 0 14px; color: #475569; max-width: 62ch; }
+
+.mi-compact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    border: 1px solid #dbe3ea;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.mi-compact-list li {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px 16px;
+    padding: 12px 16px;
+    border-top: 1px solid #e5eaf0;
+}
+
+.mi-compact-list li:first-child { border-top: 0; }
+
+.mi-compact-list a { font-weight: 600; overflow-wrap: anywhere; }
+
+.mi-compact-list small { color: #64748b; }
+
+@media (max-width: 800px) {
+    .mi-compact-list li { grid-template-columns: minmax(0, 1fr) auto; }
+    .mi-compact-list small { grid-column: 1; grid-row: 2; }
+    .mi-compact-list .price-status-badge { grid-column: 2; grid-row: 1 / span 2; }
+}
+
+@media (max-width: 800px) {
+    /* The header was pinned to 56px, which clipped every nav link after the first one. Let it grow to two rows. */
+    .site-header { height: auto; }
+    .site-header .public-nav { height: auto; flex-wrap: wrap; row-gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+    .site-header .public-nav nav { flex: 1 0 100%; }
+    /* Keep the headline phrases whole but scale so the longest one always fits (375px -> ~27.8px, 320px -> ~23.7px). */
+    .mi-hero-copy h1 { font-size: clamp(1.35rem, 7.4vw, 2.2rem); }
 }

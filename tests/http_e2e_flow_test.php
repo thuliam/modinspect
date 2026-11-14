@@ -117,8 +117,8 @@ try {
     // 2. Build a contract-valid TEST CSV with unique identities.
     $suffix = bin2hex(random_bytes(4));
     $template = fopen($root . '/examples/import/market_evidence_template.csv', 'rb');
-    $headers = fgetcsv($template, 0, ',', '"', '');
-    $templateRow = array_combine($headers, fgetcsv($template, 0, ',', '"', ''));
+    $headers = fgetcsv($template, 0, ',', '"', '\\');
+    $templateRow = array_combine($headers, fgetcsv($template, 0, ',', '"', '\\'));
     fclose($template);
     assert_e2e($headers === ImportFieldContract::CSV_HEADERS, 'examples/import CSV sample must match the importer contract exactly (regenerate it from ImportFieldContract::csvTemplate())');
 
@@ -153,9 +153,9 @@ try {
     }
     $csvPath = $dir . "/e2e-http-{$suffix}.csv";
     $out = fopen($csvPath, 'wb');
-    fputcsv($out, ImportFieldContract::CSV_HEADERS, ',', '"', '');
+    fputcsv($out, ImportFieldContract::CSV_HEADERS, ',', '"', '\\');
     foreach ($rows as $row) {
-        fputcsv($out, array_map(static fn(string $h): string => (string)($row[$h] ?? ''), ImportFieldContract::CSV_HEADERS), ',', '"', '');
+        fputcsv($out, array_map(static fn(string $h): string => (string)($row[$h] ?? ''), ImportFieldContract::CSV_HEADERS), ',', '"', '\\');
     }
     fclose($out);
 

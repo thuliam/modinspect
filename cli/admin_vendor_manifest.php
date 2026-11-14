@@ -91,6 +91,11 @@ if (!is_array($manifest) || !isset($manifest['components'])) {
 
 $listed = [];
 foreach ($manifest['components'] as $name => $component) {
+    foreach (['version', 'license', 'source', 'provenance'] as $required) {
+        if (trim((string)($component[$required] ?? '')) === '') {
+            $errors[] = "component {$name} has no {$required} recorded (licence inventory incomplete)";
+        }
+    }
     foreach (($component['files'] ?? []) as $relative => $hash) {
         $listed[$relative] = true;
         $path = $vendorDir . '/' . $relative;

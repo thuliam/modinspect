@@ -123,9 +123,9 @@ final class ImportFieldContract
         if ($out === false) {
             return '';
         }
-        fputcsv($out, self::CSV_HEADERS);
+        fputcsv($out, self::CSV_HEADERS, ',', '"', '\\');
         $row = self::exampleRecord();
-        fputcsv($out, array_map(static fn(string $header): string => $row[$header] ?? '', self::CSV_HEADERS));
+        fputcsv($out, array_map(static fn(string $header): string => $row[$header] ?? '', self::CSV_HEADERS), ',', '"', '\\');
         rewind($out);
         $contents = stream_get_contents($out);
         fclose($out);

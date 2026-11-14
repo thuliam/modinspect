@@ -33,7 +33,9 @@ Always set `MODINSPECT_ENV_FILE=.env.testing` for any CLI that touches the DB. W
 | Public visual/responsive/accessibility review | manual | local | PARTIAL (Home, Detail, mobile Home); NOT_RUN for contrast/keyboard |
 | Clean-checkout asset check | copy of `git ls-files -c -o --exclude-standard` into an empty folder, then manifest verify and PHP lint | local | PASS (356 files, no `.env`) |
 | GitHub Actions: read-only PHP/FTPS preflight, offline package dry-run | `.github/workflows/*` | merged into branch `checkpoint/claude-baseline-2026-11-14` | NOT_RUN (branch pushed; needs a PR) |
-| GitHub Actions: tests + vendor guard on MariaDB 10.6 service | `.github/workflows/ci-tests.yml` | same branch | AUTHORED, NOT RUN. YAML not linted (no Python/YAML tool locally). Equivalent local path (fresh `bootstrap_test_db.php --fresh` + suite) is green |
+| GitHub Actions: PHP 8.1/8.3/8.4 matrix + MariaDB 10.6 + secret scan + vendor/licence guard | `.github/workflows/ci-tests.yml` | same branch | 8.3 leg GREEN on PR #4 (before the matrix); the 8.1/8.4 legs are NOT_RUN on GitHub. All three versions are green locally (35 steps) |
+| Secret scan (8 rules, values never printed) with self-test | `cli/secret_scan.php`, `tests/secret_scan_test.php` | local + CI | PASS |
+| Security regression: root `.htaccess`, RBAC + CSRF on 57 routes, headers, upload cap, hostile input | `tests/security_hardening_test.php` | local isolated DB | PASS |
 | Staging environment, backup/rollback rehearsal | n/a | none | NOT_BUILT |
 | Production deploy | n/a | none | **HOLD**, owner GO required |
 

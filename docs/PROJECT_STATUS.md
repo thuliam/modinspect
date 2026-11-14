@@ -11,12 +11,13 @@ No production deploy, no new paid service, no mutation of shared Cloud DEV.
 | Uncommitted work | Only the owner-owned untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal) (everything of mine is committed and pushed to the checkpoint branch) |
 | Runtime | Studio: Laragon Apache + PHP 8.3.33 (also 8.1, 8.4 installed), MySQL 8.4.3 local on 3306. `php` is not on the Git Bash PATH; use `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` |
 | Databases | Shared DEV (`.env`): MariaDB 10.6.28, 41 products, 108 aliases, 99 observations (88 REAL pending, 11 MOCK_TEST pending, **0 REAL approved**), 41 snapshots all `legacy_unavailable`, 70 audit rows (read-only counts, 2026-11-14). Isolated TEST (`.env.testing`): `127.0.0.1/modinspect_test`, used by every mutating test |
-| Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, **32 steps**, run twice in a row and from a freshly bootstrapped test DB (includes the real-HTTP end-to-end test) |
+| Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, **35 steps**, on PHP 8.1.32, 8.3.33 and 8.4.12 (zero deprecations), including a real-HTTP end-to-end test, a security regression test and a secret scan |
 | Admin tables | Official DataTables 1.13.11 restored (was a hand-written adapter); browser-verified on an isolated server. Owner re-UAT pending |
 | Assets | `public/assets/admin/vendor/` hash-pinned by `MANIFEST.json`; clean-checkout simulation passes (356 files, no `.env`) |
-| Public site | Honest no-data verified. **Fixed a public-price leak** (approved TEST-import rows + legacy snapshot surfaced a price; DL-007). Mobile header and other UX defects logged in `docs/UX_UI_SYSTEM.md` |
+| Public site | Honest no-data verified; a public-price leak and several defects fixed (DL-007; nav hidden below 1000px, header clipping, staff chip/internal text, 41 empty cards). Browser-checked at 1440/768/375. Brand direction still open (G-3) |
 | CI | Workflows from `origin/main` merged locally; new `ci-tests.yml` (MariaDB 10.6 + suite + vendor guard) authored but **never run**: it triggers only on `pull_request`/`workflow_dispatch` and is not on `main`, so a PR is required |
 | Release | HOLD. No staging, no production isolation |
+| Security | Review done (`docs/SECURITY_REVIEW_2026-11-14.md`). **A critical web-exposure hole (`.env`, `.git`, SQL dump downloadable) was found and closed** on the Studio Apache; access log shows no external fetch of those paths |
 
 Defects fixed in this baseline: stale tests (array `+` dropping `start`, missing admin session, copy drift, hard-coded
 `C:\xampp8.1\php\php.exe`), vendor assets ignored by git, DataTables adapter vs official library, `data-ajax` init collision that

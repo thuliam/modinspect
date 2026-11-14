@@ -10,11 +10,8 @@
             <a href="<?= $base ?>/price">เช็กราคา</a>
             <a href="<?= $base ?>/deal-checker">Deal Checker</a>
             <a href="<?= $base ?>/methodology">วิธีคำนวณ</a>
-            <a href="<?= $base ?>/compare">Compare <small>กำลังพัฒนา</small></a>
-            <a href="<?= $base ?>/seller">Seller tools <small>กำลังพัฒนา</small></a>
-            <a href="<?= $base ?>/admin">Admin</a>
         </div>
-        <p>External spend target: 0 THB<br>© <?= date('Y') ?> ModInspect</p>
+        <p>© <?= date('Y') ?> ModInspect</p>
     </div>
 </footer>
 <script src="<?= $base ?>/assets/spec-builder.js" defer></script>

@@ -1,0 +1,13 @@
+# Only /public is meant to be served over HTTP. Everything else in the project root (.env, .git, *.sql, *.zip,
+# docs, tests, app code, storage) must never be reachable. This is a safety net for hosts whose document root is
+# the project folder (e.g. Laragon serving http://host/modinspect/public/). The proper setup is still to point the
+# document root at /public.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Allow the public front controller and its assets.
+    RewriteRule ^public(/|$) - [L]
+    # Everything else: 403.
+    RewriteRule ^ - [F,L]
+</IfModule>

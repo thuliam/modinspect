@@ -18,17 +18,17 @@ baseline). Historical owner UAT from September is **not** carried over because t
 | Epic | Weight | Criteria earned / total | AUTO % | OWNER % |
 |---|---:|---|---:|---:|
 | E1 Operational core | 25 | 16 / 16 | 100 | 0 |
-| E2 Public UX and journeys | 25 | 2 / 15 | 13.3 | 0 |
+| E2 Public UX and journeys | 25 | 5 / 16 | 31.3 | 0 |
 | E3 Trusted market data | 25 | 8 / 18 | 44.4 | 0 |
-| E4 Security, QA, CI, deployment | 20 | 9 / 16 | 56.3 | n/a |
+| E4 Security, QA, CI, deployment | 20 | 18 / 23 | 78.3 | n/a |
 | E5 Docs and operations | 5 | 5 / 5 | 100 | n/a |
-| **Overall (engineering AUTO)** | 100 |  | **55.7** | **0** |
+| **Overall (engineering AUTO)** | 100 |  | **64.6** | **0** |
 
-`Last baseline -> Current measured -> Delta`: 48.2 (AUTO, 2026-11-14 morning) -> 55.7 (AUTO) -> +7.5. Delta breakdown: O7 earned (+4.7); new criterion T6 added to E3 (scope change, denominator 15 -> 18) while earned (+2.8 net). OWNER stays 0.
+`Last baseline -> Current measured -> Delta`: 55.7 (AUTO, after Sprint 1 slice) -> 64.6 (AUTO) -> +8.9. Scope changes in this delta: E2 denominator 15 -> 16 (U7 added), E4 denominator 16 -> 23 (Q8, Q9, Q10 added). OWNER stays 0.
 
 Other dimensions (not folded into the percentage):
 - Implementation coverage: high for Admin/pipeline, low for public experience.
-- Functional QA coverage: 32 suite steps (tests + CLI checks) green on the isolated test DB, run twice in a row and from a freshly bootstrapped DB; a real-HTTP end-to-end test; browser proof for Products in full, and the other eight server-side tables initialise and serve data.
+- Functional QA coverage: 35 suite steps (tests + CLI checks) green on PHP 8.1, 8.3 and 8.4 against the isolated test DB, including a real-HTTP end-to-end test and a security regression test; browser checks of Products and of 5 public pages at 3 widths.
 - Owner UX acceptance: 0 (public visual direction not chosen).
 - Real-data readiness: **0 approved REAL observations**, 88 REAL pending, 41 snapshots all `legacy_unavailable` (shared DEV, read-only counts 2026-11-14).
 - Release readiness: HOLD. No staging, no production isolation. `.github/workflows/ci-tests.yml` is authored but has **never run** on GitHub (branch pushed, but it needs a PR to trigger).
@@ -54,9 +54,10 @@ Weights: 1 minor, 2 standard, 3 major, 4 critical. `A` = auto-accepted, `-` = no
 | U1 | Brand CI direction chosen by owner | 3 | - | Directions drafted in `docs/UX_UI_SYSTEM.md` |
 | U2 | Public design tokens/system implemented | 3 | - | |
 | U3 | No price shown without an eligible snapshot (honest no-data) | 2 | A | Browser Home/Detail; snapshot gating tests |
-| U4 | Usable mobile 390 header/navigation | 2 | - | **Defect found**: header overflow when signed in, nav clipped |
+| U4 | Usable mobile 390 header/navigation | 2 | A | Fixed: two legacy CSS rules hid nav links below 1000px/800px, header pinned to 56px, staff chip removed. Browser at 1440/768/375 on 5 pages: no overflow, nav complete |
 | U5 | Accessibility and contrast review | 2 | - | NOT_RUN |
 | U6 | Owner visual acceptance | 3 | - | |
+| U7 | No internal text, unfinished-module links or staff identity on public pages | 1 | A | `ui_integration_test` assertions; browser check |
 
 ### E3 Trusted data
 | ID | Criterion | W | Status | Evidence |
@@ -74,10 +75,13 @@ Weights: 1 minor, 2 standard, 3 major, 4 critical. `A` = auto-accepted, `-` = no
 | Q1 | Isolated test DB guard fails closed | 2 | A | `test_database_guard_test` |
 | Q2 | Full regression suite green on isolated DB | 3 | A | `tests/run.php` exit 0 (32 steps) after repairing 5 stale tests, twice in a row and from a fresh DB |
 | Q3 | Vendor assets pinned and guarded | 2 | A | `admin_assets_integrity_test` |
-| Q4 | CI runs suite + vendor guard on clean checkout | 2 | - | Workflows exist only on `origin/main`; not reconciled; no DB service |
+| Q4 | CI runs suite + vendor guard on clean checkout | 2 | A | GitHub check green on PR #4 (PHP 8.3 + MariaDB 10.6) after 3 portability fixes |
 | Q5 | Staging environment, backup, rollback runbook | 3 | - | |
 | Q6 | Secrets hygiene (no keys/`.env` tracked, raw LINE export absent) | 2 | A | Pattern scan clean; `.env*` untracked |
 | Q7 | Browser DataTables contract gate in CI | 2 | - | Browser proof is manual |
+| Q8 | Suite green on PHP 8.1, 8.3 and 8.4 with zero deprecations; CI matrix authored | 2 | A | Run locally on all three (35 steps). The matrix workflow has not run on GitHub yet |
+| Q9 | Security review: web exposure closed, RBAC/CSRF audit as a test, headers, error handling | 3 | A | `docs/SECURITY_REVIEW_2026-11-14.md`; `tests/security_hardening_test.php` |
+| Q10 | Automated secret scan with a self-test, run in CI | 2 | A | `cli/secret_scan.php`, `tests/secret_scan_test.php` |
 
 ### E5 Docs and operations
 | ID | Criterion | W | Status |
@@ -106,3 +110,9 @@ Weights: 1 minor, 2 standard, 3 major, 4 critical. `A` = auto-accepted, `-` = no
 | S1-07 | Login/Imports icons blank: `fa-search-dollar` and `fa-file-csv` do not exist in bundled FA 5.0.9 | P2 | 1 | DONE | replaced; new guard fails on any missing icon. The earlier tofu glyph was a CORS artifact of my test APP_URL, not an app defect |
 | S1-08 | Fix public gate leak: mock/fixture/test sources and legacy snapshots could surface as a public price | P0 | 3 | DONE | DL-007; `Product.php`; E2E |
 | S1-09 | `examples/import/market_evidence_template.csv` was a stale 25-column sample | P2 | 1 | DONE | regenerated from `ImportFieldContract::csvTemplate()`; E2E now requires an exact match |
+| S1-10 | Security review (Review role): close the web-exposure hole, headers, error handling, input whitelists, route RBAC/CSRF audit as a test | P0 | 10 | DONE | `docs/SECURITY_REVIEW_2026-11-14.md` |
+| S1-11 | CI: PHP 8.1/8.3/8.4 matrix, secret scan, licence inventory (`docs/THIRD_PARTY_LICENSES.md`) | P1 | 6 | DONE locally; matrix not yet run on GitHub | |
+| S1-12 | Public defects: nav links hidden below 1000px, header clipping, staff chip and internal text on public pages, 41 identical empty cards, Thai headline wrapping, PHP 8.4 `fgetcsv` deprecations that broke redirects | P1 | 10 | DONE | browser at 1440/768/375 |
+| S1-13 | Single source for the public price-eligibility rule (about 10 copies) | P2 | 3 | PLANNED | review finding |
+| S1-14 | Runtime probe that `/.env`, `/.git/config` return 403/404 (CI with Apache or post-deploy) | P2 | 3 | PLANNED | |
+| S1-15 | Rate limiting for public POST routes | P2 | 4 | PLANNED | |

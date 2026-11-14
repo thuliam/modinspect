@@ -18,8 +18,8 @@ final class DealCheckerController extends Controller {
         }
         $result=(new PriceEngine())->evaluate($product,(float)$price);
         $uuid=(new DealCheck())->create([
-            'product_id'=>$id,'user_price'=>$price,'condition_level'=>$_POST['condition_level']??'unknown',
-            'warranty_months'=>($_POST['warranty_months']??'')!=='' ? max(0,(int)$_POST['warranty_months']) : null,
+            'product_id'=>$id,'user_price'=>$price,'condition_level'=>in_array((string)($_POST['condition_level']??''),['like_new','good','fair','poor','unknown'],true) ? (string)$_POST['condition_level'] : 'unknown',
+            'warranty_months'=>($_POST['warranty_months']??'')!=='' ? max(0,min(120,(int)$_POST['warranty_months'])) : null,
             'has_box'=>isset($_POST['has_box'])?1:0,'has_receipt'=>isset($_POST['has_receipt'])?1:0,
             'has_benchmark'=>isset($_POST['has_benchmark'])?1:0,'result_label'=>$result['label'],
             'min'=>$product['q1'],'max'=>$product['q3'],'recommendation'=>$result['recommendation'],

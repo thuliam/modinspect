@@ -16,7 +16,7 @@ use PDO;
 
 final class OfflineEvidenceImportService
 {
-    private const MAX_FILE_BYTES = 5242880;
+    public const MAX_FILE_BYTES = 5242880;
     private const MAX_ROWS = 1000;
     private const MAX_TITLE_LENGTH = 240;
     private const MAX_TEXT_LENGTH = 2000;
@@ -217,7 +217,7 @@ final class OfflineEvidenceImportService
             if (!$handle) {
                 throw new \RuntimeException('CSV_NOT_READABLE');
             }
-            $header = fgetcsv($handle);
+            $header = fgetcsv($handle, 0, ',', '"', '\\');
             if (!is_array($header)) {
                 fclose($handle);
                 throw new \RuntimeException('CSV_EMPTY');
@@ -232,7 +232,7 @@ final class OfflineEvidenceImportService
             }
             $records = [];
             $rowNumber = 1;
-            while (($row = fgetcsv($handle)) !== false && count($records) < self::MAX_ROWS) {
+            while (($row = fgetcsv($handle, 0, ',', '"', '\\')) !== false && count($records) < self::MAX_ROWS) {
                 $rowNumber++;
                 $item = [];
                 foreach ($header as $i => $field) {
