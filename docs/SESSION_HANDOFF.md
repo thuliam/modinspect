@@ -5,7 +5,7 @@
 Everything from section 1 down is the **September OFFICE to STUDIO handoff and is historical**. Current truth is
 `docs/PROJECT_STATUS.md` section 0, then `docs/SPRINT_TRACKER.md`.
 
-- Branch/HEAD: work is on `checkpoint/claude-baseline-2026-11-14` (local, **not pushed**): baseline `5b05a31`, merge of `origin/main` `0e48e69`, then the Sprint 1 commit(s). `studio`/`office` untouched at `4f6713c`. Do not reset, force-push or clean; the owner decides push/PR/moving `studio` (G-1).
+- Branch/HEAD: work is on `checkpoint/claude-baseline-2026-11-14` (pushed to origin 2026-11-14, no PR yet; CI runs only on a PR): baseline `5b05a31`, merge of `origin/main` `0e48e69`, then the Sprint 1 commit(s). `studio`/`office` untouched at `4f6713c`. Do not reset, force-push or clean; the owner decides push/PR/moving `studio` (G-1).
 - Open uncommitted work: none of mine. The untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` belongs to the owner (parked, documentation only).
 - Active program: Sprint 0 complete; Sprint 1 engineering slice done (commit, CI authored, HTTP E2E, public gate fix); waiting for the owner re-UAT, a push to run CI, and the next Sprint choice.
 - Safe commands (no secrets):

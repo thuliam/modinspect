@@ -7,7 +7,7 @@ No production deploy, no new paid service, no mutation of shared Cloud DEV.
 
 | Item | Verified state |
 |---|---|
-| Source of truth | Branch `checkpoint/claude-baseline-2026-11-14` (local only, **not pushed**): `5b05a31` baseline + merge `0e48e69` of `origin/main` (`4b84d19`, CI-only commits, no conflicts) + later Sprint 1 commit(s). `studio`/`office` remain `4f6713c`. Working tree `C:aragonwwwmodinspect` |
+| Source of truth | Branch `checkpoint/claude-baseline-2026-11-14` (pushed to origin on 2026-11-14, no PR yet): `5b05a31` baseline + merge `0e48e69` of `origin/main` (`4b84d19`, CI-only commits, no conflicts) + later Sprint 1 commit(s). `studio`/`office` remain `4f6713c`. Working tree `C:aragonwwwmodinspect` |
 | Uncommitted work | Only the owner-owned untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal) once the Sprint 1 commit is made. Nothing pushed |
 | Runtime | Studio: Laragon Apache + PHP 8.3.33 (also 8.1, 8.4 installed), MySQL 8.4.3 local on 3306. `php` is not on the Git Bash PATH; use `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` |
 | Databases | Shared DEV (`.env`): MariaDB 10.6.28, 41 products, 108 aliases, 99 observations (88 REAL pending, 11 MOCK_TEST pending, **0 REAL approved**), 41 snapshots all `legacy_unavailable`, 70 audit rows (read-only counts, 2026-11-14). Isolated TEST (`.env.testing`): `127.0.0.1/modinspect_test`, used by every mutating test |
@@ -15,7 +15,7 @@ No production deploy, no new paid service, no mutation of shared Cloud DEV.
 | Admin tables | Official DataTables 1.13.11 restored (was a hand-written adapter); browser-verified on an isolated server. Owner re-UAT pending |
 | Assets | `public/assets/admin/vendor/` hash-pinned by `MANIFEST.json`; clean-checkout simulation passes (356 files, no `.env`) |
 | Public site | Honest no-data verified. **Fixed a public-price leak** (approved TEST-import rows + legacy snapshot surfaced a price; DL-007). Mobile header and other UX defects logged in `docs/UX_UI_SYSTEM.md` |
-| CI | Workflows from `origin/main` merged locally; new `ci-tests.yml` (MariaDB 10.6 + suite + vendor guard) authored but **never run** (not pushed) |
+| CI | Workflows from `origin/main` merged locally; new `ci-tests.yml` (MariaDB 10.6 + suite + vendor guard) authored but **never run**: it triggers only on `pull_request`/`workflow_dispatch` and is not on `main`, so a PR is required |
 | Release | HOLD. No staging, no production isolation |
 
 Defects fixed in this baseline: stale tests (array `+` dropping `start`, missing admin session, copy drift, hard-coded

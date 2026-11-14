@@ -22,13 +22,13 @@ adds only CI workflows, `docs/DEPLOYMENT_PACKAGE_DRY_RUN.md` and `scripts/build_
 `studio` has **no** commits that `origin/main` lacks.
 
 Done (2026-11-14): checkpoint branch created from the working tree, baseline committed (`5b05a31`), `origin/main` merged in locally without conflicts (`0e48e69`).
-Remaining owner choice: push the branch (and open a PR) or fast-forward `studio` to it. Nothing has been pushed.
+The branch was pushed to `origin` on 2026-11-14 (head `07e0133`, no force). Remaining owner choice: open a PR (the only way `ci-tests.yml` runs) and/or fast-forward `studio`. `studio`/`main` untouched.
 
 ## Open owner gates
 
 | Gate | Decision needed | Blocks |
 |---|---|---|
-| G-1 | Push the checkpoint branch / open a PR / move `studio` (commit exists locally, DL-006); the CI workflow cannot run until pushed | First real CI run |
+| G-1 | Open a PR from the pushed checkpoint branch and/or move `studio` (DL-006); pushed 2026-11-14; `ci-tests.yml` runs only on a PR | First real CI run |
 | G-2 | Re-UAT of Admin tables after the library swap | Epic E1 OWNER acceptance |
 | G-3 | Choose a public visual direction (A, B or C in `docs/UX_UI_SYSTEM.md`) | Sprint 2 |
 | G-4 | Owner review of REAL listing-level evidence | Sprint 3, any public price |

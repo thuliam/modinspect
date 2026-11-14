@@ -31,7 +31,7 @@ Other dimensions (not folded into the percentage):
 - Functional QA coverage: 32 suite steps (tests + CLI checks) green on the isolated test DB, run twice in a row and from a freshly bootstrapped DB; a real-HTTP end-to-end test; browser proof for Products in full, and the other eight server-side tables initialise and serve data.
 - Owner UX acceptance: 0 (public visual direction not chosen).
 - Real-data readiness: **0 approved REAL observations**, 88 REAL pending, 41 snapshots all `legacy_unavailable` (shared DEV, read-only counts 2026-11-14).
-- Release readiness: HOLD. No staging, no production isolation. `.github/workflows/ci-tests.yml` is authored but has **never run** on GitHub (not pushed).
+- Release readiness: HOLD. No staging, no production isolation. `.github/workflows/ci-tests.yml` is authored but has **never run** on GitHub (branch pushed, but it needs a PR to trigger).
 
 ## Criteria detail
 
@@ -97,11 +97,11 @@ Weights: 1 minor, 2 standard, 3 major, 4 critical. `A` = auto-accepted, `-` = no
 | S0-05 | Fix Admin freshness unit (8,500% display) | P1 | 1 | DONE | test added |
 | S0-06 | Requirements/roadmap/tracker/UX/decision/CI docs | P1 | 5 | DONE | |
 | S0-07 | Public UX audit with screenshots | P1 | 2 | DONE | findings in `docs/UX_UI_SYSTEM.md` |
-| S1-01 | Reconcile branches and commit baseline | P0 | 2 | DONE locally (not pushed) | branch `checkpoint/claude-baseline-2026-11-14`: `5b05a31` + merge of `origin/main` |
+| S1-01 | Reconcile branches and commit baseline | P0 | 2 | DONE, pushed to origin (no PR) | branch `checkpoint/claude-baseline-2026-11-14`: `5b05a31` + merge of `origin/main` |
 | S1-02 | Owner re-UAT of Admin tables (official DataTables) | P0 | 1 owner | READY_FOR_OWNER_REVIEW | |
 | S1-03 | Fix Font Awesome `.html` font URLs (needs a verified official 5.x download) | P2 | 2 | PLANNED | needs download approval |
 | S1-04 | Mark non-sortable columns (`data-orderable=false`) on Action columns | P2 | 1 | PLANNED | |
-| S1-05 | CI: vendor guard + suite on MariaDB 10.6 service, no secrets | P1 | 5 | AUTHORED, NOT RUN | needs a push to run; local simulation (fresh DB bootstrap + suite) green |
+| S1-05 | CI: vendor guard + suite on MariaDB 10.6 service, no secrets | P1 | 5 | AUTHORED, NOT RUN | needs a PR to trigger (workflow is not on main); local simulation (fresh DB bootstrap + suite) green |
 | S1-06 | HTTP E2E TEST path (O7) | P1 | 6 | DONE | `tests/http_e2e_flow_test.php` |
 | S1-07 | Login page icon renders as tofu glyph; investigate | P2 | 1 | PLANNED | |
 | S1-08 | Fix public gate leak: mock/fixture/test sources and legacy snapshots could surface as a public price | P0 | 3 | DONE | DL-007; `Product.php`; E2E |

@@ -5,7 +5,7 @@
                        "date":  "2026-11-14",
                        "overall_status":  "PARTIAL",
                        "sprint1_engineering_slice":  "done: checkpoint commit, CI workflow authored (never run), HTTP E2E test, public price gate leak fixed (DL-007)",
-                       "branch":  "checkpoint/claude-baseline-2026-11-14 (local only, not pushed); studio and office untouched at 4f6713c",
+                       "branch":  "checkpoint/claude-baseline-2026-11-14 (pushed to origin, no PR); studio and office untouched at 4f6713c",
                        "baseline_commit":  "5b05a31 (merge of origin/main: 0e48e69; later Sprint 1 commit follows)",
                        "committed_this_session":  true,
                        "origin_main_head":  "4b84d19",
@@ -33,7 +33,7 @@
                                          "e5_docs":  100
                                      },
                        "owner_gates":  [
-                                           "G-1 push checkpoint branch / PR / move studio (CI cannot run until pushed)",
+                                           "G-1 open a PR from the pushed checkpoint branch and/or move studio (CI runs only on a PR)",
                                            "G-2 Admin re-UAT after library swap",
                                            "G-3 public visual direction",
                                            "G-4 REAL listing-level evidence review",

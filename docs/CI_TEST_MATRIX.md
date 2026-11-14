@@ -32,12 +32,12 @@ Always set `MODINSPECT_ENV_FILE=.env.testing` for any CLI that touches the DB. W
 | Browser DataTables behaviour (search/sort/page/filters/redraw) | manual, Browser pane on `127.0.0.1` with `.env`-style file pointing at the test DB | local | PASS for Products (full); other 8 tables initialise and serve; **not automated** |
 | Public visual/responsive/accessibility review | manual | local | PARTIAL (Home, Detail, mobile Home); NOT_RUN for contrast/keyboard |
 | Clean-checkout asset check | copy of `git ls-files -c -o --exclude-standard` into an empty folder, then manifest verify and PHP lint | local | PASS (356 files, no `.env`) |
-| GitHub Actions: read-only PHP/FTPS preflight, offline package dry-run | `.github/workflows/*` | merged into branch `checkpoint/claude-baseline-2026-11-14` | NOT_RUN (nothing pushed) |
+| GitHub Actions: read-only PHP/FTPS preflight, offline package dry-run | `.github/workflows/*` | merged into branch `checkpoint/claude-baseline-2026-11-14` | NOT_RUN (branch pushed; needs a PR) |
 | GitHub Actions: tests + vendor guard on MariaDB 10.6 service | `.github/workflows/ci-tests.yml` | same branch | AUTHORED, NOT RUN. YAML not linted (no Python/YAML tool locally). Equivalent local path (fresh `bootstrap_test_db.php --fresh` + suite) is green |
 | Staging environment, backup/rollback rehearsal | n/a | none | NOT_BUILT |
 | Production deploy | n/a | none | **HOLD**, owner GO required |
 
-## CI target (S1-05 authored; the first real run needs a push)
+## CI target (S1-05 authored; the first real run needs a PR)
 
 Clean checkout, pinned PHP 8.3, MariaDB service for the isolated test DB, run `tests/run.php` and the vendor manifest check,
 upload no secrets or runtime artifacts, no deploy step. A browser DataTables contract smoke test is the next gate after that.
