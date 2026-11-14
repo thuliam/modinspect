@@ -23,7 +23,7 @@
     <div class="card-header"><h2>Audit Events</h2></div>
     <div class="table-responsive">
         <table id="audits-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/audit-logs/data" data-filters="#audits-filters" data-page-length="25">
-            <thead><tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Entity</th><th>Summary</th><th>Details</th></tr></thead>
+            <thead><tr><th>Timestamp</th><th>Actor</th><th>Action</th><th>Entity</th><th>Summary</th><th data-orderable="false">Details</th></tr></thead>
             <tbody></tbody>
         </table>
     </div>

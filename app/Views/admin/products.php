@@ -129,7 +129,7 @@
     <div class="table-responsive">
         <table id="products-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/products/data" data-filters="#products-filters" data-page-length="25">
             <thead>
-                <tr><th>Product</th><th>Brand</th><th>Category</th><th>Key Specification</th><th>Market Data</th><th>Status</th><th>Action</th></tr>
+                <tr><th>Product</th><th>Brand</th><th>Category</th><th>Key Specification</th><th>Market Data</th><th>Status</th><th data-orderable="false">Action</th></tr>
             </thead>
             <tbody></tbody>
         </table>

@@ -21,7 +21,7 @@ $errorLabel=static fn(string $value): string => ucwords(strtolower(str_replace('
     <div class="card-header d-flex justify-content-between align-items-center">
         <h2>Feed Data Workflow</h2>
         <div>
-            <a class="btn btn-sm btn-outline-primary" href="<?= htmlspecialchars($templateCsvUrl) ?>"><i class="fas fa-file-csv mr-1"></i>Download CSV Template</a>
+            <a class="btn btn-sm btn-outline-primary" href="<?= htmlspecialchars($templateCsvUrl) ?>"><i class="fas fa-file-alt mr-1"></i>Download CSV Template</a>
             <a class="btn btn-sm btn-outline-primary" href="<?= htmlspecialchars($templateJsonUrl) ?>"><i class="fas fa-file-code mr-1"></i>Download JSON Template</a>
         </div>
     </div>

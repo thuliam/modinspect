@@ -41,6 +41,24 @@ foreach (glob($root . '/app/Views/admin/*.php') ?: [] as $view) {
 }
 assert_assets($tableCount >= 9, "Expected at least 9 server-side admin tables, found {$tableCount}");
 
+// 2b. Every Font Awesome icon class used by a view must exist in the bundled FA version (FA 5.0.9 lacks e.g. fa-file-csv
+// and fa-search-dollar, which render as blank boxes).
+$faCss = (string)file_get_contents($root . '/public/assets/admin/vendor/fontawesome/css/fontawesome-all.css');
+$missingIcons = [];
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/app/Views', FilesystemIterator::SKIP_DOTS)) as $viewFile) {
+    if (!$viewFile->isFile() || $viewFile->getExtension() !== 'php') {
+        continue;
+    }
+    if (preg_match_all('/\bfa[sbrl]?\s+(fa-[a-z0-9-]+)/', (string)file_get_contents($viewFile->getPathname()), $icons)) {
+        foreach (array_unique($icons[1]) as $icon) {
+            if (!preg_match('/\.' . preg_quote($icon, '/') . '[\s,{:]/', $faCss)) {
+                $missingIcons[$icon] = basename($viewFile->getPathname());
+            }
+        }
+    }
+}
+assert_assets($missingIcons === [], 'Icons missing from bundled Font Awesome: ' . json_encode($missingIcons));
+
 // 3. admin.js must merge filters into DataTables' own request parameters instead of replacing them.
 $adminJs = (string)file_get_contents($root . '/public/assets/admin/js/admin.js');
 assert_assets(str_contains($adminJs, "data('source-url')"), 'admin.js must read the table source from data-source-url');

@@ -37,7 +37,7 @@
     <div class="table-responsive">
         <table id="articles-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/articles/data" data-filters="#articles-filters" data-page-length="25">
             <thead>
-                <tr><th>Article</th><th>Slug</th><th>Status</th><th>Author</th><th>Published</th><th>Updated</th><th>Action</th></tr>
+                <tr><th>Article</th><th>Slug</th><th>Status</th><th>Author</th><th>Published</th><th>Updated</th><th data-orderable="false">Action</th></tr>
             </thead>
             <tbody></tbody>
         </table>

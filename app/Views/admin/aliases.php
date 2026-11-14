@@ -36,7 +36,7 @@
     <div class="table-responsive">
         <table id="aliases-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/product-aliases/data" data-filters="#aliases-filters" data-page-length="25">
             <thead>
-                <tr><th>Alias</th><th>Canonical Product</th><th>Normalized</th><th>Confidence</th><th>Source / Context</th><th>Status</th><th>Action</th></tr>
+                <tr><th>Alias</th><th>Canonical Product</th><th>Normalized</th><th>Confidence</th><th>Source / Context</th><th>Status</th><th data-orderable="false">Action</th></tr>
             </thead>
             <tbody></tbody>
         </table>

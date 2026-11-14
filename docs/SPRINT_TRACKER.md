@@ -100,9 +100,9 @@ Weights: 1 minor, 2 standard, 3 major, 4 critical. `A` = auto-accepted, `-` = no
 | S1-01 | Reconcile branches and commit baseline | P0 | 2 | DONE, pushed to origin (no PR) | branch `checkpoint/claude-baseline-2026-11-14`: `5b05a31` + merge of `origin/main` |
 | S1-02 | Owner re-UAT of Admin tables (official DataTables) | P0 | 1 owner | READY_FOR_OWNER_REVIEW | |
 | S1-03 | Fix Font Awesome `.html` font URLs (needs a verified official 5.x download) | P2 | 2 | PLANNED | needs download approval |
-| S1-04 | Mark non-sortable columns (`data-orderable=false`) on Action columns | P2 | 1 | PLANNED | |
+| S1-04 | Mark non-sortable columns (`data-orderable=false`) on Action/Controls/Details headers | P2 | 1 | DONE | 7 tables; view change only |
 | S1-05 | CI: vendor guard + suite on MariaDB 10.6 service, no secrets | P1 | 5 | AUTHORED, NOT RUN | needs a PR to trigger (workflow is not on main); local simulation (fresh DB bootstrap + suite) green |
 | S1-06 | HTTP E2E TEST path (O7) | P1 | 6 | DONE | `tests/http_e2e_flow_test.php` |
-| S1-07 | Login page icon renders as tofu glyph; investigate | P2 | 1 | PLANNED | |
+| S1-07 | Login/Imports icons blank: `fa-search-dollar` and `fa-file-csv` do not exist in bundled FA 5.0.9 | P2 | 1 | DONE | replaced; new guard fails on any missing icon. The earlier tofu glyph was a CORS artifact of my test APP_URL, not an app defect |
 | S1-08 | Fix public gate leak: mock/fixture/test sources and legacy snapshots could surface as a public price | P0 | 3 | DONE | DL-007; `Product.php`; E2E |
-| S1-09 | `examples/import/market_evidence_template.csv` is a stale 25-column sample (contract has 27) | P2 | 1 | PLANNED | admin download template is correct and tested |
+| S1-09 | `examples/import/market_evidence_template.csv` was a stale 25-column sample | P2 | 1 | DONE | regenerated from `ImportFieldContract::csvTemplate()`; E2E now requires an exact match |

@@ -120,8 +120,7 @@ try {
     $headers = fgetcsv($template, 0, ',', '"', '');
     $templateRow = array_combine($headers, fgetcsv($template, 0, ',', '"', ''));
     fclose($template);
-    // examples/import/*.csv is an older 25-column sample (misses optional product_hint, probe_run_id); every column must still exist in the contract.
-    assert_e2e(array_diff($headers, ImportFieldContract::CSV_HEADERS) === [], 'Sample CSV columns must be part of the importer contract');
+    assert_e2e($headers === ImportFieldContract::CSV_HEADERS, 'examples/import CSV sample must match the importer contract exactly (regenerate it from ImportFieldContract::csvTemplate())');
 
     $rows = [];
     for ($i = 1; $i <= 2; $i++) {

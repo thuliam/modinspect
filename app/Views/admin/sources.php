@@ -39,7 +39,7 @@
     <div class="table-responsive">
         <table id="sources-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/sources/data" data-filters="#sources-filters" data-page-length="25">
             <thead>
-                <tr><th>Source</th><th>Provider</th><th>Enabled</th><th>Policy</th><th>Health</th><th>Last Activity</th><th>Incidents</th><th>Controls</th></tr>
+                <tr><th>Source</th><th>Provider</th><th>Enabled</th><th>Policy</th><th>Health</th><th>Last Activity</th><th>Incidents</th><th data-orderable="false">Controls</th></tr>
             </thead>
             <tbody></tbody>
         </table>

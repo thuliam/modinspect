@@ -29,7 +29,7 @@
     <div class="table-responsive">
         <table id="observations-table" class="table table-hover mi-admin-table mb-0 js-server-data-table" data-source-url="<?= $base ?>/admin/price-observations/data" data-filters="#observations-filters" data-page-length="25">
             <thead>
-                <tr><th>Observation</th><th>Product</th><th>Dataset</th><th>Provenance</th><th>Price Type</th><th>Price</th><th>Source</th><th>Review Status</th><th>Date</th><th>Action</th></tr>
+                <tr><th>Observation</th><th>Product</th><th>Dataset</th><th>Provenance</th><th>Price Type</th><th>Price</th><th>Source</th><th>Review Status</th><th>Date</th><th data-orderable="false">Action</th></tr>
             </thead>
             <tbody></tbody>
         </table>

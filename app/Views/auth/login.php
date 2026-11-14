@@ -1,7 +1,7 @@
 <main class="splash-container mi-auth-container">
     <section class="card mi-auth-card">
         <div class="card-header text-center bg-white">
-            <div class="mi-auth-mark"><i class="fas fa-search-dollar"></i></div>
+            <div class="mi-auth-mark"><i class="fas fa-search"></i></div>
             <h1>ModInspect Admin</h1>
             <p>Operations console for market evidence, review, and catalog quality.</p>
         </div>
