@@ -77,10 +77,21 @@
 
     /* ---------- scroll: header state, card column parallax ---------- */
     var par = document.querySelector('[data-parallax]');
+    var cards = [].slice.call(document.querySelectorAll('.vs-card'));
     var ticking = false;
     function onScroll() {
         ticking = false;
         if (header) { header.classList.toggle('sc', window.scrollY > 40); }
+        // Cards lean away from the middle of the screen and settle flat as they reach it (like the reference).
+        cards.forEach(function (card) {
+            if (full() && innerWidth > 900) {
+                var cr = card.getBoundingClientRect();
+                if (cr.bottom < -200 || cr.top > innerHeight + 200) { return; }
+                var p = Math.max(-1.2, Math.min(1.2, ((cr.top + cr.height / 2) - innerHeight / 2) / innerHeight));
+                card.style.setProperty('--sz', (p * 8).toFixed(2) + 'deg');
+                card.style.setProperty('--sx', (p * -13).toFixed(2) + 'deg');
+            } else { card.style.removeProperty('--sz'); card.style.removeProperty('--sx'); }
+        });
         if (par) {
             if (full() && innerWidth > 900) {
                 var r = par.getBoundingClientRect(), mid = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
