@@ -18,6 +18,7 @@ require dirname(__DIR__) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Services\ProductResolver\ProductResolver;
+use App\Services\Research\ListingEnricher;
 use App\Services\Validation\ModelMarker;
 
 $options = getopt('', ['file:', 'out:']);
@@ -118,6 +119,7 @@ function explicit_prices(string $line): array
 
 function category_of(string $t): string
 {
+    if (preg_match('/mainboard|motherboard|เมนบอร์ด|\bmb\b/iu', $t) && !preg_match('/\brtx ?\d|\bgtx ?\d|\brx ?\d{3,4}|radeon|geforce/iu', $t)) { return 'motherboard'; }
     if (preg_match('/rtx|gtx|\brx ?\d{3,4}|radeon|geforce|การ์ดจอ|\barc ?[ab]\d{3}/iu', $t)) { return 'gpu'; }
     if (preg_match('/ryzen|\br[3579][ -]?\d{4}|core ?i[3579]|\bi[3579][ -]?\d{4,5}|xeon|ซีพียู|\bcpu\b/iu', $t)) { return 'cpu'; }
     if (preg_match('/nvme|m\.2|\bssd\b|\bhdd\b|sata/iu', $t)) { return 'storage'; }
@@ -132,7 +134,12 @@ function model_key(string $t, string $category): array
 {
     $flags = [];
     $s = mb_strtolower($t, 'UTF-8');
+    $s = preg_replace('/\b(rtx|gtx|rx|arc)\s*\/\s*/u', '$1 ', $s) ?? $s; // "RTX/3080/12Gb"
+    $s = preg_replace('/(?<=\d)non-?f\b/u', '', $s) ?? $s; // "i5-10400nonf" = the plain (non-F) part
     if ($category === 'gpu') {
+        if (preg_match('/\brtx\s*(a\d{4})\b/u', $s, $m)) {
+            return ["rtx {$m[1]}", $flags];
+        }
         if (preg_match('/\b(rtx|gtx|arc)\s*-?\s*(\d{3,4})\s*(ti\s*super|super|ti|xtx|xt|gre|s)?\b/u', $s, $m)) {
             $suffix = trim((string)($m[3] ?? ''));
             if ($suffix === 's') { $suffix = 'super'; $flags[] = 'SHORTHAND_SUFFIX_S'; }
@@ -144,6 +151,11 @@ function model_key(string $t, string $category): array
         if (preg_match('/radeon\s*(?:rx\s*)?(\d{4})\s*(xtx|xt|gre)?/u', $s, $m)) {
             return [trim("rx {$m[1]} " . ($m[2] ?? '')), $flags];
         }
+        // Bare Radeon number such as "การ์ดจอ 6500XT": AMD-style number, family prefix inferred (flagged).
+        if (preg_match('/(?<![\d.,\/])((?:6[5-9]|7[6-9]|9[0-9])\d{2})\s*(xtx|xt|gre)\b/u', $s, $m)) {
+            $flags[] = 'PREFIX_INFERRED';
+            return [trim("rx {$m[1]} {$m[2]}"), $flags];
+        }
         // Bare model such as "การ์ดจอ 5060 8G" or "galax 3080": NVIDIA-style number, family prefix inferred (flagged).
         if (preg_match('/(?<![\d.,\/])((?:10|16|20|30|40|50)(?:50|60|70|80|90))\s*(ti\s*super|super|ti|s)?(?![\d])/u', $s, $m)) {
             $suffix = trim((string)($m[2] ?? ''));
@@ -153,7 +165,7 @@ function model_key(string $t, string $category): array
         }
     }
     if ($category === 'cpu') {
-        if (preg_match('/(?:ryzen\s*[3579]\s*|\br[3579]\s*-?\s*)(\d{4,5})\s*(x3d|xt|x|g|f|gt)?\b/u', $s, $m)) {
+        if (preg_match('/(?:ryzen\s*[3579]\s*|\br[3579]\s*-?\s*)(\d{4,5})\s*(x3d2|x3d|xt|x|g|f|gt)?\b/u', $s, $m)) {
             return [trim("ryzen {$m[1]}" . ($m[2] ?? '')), $flags];
         }
         if (preg_match('/\b(?:core\s*)?(i[3579])\s*-?\s*(\d{4,5}[a-z]{0,2})\b/u', $s, $m)) {
@@ -302,13 +314,29 @@ foreach ($messages as $mi => $message) {
                 $flags[] = 'NEARBY_MASTER_MODEL_REJECTED';
                 $resolution = null;
             }
+            $vram = $category === 'gpu' ? vram_of($block) : null;
+            $enriched = ListingEnricher::enrich($block, $category, $key, $vram);
+            $flags = array_merge($flags, $enriched['enrichment_flags']);
             $rows[] = [
                 'note_date' => $message['date'],
                 'category' => $category,
                 'title' => clean_title($block),
                 'model_key' => $key,
                 'vram_gb' => $category === 'gpu' ? vram_of($block) : null,
-                'variant_key' => $key === null ? null : ($category === 'gpu' ? $key . ' ' . ((vram_of($block) ?? 0) > 0 ? vram_of($block) . 'gb' : '?gb') : $key),
+                'variant_key' => $key === null ? $enriched['spec_key'] : ($category === 'gpu' ? $key . ' ' . ((vram_of($block) ?? 0) > 0 ? vram_of($block) . 'gb' : '?gb') : $key),
+                'brand' => $enriched['brand'],
+                'product_line' => $enriched['product_line'],
+                'capacity_gb' => $enriched['capacity_gb'],
+                'ddr_gen' => $enriched['ddr_gen'],
+                'speed_mhz' => $enriched['speed_mhz'],
+                'kit' => $enriched['kit'],
+                'storage_type' => $enriched['storage_type'],
+                'chipset' => $enriched['chipset'],
+                'socket' => $enriched['socket'],
+                'watt' => $enriched['watt'],
+                'efficiency' => $enriched['efficiency'],
+                'enrichment_status' => $enriched['enrichment_status'],
+                'missing_fields' => $enriched['missing_fields'],
                 'asking_price_thb' => $e['price']['value'],
                 'price_evidence' => $e['price']['kind'],
                 'shipping_included' => preg_match('/รวมส่ง|ส่งฟรี/u', $block) ? 'yes' : null,
@@ -374,7 +402,7 @@ if (!is_dir($outDir) && !mkdir($outDir, 0777, true)) {
     fwrite(STDERR, "Cannot create output directory\n");
     exit(1);
 }
-$columns = ['row_id', 'note_date', 'category', 'model_key', 'variant_key', 'vram_gb', 'title', 'asking_price_thb', 'price_evidence', 'shipping_included', 'listing_type', 'bundle_total_line', 'box', 'condition_class', 'price_anomaly', 'warranty_kind', 'warranty_end', 'warranty_provider', 'wanted_or_trade', 'defective_hint', 'master_product_id', 'master_match', 'master_confidence', 'flags', 'dedupe_key', 'duplicate_of_row'];
+$columns = ['row_id', 'note_date', 'category', 'model_key', 'variant_key', 'vram_gb', 'title', 'asking_price_thb', 'price_evidence', 'shipping_included', 'listing_type', 'bundle_total_line', 'box', 'condition_class', 'price_anomaly', 'warranty_kind', 'warranty_end', 'warranty_provider', 'wanted_or_trade', 'defective_hint', 'brand', 'product_line', 'capacity_gb', 'ddr_gen', 'speed_mhz', 'kit', 'storage_type', 'chipset', 'socket', 'watt', 'efficiency', 'enrichment_status', 'missing_fields', 'master_product_id', 'master_match', 'master_confidence', 'flags', 'dedupe_key', 'duplicate_of_row'];
 $fh = fopen($outDir . '/research_listings_sanitized.csv', 'wb');
 fwrite($fh, "\xEF\xBB\xBF");
 fputcsv($fh, array_merge($columns, ['source_label', 'provenance_grade', 'price_type']), ',', '"', '');
@@ -405,6 +433,21 @@ foreach ($models as $k => $prices) {
 }
 uasort($modelStats, static fn(array $a, array $b): int => $b['n'] <=> $a['n']);
 
+$missingBy = [];
+foreach ($usable as $r) {
+    foreach (array_filter(explode('|', (string)$r['missing_fields'])) as $f) { $k = $r['category'] . ':' . $f; $missingBy[$k] = ($missingBy[$k] ?? 0) + 1; }
+}
+arsort($missingBy);
+// Rows the owner can complete by hand: usable rows whose required fields the text does not state. Nothing here is guessed.
+$fh = fopen($outDir . '/owner_fill_needed.csv', 'wb');
+fwrite($fh, "﻿");
+fputcsv($fh, ['row_id', 'category', 'title', 'asking_price_thb', 'enrichment_status', 'missing_fields', 'owner_fill_value'], ',', '"', '');
+foreach ($usable as $r) {
+    if (in_array($r['enrichment_status'], ['missing', 'ambiguous'], true)) {
+        fputcsv($fh, [$r['row_id'], $r['category'], $r['title'], $r['asking_price_thb'], $r['enrichment_status'], $r['missing_fields'], ''], ',', '"', '');
+    }
+}
+fclose($fh);
 $stats['rows'] = count($rows);
 $report = [
     'generated_for' => 'owner research; asking prices from copied Facebook posts; no listing URLs; NOT accepted observations',
@@ -428,6 +471,9 @@ $report = [
     'model_price_stats_usable_top40' => array_slice($modelStats, 0, 40, true),
     'distinct_models_usable' => count($modelStats),
     'models_with_5plus_samples' => count(array_filter($modelStats, static fn(array $s): bool => $s['n'] >= 5)),
+    'enrichment_status_all_rows' => $by($rows, 'enrichment_status'),
+    'enrichment_status_usable' => $by($usable, 'enrichment_status'),
+    'missing_fields_usable' => $missingBy,
     'master_products_total' => count($catalog),
 ];
 file_put_contents($outDir . '/research_report.json', json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n");

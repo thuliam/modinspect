@@ -24,8 +24,18 @@ Facebook (Marketplace and sale groups) and copied in as text. The owner asked fo
   (`research_listings_sanitized.csv`, `research_report.json`). That folder is git-ignored. The CSV has no seller names, phone numbers,
   URLs, e-mails, LINE ids, shop names or locations.
 - Provenance grade: `OWNER_COLLECTED_TEXT` / `OWNER_TEXT_NO_URL`, price type `asking`. Rows have **no listing URL and no immutable
-  evidence snapshot**, so under the current rule (REAL approval needs listing-level provenance) they cannot be approved. Allowing
-  them into public prices needs a new provenance grade and an ADR; until then they are market research, not accepted observations.
+  evidence snapshot**, so under the code as it stands (REAL approval needs listing-level provenance) they cannot be approved yet.
+  **Owner decision DL-013 (2026-11-14): option A.** `OWNER_TEXT_NO_URL` becomes a permitted, lower provenance grade that the owner
+  may approve per variant. That needs one engineering change before any row can be approved: an owner-intake import path that records
+  this grade and shows it on every public figure. Until that ships, the rows remain market research, not accepted observations,
+  and nothing is imported into shared DEV.
+- Completion (DL-013): `app/Services/Research/ListingEnricher.php` fills brand, product line and category specs (RAM generation,
+  capacity, kit and speed; storage type and capacity; PSU wattage and efficiency; mainboard chipset and socket; GPU brand) only from
+  what the listing says or from a fixed lookup, and flags every derived value (`BRAND_FROM_LINE`, `DDR_GEN_FROM_SPEED`,
+  `SOCKET_FROM_CHIPSET`, `CAPACITY_UNIT_ASSUMED_GB`). It never guesses: a field the text does not state stays empty, and the row is
+  listed in `owner_fill_needed.csv` for the owner. A post that mixes several products is marked `ambiguous` and left blank
+  (`MULTI_ITEM_CONTEXT`). `enrichment_status` is complete, partial, missing or ambiguous. Fixture result only: it proves the parser,
+  not the quality of the market data.
 - Row-level quality flags instead of silent cleaning: `duplicate_of_row` (reposts), `listing_type=bundle`, `wanted_or_trade`,
   `defective_hint`, `condition_class=new_sealed`, `price_anomaly`, `NEARBY_MASTER_MODEL_REJECTED`, `PREFIX_INFERRED`,
   `SHORTHAND_SUFFIX_S`, `WARRANTY_ENDED_BEFORE_NOTE`. `variant_key` = model + VRAM so 8 GB and 16 GB cards are never merged.

@@ -24,6 +24,8 @@ Defects fixed in this baseline: stale tests (array `+` dropping `start`, missing
 dropped filters, Admin freshness displayed as 8,500% (unit was already a percentage), and (Sprint 1) a public-price leak where approved TEST-import rows made a legacy snapshot appear as a market price.
 Not fixed (logged): Font Awesome `.html` font URLs (404), login icon glyph, public mobile header, internal footer text.
 
+Owner decisions 2026-11-14: Facebook data usable as REAL at a lower grade, approved per variant, with missing fields completed from text (DL-013); production host HostAtom Linux UTC+7 (DL-014). G-3 preview prepared for the owner.
+
 Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
 G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.
 

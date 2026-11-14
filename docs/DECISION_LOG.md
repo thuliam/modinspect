@@ -18,6 +18,8 @@ Dated, short, with consequences. Owner-level decisions are marked **OWNER**. ADR
 | DL-010 | Root `.htaccess` serves only `/public` (everything else 403) | `.env`, `.git`, `*.sql`, `docs/` and `tests/` were downloadable at `/modinspect/...` on the Laragon Apache | Applied live and verified. The correct deployment is still document root = `/public` |
 | DL-011 | Only `APP_ENV` local/testing displays PHP errors; anything else (or missing) logs and shows a generic 500; security headers on every web response | Stack traces and `X-Powered-By` must not reach visitors | The Studio `.env` is `local`, so UAT still shows errors. Production `.env` must set `APP_ENV=production` |
 | DL-012 | Pass the CSV `$escape` argument explicitly (a single backslash, the old default) to every `fgetcsv`/`fputcsv` | PHP 8.4 deprecates the implicit default; with errors displayed the notices were printed before headers and broke redirects | Behaviour identical on 8.1-8.4. Suite verified on 8.1, 8.3 and 8.4 |
+| DL-013 | Owner decision (2026-11-14): Facebook listings the owner collected are usable as REAL evidence with a lower provenance grade (`OWNER_TEXT_NO_URL`); the owner approves per variant. Missing brand/model/spec fields are completed from the listing text where it states them | Owner is the collector and the text is real market data, but there is no listing URL | Approval stays per variant at review (G-4); rows are never auto-approved and never import into shared DEV without a separate owner go-ahead. Completion is deterministic (`ListingEnricher`): stated facts and fixed lookups (line to brand, chipset to socket, speed to DDR generation) are filled and flagged, anything the text does not support stays empty and is listed for the owner (`owner_fill_needed.csv`). Posts that mix products are left blank, never merged |
+| DL-014 | Production host is HostAtom: Linux, timezone UTC+7 (owner, 2026-11-14) | Closes the open question behind two Linux/UTC portability bugs | The DB session time zone is pinned to the PHP offset (DL-009); CI already runs on Linux/UTC, so both behaviours are covered. Production `.env` still needs `APP_ENV=production` and document root `/public` (DL-010, DL-011) |
 
 ## Reconcile plan for branches (OWNER decision)
 
@@ -34,7 +36,7 @@ The branch was pushed to `origin` on 2026-11-14 (head `07e0133`, no force). Rema
 |---|---|---|
 | G-1 | Open a PR from the pushed checkpoint branch and/or move `studio` (DL-006); pushed 2026-11-14; `ci-tests.yml` runs only on a PR | First real CI run |
 | G-2 | Re-UAT of Admin tables after the library swap | Epic E1 OWNER acceptance |
-| G-3 | Choose a public visual direction (A, B or C in `docs/UX_UI_SYSTEM.md`) | Sprint 2 |
+| G-3 | Choose a public visual direction (A, B or C in `docs/UX_UI_SYSTEM.md`); owner asked to SEE the options first; a three-way preview was shown in chat on 2026-11-14, answer pending | Sprint 2 |
 | G-4 | Owner review of REAL listing-level evidence | Sprint 3, any public price |
 | G-5 | Rotate credentials that appear in the raw LINE export; supply a sanitised research subset if wanted | Safe use of LINE research |
 | G-6 | Legal/ops direction for blacklist, 5% fee, escrow (currently out of scope) | Any post-beta marketplace work |
