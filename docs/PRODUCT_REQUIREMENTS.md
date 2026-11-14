@@ -14,7 +14,7 @@ Tags: `CONFIRMED` (owner direction, in MVP) Â· `HYPOTHESIS` (idea to validate) Â
 | Owner chat directions / master resume prompt (2026-11-14) | Highest for business intent | Not legal/compliance sign-off |
 | `ModInspect_Master_Blueprint_v1.1.md`, `AGENTS.md` | Architecture and invariants | v1.0 is historical |
 | Messenger screenshots | Stakeholder ideas | Not scope; not a licence to collect private data |
-| LINE export (`[LINE]ThuliaM #Dev.txt`) | Research examples of asking prices | Unverified, not sold prices, contains unrelated credentials and personal data. See `docs/DATA_RESEARCH_POLICY.md`. The raw file was **not present** in the Claude workspace on 2026-11-14 |
+| LINE export (`[LINE]ThuliaM #Dev.txt`) | Real asking prices the owner collected from Facebook (clarified 2026-11-14) | Text only: no listing URLs, no seller identity, asking not sold. Contains unrelated credentials and personal data, so it is processed locally only. See `docs/DATA_RESEARCH_POLICY.md` |
 | Running code + database | Truth for what exists | Docs never prove a feature exists |
 
 ## Requirements

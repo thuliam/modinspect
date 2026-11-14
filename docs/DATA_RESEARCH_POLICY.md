@@ -9,18 +9,27 @@ Baseline date: 2026-11-14. Complements `docs/COLLECTION.md`, `docs/REAL_CALIBRAT
 | Listing-level asking price | A specific public listing with its own URL/identity, captured with evidence | Yes, after human approval and sufficiency rules |
 | Search-result-level asking price | A price seen in a search result without independent listing evidence | **No** unless policy thresholds are legitimately met (currently ineligible) |
 | Seller-claimed sold/final price | Voluntary report of a completed sale | Distinct type with its own trust controls; never mixed with asking |
-| Research note / personal saved listing | Owner-saved text such as LINE notes | **No.** Research and test fixtures only |
+| Owner-collected listing text (no URL) | Facebook posts the owner copied into LINE | **No, not yet.** Research dataset; public use needs an approved provenance grade (ADR) |
 | MOCK / TEST | Fixtures and import templates | **Never** public |
 
-## Owner-saved LINE research
+## Owner-collected Facebook listings (LINE keep export)
 
-- The raw export contains unrelated passwords, API keys and personal data. It must never be committed, pasted into docs or logs,
-  uploaded to an external service, or processed automatically. It was **not present** in the Claude workspace on 2026-11-14.
-- Only an owner-provided **sanitised** subset (no seller identifiers, phone numbers, private chats, e-mails, credentials or exact
-  addresses) may be used. The owner should rotate any credential that appears in the raw file.
-- Examples seen in the owner's brief (about a dozen GPU/CPU/SSD asking prices dated 2026-11-12 to 2026-11-14) are **bounded examples**,
-  not market observations. They lack listing URLs, immutable evidence and seller identity, and some lack exact variants
-  (VRAM size, SSD capacity). They are intentionally **not reproduced here** so nobody anchors on them.
+Owner clarification, 2026-11-14: the LINE keep export is **not test data**. It holds real asking prices the owner found on
+Facebook (Marketplace and sale groups) and copied in as text. The owner asked for the relevant rows to be filtered into a dataset.
+
+- The raw export also contains unrelated passwords, API keys and personal notes. It is processed **only locally**, never committed,
+  never pasted into docs or logs, never uploaded. Messages that look like credentials are dropped before parsing. The owner should
+  rotate any credential that appears in it (gate G-5).
+- `cli/research_line_extract.php` (read-only, local catalog only) turns the export into `storage/research/line_facebook_2026/`
+  (`research_listings_sanitized.csv`, `research_report.json`). That folder is git-ignored. The CSV has no seller names, phone numbers,
+  URLs, e-mails, LINE ids, shop names or locations.
+- Provenance grade: `OWNER_COLLECTED_TEXT` / `OWNER_TEXT_NO_URL`, price type `asking`. Rows have **no listing URL and no immutable
+  evidence snapshot**, so under the current rule (REAL approval needs listing-level provenance) they cannot be approved. Allowing
+  them into public prices needs a new provenance grade and an ADR; until then they are market research, not accepted observations.
+- Row-level quality flags instead of silent cleaning: `duplicate_of_row` (reposts), `listing_type=bundle`, `wanted_or_trade`,
+  `defective_hint`, `condition_class=new_sealed`, `price_anomaly`, `NEARBY_MASTER_MODEL_REJECTED`, `PREFIX_INFERRED`,
+  `SHORTHAND_SUFFIX_S`, `WARRANTY_ENDED_BEFORE_NOTE`. `variant_key` = model + VRAM so 8 GB and 16 GB cards are never merged.
+- Dates: `note_date` is when the owner saved the text in LINE, not the post date. Warranty years are converted from Buddhist era.
 
 ## What to preserve per research row
 
