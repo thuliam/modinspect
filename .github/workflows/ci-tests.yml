@@ -1,0 +1,80 @@
+name: ModInspect CI - Tests and Asset Guard
+
+# Runs the isolated regression suite and the admin vendor asset guard on a clean checkout.
+# NO deploy, NO secrets, NO connection to shared DEV or any hosting. The database is an ephemeral
+# MariaDB service container that exists only for the duration of the job.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: modinspect-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: PHP 8.3 + MariaDB 10.6 regression suite
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      mariadb:
+        image: mariadb:10.6
+        env:
+          # Ephemeral CI-only credential for a throwaway container; not a secret.
+          MARIADB_ROOT_PASSWORD: ci-ephemeral-root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - name: Checkout tracked project files
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Guard - no environment files or key material tracked
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(^|/)\.env(\..*)?$' | grep -vE '\.example$'; then
+            echo "A real .env file is tracked." >&2
+            exit 1
+          fi
+
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql, mbstring, curl
+          coverage: none
+          tools: none
+
+      - name: Admin vendor asset guard (hash-pinned, official DataTables)
+        shell: bash
+        run: php cli/admin_vendor_manifest.php --verify
+
+      - name: Create isolated test environment file
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .env.testing.example .env.testing
+          sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=ci-ephemeral-root/' .env.testing
+          grep -E '^(DB_HOST|DB_DATABASE)=' .env.testing
+
+      - name: Bootstrap isolated test database
+        shell: bash
+        env:
+          MODINSPECT_ENV_FILE: .env.testing
+        run: php tests/bootstrap_test_db.php --fresh
+
+      - name: Run regression suite
+        shell: bash
+        env:
+          MODINSPECT_ENV_FILE: .env.testing
+        run: php tests/run.php

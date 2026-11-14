@@ -5,17 +5,17 @@
 Everything from section 1 down is the **September OFFICE to STUDIO handoff and is historical**. Current truth is
 `docs/PROJECT_STATUS.md` section 0, then `docs/SPRINT_TRACKER.md`.
 
-- Branch/HEAD: `studio` @ `4f6713c`, **nothing committed this session**. `origin/main` @ `4b84d19` has 2 CI-only commits `studio` lacks. Do not switch branches, reset, force-push or clean; reconcile per `docs/DECISION_LOG.md` (G-1).
-- Open uncommitted work: see the list in `docs/PROJECT_STATUS.md` section 0. Do not discard it. The untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` belongs to the owner (parked, documentation only).
-- Active program: Sprint 0 complete; Sprint 1 started. Next approved task: **none until the owner picks a Sprint option** from the baseline report.
+- Branch/HEAD: work is on `checkpoint/claude-baseline-2026-11-14` (local, **not pushed**): baseline `5b05a31`, merge of `origin/main` `0e48e69`, then the Sprint 1 commit(s). `studio`/`office` untouched at `4f6713c`. Do not reset, force-push or clean; the owner decides push/PR/moving `studio` (G-1).
+- Open uncommitted work: none of mine. The untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` belongs to the owner (parked, documentation only).
+- Active program: Sprint 0 complete; Sprint 1 engineering slice done (commit, CI authored, HTTP E2E, public gate fix); waiting for the owner re-UAT, a push to run CI, and the next Sprint choice.
 - Safe commands (no secrets):
   - `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` is the PHP to use (not on the Git Bash PATH).
-  - Tests: `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` (isolated `127.0.0.1/modinspect_test`). **Always** set `MODINSPECT_ENV_FILE=.env.testing` for CLI that touches the DB; without it the app reads `.env` = shared Cloud DEV.
+  - Tests (32 steps, includes a real-HTTP E2E that starts its own PHP server and writes committed rows to the TEST db only): `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` (isolated `127.0.0.1/modinspect_test`). **Always** set `MODINSPECT_ENV_FILE=.env.testing` for CLI that touches the DB; without it the app reads `.env` = shared Cloud DEV.
   - Vendor check: `php cli/admin_vendor_manifest.php --verify`.
   - Browser testing: run `php -S 127.0.0.1:8099 -t public` with `MODINSPECT_ENV_FILE` pointing at an env file whose DB is the local test DB **and** whose `APP_URL` is `http://127.0.0.1:8099` (form actions and redirects use `APP_URL`; the default `.env.testing` URL sends logins to the Apache site on port 80). Create a throwaway admin in the test DB only.
 - Admin tables: official DataTables 1.13.11. Table source attribute is `data-source-url` (not `data-ajax`); `ajax.data` must extend the request.
-- Owner gates: G-1 commit strategy, G-2 Admin re-UAT, G-3 visual direction (`docs/UX_UI_SYSTEM.md`), G-4 REAL evidence review (88 pending, 0 approved), G-5 rotate credentials from the raw LINE export, G-6 legal direction (blacklist/fee/escrow stay out of scope), G-7 Font Awesome download approval.
-- Known not-done: Font Awesome `.html` font 404, login icon glyph, public mobile header, internal footer text, browser E2E path, CI port, Action columns still sortable.
+- Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction (`docs/UX_UI_SYSTEM.md`), G-4 REAL evidence review (88 pending, 0 approved), G-5 rotate credentials from the raw LINE export, G-6 legal direction (blacklist/fee/escrow stay out of scope), G-7 Font Awesome download approval.
+- Known not-done: Font Awesome `.html` font 404 (needs G-7 approval), login icon glyph, public mobile header, internal footer text, stale 25-column `examples/import/market_evidence_template.csv`, Action columns still sortable, `ci-tests.yml` never run on GitHub, no positive public price read (needs owner-approved REAL evidence).
 - A read-only count query was run once against shared DEV (SELECT only, in a READ ONLY transaction). One evaluator CLI (`cli/evaluate_validation_quality.php`, SELECT-only) also ran against DEV by mistake of omitted env selection; it performs no writes.
 
 ## 1. Handoff Context

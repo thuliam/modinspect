@@ -2,28 +2,28 @@
 
 ## 0. Canonical Current State (2026-11-14, Asia/Bangkok, Claude takeover baseline)
 
-**Overall: PARTIAL.** Engineering baseline is verified and repaired; public experience, owner acceptance and real data are not ready.
+**Overall: PARTIAL.** Engineering baseline and Sprint 1 engineering slice are verified; public experience, owner acceptance and real data are not ready.
 No production deploy, no new paid service, no mutation of shared Cloud DEV.
 
 | Item | Verified state |
 |---|---|
-| Source of truth | Local working tree `C:\laragon\www\modinspect`, branch `studio`, HEAD `4f6713c`. `studio` = `office` = `4f6713c`; `origin/main` = `4b84d19` adds only 2 CI commits (463 lines, no app code). `studio` is 0 ahead / 2 behind `origin/main` (local remote-tracking refs, last fetch unknown) |
-| Uncommitted work | Modified: `.gitignore`, 9 admin views, `admin_header.php`, `admin.js`, `AdminDataTableService.php`, 5 tests, `tests/run.php`, `docs/*`, `context/project_state.json`. New: `cli/admin_vendor_manifest.php`, `tests/admin_assets_integrity_test.php`, `public/assets/admin/vendor/` (now trackable), 7 docs. Untracked and not mine: `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal, documentation only). **Nothing committed.** |
+| Source of truth | Branch `checkpoint/claude-baseline-2026-11-14` (local only, **not pushed**): `5b05a31` baseline + merge `0e48e69` of `origin/main` (`4b84d19`, CI-only commits, no conflicts) + later Sprint 1 commit(s). `studio`/`office` remain `4f6713c`. Working tree `C:aragonwwwmodinspect` |
+| Uncommitted work | Only the owner-owned untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal) once the Sprint 1 commit is made. Nothing pushed |
 | Runtime | Studio: Laragon Apache + PHP 8.3.33 (also 8.1, 8.4 installed), MySQL 8.4.3 local on 3306. `php` is not on the Git Bash PATH; use `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` |
 | Databases | Shared DEV (`.env`): MariaDB 10.6.28, 41 products, 108 aliases, 99 observations (88 REAL pending, 11 MOCK_TEST pending, **0 REAL approved**), 41 snapshots all `legacy_unavailable`, 70 audit rows (read-only counts, 2026-11-14). Isolated TEST (`.env.testing`): `127.0.0.1/modinspect_test`, used by every mutating test |
-| Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, 31 steps, after repairing 5 stale tests (see Decision Log DL-005) |
+| Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, **32 steps**, run twice in a row and from a freshly bootstrapped test DB (includes the real-HTTP end-to-end test) |
 | Admin tables | Official DataTables 1.13.11 restored (was a hand-written adapter); browser-verified on an isolated server. Owner re-UAT pending |
 | Assets | `public/assets/admin/vendor/` hash-pinned by `MANIFEST.json`; clean-checkout simulation passes (356 files, no `.env`) |
-| Public site | Honest no-data states verified; mobile header and several UX defects logged in `docs/UX_UI_SYSTEM.md` |
-| CI | GitHub workflows exist only on `origin/main`; not in this tree, not run here |
+| Public site | Honest no-data verified. **Fixed a public-price leak** (approved TEST-import rows + legacy snapshot surfaced a price; DL-007). Mobile header and other UX defects logged in `docs/UX_UI_SYSTEM.md` |
+| CI | Workflows from `origin/main` merged locally; new `ci-tests.yml` (MariaDB 10.6 + suite + vendor guard) authored but **never run** (not pushed) |
 | Release | HOLD. No staging, no production isolation |
 
 Defects fixed in this baseline: stale tests (array `+` dropping `start`, missing admin session, copy drift, hard-coded
 `C:\xampp8.1\php\php.exe`), vendor assets ignored by git, DataTables adapter vs official library, `data-ajax` init collision that
-dropped filters, Admin freshness displayed as 8,500% (unit was already a percentage).
+dropped filters, Admin freshness displayed as 8,500% (unit was already a percentage), and (Sprint 1) a public-price leak where approved TEST-import rows made a legacy snapshot appear as a market price.
 Not fixed (logged): Font Awesome `.html` font URLs (404), login icon glyph, public mobile header, internal footer text.
 
-Owner gates: G-1 commit strategy, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
+Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
 G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.
 
 Related: `docs/PRODUCT_REQUIREMENTS.md`, `docs/ROADMAP.md`, `docs/SPRINT_TRACKER.md`, `docs/UX_UI_SYSTEM.md`,

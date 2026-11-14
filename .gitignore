@@ -21,3 +21,4 @@ var/import/
 
 Thumbs.db
 .DS_Store
+storage/import_uploads/

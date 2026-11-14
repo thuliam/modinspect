@@ -54,8 +54,8 @@ try {
 
     $suffix = bin2hex(random_bytes(4));
     $db->prepare("INSERT INTO data_sources (source_key,name,domain,source_type,access_method,allowed_collection_method,risk_level,reliability_score,evidence_quality,freshness_expectation_days,is_active,is_paused)
-                  VALUES (:source_key,'Stability real fixture','fixture.stability','research','manual','manual','low',90,'high',14,1,0)")
-        ->execute(['source_key' => 'stability_real_fixture_' . $suffix]);
+                  VALUES (:source_key,'Stability neutral source','stability.example.org','research','manual','manual','low',90,'high',14,1,0)")
+        ->execute(['source_key' => 'stability_neutral_source_' . $suffix]);
     $sourceId = (int)$db->lastInsertId();
 
     $db->prepare("INSERT INTO data_sources (source_key,name,domain,source_type,access_method,allowed_collection_method,risk_level,reliability_score,evidence_quality,freshness_expectation_days,is_active,is_paused)
