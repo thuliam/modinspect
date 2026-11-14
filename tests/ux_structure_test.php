@@ -42,9 +42,8 @@ assert_ux(str_contains($flows, 'Admin Flow A'), 'User flows must include admin r
 foreach ([$agents, $status, $rules] as $contents) {
     assert_ux(str_contains($contents, 'OWNER_APPROVAL_REQUIRED'), 'Zero-cost POC policy must be persisted');
 }
-
-assert_ux(str_contains($header, 'ModInspect'), 'Header must use ModInspect brand');
-assert_ux(str_contains($footer, 'ModInspect'), 'Footer must use ModInspect brand');
+assert_ux(str_contains($header, 'modinpect'), 'Header must use the selected modinpect wordmark (DL-019, owner brand kit)');
+assert_ux(str_contains($footer, 'modinpect'), 'Footer must use the selected modinpect wordmark (DL-019, owner brand kit)');
 assert_ux(!str_contains($header . $footer, 'PC Price Radar'), 'Global shell must not use legacy PC Price Radar brand');
 assert_ux(!str_contains($css, 'fonts.googleapis'), 'CSS must not import Google Fonts');
 assert_ux(!str_contains($css, 'JetBrains Mono'), 'CSS must use local font tokens instead of remote-oriented font names');

@@ -29,7 +29,9 @@ $hasMarketSnapshot = !empty($product['median'])
 $manifest = json_decode((string) ($product['calculation_manifest'] ?? ''), true) ?: [];
 $confidence = $manifest['confidence'] ?? [];
 ?>
+<?php require_once ROOT_PATH . '/app/Views/components/hw-art.php'; ?>
 <article class="card product-card mi-product-card <?= $hasMarketSnapshot ? 'has-price' : 'no-price' ?>">
+    <?php if (!empty($artType)): ?><div class="pc-art"><?= mi_art($artType) ?></div><?php endif; ?>
     <div class="product-card-meta">
         <span><?= htmlspecialchars($product['category_name'] ?? 'Hardware') ?></span>
         <span><?= htmlspecialchars($product['brand_name'] ?? '') ?></span>

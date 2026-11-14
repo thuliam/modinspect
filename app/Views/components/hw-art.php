@@ -1,0 +1,91 @@
+<?php
+/**
+ * Original hardware illustrations (SVG, no external images) for the public site.
+ * mi_art('gpu'|'cpu'|'ram'|'ssd'|'laptop'|'tower'|'monitor'|'hero'). Gradients come from the shared <defs> in layouts/header.php.
+ */
+if (!function_exists('mi_art_fan')) {
+    function mi_art_fan(float $x, float $y, float $r): string
+    {
+        $blades = '';
+        for ($i = 0; $i < 7; $i++) {
+            $blades .= '<path d="M0 0 C' . round($r * .15, 1) . ' ' . round(-$r * .35, 1) . ' ' . round($r * .55, 1) . ' ' . round(-$r * .8, 1) . ' ' . round($r * .15, 1) . ' ' . round(-$r * .92, 1) . ' C' . round(-$r * .1, 1) . ' ' . round(-$r * .6, 1) . ' ' . round(-$r * .1, 1) . ' ' . round(-$r * .25, 1) . ' 0 0Z" transform="rotate(' . ($i * 51.4) . ')" fill="url(#miLime)" opacity=".92"/>';
+        }
+        return '<g transform="translate(' . $x . ' ' . $y . ')"><circle r="' . $r . '" fill="#0c100e" stroke="#d4f139" stroke-opacity=".55" stroke-width="1.5"/>' . $blades . '<circle r="' . round($r * .16, 1) . '" fill="#0c100e" stroke="#d4f139" stroke-width="1"/></g>';
+    }
+}
+if (!function_exists('mi_art_gpu')) {
+    function mi_art_gpu(float $x = 0, float $y = 0, float $s = 1): string
+    {
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="6" y="22" width="188" height="64" rx="8" fill="url(#miMetal)" stroke="#59625d"/><rect x="6" y="22" width="188" height="7" rx="3" fill="url(#miLime)" opacity=".85"/>'
+            . mi_art_fan(56, 56, 24) . mi_art_fan(112, 56, 24) . mi_art_fan(162, 56, 17)
+            . '<rect x="26" y="86" width="70" height="6" rx="2" fill="#8c938f"/></g>';
+    }
+}
+if (!function_exists('mi_art_ssd')) {
+    function mi_art_ssd(float $x = 0, float $y = 0, float $s = 1): string
+    {
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="0" y="0" width="64" height="86" rx="7" fill="url(#miMetal)" stroke="#59625d"/><rect x="0" y="0" width="64" height="9" rx="4" fill="url(#miLime)"/><text x="32" y="50" fill="#e8ece9" font-family="Arial,sans-serif" font-size="15" font-weight="700" text-anchor="middle">SSD</text><path d="M12 68h40" stroke="#d4f139" stroke-width="2" stroke-linecap="round" opacity=".7"/></g>';
+    }
+}
+if (!function_exists('mi_art_tower')) {
+    function mi_art_tower(float $x = 0, float $y = 0, float $s = 1): string
+    {
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="0" y="0" width="120" height="190" rx="9" fill="#121715" stroke="#59625d" stroke-width="1.5"/><rect x="8" y="8" width="104" height="174" rx="6" fill="#0a0d0c" stroke="#d4f139" stroke-opacity=".25"/>'
+            . mi_art_fan(60, 42, 25) . mi_art_fan(60, 98, 25) . mi_art_fan(60, 154, 25) . '<rect x="0" y="0" width="120" height="190" rx="9" fill="url(#miGlow)" opacity=".5"/></g>';
+    }
+}
+if (!function_exists('mi_art_monitor')) {
+    function mi_art_monitor(float $x = 0, float $y = 0, float $s = 1): string
+    {
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="0" y="0" width="190" height="112" rx="6" fill="#0b0e0d" stroke="#59625d" stroke-width="2"/><rect x="6" y="6" width="178" height="100" rx="3" fill="url(#miScreen)"/><path d="M6 106 L92 6 L130 6 L40 106Z" fill="#d4f139" opacity=".18"/><path d="M80 112h30l6 26H74z" fill="#1e2421"/><rect x="58" y="138" width="74" height="5" rx="2.5" fill="#59625d"/></g>';
+    }
+}
+if (!function_exists('mi_art_laptop')) {
+    function mi_art_laptop(float $x = 0, float $y = 0, float $s = 1): string
+    {
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><path d="M24 0h152l10 100H14z" fill="#0b0e0d" stroke="#59625d" stroke-width="2"/><path d="M32 8h136l8 84H24z" fill="url(#miScreen)"/><path d="M4 100h192l-8 12H12z" fill="url(#miMetal)" stroke="#59625d"/><rect x="80" y="102" width="40" height="4" rx="2" fill="#6d7571"/></g>';
+    }
+}
+if (!function_exists('mi_art_cpu')) {
+    function mi_art_cpu(float $x = 0, float $y = 0, float $s = 1): string
+    {
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="6" y="6" width="84" height="84" rx="7" fill="none" stroke="#8c938f" stroke-width="3" stroke-dasharray="2.6 4"/><rect x="14" y="14" width="68" height="68" rx="7" fill="url(#miMetal)" stroke="#59625d"/><rect x="28" y="28" width="40" height="40" rx="4" fill="#0c100e" stroke="#d4f139" stroke-width="1.5"/><path d="M38 48h20M48 38v20" stroke="#d4f139" stroke-width="2" stroke-linecap="round"/></g>';
+    }
+}
+if (!function_exists('mi_art_ram')) {
+    function mi_art_ram(float $x = 0, float $y = 0, float $s = 1): string
+    {
+        $chips = '';
+        for ($i = 0; $i < 6; $i++) {
+            $chips .= '<rect x="' . (18 + $i * 25) . '" y="14" width="19" height="18" rx="2" fill="#0c100e" stroke="#59625d"/>';
+        }
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="0" y="0" width="176" height="46" rx="5" fill="url(#miMetal)" stroke="#59625d"/><rect x="0" y="0" width="176" height="6" rx="3" fill="url(#miLime)"/>' . $chips . '<path d="M6 40h164" stroke="#caa94a" stroke-width="3" stroke-dasharray="3 2"/></g>';
+    }
+}
+if (!function_exists('mi_art')) {
+    function mi_art(string $type, string $class = ''): string
+    {
+        $svg = static fn(string $vb, string $inner): string => '<svg class="mi-art ' . htmlspecialchars($class) . '" viewBox="' . $vb . '" role="img" aria-hidden="true" focusable="false">' . $inner . '</svg>';
+        return match ($type) {
+            'gpu' => $svg('0 0 200 110', mi_art_gpu()),
+            'cpu' => $svg('0 0 96 96', mi_art_cpu()),
+            'ram' => $svg('0 0 176 46', mi_art_ram()),
+            'ssd', 'storage' => $svg('0 0 64 86', mi_art_ssd()),
+            'laptop' => $svg('0 0 200 114', mi_art_laptop()),
+            'tower' => $svg('0 0 120 190', mi_art_tower()),
+            'monitor' => $svg('0 0 190 146', mi_art_monitor()),
+            'hero' => $svg('0 0 640 340',
+                '<ellipse cx="330" cy="318" rx="290" ry="14" fill="#d4f139" opacity=".12"/>'
+                . mi_art_monitor(430, 70, 1.05) . mi_art_tower(300, 40, 1.15) . mi_art_laptop(20, 120, 1.3)
+                . mi_art_gpu(250, 232, 1.2) . mi_art_ssd(500, 238, 0.9)),
+            default => '',
+        };
+    }
+}
+if (!function_exists('mi_logo')) {
+    /** Brand mark: lime circuit "M" with nodes and a check. Drawn here as SVG; not the raster from the brand kit. */
+    function mi_logo(): string
+    {
+        return '<svg class="mi-logo-mark" viewBox="0 0 40 32" aria-hidden="true" focusable="false"><path d="M4 28V6l8-2 8 12 8-12 8 2v22" fill="none" stroke="url(#miLime)" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 22l4 4 8-9" fill="none" stroke="#e8ece9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="6" r="2.2" fill="#d4f139"/><circle cx="36" cy="6" r="2.2" fill="#d4f139"/><circle cx="20" cy="16" r="1.8" fill="#d4f139"/></svg>';
+    }
+}

@@ -43,11 +43,11 @@ expect(trim(render_range(['q1' => 9000, 'median' => 7500, 'q3' => 8500], 'lg')) 
 expect(trim(render_range([], 'lg')) === '', 'No data must render nothing (the caller shows the honest no-data state)');
 
 // Contrast guardrail: the band (the one accent) must reach 3:1 against its track and against the card surface.
-$css = (string)file_get_contents(ROOT_PATH . '/public/assets/app.css');
+$css = (string)file_get_contents(ROOT_PATH . '/public/assets/mi-theme.css');
 preg_match('/--mb-accent:\s*(#[0-9a-f]{6})/i', $css, $a);
 preg_match('/--mb-track:\s*(#[0-9a-f]{6})/i', $css, $t);
 preg_match('/--mb-surface:\s*(#[0-9a-f]{6})/i', $css, $s);
-expect(isset($a[1], $t[1], $s[1]), 'Market Board tokens missing from app.css');
+expect(isset($a[1], $t[1], $s[1]), 'Market Board tokens missing from mi-theme.css');
 $lum = static function (string $hex): float {
     $c = array_map(static fn(string $h): float => (hexdec($h) / 255) <= 0.03928 ? (hexdec($h) / 255) / 12.92 : (((hexdec($h) / 255) + 0.055) / 1.055) ** 2.4, str_split(ltrim($hex, '#'), 2));
     return 0.2126 * $c[0] + 0.7152 * $c[1] + 0.0722 * $c[2];

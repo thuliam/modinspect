@@ -1,57 +1,67 @@
 <?php
+require_once ROOT_PATH . '/app/Views/components/hw-art.php';
 $counts = $counts ?? ['models' => 0, 'aliases' => 0, 'priced' => 0, 'categories' => 0];
-$ico = static fn(string $paths): string => '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' . $paths . '</svg>';
-$tools = [
-    ['href' => '/price?category=cpu', 'title' => 'เช็กราคา CPU', 'text' => 'ค้นรุ่นซีพียูมือสอง ดูช่วงราคาที่พบเมื่อมีข้อมูลที่ผ่านการตรวจสอบพอ', 'icon' => $ico('<rect x="6" y="6" width="12" height="12" rx="2"/><rect x="10" y="10" width="4" height="4"/><path d="M9 3v3m6-3v3M9 18v3m6-3v3M3 9h3m-3 6h3m12-6h3m-3 6h3"/>')],
-    ['href' => '/price?category=gpu', 'title' => 'เช็กราคา GPU', 'text' => 'ค้นรุ่นการ์ดจอมือสอง แยกรุ่นให้ชัด เช่น 3060 กับ 3060 Ti ไม่ปนกัน', 'icon' => $ico('<rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="9" cy="12" r="2.5"/><path d="M15 10v4M18 10v4M5 17v2"/>')],
-    ['href' => '/deal-checker', 'title' => 'Deal Checker', 'text' => 'ใส่ราคาที่เจอ ระบบเทียบกับช่วงตลาด และบอกตรงๆ เมื่อข้อมูลยังไม่พอ', 'icon' => $ico('<path d="M4 18V9m6 9V5m6 13v-6m4 6H3"/>')],
-    ['href' => '/methodology', 'title' => 'วิธีคำนวณ', 'text' => 'ดูว่าราคามาจากไหน ราคาประกาศต่างจากราคาปิดดีลอย่างไร และข้อจำกัดของข้อมูล', 'icon' => $ico('<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>')],
+$cats = [
+    ['href' => '/price?category=cpu', 'title' => 'CPU', 'sub' => 'ซีพียู', 'art' => 'cpu'],
+    ['href' => '/price?category=gpu', 'title' => 'GPU', 'sub' => 'การ์ดจอ', 'art' => 'gpu'],
+    ['href' => '/price?category=ram', 'title' => 'RAM', 'sub' => 'หน่วยความจำ', 'art' => 'ram'],
+    ['href' => '/price?category=storage', 'title' => 'Storage', 'sub' => 'SSD / HDD', 'art' => 'ssd'],
+    ['href' => '/deal-checker', 'title' => 'Deal Checker', 'sub' => 'เทียบราคาที่เจอ', 'icon' => 'fa-balance-scale'],
+    ['href' => '/methodology', 'title' => 'วิธีคำนวณ', 'sub' => 'ราคามาจากไหน', 'icon' => 'fa-calculator'],
 ];
+$why = [
+    ['icon' => 'fa-search-dollar', 'fa' => 'fa-tags', 'title' => 'ราคาที่คัดกรองแล้ว', 'text' => 'ตัดประกาศที่ผิดปกติออกก่อนคำนวณ แสดงช่วงราคาและราคากลาง'],
+    ['icon' => 'fa-microchip', 'fa' => 'fa-microchip', 'title' => 'แยกรุ่นให้ชัด', 'text' => 'เช่น 3060 กับ 3060 Ti ไม่ปนกัน ไม่เฉลี่ยข้ามรุ่น'],
+    ['icon' => 'fa-file-alt', 'fa' => 'fa-file-alt', 'title' => 'บอกที่มาของตัวเลข', 'text' => 'ดูจำนวนตัวอย่าง ความสดของข้อมูล และความน่าเชื่อถือ'],
+    ['icon' => 'fa-shield-alt', 'fa' => 'fa-shield-alt', 'title' => 'พูดตรงเมื่อข้อมูลไม่พอ', 'text' => 'ไม่สร้างราคาตลาดปลอม ถ้ายังไม่พอจะบอกว่าไม่พอ'],
+];
+$steps = [
+    ['fa' => 'fa-search', 'title' => 'ค้นหารุ่น', 'text' => 'พิมพ์ชื่อรุ่นหรือรหัสยอดนิยม'],
+    ['fa' => 'fa-chart-line', 'title' => 'ดูช่วงราคา', 'text' => 'ช่วงราคาที่พบ ราคากลาง และจำนวนตัวอย่าง'],
+    ['fa' => 'fa-balance-scale', 'title' => 'เช็กดีล', 'text' => 'ใส่ราคาที่เจอเพื่อเทียบกับตลาด'],
+    ['fa' => 'fa-check-circle', 'title' => 'ตัดสินใจ', 'text' => 'ตรวจสภาพ ประกัน อุปกรณ์เอง แล้วค่อยซื้อ'],
+];
+$artFor = static fn(string $name): string => match (strtolower(trim($name))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' };
+$featured = array_slice($products ?? [], 0, 10);
 ?>
 <section class="mi-hero">
-    <canvas id="cloud" aria-hidden="true"></canvas>
-    <div class="container mi-hero-grid">
-        <div class="mi-hero-copy" data-hero>
-            <span class="eyebrow reveal">ModInspect</span>
-            <h1 class="split"><span class="ln"><span>เช็กราคา เช็กสภาพ</span></span><span class="ln"><span>ก่อนซื้อขายคอมมือสอง</span></span></h1>
-            <div class="mi-hero-meta">
-                <p class="lead reveal" style="--d:420ms">ค้นหารุ่น CPU/GPU มือสอง ดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และใช้ Deal Checker เปรียบเทียบราคาที่คุณเจออย่างเป็นกลาง</p>
-                <div class="mi-hero-act reveal" style="--d:560ms">
-                    <form class="mi-search" action="<?= $base ?>/price" method="get">
-                        <label for="home-search">ค้นหารุ่นสินค้า</label>
-                        <div>
-                            <input id="home-search" name="q" placeholder="เช่น Ryzen 7 5700X3D หรือ RTX 3070" required>
-                            <button type="submit">เช็กราคา</button>
-                        </div>
-                    </form>
-                    <div class="mi-quick-links" aria-label="Search examples">
-                        <span>ตัวอย่าง:</span>
-                        <a href="<?= $base ?>/price?q=5700X3D">5700X3D</a>
-                        <a href="<?= $base ?>/price?q=RTX+3070">RTX 3070</a>
-                        <a href="<?= $base ?>/price?q=RX+6700">RX 6700</a>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mi-hero-copy">
+                <h1 class="reveal">เช็กราคา<br><em>อุปกรณ์ IT มือสอง</em></h1>
+                <p class="mi-sub reveal" style="--d:100ms">ค้นหา <i>•</i> เทียบ <i>•</i> ตรวจสอบที่มา <i>•</i> ตัดสินใจได้คุ้มกว่า</p>
+                <form class="mi-search reveal" style="--d:200ms" action="<?= $base ?>/price" method="get">
+                    <label class="sr-only" for="home-search">ค้นหารุ่นสินค้า</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span></div>
+                        <input id="home-search" class="form-control" name="q" placeholder="ค้นหา เช่น Ryzen 7 5700X3D หรือ RTX 3070" required>
+                        <div class="input-group-append"><button class="btn btn-lime" type="submit">เช็กราคา</button></div>
                     </div>
-                    <p class="mi-data-note">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
+                </form>
+                <div class="mi-chips reveal" style="--d:300ms" aria-label="Search examples">
+                    <span><i class="fas fa-fire" aria-hidden="true"></i> ยอดนิยม:</span>
+                    <a href="<?= $base ?>/price?q=5700X3D">5700X3D</a>
+                    <a href="<?= $base ?>/price?q=RTX+3070">RTX 3070</a>
+                    <a href="<?= $base ?>/price?q=RX+6700">RX 6700</a>
                 </div>
+                <p class="mi-data-note reveal" style="--d:400ms">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
             </div>
+            <div class="col-lg-6 mi-hero-art reveal" style="--d:150ms"><?= mi_art('hero') ?></div>
         </div>
     </div>
-    <div class="mi-scrollcue" aria-hidden="true"><span>เลื่อนลง</span><i></i></div>
 </section>
 
-<section class="vs-services" aria-labelledby="vs-tools-title">
-    <div class="container vs-services-grid">
-        <div class="vs-intro">
-            <h2 id="vs-tools-title" class="split"><span class="ln"><span>เช็กราคา</span></span><span class="ln"><span>ก่อนตัดสินใจซื้อขาย</span></span></h2>
-            <p class="vs-bar reveal" style="--d:200ms">เริ่มจากรุ่นที่สนใจ แล้วดูช่วงราคาที่พบ ที่มาของตัวเลข และความน่าเชื่อถือ ไม่มีราคาลอยที่อธิบายที่มาไม่ได้</p>
-            <a class="vs-more reveal" style="--d:320ms" href="<?= $base ?>/price"><span>เปิดดูราคาทั้งหมด</span><i aria-hidden="true">→</i></a>
-        </div>
-        <div class="vs-cards">
-            <?php foreach ($tools as $i => $tool): ?>
-                <div class="vs-cell">
-                    <a class="vs-card" href="<?= $base . $tool['href'] ?>">
-                        <span class="vs-top"><span class="vs-ico"><?= $tool['icon'] ?></span><span class="vs-n"><?= sprintf('%02d', $i + 1) ?></span></span>
-                        <h3><?= htmlspecialchars($tool['title']) ?></h3>
-                        <p><?= htmlspecialchars($tool['text']) ?></p>
+<section class="mi-block">
+    <div class="container">
+        <div class="mi-head"><h2><i class="mi-slash"></i>ค้นหาตามหมวดหมู่</h2><a href="<?= $base ?>/price">ดูหมวดหมู่ทั้งหมด <i class="fas fa-arrow-right" aria-hidden="true"></i></a></div>
+        <div class="row mi-cats">
+            <?php foreach ($cats as $i => $c): ?>
+                <div class="col-6 col-md-4 col-xl-2 mb-3">
+                    <a class="mi-cat reveal" style="--d:<?= $i * 70 ?>ms" href="<?= $base . $c['href'] ?>">
+                        <span class="mi-cat-art"><?= isset($c['art']) ? mi_art($c['art']) : '<i class="fas ' . $c['icon'] . '" aria-hidden="true"></i>' ?></span>
+                        <strong><?= htmlspecialchars($c['title']) ?></strong>
+                        <small><?= htmlspecialchars($c['sub']) ?></small>
+                        <span class="mi-go"><i class="fas fa-chevron-right" aria-hidden="true"></i></span>
                     </a>
                 </div>
             <?php endforeach; ?>
@@ -59,66 +69,82 @@ $tools = [
     </div>
 </section>
 
-<section class="container mi-section">
-    <div class="mi-section-head">
-        <div>
-            <span class="eyebrow">Price Index</span>
-            <h2>เลือกดูรุ่นสินค้า</h2>
-            <p>เปิดหน้ารุ่นสินค้าได้แม้ยังไม่มีราคาตลาด เพื่อดูสเปก สถานะข้อมูล และทางเลือกถัดไป</p>
-        </div>
-        <a class="button ghost" href="<?= $base ?>/price">ดูทั้งหมด</a>
-    </div>
-    <?php if ($products): ?>
-        <?php require ROOT_PATH . '/app/Views/components/product-list.php'; ?>
-    <?php else: ?>
-        <div class="mi-empty-state">
-            <h3>ข้อมูลตลาดยังไม่เพียงพอ</h3>
-            <p>ยังไม่มีสินค้าที่พร้อมแสดงเป็นรายการยอดนิยม ลองค้นหารุ่นที่ต้องการหรืออ่านวิธีคำนวณราคา</p>
-            <div class="mi-actions">
-                <a class="button" href="<?= $base ?>/price">ค้นหาสินค้า</a>
-                <a class="button ghost" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
-            </div>
-        </div>
-    <?php endif; ?>
-</section>
-
-<section class="vs-statement">
-    <div class="container vs-two">
-        <h2 class="split"><span class="ln"><span>ค้นหา.</span></span><span class="ln"><span>เทียบ.</span></span><span class="ln"><span>ตัดสินใจ.</span></span></h2>
-        <div class="reveal" style="--d:160ms">
-            <p class="vs-bar">ราคาที่แสดงคือราคาประกาศมือสองที่ผ่านการคัดกรอง ไม่ใช่ราคาปิดดีล ต้องดูสภาพ ประกัน และอุปกรณ์ประกอบเองเสมอ</p>
-            <ol class="vs-steps">
-                <li><b>ค้นหารุ่น</b><span>เริ่มจากชื่อรุ่นหรือรหัสยอดนิยม เช่น 5700X3D, RTX 3070</span></li>
-                <li><b>ดูช่วงราคา</b><span>ถ้ามีข้อมูลเพียงพอ ระบบจะแสดงช่วงราคาที่พบ ราคากลาง และความน่าเชื่อถือ</span></li>
-                <li><b>เช็กดีล</b><span>ใส่ราคาที่เจอเพื่อเทียบกับตลาด โดยยังต้องดูสภาพ ประกัน และอุปกรณ์ประกอบเอง</span></li>
-            </ol>
-            <a class="button" href="<?= $base ?>/methodology">อ่านวิธีคำนวณ</a>
-        </div>
-    </div>
-</section>
-
-<section class="vs-numbers" aria-labelledby="vs-num-title">
+<section class="mi-block">
     <div class="container">
-        <h2 id="vs-num-title" class="reveal">ตัวเลขของระบบวันนี้</h2>
-        <div class="vs-num-grid">
-            <div class="reveal"><b data-count="<?= (int) $counts['models'] ?>"><?= (int) $counts['models'] ?></b><span>รุ่นในฐานข้อมูล</span></div>
-            <div class="reveal" style="--d:100ms"><b data-count="<?= (int) $counts['aliases'] ?>"><?= (int) $counts['aliases'] ?></b><span>ชื่อเรียกที่ระบบรู้จัก</span></div>
-            <div class="reveal" style="--d:200ms"><b data-count="<?= (int) $counts['categories'] ?>"><?= (int) $counts['categories'] ?></b><span>หมวดสินค้า</span></div>
-            <div class="reveal" style="--d:300ms"><b data-count="<?= (int) $counts['priced'] ?>"><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีราคาผ่านการตรวจสอบ</span></div>
+        <div class="mi-head"><h2><i class="mi-slash"></i>ทำไมต้อง modinpect</h2></div>
+        <div class="row">
+            <?php foreach ($why as $i => $w): ?>
+                <div class="col-md-6 col-xl-3 mb-3">
+                    <div class="mi-why reveal" style="--d:<?= $i * 80 ?>ms">
+                        <span class="mi-why-ico"><i class="fas <?= $w['fa'] ?>" aria-hidden="true"></i></span>
+                        <div><h3><?= htmlspecialchars($w['title']) ?></h3><p><?= htmlspecialchars($w['text']) ?></p></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
-        <p class="vs-num-note reveal">ตัวเลขนับจากฐานข้อมูลจริง ไม่ปัดขึ้น ถ้ายังเป็น 0 คือยังไม่มีข้อมูลที่ผ่านการตรวจสอบพอจะแสดงราคา</p>
     </div>
 </section>
 
-<section class="vs-cta">
-    <div class="container vs-two">
-        <div>
-            <span class="eyebrow reveal">Deal Checker</span>
-            <h2 class="split"><span class="ln"><span>เจอราคาประกาศ</span></span><span class="ln"><span>แล้วไม่แน่ใจ?</span></span></h2>
+<section class="mi-block" id="featured">
+    <div class="container">
+        <div class="mi-head">
+            <h2><i class="mi-slash"></i>รุ่นแนะนำ</h2>
+            <div class="mi-tabs" role="tablist" aria-label="หมวดสินค้า">
+                <button type="button" class="active" data-filter="all">ทั้งหมด</button>
+                <?php foreach (array_unique(array_filter(array_column($featured, 'category_name'))) as $cn): ?>
+                    <button type="button" data-filter="<?= htmlspecialchars(strtolower($cn)) ?>"><?= htmlspecialchars($cn) ?></button>
+                <?php endforeach; ?>
+            </div>
+            <a href="<?= $base ?>/price">ดูรุ่นเพิ่มเติม <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
-        <div class="reveal" style="--d:160ms">
-            <p class="vs-bar">เปรียบเทียบราคาที่คุณเจอกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p>
-            <a class="button" href="<?= $base ?>/deal-checker">เปิด Deal Checker</a>
+        <?php if ($featured): ?>
+            <div class="row mi-featured">
+                <?php foreach ($featured as $product): ?>
+                    <div class="col-sm-6 col-lg-4 col-xl mb-3" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
+                        <?php $artType = $artFor((string) ($product['category_name'] ?? '')); require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <div class="mi-empty-state"><h3>ข้อมูลตลาดยังไม่เพียงพอ</h3><p>ยังไม่มีสินค้าที่พร้อมแสดง ลองค้นหารุ่นที่ต้องการหรืออ่านวิธีคำนวณราคา</p></div>
+        <?php endif; ?>
+    </div>
+</section>
+
+<section class="mi-block">
+    <div class="container">
+        <div class="mi-head"><div><h2>How it works</h2><p class="mb-0">ใช้งานง่าย 4 ขั้นตอน</p></div></div>
+        <div class="row mi-steps">
+            <?php foreach ($steps as $i => $s): ?>
+                <div class="col-md-6 col-xl-3 mb-3">
+                    <div class="mi-step reveal" style="--d:<?= $i * 80 ?>ms"><b><?= $i + 1 ?></b><i class="fas <?= $s['fa'] ?>" aria-hidden="true"></i><div><h3><?= htmlspecialchars($s['title']) ?></h3><p><?= htmlspecialchars($s['text']) ?></p></div></div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<section class="mi-block">
+    <div class="container">
+        <div class="mi-metrics reveal">
+            <h2><i class="mi-slash"></i>modinpect ในตัวเลข</h2>
+            <div class="row text-center text-md-left">
+                <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['models'] ?>"><?= (int) $counts['models'] ?></b><span>รุ่นในฐานข้อมูล</span></div>
+                <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['aliases'] ?>"><?= (int) $counts['aliases'] ?></b><span>ชื่อเรียกที่ระบบรู้จัก</span></div>
+                <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['categories'] ?>"><?= (int) $counts['categories'] ?></b><span>หมวดสินค้า</span></div>
+                <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['priced'] ?>"><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีราคาผ่านการตรวจสอบ</span></div>
+            </div>
+            <p class="mi-note">ตัวเลขนับจากฐานข้อมูลจริง ไม่ปัดขึ้น ถ้ายังเป็น 0 คือยังไม่มีข้อมูลที่ผ่านการตรวจสอบพอจะแสดงราคา</p>
+        </div>
+    </div>
+</section>
+
+<section class="mi-block pb-5">
+    <div class="container">
+        <div class="mi-cta reveal">
+            <div class="mi-cta-art"><?= mi_art('laptop') ?></div>
+            <div class="mi-cta-copy"><h2>เจอราคาประกาศแล้วไม่แน่ใจ?</h2><p>เปรียบเทียบราคาที่คุณเจอกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p></div>
+            <div class="mi-cta-act"><a class="btn btn-lime" href="<?= $base ?>/deal-checker"><i class="fas fa-balance-scale" aria-hidden="true"></i> เปิด Deal Checker</a><a class="btn btn-ghost" href="<?= $base ?>/price"><i class="fas fa-search" aria-hidden="true"></i> เลือกดูรุ่น</a></div>
         </div>
     </div>
 </section>
