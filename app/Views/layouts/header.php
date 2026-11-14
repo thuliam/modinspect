@@ -11,9 +11,9 @@ $authUser = $auth_user ?? (new AuthService())->currentUser();
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง">
 <title><?= htmlspecialchars($title ?? $config['name']) ?> · <?= htmlspecialchars($config['name']) ?></title>
-<link rel="stylesheet" href="<?= $base ?>/assets/app.css">
+<link rel="stylesheet" href="<?= $base ?>/assets/app.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/app.css') ?>">
 </head>
-<body>
+<body class="mb">
 <header class="site-header">
     <div class="container nav public-nav">
         <a class="brand" href="<?= $base ?>/" aria-label="ModInspect home">

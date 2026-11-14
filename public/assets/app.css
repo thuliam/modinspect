@@ -1205,3 +1205,62 @@ h1, h2, .mi-hero-copy .lead { text-wrap: balance; }
     /* Keep the headline phrases whole but scale so the longest one always fits (375px -> ~27.8px, 320px -> ~23.7px). */
     .mi-hero-copy h1 { font-size: clamp(1.35rem, 7.4vw, 2.2rem); }
 }
+
+/* ===== Market Board layer (DL-015): public pages only, scoped by body.mb =====
+   Look of direction C (white page, warm grey text, friendly rounded controls) with direction A's range-bar answer.
+   One accent only: the price band. Contrast checked: band #B45309 on track #E9E4DA = 3.96:1, on white = 5.0:1.
+   Thai-capable system stack until a font file is approved (Noto Sans Thai is used when installed). */
+body.mb {
+    --mb-bg: #ffffff;
+    --mb-surface: #faf9f7;
+    --mb-ink: #2b2926;
+    --mb-muted: #6b665c;
+    --mb-line: rgba(43, 41, 38, .14);
+    --mb-track: #e9e4da;
+    --mb-accent: #b45309;
+    --mb-radius: 12px;
+    --mb-radius-sm: 8px;
+    --mb-font: "Noto Sans Thai", "Leelawadee UI", "Sarabun", Tahoma, "Segoe UI", sans-serif;
+    --mb-num: "Noto Sans Thai", "Leelawadee UI", Tahoma, "Segoe UI", sans-serif;
+    background: var(--mb-bg);
+    color: var(--mb-ink);
+    font-family: var(--mb-font);
+    font-size: 16px;
+    line-height: 1.65;
+}
+body.mb .site-header { background: var(--mb-bg); border-bottom: 1px solid var(--mb-line); }
+body.mb .brand { color: var(--mb-ink); font-weight: 600; }
+body.mb .nav nav a { color: var(--mb-muted); }
+body.mb .nav nav a:hover { color: var(--mb-ink); }
+body.mb .public-nav nav a, body.mb .public-nav nav a:first-child { color: var(--mb-muted); font-weight: 500; }
+body.mb .nav nav a:first-child:after { display: none; }
+body.mb .login-button { background: var(--mb-ink); border-radius: 20px; }
+body.mb .card, body.mb .mi-product-card { background: var(--mb-surface); border: 1px solid var(--mb-line); border-radius: var(--mb-radius); box-shadow: none; }
+body.mb .mi-product-card:hover, body.mb .mi-product-card:focus-within { box-shadow: none; border-color: rgba(43, 41, 38, .32); }
+body.mb input, body.mb select { border: 1px solid var(--mb-line); border-radius: var(--mb-radius-sm); background: var(--mb-bg); color: var(--mb-ink); }
+body.mb input:focus-visible, body.mb select:focus-visible, body.mb button:focus-visible, body.mb .button:focus-visible, body.mb a:focus-visible { outline: 2px solid var(--mb-ink); outline-offset: 2px; }
+body.mb button, body.mb .button { background: var(--mb-ink); border-color: var(--mb-ink); color: #fff; border-radius: 20px; font-weight: 500; }
+body.mb .button.ghost, body.mb .ghost { background: var(--mb-bg); color: var(--mb-ink); border-color: var(--mb-line); }
+body.mb .search input { border-radius: 20px 0 0 20px; }
+body.mb .search button { border-radius: 0 20px 20px 0; }
+body.mb .hero, body.mb .mi-hero { background: var(--mb-bg); border-bottom: 1px solid var(--mb-line); }
+body.mb .eyebrow, body.mb .meta { color: var(--mb-muted); text-transform: none; letter-spacing: 0; font-family: var(--mb-font); font-size: 13px; }
+body.mb .spec-chips span, body.mb .suggestions a { background: var(--mb-surface); border: 1px solid var(--mb-line); border-radius: 16px; color: var(--mb-muted); font-family: var(--mb-font); text-transform: none; }
+body.mb .breadcrumbs, body.mb .muted { color: var(--mb-muted); }
+body.mb .confidence-badge { background: var(--mb-surface); border: 1px solid var(--mb-line); color: var(--mb-ink); border-radius: 16px; }
+body.mb .price-status-badge { background: var(--mb-surface); border: 1px solid var(--mb-line); color: var(--mb-muted); border-radius: 16px; }
+body.mb footer { background: var(--mb-ink); }
+
+.mb-range { margin: 12px 0 8px; font-family: var(--mb-num); }
+.mb-range-figures { display: flex; flex-direction: column; gap: 2px; }
+.mb-range-label { font-size: 13px; color: var(--mb-muted); }
+.mb-range-value { font-size: 1.75rem; line-height: 1.25; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--mb-ink); }
+.mb-range-track { position: relative; height: 10px; margin: 14px 0 8px; border-radius: 5px; background: var(--mb-track); }
+.mb-range-band { position: absolute; top: 0; bottom: 0; border-radius: 5px; background: var(--mb-accent); }
+.mb-range-tick { position: absolute; top: -5px; bottom: -5px; width: 3px; margin-left: -1.5px; border-radius: 2px; background: var(--mb-ink); box-shadow: 0 0 0 2px var(--mb-surface); }
+.mb-range-scale { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--mb-muted); font-variant-numeric: tabular-nums; }
+.mb-range-median { color: var(--mb-ink); font-weight: 500; }
+.mb-range-sm .mb-range-value { font-size: 1.2rem; }
+.mb-range-sm .mb-range-track { height: 8px; margin: 10px 0 6px; }
+.mb-range-sm .mb-range-scale { font-size: 11px; }
+@media (max-width: 480px) { .mb-range-value { font-size: 1.5rem; } .mb-range-scale { font-size: 11px; } }

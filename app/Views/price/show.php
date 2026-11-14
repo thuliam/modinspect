@@ -80,13 +80,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
     <?php else: ?>
         <div class="mi-detail-grid">
             <article class="card mi-price-answer-card">
-                <div class="mi-price-label">ช่วงราคาที่พบ</div>
-                <div class="mi-market-range">฿<?= number_format((float) $product['q1']) ?>-<?= number_format((float) $product['q3']) ?></div>
-                <div class="mi-median-line">
-                    <span>ราคากลาง</span>
-                    <strong>฿<?= number_format((float) $product['median']) ?></strong>
-                </div>
-                <div class="mi-range-bar" aria-hidden="true"><span></span></div>
+                <?php $rangeProduct = $product; $rangeSize = 'lg'; require ROOT_PATH . '/app/Views/components/range-answer.php'; ?>
                 <p>ราคานี้มาจากราคาประกาศมือสองที่ผ่านการตรวจสอบ ไม่ใช่ราคาปิดดีลจริง และอาจต่างตามสภาพ ประกัน อุปกรณ์ และบริการของผู้ขาย</p>
             </article>
 

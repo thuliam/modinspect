@@ -35,6 +35,7 @@ $commands = [
     ['label' => 'tests/security_hardening_test.php', 'args' => ['tests/security_hardening_test.php']],
     ['label' => 'tests/secret_scan_test.php', 'args' => ['tests/secret_scan_test.php']],
     ['label' => 'tests/listing_enricher_test.php', 'args' => ['tests/listing_enricher_test.php']],
+    ['label' => 'tests/range_answer_test.php', 'args' => ['tests/range_answer_test.php']],
     ['label' => 'cli/evaluate_validation_quality.php', 'args' => ['cli/evaluate_validation_quality.php']],
     ['label' => 'cli/auth_status.php', 'args' => ['cli/auth_status.php']],
     ['label' => 'cli/price_confidence_report.php', 'args' => ['cli/price_confidence_report.php']],

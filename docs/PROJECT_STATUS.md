@@ -11,7 +11,7 @@ No production deploy, no new paid service, no mutation of shared Cloud DEV.
 | Uncommitted work | Only the owner-owned untracked `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` (parked LADIP proposal) (everything of mine is committed and pushed to the checkpoint branch) |
 | Runtime | Studio: Laragon Apache + PHP 8.3.33 (also 8.1, 8.4 installed), MySQL 8.4.3 local on 3306. `php` is not on the Git Bash PATH; use `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` |
 | Databases | Shared DEV (`.env`): MariaDB 10.6.28, 41 products, 108 aliases, 99 observations (88 REAL pending, 11 MOCK_TEST pending, **0 REAL approved**), 41 snapshots all `legacy_unavailable`, 70 audit rows (read-only counts, 2026-11-14). Isolated TEST (`.env.testing`): `127.0.0.1/modinspect_test`, used by every mutating test |
-| Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, **35 steps**, on PHP 8.1.32, 8.3.33 and 8.4.12 (zero deprecations), including a real-HTTP end-to-end test, a security regression test and a secret scan |
+| Regression | `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` exit 0, **37 steps**, on PHP 8.1.32, 8.3.33 and 8.4.12 (zero deprecations), including a real-HTTP end-to-end test, a security regression test and a secret scan |
 | Admin tables | Official DataTables 1.13.11 restored (was a hand-written adapter); browser-verified on an isolated server. Owner re-UAT pending |
 | Assets | `public/assets/admin/vendor/` hash-pinned by `MANIFEST.json`; clean-checkout simulation passes (356 files, no `.env`) |
 | Public site | Honest no-data verified; a public-price leak and several defects fixed (DL-007; nav hidden below 1000px, header clipping, staff chip/internal text, 41 empty cards). Browser-checked at 1440/768/375. Brand direction still open (G-3) |
@@ -24,7 +24,7 @@ Defects fixed in this baseline: stale tests (array `+` dropping `start`, missing
 dropped filters, Admin freshness displayed as 8,500% (unit was already a percentage), and (Sprint 1) a public-price leak where approved TEST-import rows made a legacy snapshot appear as a market price.
 Not fixed (logged): Font Awesome `.html` font URLs (404), login icon glyph, public mobile header, internal footer text.
 
-Owner decisions 2026-11-14: Facebook data usable as REAL at a lower grade, approved per variant, with missing fields completed from text (DL-013); production host HostAtom Linux UTC+7 (DL-014). visual direction chosen: C look with A's range-bar answer block (DL-015, G-3 closed, not yet built).
+Owner decisions 2026-11-14: Facebook data usable as REAL at a lower grade, approved per variant, with missing fields completed from text (DL-013); production host HostAtom Linux UTC+7 (DL-014). visual direction chosen: C look with A's range-bar answer block (DL-015, G-3 closed). First slice built (Sprint 2): Market Board CSS layer scoped by `body.mb`, range-bar component, product detail and cards; home/search structure and font file pending the owner's reference site.
 
 Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
 G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.

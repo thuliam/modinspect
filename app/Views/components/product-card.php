@@ -41,12 +41,8 @@ $confidence = $manifest['confidence'] ?? [];
     <?php endif; ?>
 
     <?php if ($hasMarketSnapshot): ?>
-        <div class="price-answer compact">
-            <span>ช่วงราคาที่พบ</span>
-            <strong>฿<?= number_format((float) $product['q1']) ?>-<?= number_format((float) $product['q3']) ?></strong>
-        </div>
+        <?php $rangeProduct = $product; $rangeSize = 'sm'; require ROOT_PATH . '/app/Views/components/range-answer.php'; ?>
         <div class="card-meta-row">
-            <span>ราคากลาง ฿<?= number_format((float) $product['median']) ?></span>
             <span><?= (int) $product['valid_sample_size'] ?> ตัวอย่าง</span>
         </div>
         <span class="confidence-badge confidence-<?= htmlspecialchars(strtolower((string) $product['confidence_label'])) ?>">
