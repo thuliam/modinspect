@@ -1,0 +1,146 @@
+$devteam-plus
+
+MODINSPECT - LONG SPRINT LS-1 - CODEX LANE (DATA, BACKEND, TESTS)
+Written 2026-11-15 (Asia/Bangkok, UTC+7). Plain text on purpose. Follow it literally. If something here is unclear or contradicts the repository, do not guess: write the doubt on the board row (docs/SPRINT_BOARD.md), skip that task, and continue with the next one.
+
+0. HOW TO START
+- If the skill devteam-plus exists in your environment, invoke it first (the first line above) with this profile: stack = native PHP 8.1+ custom MVC + MySQL/MariaDB (PDO); active roles = Dev + DBA + QA + Doc, in that order; writable stores = ONLY what each task below names; read-only = everything else. If the skill does not exist, say so in one line and continue as a single agent. Do not invent other commands.
+- Then read, in this order: AGENTS.md, docs/SPRINT_BOARD.md, the top section of docs/SESSION_HANDOFF.md, the last two sections of docs/PROJECT_STATUS.md, docs/DATA_RESEARCH_POLICY.md.
+- Do not start any task before you have done section 3 (environment check) and section 5 (claim commit).
+
+1. WHAT THE PROJECT IS (one paragraph)
+ModInspect is a Thai-first used-PC-hardware price-check site. PHP 8.1+ custom MVC without a framework, PDO prepared statements, Bootstrap 4.1 + jQuery. The valuable asset is: Product Master + aliases + time-series price observations + evidence/provenance + deterministic versioned price snapshots. Prices are asking prices (not sold prices). Deterministic PHP code calculates prices and confidence; nothing else may write a price snapshot. Owner-collected data and community data are evidence only.
+
+2. THE SITUATION YOU ARE JOINING
+- Two agents work in parallel on the same repository: CLAUDE (UI, browser checks) and YOU (data, backend, tests). You never edit the other agent's files (section 4).
+- Current state at the time of writing (RE-COUNT before relying on any number, they change): shared DEV database has about 99 active products; about 420 approved observations, ALL of them owner-collected text (provenance grade OWNER_TEXT_NO_URL, one source family, no listing URL); 88 REAL (Priceza) observations pending human review and 11 mock/test pending (do not touch either group); 46 public price snapshots, all with confidence label "low" (confidence method confidence-v2: evidence made only of owner text is capped at 59); 41 old snapshots with provenance_status legacy_unavailable that must never become public.
+- The raw LINE chat export exists on the owner's machine. IT CONTAINS CREDENTIALS AND PERSONAL DATA. You must never open, print, copy or commit it. The sanitized extraction already exists and is the only input you may use: storage/research/line_facebook_2026_loc/research_listings_sanitized.csv (1364 rows, git-ignored) and storage/research/line_facebook_2026_loc/location_hints.csv (province hints only, git-ignored).
+
+3. ENVIRONMENT CHECK (do this first, write the results in your final report)
+a) Working directory: C:\laragon\www\modinspect (Windows 10, Laragon). Shell may be Git Bash or PowerShell.
+b) PHP is NOT on PATH. Always call: C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe   (written PHP below).
+c) Git: run "git status -sb" and "git log --oneline -3". Expected base: branch checkpoint/claude-baseline-2026-11-14 at or after commit e7928e0. Create your branch: git switch -c codex/ls1-data (from that base). Untracked files MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md and the folder design/ci/ belong to the owner: never touch, never commit them, never use "git add -A" or "git add ." (add files by name).
+d) Two databases. DEFAULT (no env var) = shared cloud DEV database from .env = real project data, shared with the owner. Isolated TEST database = set MODINSPECT_ENV_FILE=.env.testing = local 127.0.0.1/modinspect_test, safe to write. ALL automated tests and all experiments use the TEST database. DEV is read-only except the exact writes named in D-1, D-2 and D-5 below.
+   Git Bash example for TEST:   MODINSPECT_ENV_FILE=.env.testing PHP tests/run.php
+   PowerShell example for TEST: $env:MODINSPECT_ENV_FILE='.env.testing'; PHP tests/run.php
+e) Baseline: run the full suite once before changing anything: MODINSPECT_ENV_FILE=.env.testing PHP tests/run.php. It must end with "Sequential regression suite passed". If it does not, stop and report; do not build on a red baseline.
+f) The CI test database is built from the tracked file modinspect.sql (NOT from schema.sql). Every new table or column must be added to THREE places: a new file in database/migrations/, database/schema.sql, and modinspect.sql. If you forget modinspect.sql the three GitHub CI jobs fail (this happened on 2026-11-15).
+g) Write files with your editor/file tool. Do not generate multi-line PHP through shell heredocs or PowerShell here-strings (quoting breaks on this machine). Files may mix LF and CRLF; do not reformat whole files.
+h) Never print or log: contents of .env, passwords, API keys, session tokens, seller names, phone numbers, URLs from listings, message text.
+
+4. FILE OWNERSHIP (THE LOCK)
+YOU MAY EDIT: cli/**, app/Services/** (new classes preferred), app/Models/**, database/** (new migrations only, additive), modinspect.sql, docs/DATA_RESEARCH_POLICY.md, docs/COLLECTION.md, docs/DATA_MODEL.md, docs/REAL_CALIBRATION_REPORT.md, tests files you create, tests/price_trust_test.php (the only existing test you may edit), and your own rows in docs/SPRINT_BOARD.md.
+tests/run.php: you may only ADD lines at the END of the $commands list, never reorder or edit existing lines.
+YOU MUST NOT EDIT: app/Views/**, public/assets/**, app/Controllers/**, public/index.php, AGENTS.md, any other test file, any other doc not listed above. If you need a change there, add a row under "Handoff requests" in docs/SPRINT_BOARD.md (from Codex, to Claude, what exactly, which method/signature you provide) and continue with the next task.
+SHARED, APPEND-ONLY: docs/PROJECT_STATUS.md (add one dated section headed "[AGENT: Codex]" at the very end), docs/DECISION_LOG.md (add rows with the next free DL number, never edit existing rows), docs/SPRINT_BOARD.md (your rows only).
+
+5. CLAIM PROTOCOL
+- Before each task: edit its row in docs/SPRINT_BOARD.md to status CLAIMED, add "Codex, <date time UTC+7>", commit ONLY that file with message: "[codex] claim D-<n>".
+- Work. Commit with prefix "[codex]", one logical change per commit, files added by name.
+- When done: in the SAME commit as the final work, set the row to DONE and write evidence = commit SHA is not known yet, so write the test name or command result; after committing, if you want the SHA on the row, add it in the next commit.
+- DONE requires evidence that someone else can re-run (a test name, a command and its result line). "Looks fine" is not evidence.
+- Do not push. Do not merge. Do not touch main. Claude merges your branch at the end.
+
+6. HARD LIMITS (breaking any of these = stop and report)
+- No deployment, no hosting/FTP/DNS access, no spending money, no paid or metered API, no new library or package download, no CDN, no live crawling, no calls to benchmark/spec providers.
+- Do not change price formulas, quartile method, cohort rules or confidence thresholds (confidence-v2 stays; owner-text-only cap 59 stays).
+- Never write a price snapshot by any path other than PriceSnapshotService (recalculateProduct / recalculateAll). Never insert or update price_observations by hand with SQL: use the existing import and review code.
+- Never change the verified_status of the 88 REAL Priceza observations or the 11 mock/test ones. Never approve anything whose source key does not start with offline_owner_text_.
+- No seller names, phone numbers, addresses, URLs, chat text in any file, output, test fixture, commit message or report. Row ids like LINEFB-0123 and provinces are allowed.
+- Additive SQL only (CREATE TABLE, ADD COLUMN, INSERT/UPDATE of data you were told to change). No DROP, no TRUNCATE, no renaming of existing tables/columns.
+- PHP 8.1 compatible code (no 8.2+ only features), strict types, prepared statements, small typed classes, follow the style of neighbouring files.
+
+7. TASKS (do them in this order; one at a time; each ends with the full test suite green on the TEST database)
+
+D-1  ROUND-4 APPROVAL OF OWNER-TEXT PRICES (the only task that writes real data)
+Goal: raise the 24 CPU/GPU models that have fewer than 3 approved samples to at least 3 where the new export has usable rows, WITHOUT counting any listing twice.
+Why this needs care: the new export is a superset of the one imported earlier. The same listing now has a different row id (LINEFB-nnnn is numbered per extraction), so the existing duplicate check (by row id) will NOT catch it. Importing blindly would double-count old listings and inflate samples. You must remove already-imported listings yourself (step 3).
+Steps:
+ 1. Count BEFORE (read-only, DEV): approved owner-text observations; products that have a public snapshot; list of CPU/GPU products with fewer than 3 approved owner-text observations (slug + count). Save these numbers for the report. Use a throwaway read-only PHP script you do not commit.
+ 2. Prepare candidate files from the SANITIZED csv only:
+    PHP cli/owner_intake_prepare.php --in=storage/research/line_facebook_2026_loc/research_listings_sanitized.csv --out=storage/research/line_facebook_2026_loc/owner_intake_r4_cpu.json --category=cpu --limit=2000
+    PHP cli/owner_intake_prepare.php --in=storage/research/line_facebook_2026_loc/research_listings_sanitized.csv --out=storage/research/line_facebook_2026_loc/owner_intake_r4_gpu.json --category=gpu --limit=2000
+    (Do NOT run the --spec mode: RAM/storage/PSU are out of scope for this round. Do NOT run cli/research_line_extract.php: it needs the raw export.)
+ 3. Cross-batch duplicate filter (new, mandatory): create cli/owner_intake_filter_existing.php. It reads one prepared JSON file, loads from DEV the already-imported owner-text listings (raw_price_observations joined to data_sources where source_key LIKE 'offline_owner_text_%': use raw_title and the asking price), normalises both sides the same way (lower-case, remove all whitespace, truncate to the first 40 characters, plus integer price) and removes from the JSON every record whose key already exists. It writes a new JSON file next to the input (suffix _new) and prints only counts: input, already_present, kept. It must be read-only on the database and must never print titles.
+    Add a TEST-database test (tests/owner_intake_filter_test.php) with synthetic rows proving: a known existing listing is removed, a new one is kept, same title with a different price is kept. Register it at the end of tests/run.php.
+ 4. DRY RUN of the import (DEV, writes nothing):
+    PHP cli/import_market_evidence.php --file=storage/research/line_facebook_2026_loc/owner_intake_r4_cpu_new.json --dataset=owner_text --dry-run
+    PHP cli/import_market_evidence.php --file=storage/research/line_facebook_2026_loc/owner_intake_r4_gpu_new.json --dataset=owner_text --dry-run
+    Expected: 0 provenance rejections. If anything is rejected, stop D-1, write the reason on the board, go to D-2.
+ 5. REAL import (DEV write #1): the same two commands without --dry-run. Rows land as verified_status=pending.
+ 6. Approval plan (DEV, writes nothing): PHP cli/owner_intake_approve.php --actor=54
+    Read the plan. It lists per product: approve count, excluded count (outlier rule 60%-160% of the batch median), and products left pending (fewer than 3 usable rows). Check that every listed product is a normal CPU/GPU/RAM/SSD product and that nothing about the 88 REAL rows appears (the script only touches source keys offline_owner_text_%).
+ 7. Approval (DEV write #2): PHP cli/owner_intake_approve.php --actor=54 --apply   (actor 54 is the owner's own admin account; the owner authorised approvals under it for this exact script and rule. Do not use any other actor id and do not change the outlier rule.)
+ 8. Rebuild the derived trend table (DEV write #3): PHP cli/price_trend_build.php
+ 9. Verify: PHP cli/price_trust_audit.php must exit 0 (summary p0 = 0 and p1 = 0). Re-run the BEFORE counts and compare.
+Allowed DEV writes in D-1: the import (step 5), the approval + snapshot recalculation done by the approve script (step 7), the trend rebuild (step 8). Nothing else.
+Acceptance (write these numbers into the board row): before/after approved count; list of the models that were below 3 and are now at 3 or more; list of models still below 3 and why; audit result; every public confidence label still "low"; no listing counted twice (explain how you checked: e.g. count of identical normalised title+price pairs among approved rows of the same product is 0 or only reposts that the prepare script already deduplicated).
+
+D-2  DUPLICATE-POST ANALYSIS WITHOUT SELLER IDENTITY
+Goal: show how much of the province data is repeated posts, so one seller reposting from one province does not look like a market pattern.
+Inputs (local, git-ignored): storage/research/line_facebook_2026_loc/research_listings_sanitized.csv has columns row_id, dedupe_key, duplicate_of_row (non-empty = repost of an earlier row). storage/research/line_facebook_2026_loc/location_hints.csv has row_id, note_date, province, region, category, model_key, asking_price_thb. Join them ONLY by row_id.
+Steps:
+ 1. New migration database/migrations/017_location_log_dedupe.sql (additive): ALTER TABLE listing_location_log ADD COLUMN dedupe_key CHAR(12) NULL, ADD COLUMN is_repost TINYINT(1) NOT NULL DEFAULT 0, plus an index on (province, is_repost). Mirror it in database/schema.sql and modinspect.sql (edit the existing CREATE TABLE listing_location_log there).
+ 2. New cli/location_log_enrich_dedupe.php: --hints=<csv> --listings=<csv>; for each row_id found in listing_location_log, set dedupe_key and is_repost (1 when duplicate_of_row is non-empty). Idempotent. Prints counts only. DEV write #4 (that one table, those two columns, after the migration is applied with: PHP cli/migrate.php database/migrations/017_location_log_dedupe.sql).
+ 3. New class app/Services/Admin/DuplicatePostReport.php with build(): array returning, per province: listings, reposts, repost_rate (0-1, 4 decimals), plus overall totals and the top 5 dedupe_key groups by size shown as counts only (never the key text beyond the 12-character hash, never row text). Pure SQL on listing_location_log.
+ 4. Test tests/duplicate_post_report_test.php on the TEST database with inserted synthetic rows (delete them afterwards inside the test).
+Allowed DEV writes: apply migration 017; run the enrich CLI. Nothing else.
+Acceptance: report numbers (overall repost rate; the three provinces with the highest rate); test registered and green. Then add the handoff row so Claude can render it (the method signature is the contract: DuplicatePostReport::build()).
+
+D-3  GOLDEN RESOLVER TEST SET (permanent)
+Goal: a test that fails if the product resolver confuses near-identical models.
+Cases that MUST be covered, each with the exact expected product slug or "no match": RTX 3050; RX 5700 XT (not RX 5700); RTX 3060 vs RTX 3060 Ti (different products); RTX 4070 vs 4070 SUPER vs 4070 Ti (three different); Ryzen 5 5600 vs 5600G vs 5600X (different); Ryzen 7 5700X3D (not 5700X); Intel suffixes: i5-12400 vs 12400F; laptop variants must not match desktop parts; a bundle line must not resolve to one part.
+Steps: look at how cli/research_line_extract.php and tests/phase1_catalog_test.php call App\Services\ProductResolver\ProductResolver and ModelMarker. Check which of these models exist in the TEST database (it only contains the seeded catalog, NOT the products added later by migrations 013/014). For any model missing there, the test must insert its own fixture products inside the test and remove them at the end (same pattern as the other tests). New file tests/golden_resolver_test.php, registered at the END of tests/run.php.
+Acceptance: every case asserted with the exact expected result; test passes; if the resolver gets a case WRONG, do not weaken the test and do not change resolver rules: record the failing case on the board as a finding (case, expected, actual) and mark that case as known-failing with a clear message, and continue.
+
+D-4  PER-SNAPSHOT EVIDENCE REPORT (service for the admin page)
+Goal: one class Claude can render in the admin.
+Create app/Services/Admin/SnapshotEvidenceReport.php with forSnapshot(int $snapshotId): ?array returning: snapshot header (product full name, snapshot id, calculated_at, provenance_status, formula_version, confidence_method_version, confidence label and score, policy_caps list), member counts (included, excluded by reason code), source concentration (distinct source count, dominant source share), evidence grade counts (owner_text vs other, using source_key LIKE 'offline_owner_text_%'), the member rows (observed date, calculation price, grade, included/excluded + reason; NO source names, NO urls, NO raw titles, NO external references), and replay = PriceSnapshotService::reproduceSnapshot($id)['result']. Return null for an unknown id. Read-only.
+Test tests/snapshot_evidence_report_test.php on the TEST database: create a product with observations through the existing helpers used in tests/price_snapshot_test.php, recalculate, assert the fields above, assert that no key in the returned array names a url, title or seller. Register at the end of tests/run.php.
+Acceptance: test green; handoff row added with the exact method signature.
+
+D-5  SPEC SUMMARY CLEAN-UP (data)
+Goal: products.spec_summary shows mixed Thai/English or machine-style text (example seen on the live site: "8GB GDDR6, suitable for 1440p gaming"; spec-class products show long text such as "... ราคาเฉลี่ยตามสเปก ไม่แยกยี่ห้อและรุ่นย่อย"). The site is Thai-first.
+Steps:
+ 1. Read-only query on DEV: list distinct spec_summary values (id, slug, text) and classify: (a) clean Thai, (b) clean English technical tokens only (e.g. "6 cores / 12 threads, AM4"), (c) mixed or descriptive English sentence, (d) spec-class boilerplate. Print counts per class and 10 examples per class (these texts are catalogue data, not private).
+ 2. Rule for the cleaned text: keep technical tokens exactly (capacity, memory type, cores/threads, sockets, wattage, interface); translate descriptive English phrases into short natural Thai; drop boilerplate sentences about averages (that explanation belongs elsewhere); max 120 characters; no marketing claims; do not invent specs that are not in the old text.
+ 3. Write database/migrations/018_spec_summary_thai.sql containing one UPDATE per product keyed by slug (UPDATE products SET spec_summary='...' WHERE slug='...';). Only rows in classes (c) and (d). No other column.
+ 4. Apply to the TEST database first with PHP cli/migrate.php (using MODINSPECT_ENV_FILE=.env.testing) and run the suite. Only if green, apply to DEV (DEV write #5) and say so in the report.
+Allowed DEV writes: that single migration.
+Acceptance: number of rows changed per class; 10 before/after examples in the board row; suite green; no text longer than 120 characters; no row outside classes (c)/(d) changed.
+Handoff note to Claude (board): display layer task C-5 can be closed after this lands.
+
+D-6  EXTEND cli/price_trust_audit.php
+Add to its --json output (keep every existing key and the exit-code rule: exit 1 only when p0 > 0): a "sources" object with the count of included members per source_key (source_key only, nothing else), and a "duplicate_rate" value per province taken from DuplicatePostReport if the table has data (otherwise null). Add matching assertions to tests/price_trust_test.php (additive only).
+Acceptance: audit still prints the same human table; JSON has the new keys; suite green.
+
+D-7  CI GUARD: migrations must be reflected in the dump
+Goal: a test that fails when a migration creates a table or column that is missing from modinspect.sql or database/schema.sql.
+New tests/migration_dump_guard_test.php: parse database/migrations/*.sql for "CREATE TABLE [IF NOT EXISTS] name" and "ALTER TABLE name ADD COLUMN col"; for each, assert the name (and the column) appears in BOTH database/schema.sql and modinspect.sql. Migrations 001-014 that only insert data are ignored. If an existing migration already violates this, do not hide it: list it in the test output as a documented exception with the reason, and note it on the board. Register at the end of tests/run.php.
+Acceptance: test green and demonstrably fails if you temporarily remove price_trend_points from modinspect.sql (do this check on a temporary copy, then restore; write the result in the board row).
+
+D-8  CALIBRATION REPORTS
+Run PHP cli/price_confidence_report.php and PHP cli/review_calibration_report.php against the TEST database and (read-only) against DEV. Append a dated section to docs/REAL_CALIBRATION_REPORT.md that keeps FIXTURE/TEST metrics and LIVE metrics in separate tables, states the sample sizes, and states in one sentence that fixture metrics never prove live-market quality (project rule). Do not change any threshold.
+Acceptance: section added; numbers copied from command output, not from memory.
+
+8. COMMON TRAPS (read twice)
+1. Running a DEV command by accident: if MODINSPECT_ENV_FILE is not set you are on the shared DEV database. Check with a read-only query on the database name before any write.
+2. Counting the same listing twice (D-1). The row ids of the new extraction are NOT comparable with the old ones.
+3. "git add ." or "git add -A": forbidden (owner's untracked files).
+4. New table/column without modinspect.sql: CI breaks.
+5. Printing a listing title, URL, seller or phone in output: forbidden, even in debug.
+6. Editing app/Views, public/assets or controllers: forbidden.
+7. Weakening a test to make it pass: forbidden. Record failures as findings.
+8. Approving rows with any actor id other than 54, or changing the outlier rule: forbidden.
+9. Reading the raw chat export: forbidden.
+10. Pushing: forbidden unless the owner says so in this conversation.
+11. Piling several tasks into one commit: forbidden; one logical change per commit.
+12. Using numbers from this prompt as facts: re-count live.
+
+9. STOP CONDITIONS
+Stop the whole lane and write the reason at the top of your final report if: the baseline suite is red; a command would write to DEV outside the named writes; you find credentials or personal data in any file; a task needs a library download, a payment, or a provider call; any step would change the 88 REAL pending or the mock/test rows; two consecutive tasks are BLOCKED.
+For a single blocked task: write the blocker on its board row, set BLOCKED, continue with the next task.
+
+10. FINISH
+- Update every board row you touched with evidence; append your dated "[AGENT: Codex]" section to docs/PROJECT_STATUS.md; make sure "MODINSPECT_ENV_FILE=.env.testing PHP tests/run.php" ends with "Sequential regression suite passed" and "PHP cli/secret_scan.php" passes; commit.
+- Your last message is ONE report with these headings: (1) Environment check results; (2) Tasks DONE with evidence (test names, command result lines); (3) Tasks BLOCKED with the reason; (4) DEV writes performed, each with before/after counts; (5) Findings (resolver failures, data oddities); (6) Handoff requests for Claude; (7) Exact final test and secret-scan result lines; (8) Branch name and last commit SHA. Then stop. Do not start anything new and do not ask the owner questions.

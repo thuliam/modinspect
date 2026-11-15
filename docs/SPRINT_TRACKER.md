@@ -156,4 +156,4 @@ RELEASE = NOT_READY (no staging; production not authorised).
 ## Parallel work board (2026-11-15)
 
 The long sprint LS-1 is split between Claude (UI, browser verification) and Codex (data, backend, tests). Who does what, the file-ownership lock,
-status and evidence live in `docs/SPRINT_BOARD.md`; the copy-ready Codex prompt is `docs/CODEX_LS1_PROMPT.md`. This tracker keeps the sprint-level scorecard only.
+status and evidence live in `docs/SPRINT_BOARD.md`; the copy-ready Codex prompt is `docs/CODEX_LS1_PROMPT.txt`. This tracker keeps the sprint-level scorecard only.

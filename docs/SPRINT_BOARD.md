@@ -36,7 +36,7 @@ never "looks fine". Nothing is DONE without evidence.
 
 | ID | Task | Status | Evidence / blocker |
 |---|---|---|---|
-| C-1 | Admin: open every page and state on the live UAT server, fix mismatches with the DropX layout (Bootstrap first) | OWNER_WAIT | Needs the owner to sign in once in the app's browser pane (password never shared). Public pages already viewed on `192.168.1.10`. |
+| C-1 | Admin: open every page and state on the live UAT server, fix mismatches with the DropX layout (Bootstrap first) | TODO | Owner is signed in on the live server (screenshot received). Finding so far: the "Sources" sidebar item shows no icon (`fa-broadcast-tower` not rendering in the bundled Font Awesome 5.0.9). |
 | C-2 | Admin login page restyled to match the Admin shell | TODO | |
 | C-3 | Public pages at 708px; keyboard/focus and AA contrast audit with fixes | TODO | |
 | C-4 | Replace repeated generic category art on product cards with licensed photos where they exist, otherwise a model-name tile (category + model in type) | DONE (Claude, 2026-11-15) | Viewed on the UAT server `/price?category=gpu`: 14 type tiles + 2 photos, no repeated artwork; full suite exit 0; no new assets |
@@ -50,7 +50,7 @@ never "looks fine". Nothing is DONE without evidence.
 
 | ID | Task | Status | Evidence / blocker |
 |---|---|---|---|
-| D-1 | Round-4 approval: prepare from the **sanitized** CSV `storage/research/line_facebook_2026_loc/research_listings_sanitized.csv` (never the raw export), import, then `cli/owner_intake_approve.php` with the existing 60%-160% outlier rule under actor id 54; target the 24 CPU/GPU models with fewer than 3 samples | TODO | Allowed DEV writes: import + approval + snapshot recalculation for the affected products only. Report before/after counts. |
+| D-1 | **Must filter already-imported listings first (the new export is a superset; row ids differ, so the old duplicate check does not catch repeats)**. Round-4 approval: prepare from the **sanitized** CSV `storage/research/line_facebook_2026_loc/research_listings_sanitized.csv` (never the raw export), import, then `cli/owner_intake_approve.php` with the existing 60%-160% outlier rule under actor id 54; target the 24 CPU/GPU models with fewer than 3 samples | TODO | Allowed DEV writes: import + approval + snapshot recalculation for the affected products only. Report before/after counts. |
 | D-2 | Duplicate-post analysis without seller identity: group by normalised text hash + price, report duplicate rate per province and per product as a service method (`App\Services\Admin\...`) plus a CLI | TODO | No names, phones, URLs or raw text in output |
 | D-3 | Golden resolver test set (RTX 3050, RX 5700 XT, 3060 vs 3060 Ti, 4070 vs 4070 Ti/SUPER, Ryzen 5600 vs 5600G, 5700X3D, Intel suffixes) as a permanent test registered in `tests/run.php` | TODO | Closes tracker item T1-8 |
 | D-4 | Service for a per-snapshot evidence view (admin side): members, exclusion reasons, source concentration, replay result | TODO | Closes the data half of T1-7 |
