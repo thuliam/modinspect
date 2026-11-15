@@ -183,7 +183,7 @@ final class Dashboard {
         $reviewService=new ReviewCorrectionService();
         $finalApply=['ok'=>true,'values'=>[],'quality_flags'=>[]];
         if($decision==='approved'){
-            if($this->datasetLabelForObservation((int)$id) === 'REAL' && !(new ObservationProvenanceService())->isListingLevel($this->provenanceRowForObservation((int)$id))) return false;
+            if($this->datasetLabelForObservation((int)$id) === 'REAL') { $prov=new ObservationProvenanceService(); $row=$this->provenanceRowForObservation((int)$id); if(!$prov->isListingLevel($row) && !$prov->isOwnerTextNoUrl($row)) return false; }
             $finalApply=$reviewService->applyApprovedValues($id);
             if(($finalApply['ok'] ?? false) !== true) return false;
             $current=$this->rows("SELECT * FROM price_observations WHERE id=:id LIMIT 1",['id'=>$id])[0]??$current;
@@ -388,7 +388,7 @@ final class Dashboard {
         return $this->datasetLabel((string)($row['source_key'] ?? ''),(string)($row['source_name'] ?? ''));
     }
     private function datasetSqlExpression(): string {
-        return "CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_real_%' OR LOWER(COALESCE(s.name,'')) LIKE '%offline real import%' THEN 'REAL' WHEN LOWER(COALESCE(s.source_key,'')) LIKE '%mock%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%test%' OR LOWER(COALESCE(s.name,'')) LIKE '%mock%' OR LOWER(COALESCE(s.name,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.name,'')) LIKE '%test%' THEN 'MOCK_TEST' ELSE 'UNKNOWN' END";
+        return "CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_real_%' OR LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' OR LOWER(COALESCE(s.name,'')) LIKE '%offline real import%' THEN 'REAL' WHEN LOWER(COALESCE(s.source_key,'')) LIKE '%mock%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%test%' OR LOWER(COALESCE(s.name,'')) LIKE '%mock%' OR LOWER(COALESCE(s.name,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.name,'')) LIKE '%test%' THEN 'MOCK_TEST' ELSE 'UNKNOWN' END";
     }
     private function provenanceSqlExpression(): string {
         return "CASE WHEN e.excerpt LIKE '%SOURCE=priceza%' AND e.excerpt LIKE '%SOURCE_SEARCH_URL=%' AND e.excerpt LIKE '%SOURCE_LISTING_URL=%' AND e.excerpt LIKE '%SOURCE_ITEM_ID=%' AND e.excerpt LIKE '%MERCHANT=%' AND e.excerpt LIKE '%LISTING_TITLE=%' AND e.excerpt LIKE '%ASKING_PRICE=%' AND e.excerpt LIKE '%OBSERVED_AT=%' AND e.excerpt LIKE '%EVIDENCE_SNAPSHOT_JSON=%' AND e.excerpt LIKE '%EVIDENCE_HASH=%' THEN 'LISTING_LEVEL' WHEN r.source_url_encrypted LIKE 'https://www.priceza.com/s/%' OR e.excerpt LIKE '%SOURCE_SEARCH_URL=%' OR LOWER(COALESCE(e.excerpt,'')) LIKE '%search result%' THEN 'SEARCH_RESULT_LEVEL' ELSE 'GENERIC_SOURCE' END";
@@ -396,7 +396,7 @@ final class Dashboard {
     private function datasetLabel(string $sourceKey,string $sourceName): string {
         $key=strtolower($sourceKey);
         $name=strtolower($sourceName);
-        if(str_starts_with($key,'offline_real_') || str_contains($name,'offline real import')) return 'REAL';
+        if(str_starts_with($key,'offline_real_') || str_starts_with($key,'offline_owner_text_') || str_contains($name,'offline real import')) return 'REAL';
         foreach(['mock','fixture','test'] as $marker) {
             if(str_contains($key,$marker) || str_contains($name,$marker)) return 'MOCK_TEST';
         }

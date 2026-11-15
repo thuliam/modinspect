@@ -102,6 +102,13 @@ final class ObservationProvenanceService
         ];
     }
 
+    /** DL-013: owner-collected text without a listing URL. A lower grade the owner may approve per variant; never reported as listing level. */
+    public function isOwnerTextNoUrl(array $row): bool
+    {
+        $key = strtolower((string)($row['source_key'] ?? ''));
+        return str_starts_with($key, 'offline_owner_text_') && str_contains((string)($row['excerpt'] ?? ''), 'PROVENANCE_GRADE=OWNER_TEXT_NO_URL');
+    }
+
     public function isListingLevel(array $row): bool
     {
         return $this->classify($row)['quality'] === self::LISTING_LEVEL;

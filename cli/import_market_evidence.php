@@ -26,7 +26,7 @@ foreach (array_slice($argv, 1) as $arg) {
 }
 
 if (!$file) {
-    fwrite(STDERR, "Usage: php cli/import_market_evidence.php --file=examples/import/market_evidence_template.json [--dataset=test|real] [--dry-run] [--limit=100]\n");
+    fwrite(STDERR, "Usage: php cli/import_market_evidence.php --file=examples/import/market_evidence_template.json [--dataset=test|real|owner_text] [--dry-run] [--limit=100]\n");
     exit(2);
 }
 

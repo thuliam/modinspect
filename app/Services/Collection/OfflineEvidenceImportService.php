@@ -43,7 +43,9 @@ final class OfflineEvidenceImportService
         $started = microtime(true);
         $startedAt = date('Y-m-d H:i:s');
         $runId = 'offline-import-' . date('YmdHis') . '-' . bin2hex(random_bytes(4));
-        $dataset = strtolower(trim($dataset)) === 'real' ? 'real' : 'test';
+        $dataset = strtolower(trim($dataset));
+        // 'owner_text' = owner-collected text without a listing URL (DL-013, provenance grade OWNER_TEXT_NO_URL): lower grade, never 'real'.
+        $dataset = in_array($dataset, ['real', 'owner_text'], true) ? $dataset : 'test';
         $limit = max(1, min($limit, self::MAX_ROWS));
 
         $summary = [
@@ -270,6 +272,12 @@ final class OfflineEvidenceImportService
             if ($value !== '' && !filter_var($value, FILTER_VALIDATE_URL)) $errors[] = 'INVALID_' . strtoupper($field);
         }
         if ($dataset === 'real' && !$this->hasListingLevelReference($sourceListingUrl, $url, $reference)) $errors[] = 'REAL_DATASET_REQUIRES_LISTING_LEVEL_REFERENCE';
+        if ($dataset === 'owner_text') {
+            if (strtoupper(trim((string)($record['provenance_grade'] ?? ''))) !== 'OWNER_TEXT_NO_URL') $errors[] = 'OWNER_TEXT_REQUIRES_PROVENANCE_GRADE_OWNER_TEXT_NO_URL';
+            if ($reference === '') $errors[] = 'OWNER_TEXT_REQUIRES_ROW_REFERENCE';
+            if ($url !== '' && !str_starts_with($url, 'offline-ref://')) $errors[] = 'OWNER_TEXT_MUST_NOT_CARRY_A_LISTING_URL';
+            if ($this->looksMockOrTest($record)) $errors[] = 'OWNER_TEXT_CANNOT_USE_MOCK_TEST_SOURCE';
+        }
         if ($dataset === 'real' && $this->looksMockOrTest($record)) $errors[] = 'REAL_DATASET_CANNOT_USE_MOCK_TEST_SOURCE';
         if (!in_array($currency, self::SUPPORTED_CURRENCIES, true)) $errors[] = 'UNSUPPORTED_CURRENCY';
         if ($price !== '') {
@@ -305,7 +313,7 @@ final class OfflineEvidenceImportService
             $this->firstValue($record, ['asking_price', 'displayed_price']) ?: null,
             $url ?: null,
             date('Y-m-d H:i:s', strtotime((string)$record['observed_at'])),
-            $dataset === 'real' ? 'B' : 'C',
+            $dataset === 'real' ? 'B' : 'C',  // owner_text stays C: lower provenance than real
             $this->snippet($record, $dataset, $runId),
             'offline_file_import',
             null,
@@ -314,6 +322,7 @@ final class OfflineEvidenceImportService
             [
                 'import_run_id' => $runId,
                 'dataset' => strtoupper($dataset),
+                'provenance_grade' => $dataset === 'owner_text' ? 'OWNER_TEXT_NO_URL' : null,
                 'row' => (int)$record['_row'],
                 'source_reference' => $reference ?: null,
                 'source' => $this->firstValue($record, ['source']) ?: null,
@@ -338,6 +347,7 @@ final class OfflineEvidenceImportService
             'IMPORT_PROVIDER=offline_file_import',
             'IMPORT_RUN_ID=' . $runId,
             'DATASET=' . strtoupper($dataset),
+            $dataset === 'owner_text' ? 'PROVENANCE_GRADE=OWNER_TEXT_NO_URL' : null,
             'ROW=' . (string)$record['_row'],
             $this->firstValue($record, ['source']) !== '' ? 'SOURCE=' . $this->firstValue($record, ['source']) : null,
             $this->firstValue($record, ['source_search_url']) !== '' ? 'SOURCE_SEARCH_URL=' . $this->firstValue($record, ['source_search_url']) : null,
@@ -359,6 +369,10 @@ final class OfflineEvidenceImportService
 
     private function sourceKey(array $record, string $dataset): string
     {
+        if ($dataset === 'owner_text') {
+            $label = strtolower(preg_replace('/[^a-z0-9]+/i', '_', (string)($record['source_label'] ?? 'owner_text')) ?: 'owner_text');
+            return 'offline_owner_text_' . trim($label, '_');
+        }
         $domain = strtolower(trim((string)($record['source_domain'] ?? '')));
         $sourceUrl = $this->firstValue($record, ['source_listing_url', 'source_url', 'source_search_url']);
         if ($domain === '' && $sourceUrl !== '' && filter_var($sourceUrl, FILTER_VALIDATE_URL)) {
@@ -373,6 +387,9 @@ final class OfflineEvidenceImportService
 
     private function sourceName(array $record, string $dataset): string
     {
+        if ($dataset === 'owner_text') {
+            return 'Owner-collected text (no listing URL) - ' . (string)($record['source_label'] ?? 'owner_text');
+        }
         $domain = trim((string)($record['source_domain'] ?? ''));
         $sourceUrl = $this->firstValue($record, ['source_listing_url', 'source_url', 'source_search_url']);
         if ($domain === '' && $sourceUrl !== '' && filter_var($sourceUrl, FILTER_VALIDATE_URL)) {

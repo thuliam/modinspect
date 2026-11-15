@@ -26,9 +26,10 @@ Facebook (Marketplace and sale groups) and copied in as text. The owner asked fo
 - Provenance grade: `OWNER_COLLECTED_TEXT` / `OWNER_TEXT_NO_URL`, price type `asking`. Rows have **no listing URL and no immutable
   evidence snapshot**, so under the code as it stands (REAL approval needs listing-level provenance) they cannot be approved yet.
   **Owner decision DL-013 (2026-11-14): option A.** `OWNER_TEXT_NO_URL` becomes a permitted, lower provenance grade that the owner
-  may approve per variant. That needs one engineering change before any row can be approved: an owner-intake import path that records
-  this grade and shows it on every public figure. Until that ships, the rows remain market research, not accepted observations,
-  and nothing is imported into shared DEV.
+  may approve per variant. The owner-intake import path now exists (Sprint 2, DL-021): `php cli/owner_intake_prepare.php` filters the sanitised CSV into an import
+  file, `php cli/import_market_evidence.php --file=... --dataset=owner_text` records grade `OWNER_TEXT_NO_URL` (pending, low-quality source,
+  no listing URL allowed, a row reference required), the Admin approval gate accepts that grade, and the public product page states how many
+  samples rest on owner text. Nothing is imported into shared DEV until the owner says so; tests use the isolated test database only.
 - Completion (DL-013): `app/Services/Research/ListingEnricher.php` fills brand, product line and category specs (RAM generation,
   capacity, kit and speed; storage type and capacity; PSU wattage and efficiency; mainboard chipset and socket; GPU brand) only from
   what the listing says or from a fixed lookup, and flags every derived value (`BRAND_FROM_LINE`, `DDR_GEN_FROM_SPEED`,

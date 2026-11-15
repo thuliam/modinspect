@@ -35,6 +35,13 @@ final class Product
         $categories = count(array_unique(array_column($all, 'category_id')));
         return ['models' => count($all), 'aliases' => $aliases, 'priced' => $priced, 'categories' => $categories];
     }
+    /** Share of the included evidence behind a snapshot that is owner-collected text without a listing URL (DL-013). */
+    public function evidenceGrades(int $productId): array {
+        $stmt = $this->db->prepare("SELECT COUNT(*) total, COALESCE(SUM(CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' THEN 1 ELSE 0 END),0) owner_text FROM price_snapshot_observations so JOIN price_observations o ON o.id=so.observation_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE so.inclusion_status='included' AND so.snapshot_id=(SELECT x.id FROM price_indices x WHERE x.product_id=:pid AND x.product_variant_id IS NULL AND COALESCE(x.provenance_status,'legacy_unavailable')<>'legacy_unavailable' ORDER BY x.last_calculated_at DESC LIMIT 1)");
+        $stmt->execute(['pid' => $productId]);
+        $row = $stmt->fetch() ?: [];
+        return ['total' => (int)($row['total'] ?? 0), 'owner_text' => (int)($row['owner_text'] ?? 0)];
+    }
     public function findBySlug(string $slug): ?array {
         $stmt=$this->db->prepare($this->select . " WHERE p.slug=:slug AND p.is_active=1 LIMIT 1");
         $stmt->execute(['slug'=>$slug]); return $stmt->fetch() ?: null;

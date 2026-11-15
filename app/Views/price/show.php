@@ -63,6 +63,10 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <?php if (!empty($product['spec_summary'])): ?><p class="mi-product-spec"><?= htmlspecialchars($product['spec_summary']) ?></p><?php endif; ?>
                 <?php if ($hasMarketSnapshot): ?>
                     <?php $rangeProduct = $product; $rangeSize = 'lg'; require ROOT_PATH . '/app/Views/components/range-answer.php'; ?>
+                    <?php $eg = $evidence_grades ?? ['total' => 0, 'owner_text' => 0]; ?>
+                    <?php if (($eg['owner_text'] ?? 0) > 0): ?>
+                        <p class="mi-grade-note" role="note"><i class="fas fa-info-circle" aria-hidden="true"></i> <?= (int) $eg['owner_text'] ?> จาก <?= (int) $eg['total'] ?> ตัวอย่างมาจากข้อความที่เจ้าของรวบรวมเอง ไม่มีลิงก์ประกาศต้นทางให้ตรวจ จึงเป็นหลักฐานเกรดต่ำกว่า ใช้ประกอบการตัดสินใจเท่านั้น</p>
+                    <?php endif; ?>
                     <div class="mi-sum-meta">
                         <span class="confidence-badge confidence-<?= htmlspecialchars($confidenceClass) ?>"><?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?></span>
                         <span><i class="fas fa-database" aria-hidden="true"></i> <?= (int) $product['valid_sample_size'] ?> ตัวอย่าง</span>
