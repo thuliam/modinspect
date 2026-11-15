@@ -31,6 +31,7 @@ $groups = [
         ['label' => 'Observations', 'icon' => 'fa-list-ul', 'href' => '/admin/price-observations', 'permission' => 'review.view', 'paths' => ['/admin/price-observations']],
         ['label' => 'Review Queue', 'icon' => 'fa-clipboard-check', 'href' => '/admin/review-queue', 'permission' => 'review.view', 'paths' => ['/admin/review-queue', '/admin/review']],
         ['label' => 'Review Analytics', 'icon' => 'fa-chart-bar', 'href' => '/admin/review-analytics', 'permission' => 'review.analytics.view', 'paths' => ['/admin/review-analytics']],
+        ['label' => 'Trends & Locations', 'icon' => 'fa-map-marker-alt', 'href' => '/admin/market-trends', 'permission' => 'snapshots.view', 'paths' => ['/admin/market-trends']],
         ['label' => 'Price Index', 'icon' => 'fa-tags', 'href' => '/admin/price-indices', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-indices']],
     ],
     'COLLECTION' => [
@@ -58,6 +59,8 @@ $groups = [
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/css/admin.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/ci-tokens.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/ci-tokens.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-admin.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-admin.css") ?>">
+<link rel="stylesheet" href="<?= $base ?>/assets/mi-dropx.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-dropx.css") ?>">
+<script src="<?= $base ?>/assets/mi-dropx.js?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-dropx.js") ?>"></script>
 <link rel="icon" href="<?= $base ?>/favicon.ico?v=<?= (int) @filemtime(ROOT_PATH . "/public/favicon.ico") ?>" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= $base ?>/assets/brand/favicon-32x32.png">
 <link rel="apple-touch-icon" href="<?= $base ?>/assets/brand/apple-touch-icon.png">
@@ -69,9 +72,10 @@ $groups = [
             <button class="btn btn-link mi-sidebar-toggle js-sidebar-toggle" type="button" aria-label="Toggle admin navigation">
                 <i class="fas fa-bars"></i>
             </button>
-            <a class="navbar-brand" href="<?= $base ?>/admin">ModInspect Admin</a>
+            <a class="navbar-brand" href="<?= $base ?>/admin"><span class="dx-mark"><i class="fas fa-search"></i></span>ModInspect Admin</a>
             <span class="mi-topbar-context"><?= htmlspecialchars($title ?? 'Operations') ?></span>
-            <ul class="navbar-nav ml-auto navbar-right-top">
+            <ul class="navbar-nav ml-auto navbar-right-top align-items-center">
+                <li class="nav-item mr-2"><button type="button" id="dxThemeToggle" class="dx-icon-btn" aria-label="Toggle light or dark theme" aria-pressed="false"><i class="fas fa-moon"></i></button></li>
                 <li class="nav-item">
                     <a class="nav-link mi-public-link" href="<?= $base ?>/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt mr-1"></i> Public Site</a>
                 </li>

@@ -1,0 +1,142 @@
+/* Admin skin based on the DropX Admin template (DataDropX, https://datadropx.net; MIT-style licence that requires the visible
+   "Designed & developed by DataDropX" credit, kept in the admin footer). Only the visual language is adopted (tokens, layout metrics,
+   card/badge/table/nav styling); the template's React/Tailwind code is not used: the admin stays PHP + Bootstrap 4 + jQuery.
+   Loaded after mi-admin.css. It re-points the --ci-* tokens that mi-admin.css consumes, so every existing admin override recolours. */
+
+/* ---- tokens: light (default) and dark ---- */
+body.mi-admin-body {
+    --ci-canvas: #f9fafb;
+    --ci-surface: #ffffff;
+    --ci-elevated: #f3f4f6;
+    --ci-highlight: #f3f4f6;
+    --ci-search: #ffffff;
+    --ci-border: #e5e7eb;
+    --ci-border-active: #d1d5db;
+    --ci-text: #111827;
+    --ci-text-2: #6b7280;
+    --ci-primary: #6366f1;
+    --ci-on-primary: #ffffff;
+    --ci-verified: #10b981;
+    --ci-gold: #d97706;
+    --ci-danger: #ef4444;
+    --ci-btn-glow: 0 0 0 3px rgba(99, 102, 241, .22);
+    --ci-r-md: 8px;
+    --ci-r-pill: 999px;
+    --dx-brand: #c2410c;
+    --dx-radius-card: 12px;
+    --dx-shadow-card: 0 1px 3px 0 rgb(0 0 0 / .05), 0 1px 2px -1px rgb(0 0 0 / .05);
+    --dx-shadow-menu: 0 8px 24px -6px rgb(0 0 0 / .14), 0 2px 6px -2px rgb(0 0 0 / .06);
+    --dx-sidebar: #ffffff;
+    --dx-sidebar-fg: #374151;
+    --dx-sidebar-accent: #f3f4f6;
+    --dx-primary-soft: rgba(99, 102, 241, .08);
+    color-scheme: light;
+}
+html[data-theme="dark"] body.mi-admin-body {
+    --ci-canvas: #0f172a;
+    --ci-surface: #1e293b;
+    --ci-elevated: #263247;
+    --ci-highlight: #334155;
+    --ci-search: #0f172a;
+    --ci-border: #334155;
+    --ci-border-active: #475569;
+    --ci-text: #f1f5f9;
+    --ci-text-2: #94a3b8;
+    --ci-primary: #818cf8;
+    --ci-on-primary: #0f172a;
+    --ci-verified: #34d399;
+    --ci-gold: #fbbf24;
+    --ci-danger: #f87171;
+    --ci-btn-glow: 0 0 0 3px rgba(129, 140, 248, .3);
+    --dx-brand: #e85002;
+    --dx-shadow-card: none;
+    --dx-shadow-menu: 0 8px 24px -6px rgb(0 0 0 / .5);
+    --dx-sidebar: #1e293b;
+    --dx-sidebar-fg: #cbd5e1;
+    --dx-sidebar-accent: #334155;
+    --dx-primary-soft: rgba(129, 140, 248, .14);
+    color-scheme: dark;
+}
+body.mi-admin-body { font-size: 14px; line-height: 1.5; }
+body.mi-admin-body.mi-admin-body a:hover { text-decoration: none; }
+
+/* ---- shell: 68px topbar, 252px sidebar ---- */
+body.mi-admin-body .mi-admin-topbar .navbar { min-height: 68px; height: 68px; padding: 0 20px; background: var(--ci-surface) !important; border-bottom: 1px solid var(--ci-border); box-shadow: none; }
+body.mi-admin-body .mi-admin-topbar .navbar-brand { font-weight: 800; font-size: 16px; letter-spacing: -.01em; margin-right: 16px; display: inline-flex; align-items: center; gap: 8px; }
+body.mi-admin-body .mi-admin-topbar .navbar-brand .dx-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--ci-primary); color: var(--ci-on-primary); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
+body.mi-admin-body .mi-topbar-context { font-size: 13px; font-weight: 500; color: var(--ci-text-2); padding-left: 16px; border-left: 1px solid var(--ci-border); }
+body.mi-admin-body .dx-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--ci-border); border-radius: 10px; background: transparent; color: var(--ci-text-2); cursor: pointer; transition: background .15s, color .15s; }
+body.mi-admin-body .dx-icon-btn:hover { background: var(--dx-sidebar-accent); color: var(--ci-text); }
+body.mi-admin-body .mi-sidebar-toggle { color: var(--ci-text-2); font-size: 15px; margin-right: 8px; }
+body.mi-admin-body .mi-public-link, body.mi-admin-body .mi-user-toggle { color: var(--ci-text-2); font-weight: 500; font-size: 13px; }
+body.mi-admin-body .mi-public-link:hover, body.mi-admin-body .mi-user-toggle:hover { color: var(--ci-text); }
+body.mi-admin-body .mi-user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--dx-primary-soft); color: var(--ci-primary); border: 0; font-weight: 700; font-size: 13px; }
+body.mi-admin-body .dropdown-menu { box-shadow: var(--dx-shadow-menu); border-radius: 12px; }
+
+body.mi-admin-body .mi-admin-sidebar { width: 252px; padding-top: 68px; background: var(--dx-sidebar); border-right: 1px solid var(--ci-border); }
+body.mi-admin-body .mi-admin-sidebar .menu-list { padding: 12px 12px 24px; }
+body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-divider,
+body.mi-admin-body .mi-admin-sidebar .nav-divider { padding: 20px 12px 6px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ci-text-2); }
+body.mi-admin-body .mi-admin-sidebar .nav-divider:first-child { padding-top: 4px; }
+body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-link,
+body.mi-admin-body .mi-admin-sidebar .nav-link { display: flex; align-items: center; gap: 12px; padding: 7px 12px; margin: 1px 0; font-size: 13px; font-weight: 500; color: var(--dx-sidebar-fg); border-radius: 6px; box-shadow: none; transition: background .15s, color .15s; }
+body.mi-admin-body .mi-admin-sidebar .nav-link i { width: 16px; font-size: 14px; color: var(--ci-text-2); text-align: center; }
+body.mi-admin-body .mi-admin-sidebar .nav-link:hover, body.mi-admin-body .mi-admin-sidebar .nav-link:focus { background: var(--dx-sidebar-accent); color: var(--ci-text); }
+body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-link.active,
+body.mi-admin-body .mi-admin-sidebar .nav-link.active { background: var(--dx-primary-soft); color: var(--ci-primary); box-shadow: none; }
+body.mi-admin-body .mi-admin-sidebar .nav-link.active i { color: var(--ci-primary); }
+body.mi-admin-body .mi-admin-main { margin-left: 252px; padding-top: 68px; background: var(--ci-canvas); }
+body.mi-admin-body .mi-admin-content { padding: 24px; max-width: 1600px; }
+body.mi-sidebar-collapsed.mi-admin-body .mi-admin-sidebar { width: 60px; }
+body.mi-sidebar-collapsed.mi-admin-body .mi-admin-sidebar .nav-link { justify-content: center; padding: 8px 0; }
+body.mi-sidebar-collapsed.mi-admin-body .mi-admin-main { margin-left: 60px; }
+@media (max-width: 991.98px) {
+    body.mi-admin-body .mi-admin-sidebar { width: 252px; }
+    body.mi-admin-body .mi-admin-main, body.mi-sidebar-collapsed.mi-admin-body .mi-admin-main { margin-left: 0; }
+    body.mi-admin-body .mi-admin-content { padding: 16px; }
+    body.mi-admin-body .mi-topbar-context { display: none; }
+}
+
+/* ---- page header, cards, stat cards ---- */
+body.mi-admin-body .mi-page-header { margin-bottom: 20px; }
+body.mi-admin-body .mi-page-header h1 { font-size: 20px; font-weight: 600; letter-spacing: -.01em; margin: 2px 0 0; }
+body.mi-admin-body .mi-page-header p, body.mi-admin-body .mi-page-header .text-muted { font-size: 13px; }
+body.mi-admin-body .card, body.mi-admin-body .mi-admin-card, body.mi-admin-body .mi-metric-card, body.mi-admin-body .mi-table-card, body.mi-admin-body .mi-product-form-card, body.mi-admin-body .modal-content { border-radius: var(--dx-radius-card); border: 1px solid var(--ci-border); box-shadow: var(--dx-shadow-card); background: var(--ci-surface); }
+body.mi-admin-body .card-header { font-size: 14px; font-weight: 600; padding: 16px 20px 8px; border: 0; background: transparent !important; }
+body.mi-admin-body .card-body { padding: 12px 20px 20px; }
+body.mi-admin-body .mi-metric-card { padding: 18px 20px; }
+body.mi-admin-body .mi-metric-card strong, body.mi-admin-body .mi-metric-card b { color: var(--ci-text); font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
+body.mi-admin-body .mi-metric-card span, body.mi-admin-body .mi-metric-card small { color: var(--ci-text-2); font-size: 12px; }
+body.mi-admin-body .mi-metric-warning { border-color: color-mix(in srgb, var(--ci-gold) 55%, transparent); }
+
+/* ---- tables ---- */
+body.mi-admin-body .table thead th, body.mi-admin-body table.dataTable thead th, body.mi-admin-body .mi-admin-table thead th { background: var(--ci-elevated); color: var(--ci-text-2); font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: .01em; padding: 10px 14px; border-bottom: 1px solid var(--ci-border); }
+body.mi-admin-body .table td, body.mi-admin-body table.dataTable td, body.mi-admin-body .mi-admin-table td { padding: 12px 14px; font-size: 13px; vertical-align: middle; }
+body.mi-admin-body .table-hover tbody tr:hover td, body.mi-admin-body table.dataTable tbody tr:hover td, body.mi-admin-body .mi-admin-table tbody tr:hover td { background: var(--ci-elevated); }
+body.mi-admin-body .table-striped tbody tr:nth-of-type(odd) td, body.mi-admin-body table.dataTable.stripe tbody tr.odd td { background: transparent; }
+
+/* ---- badges (soft, pill) and buttons ---- */
+body.mi-admin-body .badge, body.mi-admin-body .mi-status-approved, body.mi-admin-body .mi-status-pending, body.mi-admin-body .mi-status-rejected, body.mi-admin-body .mi-status-excluded, body.mi-admin-body .lane-badge { border: 0 !important; border-radius: var(--ci-r-pill); padding: 3px 10px; font-size: 12px; font-weight: 500; }
+body.mi-admin-body .badge-success, body.mi-admin-body .mi-status-approved, body.mi-admin-body .lane-badge.lane-green { background: color-mix(in srgb, var(--ci-verified) 14%, transparent); color: var(--ci-verified); }
+body.mi-admin-body .badge-warning, body.mi-admin-body .mi-status-pending, body.mi-admin-body .lane-badge.lane-amber { background: color-mix(in srgb, var(--ci-gold) 14%, transparent); color: var(--ci-gold); }
+body.mi-admin-body .badge-danger, body.mi-admin-body .mi-status-rejected, body.mi-admin-body .lane-badge.lane-red { background: color-mix(in srgb, var(--ci-danger) 12%, transparent); color: var(--ci-danger); }
+body.mi-admin-body .badge-secondary, body.mi-admin-body .badge-light, body.mi-admin-body .badge-info, body.mi-admin-body .mi-status-excluded, body.mi-admin-body .lane-badge { background: var(--ci-elevated); color: var(--ci-text-2); }
+body.mi-admin-body .btn { border-radius: 8px; font-weight: 500; font-size: 13px; padding: 7px 14px; }
+body.mi-admin-body .btn-primary { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi-admin-body .btn-primary:hover, body.mi-admin-body .btn-primary:focus { filter: brightness(.94); box-shadow: var(--ci-btn-glow); }
+body.mi-admin-body .btn-outline-primary, body.mi-admin-body .btn-secondary, body.mi-admin-body .btn-light, body.mi-admin-body .btn-outline-secondary { background: var(--ci-surface); border: 1px solid var(--ci-border); color: var(--ci-text); }
+body.mi-admin-body .btn-outline-primary:hover, body.mi-admin-body .btn-secondary:hover, body.mi-admin-body .btn-light:hover, body.mi-admin-body .btn-outline-secondary:hover { background: var(--ci-elevated); border-color: var(--ci-border-active); color: var(--ci-text); }
+body.mi-admin-body .btn-success { background: color-mix(in srgb, var(--ci-verified) 14%, transparent); border-color: transparent; color: var(--ci-verified); }
+body.mi-admin-body .btn-danger, body.mi-admin-body .btn-outline-danger { background: color-mix(in srgb, var(--ci-danger) 12%, transparent); border-color: transparent; color: var(--ci-danger); }
+body.mi-admin-body .btn-warning { background: color-mix(in srgb, var(--ci-gold) 14%, transparent); border-color: transparent; color: var(--ci-gold); }
+body.mi-admin-body .form-control, body.mi-admin-body .custom-select, body.mi-admin-body select, body.mi-admin-body textarea { border-radius: 8px; font-size: 13px; }
+body.mi-admin-body .alert-info { background: var(--dx-primary-soft); border-color: color-mix(in srgb, var(--ci-primary) 35%, transparent); }
+body.mi-admin-body .alert-success { background: color-mix(in srgb, var(--ci-verified) 10%, transparent); }
+body.mi-admin-body .alert-warning, body.mi-admin-body .notice { background: color-mix(in srgb, var(--ci-gold) 10%, transparent); border-color: color-mix(in srgb, var(--ci-gold) 45%, transparent); }
+body.mi-admin-body .alert-danger { background: color-mix(in srgb, var(--ci-danger) 10%, transparent); }
+
+/* ---- footer credit (required by the DropX licence) ---- */
+body.mi-admin-body .dx-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--ci-border); display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; font-size: 12px; color: var(--ci-text-2); }
+body.mi-admin-body .dx-footer a { color: var(--dx-brand); font-weight: 600; }
+body.mi-admin-body .dx-footer a:hover { text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) { body.mi-admin-body * { transition: none !important; } }

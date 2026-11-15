@@ -48,6 +48,7 @@ $router->get('/admin/review-queue',[AdminController::class,'review']);
 $router->get('/admin/review-queue/data',[AdminController::class,'reviewData']);
 $router->get('/admin/review/{id}',[AdminController::class,'reviewDetail']);
 $router->get('/admin/review-analytics',[AdminController::class,'reviewAnalytics']);
+$router->get('/admin/market-trends',[AdminController::class,'marketTrends']);
 $router->post('/admin/review-queue/decision',[AdminController::class,'reviewDecision']);
 $router->post('/admin/review-queue/correction',[AdminController::class,'reviewCorrection']);
 $router->get('/admin/price-indices',[AdminController::class,'indices']);

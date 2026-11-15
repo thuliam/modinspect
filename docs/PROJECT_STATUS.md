@@ -867,3 +867,9 @@ Do not assume previous chat context exists.
 - Product page: monthly trend chart + nearby models. Deal result: model facts, grade note, trend, nearby models.
 - Tests: `tests/trend_location_test.php` added; full `tests/run.php` passed locally.
 - Open: location log is empty until the owner supplies the raw export path; trend needs more months (data is mostly Sep-Nov 2026).
+
+## [2026-11-15] [AGENT: Claude] - Dev/UX/QA/Doc: Admin DropX skin + Trends & Locations (DL-030)
+- Admin skin: `mi-dropx.css/js`, header/footer markup (theme toggle, DataDropX credit). Checked visually (light and dark) on dashboard, products and the new page via an isolated test server; temporary test admin and fixture rows removed.
+- New page `/admin/market-trends` + `App\Services\Admin\MarketTrendReport`; nav item under Market Data.
+- Location log populated on shared DEV from the owner's LINE export: 682 listings with a province (Bangkok 292, Nonthaburi 211 - likely repeated posts).
+- Full `tests/run.php` passed. Not done: other admin pages were not re-checked one by one; login page unchanged.

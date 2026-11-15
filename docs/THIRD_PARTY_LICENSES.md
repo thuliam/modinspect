@@ -18,3 +18,8 @@ Not bundled: no CDN scripts, no web fonts fetched at runtime by the admin UI. Th
 brand decision (gate G-3); any chosen font must be OFL/Apache licensed and self-hosted.
 
 PHP dependencies: none (custom MVC, no Composer packages).
+
+## DropX Admin (visual language only)
+
+- Source: DataDropX, https://datadropx.net, v1.0.x. Licence: DropX Admin License (MIT-based). Conditions kept: copyright notice here, visible credit "Designed & developed by DataDropX" with link in the admin footer, no resale.
+- Used: design tokens and layout metrics re-implemented in `public/assets/mi-dropx.css`. No template code or assets are copied.
