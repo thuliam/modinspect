@@ -148,3 +148,30 @@ body.mi-admin-body .alert-danger { background: color-mix(in srgb, var(--ci-dange
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: var(--ci-border); border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { body.mi-admin-body * { transition: none !important; animation: none !important; } }
+
+/* ---- composition fixes from owner review (screenshots 2026-11-15) ---- */
+/* labels that wrap their input must fill the column (inline labels put fields side by side and shrink them) */
+body.mi-admin-body form label { display: block; width: 100%; margin-bottom: 12px; font-size: 12px; font-weight: 600; color: var(--ci-text-2); }
+body.mi-admin-body form label .form-control, body.mi-admin-body form label select, body.mi-admin-body form label textarea { display: block; width: 100%; margin-top: 4px; }
+body.mi-admin-body .form-row > .form-group { margin-bottom: 4px; }
+body.mi-admin-body .form-row > .form-group > label { margin-bottom: 8px; }
+body.mi-admin-body .js-datatable-filters .card-body { padding-bottom: 12px; }
+body.mi-admin-body .form-row .btn-block { height: 38px; }
+/* DataTables controls sit inside the card padding, one row for length+search, one for info+pagination */
+body.mi-admin-body .dataTables_wrapper > .row { margin: 0; padding: 12px 20px; align-items: center; }
+body.mi-admin-body .dataTables_wrapper > .row > [class*="col-"] { padding: 0; }
+body.mi-admin-body .dataTables_wrapper .dataTables_length label, body.mi-admin-body .dataTables_wrapper .dataTables_filter label { display: inline-flex; align-items: center; gap: 8px; margin: 0; width: auto; font-weight: 400; font-size: 14px; color: var(--ci-text-2); }
+body.mi-admin-body .dataTables_wrapper .dataTables_length select, body.mi-admin-body .dataTables_wrapper .dataTables_filter input { width: auto; margin: 0; height: 36px; padding: 0 12px; }
+body.mi-admin-body .dataTables_wrapper .dataTables_filter input { min-width: 220px; }
+body.mi-admin-body .dataTables_wrapper .dataTables_info { padding: 0; font-size: 14px; }
+body.mi-admin-body .dataTables_wrapper .pagination { margin: 0; }
+body.mi-admin-body .dataTables_wrapper table.dataTable { margin: 0 !important; }
+body.mi-admin-body .mi-table-card .card-header { padding-bottom: 8px; }
+/* header search: one border (the label), no inner input box; shortcut hint never wraps */
+body.mi-admin-body .dx-search input { border: 0; background: transparent; box-shadow: none; padding: 0; height: auto; border-radius: 0; }
+body.mi-admin-body .dx-search kbd { white-space: nowrap; }
+/* definition lists (Provider Guardrails etc.): plain rows with hairlines, not grey bars */
+body.mi-admin-body .mi-definition-grid > * { background: transparent; border: 0; border-radius: 0; padding: 0; }
+body.mi-admin-body .mi-definition-grid { gap: 0 24px; }
+body.mi-admin-body .mi-definition-grid dt, body.mi-admin-body .mi-definition-grid dd { padding: 10px 0; border-bottom: 1px solid var(--ci-border); margin: 0; }
+body.mi-admin-body .mi-definition-grid dt { font-size: 11px; font-weight: 600; letter-spacing: .04em; color: var(--ci-text-2); }
