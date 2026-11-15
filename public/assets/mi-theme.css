@@ -164,8 +164,7 @@ body.mi .motion-toggle:hover { border-color: var(--mi-lime); color: var(--mi-lim
 /* ---- inner pages inherit the tokens; keep their headings on the same scale ---- */
 body.mi .eyebrow, body.mi .meta { color: var(--mi-lime); font-family: var(--mb-mono); font-weight: 600; }
 body.mi .mi-page-heading h1, body.mi .mi-product-hero h1 { font-weight: 800; color: #fff; }
-body.mi .mi-compact-list a { font-family: var(--mb-mono); font-weight: 600; }
-body.mi .range-answer, body.mi .mi-range { font-family: var(--mb-mono); }
+body.mi .mi-compact-list a { font-family: var(--mb-mono); font-weight: 600; }body.mi .range-answer { font-family: var(--mb-mono); }
 body.mi .site-footer .brand { font-size: 22px; }
 
 /* ---- product detail: gallery + summary (layout from the Stitch reference, content limited to real data) ---- */
@@ -185,7 +184,6 @@ body.mi .mi-sum-meta { display: flex; flex-wrap: wrap; align-items: center; gap:
 body.mi .mi-sum-empty { margin: 16px 0; padding: 12px 14px; border: 1px dashed var(--mb-line); border-radius: var(--mb-radius-sm); color: var(--mb-soft); }
 body.mi .mi-product-sum .mi-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 body.mi .mi-trust { margin-top: 32px; }
-body.mi .mi-trust-title { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; font-size: 1.4rem; color: #fff; }
 
 /* ---- deal checker: step flow (layout idea from the Stitch request page; no service is offered) ---- */
 body.mi .mi-flow { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 24px; padding: 0; list-style: none; }
@@ -202,8 +200,6 @@ body.mi .mi-deal-form .form-control, body.mi .mi-deal-form input, body.mi .mi-de
    ===================================================================================================== */
 body.mi { --mi-card: var(--ci-surface); --mi-r: var(--ci-r-md); font-size: 16px; }
 body.mi .container { max-width: 1560px; padding-left: clamp(20px, 3vw, 48px); padding-right: clamp(20px, 3vw, 48px); }
-body.mi .col-xl-5ths { position: relative; width: 100%; padding-right: 12px; padding-left: 12px; }
-@media (min-width: 1200px) { body.mi .col-xl-5ths { flex: 0 0 20%; max-width: 20%; } }
 body.mi .row { margin-left: -12px; margin-right: -12px; }
 body.mi .row > [class*="col-"] { padding-left: 12px; padding-right: 12px; }
 
@@ -259,7 +255,6 @@ body.mi .pc-badge { position: absolute; top: 12px; left: 12px; padding: 3px 12px
 body.mi .pc-badge.on { background: var(--mi-lime); border-color: var(--mi-lime); color: var(--mb-on-accent); }
 body.mi .product-card-meta { margin-top: 16px; display: flex; justify-content: space-between; color: var(--mb-muted); font-size: 13px; }
 body.mi .mi-product-card h3 { margin-top: 6px; font-size: 1.1rem; line-height: 1.4; min-height: 2.8em; }
-body.mi .mi-product-card .product-spec { font-size: 14px; line-height: 1.6; color: var(--mb-soft); }
 body.mi .mi-product-card .compact-status { margin-bottom: 14px; font-size: 14px; color: var(--mb-muted); }
 body.mi .product-card-action { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto; margin-bottom: 18px; padding: 10px 14px; border: 1px solid rgba(187, 242, 70, .5); border-radius: var(--ci-r-md); color: var(--mi-lime); font-weight: 700; font-size: 15px; transition: background .25s, color .25s; }
 body.mi .mi-product-card:hover .product-card-action { background: var(--mi-lime); color: var(--mb-on-accent); }
@@ -325,13 +320,11 @@ body.mi .mi-gallery-art .mi-photo { display: block; width: 100%; height: 100%; m
    ===================================================================================================== */
 body.mi { font-family: var(--ci-font); font-size: 16px; line-height: 1.5; font-variant-numeric: normal; }
 body.mi h1, body.mi h2, body.mi h3, body.mi h4, body.mi .brand { font-family: var(--ci-font); }
-body.mi .mi-hero-copy h1 { font-size: 48px; line-height: 56px; font-weight: 800; letter-spacing: -.01em; }
-body.mi .mi-head h2, body.mi .mi-trust-title, body.mi .mi-cta-copy h2 { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: 0; }
+body.mi .mi-hero-copy h1 { font-size: 48px; line-height: 56px; font-weight: 800; letter-spacing: -.01em; }body.mi .mi-head h2,body.mi .mi-cta-copy h2 { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: 0; }
 body.mi .mi-metrics h2 { font-size: 22px; line-height: 28px; font-weight: 700; }
 body.mi .mi-cat strong, body.mi .mi-why h3, body.mi .mi-step h3, body.mi .mi-product-card h3, body.mi .mi-product-sum h1 + p, body.mi .mi-cta-copy h3 { font-size: 18px; line-height: 24px; font-weight: 600; }
 body.mi .mi-product-sum h1, body.mi .mi-page-heading h1, body.mi .mi-product-hero h1 { font-size: 32px; line-height: 40px; font-weight: 800; }
-body.mi .mi-sub, body.mi .lead, body.mi .mi-cta-copy p { font-size: 16px; line-height: 24px; }
-body.mi .mi-why p, body.mi .mi-step p, body.mi .mi-cat small, body.mi .mi-product-card .product-spec, body.mi .mi-product-card .compact-status, body.mi .mi-data-note, body.mi .mi-note, body.mi .footer-links a, body.mi .site-footer p { font-size: 14px; line-height: 20px; }
+body.mi .mi-sub, body.mi .lead, body.mi .mi-cta-copy p { font-size: 16px; line-height: 24px; }body.mi .mi-why p,body.mi .mi-step p,body.mi .mi-cat small,body.mi .mi-product-card .compact-status,body.mi .mi-data-note,body.mi .mi-note,body.mi .footer-links a,body.mi .site-footer p { font-size: 14px; line-height: 20px; }
 body.mi .eyebrow, body.mi .meta, body.mi .product-card-meta, body.mi .pc-badge, body.mi .motion-toggle, body.mi .footer-copy { font-size: 12px; line-height: 16px; font-weight: 600; }
 body.mi .confidence-badge, body.mi .price-status-badge { font-size: 10px; line-height: 14px; font-weight: 700; letter-spacing: .025em; }
 /* numbers: price, score and metrics keep a weight and tabular figures (no more monospace) */
@@ -339,12 +332,10 @@ body.mi .mi-metrics b, body.mi .mb-range, body.mi .mb-range *, body.mi .mi-produ
 body.mi .mi-metrics b { font-size: 48px; line-height: 56px; }
 body.mi .navbar-nav .nav-link, body.mi .btn, body.mi .mi-tabs button, body.mi .mi-chips a { font-family: var(--ci-font); }
 @media (max-width: 767.98px) {
-    body.mi .mi-hero-copy h1 { font-size: 32px; line-height: 40px; }
-    body.mi .mi-head h2, body.mi .mi-trust-title, body.mi .mi-cta-copy h2 { font-size: 24px; line-height: 32px; }
+    body.mi .mi-hero-copy h1 { font-size: 32px; line-height: 40px; }body.mi .mi-head h2,body.mi .mi-cta-copy h2 { font-size: 24px; line-height: 32px; }
     body.mi .mi-metrics b { font-size: 32px; line-height: 40px; }
     body.mi .mi-product-sum h1, body.mi .mi-page-heading h1, body.mi .mi-product-hero h1 { font-size: 24px; line-height: 32px; }
 }
-
 
 /* =====================================================================================================
    Phase C: CI components (DESIGN.md). Buttons, cards, chips, inputs, tables, notices. All states: default, hover, focus-visible, active,
@@ -359,16 +350,10 @@ body.mi .btn-lime, body.mi .btn-primary, body.mi .button:not(.ghost):not(.second
 body.mi .btn-lime:hover, body.mi .btn-primary:hover, body.mi .button:not(.ghost):not(.secondary):hover, body.mi button[type=submit]:hover { background: var(--ci-primary); color: var(--ci-on-primary); box-shadow: var(--ci-btn-glow); translate: 0 0; filter: none; }
 body.mi .btn-lime:active, body.mi .btn-primary:active, body.mi .button:active, body.mi button[type=submit]:active { box-shadow: none; translate: 0 1px; }
 body.mi .btn-lime:focus-visible, body.mi .btn-primary:focus-visible, body.mi .button:focus-visible, body.mi button[type=submit]:focus-visible { box-shadow: var(--ci-focus), var(--ci-btn-glow); }
-/* secondary: used for "browse", "specs" style actions */
-body.mi .btn-ghost, body.mi .button.ghost, body.mi .button.secondary, body.mi .ghost, body.mi .btn-secondary { background: var(--ci-elevated); border: 1px solid var(--ci-btn-border); color: var(--ci-text); }
-body.mi .btn-ghost:hover, body.mi .button.ghost:hover, body.mi .button.secondary:hover, body.mi .ghost:hover, body.mi .btn-secondary:hover { background: var(--ci-elevated); border-color: var(--ci-primary); color: var(--ci-primary); box-shadow: none; }
+/* secondary: used for "browse", "specs" style actions */body.mi .btn-ghost,body.mi .button.ghost,body.mi .ghost { background: var(--ci-elevated); border: 1px solid var(--ci-btn-border); color: var(--ci-text); }body.mi .btn-ghost:hover,body.mi .button.ghost:hover,body.mi .ghost:hover { background: var(--ci-elevated); border-color: var(--ci-primary); color: var(--ci-primary); box-shadow: none; }
 /* ghost (text) action */
-body.mi .btn-text { background: transparent; border: 0; color: var(--ci-text-2); padding-left: 0; padding-right: 0; }
-body.mi .btn-text:hover { color: var(--ci-primary); text-decoration: underline; text-decoration-color: var(--ci-primary); text-underline-offset: 6px; }
 /* disabled and loading */
 body.mi .btn:disabled, body.mi .btn.disabled, body.mi .button[aria-disabled=true], body.mi button:disabled, body.mi .disabled-control { opacity: .45; cursor: not-allowed; box-shadow: none; translate: 0 0; }
-body.mi .is-loading { position: relative; color: transparent !important; pointer-events: none; }
-body.mi .is-loading::after { content: ""; position: absolute; inset: 0; margin: auto; width: 18px; height: 18px; border: 2px solid var(--ci-on-primary); border-right-color: transparent; border-radius: 50%; animation: ciSpin .7s linear infinite; }
 @keyframes ciSpin { to { transform: rotate(360deg); } }
 body.mi .product-card-action { background: transparent; border: 1px solid var(--ci-btn-border); color: var(--ci-text); }
 body.mi .mi-product-card:hover .product-card-action { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); box-shadow: var(--ci-btn-glow); }
@@ -403,8 +388,7 @@ body.mi .mi-search .btn-lime { border-radius: 0 var(--ci-r-md) var(--ci-r-md) 0;
 body.mi input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=submit]):not([type=button]), body.mi select, body.mi textarea, body.mi .form-control { background: var(--ci-search); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text); }
 body.mi input::placeholder, body.mi textarea::placeholder { color: var(--ci-text-2); }
 body.mi input:focus, body.mi select:focus, body.mi textarea:focus, body.mi .form-control:focus { background: var(--ci-search); border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); color: var(--ci-text); }
-body.mi input:disabled, body.mi select:disabled, body.mi textarea:disabled { opacity: .5; cursor: not-allowed; }
-body.mi .is-invalid, body.mi input[aria-invalid=true] { border-color: var(--ci-danger); }
+body.mi input:disabled, body.mi select:disabled, body.mi textarea:disabled { opacity: .5; cursor: not-allowed; }body.mi input[aria-invalid=true] { border-color: var(--ci-danger); }
 body.mi .mi-search .input-group input:focus { border: 0; box-shadow: none; }
 body.mi .mi-search .input-group input { border: 0; border-radius: 0; background: transparent; }
 body.mi label { color: var(--ci-text-2); font-weight: 600; font-size: 14px; }
