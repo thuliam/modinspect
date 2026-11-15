@@ -31,6 +31,7 @@ $commands = [
     ['label' => 'tests/spec_class_import_test.php', 'args' => ['tests/spec_class_import_test.php']],
     ['label' => 'tests/trend_location_test.php', 'args' => ['tests/trend_location_test.php']],
     ['label' => 'tests/price_trust_test.php', 'args' => ['tests/price_trust_test.php']],
+    ['label' => 'tests/ui_prune_css_test.php', 'args' => ['tests/ui_prune_css_test.php']],
     ['label' => 'tests/admin_import_workflow_test.php', 'args' => ['tests/admin_import_workflow_test.php']],
     ['label' => 'tests/seeded_mock_smoke_test.php', 'args' => ['tests/seeded_mock_smoke_test.php']],
     ['label' => 'tests/ux_structure_test.php', 'args' => ['tests/ux_structure_test.php']],

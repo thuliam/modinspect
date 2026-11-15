@@ -18,14 +18,14 @@
             <button type="submit">ค้นหา</button>
         </div>
         <div class="mi-category-chips" aria-label="Quick category filters">
-            <a href="<?= $base ?>/price?category=cpu" class="<?= $category === 'cpu' ? 'active' : '' ?>">CPU</a>
-            <a href="<?= $base ?>/price?category=gpu" class="<?= $category === 'gpu' ? 'active' : '' ?>">GPU</a>
-            <a href="<?= $base ?>/price" class="<?= $category === '' && $q === '' ? 'active' : '' ?>">ทั้งหมด</a>
+            <a href="<?= $base ?>/price?<?= http_build_query(array_filter(['q' => $q, 'category' => 'cpu'])) ?>" class="<?= $category === 'cpu' ? 'active' : '' ?>">CPU</a>
+            <a href="<?= $base ?>/price?<?= http_build_query(array_filter(['q' => $q, 'category' => 'gpu'])) ?>" class="<?= $category === 'gpu' ? 'active' : '' ?>">GPU</a>
+            <a href="<?= $base ?>/price<?= $q !== '' ? '?' . http_build_query(['q' => $q]) : '' ?>" class="<?= $category === null && $q === '' ? 'active' : '' ?>">ทั้งหมด</a>
         </div>
     </form>
 
-    <div class="mi-result-summary">
-        <strong>พบ <?= count($products) ?> รุ่น</strong>
+    <div class="mi-result-summary" role="status" aria-live="polite">
+        <strong>พบ <?= count($products) ?> รุ่น<?php $pricedCount = count(array_filter($products, static fn(array $p): bool => !empty($p['median']) && (int) ($p['valid_sample_size'] ?? 0) > 0 && (int) ($p['accepted_observation_count'] ?? 0) > 0)); ?><?= $products ? ' · มีช่วงราคา ' . $pricedCount . ' รุ่น' : '' ?></strong>
         <span>ช่วงราคาคือราคาประกาศที่ผ่านการคัดกรอง ไม่ใช่ราคาปิดดีล</span>
     </div>
 
@@ -35,6 +35,12 @@
         <div class="mi-empty-state">
             <h2>ไม่พบสินค้าที่ค้นหา</h2>
             <p>ลองใช้ชื่อรุ่นแบบสั้น เช่น “3070”, “5700X3D” หรือเลือกหมวด CPU/GPU ก่อนค้นหาอีกครั้ง</p>
+            <?php if (!empty($suggestions)): ?>
+            <p class="mi-trend-note">รุ่นที่คนดูบ่อย:</p>
+            <div class="mi-category-chips" aria-label="รุ่นแนะนำ">
+                <?php foreach ($suggestions as $sg): ?><a href="<?= $base ?>/price/<?= rawurlencode($sg['slug']) ?>"><?= htmlspecialchars($sg['full_name']) ?></a><?php endforeach; ?>
+            </div>
+            <?php endif; ?>
             <div class="mi-actions">
                 <a class="button" href="<?= $base ?>/price">ล้างตัวกรอง</a>
                 <a class="button ghost" href="<?= $base ?>/deal-checker">ใช้ Deal Checker</a>

@@ -893,3 +893,8 @@ CURRENT STATE (canonical; older sections above are history and some counts there
 - confidence-v2 live: owner-text-only evidence capped at low; 11 DEV snapshots recalculated (medium -> low); public priced 46, all low; audit 0 P0/P1.
 - U2 first slice delivered (adaptive search results, 4-column cards, compact product detail, collapsed credits, honest home counter). Full suite exit 0; no horizontal overflow at 390/768/1024/1440 on a DEV-backed local server.
 - Not verified / open: owner visual acceptance, 708px, keyboard + contrast audit, CI on GitHub for these commits.
+
+## [2026-11-15] [AGENT: Claude] - UI modules A/B, admin sweep (DL-034)
+- Admin: 14 pages swept light/dark/mobile, AA contrast fixes, icon guard extended, login restyled, skip link (board C-1..C-3).
+- Module A: CSS pruner + `app.css` -33% bytes, verified zero computed-style change. Module B: search UX polish. Full suite exit 0 (43 steps).
+- Not verified: live UAT Admin while signed in; Codex lane (D-1..D-8) not started as of this entry.

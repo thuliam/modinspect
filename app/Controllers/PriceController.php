@@ -7,7 +7,8 @@ use App\Models\Product;
 final class PriceController extends Controller {
     public function index(): void {
         $q=trim((string)($_GET['q']??'')); $category=trim((string)($_GET['category']??'')) ?: null;
-        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>(new Product())->search($q,$category),'q'=>$q,'category'=>$category]);
+        $model=new Product(); $products=$model->search($q,$category);
+        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'suggestions'=>$products ? [] : $model->popular(6)]);
     }
     public function show(string $slug): void {
         $model=new Product(); $product=$model->findBySlug($slug);

@@ -21,3 +21,9 @@ This is the honest inventory of what agents wrote by hand, and what replaces it.
 - No public-site template has been supplied; the public theme stays hand-written until one is (or the owner approves shrinking it to Bootstrap utilities).
 - `app.css` removal needs a regression pass over all public pages.
 - Login page (`mi-auth.css`, 16 lines) still uses the old look.
+
+## Update 2026-11-15 (Module A)
+
+- `app.css`: 1527 -> 1207 lines after static dead-rule pruning (`scripts/prune_dead_css.php`, test `tests/ui_prune_css_test.php`); `mi-theme.css` 623 -> 605. Computed styles unchanged on all checked public pages.
+- Finding: `app.css` is not removable. The live public theme sits on its `body.mb` layer and base rules; deleting the file would only relocate hand-written CSS. Removing it for real means rebuilding public pages on Bootstrap utilities or adopting a public template (owner decision).
+- `mi-dropx.css` (admin) is template-derived; `admin.css` hard-coded light colours were converted to theme variables so dark mode works.
