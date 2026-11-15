@@ -3,7 +3,7 @@
 <div class="card filter-strip disabled-panel">
     <label>จังหวัด<select disabled><option>กรุงเทพมหานคร</option></select></label>
     <label>ระยะทาง<select disabled><option>25 กม.</option></select></label>
-    <button class="disabled-control" type="button" disabled><span class="material-symbols-outlined">near_me</span> ค้นหาข้อมูลใกล้ฉัน — ยังไม่เปิดใช้งาน</button>
+    <button class="disabled-control" type="button" disabled><i class="fas fa-location-arrow" aria-hidden="true"></i> ค้นหาข้อมูลใกล้ฉัน — ยังไม่เปิดใช้งาน</button>
 </div>
 <div class="empty">Local Match ยังไม่มี backend สำหรับ location, consent, หรือ source policy เฉพาะพื้นที่ จึงไม่แสดงระยะทางหรือประกาศตัวอย่างปลอม</div>
 <div class="cards"><?php foreach(array_slice($products,0,3) as $product) require ROOT_PATH.'/app/Views/components/product-card.php'; ?></div>

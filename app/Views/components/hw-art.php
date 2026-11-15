@@ -118,3 +118,13 @@ if (!function_exists('mi_product_photo')) {
         return '<img class="' . $class . '" src="' . $base . '/assets/products/' . $slug . '.jpg?v=' . (int) @filemtime($file) . '" alt="' . htmlspecialchars((string) ($product['full_name'] ?? '')) . ' (ภาพถ่ายประกอบ ดูเครดิตในหน้าวิธีคำนวณ)" loading="lazy">';
     }
 }
+if (!function_exists('mi_fa')) {
+    /** Maps the old Material Symbols names used by the module pages to Font Awesome 5 classes (no extra icon font is loaded). */
+    function mi_fa(string $name): string
+    {
+        static $map = ['memory' => 'fa-microchip', 'developer_board' => 'fa-server', 'videogame_asset' => 'fa-gamepad', 'view_module' => 'fa-memory', 'database' => 'fa-database', 'bolt' => 'fa-bolt',
+            'inventory_2' => 'fa-box', 'toys' => 'fa-snowflake', 'monitor' => 'fa-desktop', 'verified' => 'fa-check-circle', 'filter_list' => 'fa-filter', 'check_circle' => 'fa-check-circle',
+            'warning' => 'fa-exclamation-triangle', 'save' => 'fa-save', 'near_me' => 'fa-location-arrow', 'chevron_right' => 'fa-chevron-right', 'lock' => 'fa-lock', 'inventory' => 'fa-boxes'];
+        return $map[$name] ?? 'fa-circle';
+    }
+}

@@ -1,7 +1,7 @@
 <main class="splash-container mi-auth-container">
     <section class="card mi-auth-card">
-        <div class="card-header text-center bg-white">
-            <div class="mi-auth-mark"><i class="fas fa-search"></i></div>
+        <div class="card-header text-center">
+            <img class="mi-auth-logo" src="<?= $base ?>/assets/brand/modinpect-lockup-dark.png" width="900" height="181" alt="modinpect">
             <h1>ModInspect Admin</h1>
             <p>Operations console for market evidence, review, and catalog quality.</p>
         </div>
@@ -22,7 +22,7 @@
                 <button class="btn btn-primary btn-lg btn-block" type="submit"><i class="fas fa-sign-in-alt mr-2"></i>Sign in</button>
             </form>
         </div>
-        <div class="card-footer bg-white text-center">
+        <div class="card-footer text-center">
             <a href="<?= $base ?>/" target="_blank" rel="noopener noreferrer">Open public site</a>
         </div>
     </section>

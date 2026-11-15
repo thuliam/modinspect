@@ -19,7 +19,7 @@
     document.getElementById('summary-remaining').textContent = money(remaining);
     const state = document.getElementById('budget-state');
     state.className = `budget-state ${remaining >= 0 ? 'ok' : 'over'}`;
-    state.innerHTML = `<span class="material-symbols-outlined">${remaining >= 0 ? 'check_circle' : 'warning'}</span><span>${remaining >= 0 ? 'อยู่ในงบประมาณ' : 'เกินงบประมาณ'}</span>`;
+    state.innerHTML = `<i class="fas ${remaining >= 0 ? 'fa-check-circle' : 'fa-exclamation-triangle'}" aria-hidden="true"></i><span>${remaining >= 0 ? 'อยู่ในงบประมาณ' : 'เกินงบประมาณ'}</span>`;
   };
   const filterParts = () => {
     const cpu = form.querySelector('input[name="parts[cpu]"]:checked');

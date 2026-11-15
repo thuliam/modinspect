@@ -344,3 +344,83 @@ body.mi .navbar-nav .nav-link, body.mi .btn, body.mi .mi-tabs button, body.mi .m
     body.mi .mi-metrics b { font-size: 32px; line-height: 40px; }
     body.mi .mi-product-sum h1, body.mi .mi-page-heading h1, body.mi .mi-product-hero h1 { font-size: 24px; line-height: 32px; }
 }
+
+
+/* =====================================================================================================
+   Phase C: CI components (DESIGN.md). Buttons, cards, chips, inputs, tables, notices. All states: default, hover, focus-visible, active,
+   disabled, loading, empty, error. Cards are flat --ci-surface; the only glow is --ci-bloom on hover and --ci-btn-glow on primary buttons.
+   ===================================================================================================== */
+body.mi { --ci-search: #131722; --ci-btn-border: #273142; --ci-focus: 0 0 0 2px var(--ci-canvas), 0 0 0 4px var(--ci-primary); }
+body.mi :focus-visible { outline: 0; box-shadow: var(--ci-focus); }
+
+/* ---- buttons ---- */
+body.mi .btn, body.mi .button, body.mi button[type=submit], body.mi .product-card-action { border-radius: var(--ci-r-md); font-weight: 700; transition: box-shadow .2s, border-color .2s, background .2s, color .2s, translate .2s; }
+body.mi .btn-lime, body.mi .btn-primary, body.mi .button:not(.ghost):not(.secondary), body.mi button[type=submit] { background: var(--ci-primary); border: 1px solid var(--ci-primary); color: var(--ci-on-primary); }
+body.mi .btn-lime:hover, body.mi .btn-primary:hover, body.mi .button:not(.ghost):not(.secondary):hover, body.mi button[type=submit]:hover { background: var(--ci-primary); color: var(--ci-on-primary); box-shadow: var(--ci-btn-glow); translate: 0 0; filter: none; }
+body.mi .btn-lime:active, body.mi .btn-primary:active, body.mi .button:active, body.mi button[type=submit]:active { box-shadow: none; translate: 0 1px; }
+body.mi .btn-lime:focus-visible, body.mi .btn-primary:focus-visible, body.mi .button:focus-visible, body.mi button[type=submit]:focus-visible { box-shadow: var(--ci-focus), var(--ci-btn-glow); }
+/* secondary: used for "browse", "specs" style actions */
+body.mi .btn-ghost, body.mi .button.ghost, body.mi .button.secondary, body.mi .ghost, body.mi .btn-secondary { background: var(--ci-elevated); border: 1px solid var(--ci-btn-border); color: var(--ci-text); }
+body.mi .btn-ghost:hover, body.mi .button.ghost:hover, body.mi .button.secondary:hover, body.mi .ghost:hover, body.mi .btn-secondary:hover { background: var(--ci-elevated); border-color: var(--ci-primary); color: var(--ci-primary); box-shadow: none; }
+/* ghost (text) action */
+body.mi .btn-text { background: transparent; border: 0; color: var(--ci-text-2); padding-left: 0; padding-right: 0; }
+body.mi .btn-text:hover { color: var(--ci-primary); text-decoration: underline; text-decoration-color: var(--ci-primary); text-underline-offset: 6px; }
+/* disabled and loading */
+body.mi .btn:disabled, body.mi .btn.disabled, body.mi .button[aria-disabled=true], body.mi button:disabled, body.mi .disabled-control { opacity: .45; cursor: not-allowed; box-shadow: none; translate: 0 0; }
+body.mi .is-loading { position: relative; color: transparent !important; pointer-events: none; }
+body.mi .is-loading::after { content: ""; position: absolute; inset: 0; margin: auto; width: 18px; height: 18px; border: 2px solid var(--ci-on-primary); border-right-color: transparent; border-radius: 50%; animation: ciSpin .7s linear infinite; }
+@keyframes ciSpin { to { transform: rotate(360deg); } }
+body.mi .product-card-action { background: transparent; border: 1px solid var(--ci-btn-border); color: var(--ci-text); }
+body.mi .mi-product-card:hover .product-card-action { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); box-shadow: var(--ci-btn-glow); }
+
+/* ---- cards: flat surface, hairline border, 2px lift + bloom on hover ---- */
+body.mi .card, body.mi .mi-cat, body.mi .mi-why, body.mi .mi-step, body.mi .mi-product-card, body.mi .mi-filter-card, body.mi .mi-empty-state, body.mi .mi-product-summary-card, body.mi .mi-price-answer-card,
+body.mi .mi-confidence-card, body.mi .mi-method-card, body.mi .mi-deal-cta, body.mi .mi-history-card { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); box-shadow: none; color: var(--ci-text-2); }
+body.mi .mi-cat, body.mi .mi-why, body.mi .mi-step, body.mi .mi-product-card { transition: translate .25s, border-color .25s, box-shadow .25s; }
+body.mi .mi-cat:hover, body.mi .mi-cat:focus-visible, body.mi .mi-why:hover, body.mi .mi-step:hover, body.mi .mi-product-card:hover, body.mi .mi-product-card:focus-within { translate: 0 -2px; border-color: var(--ci-border-active); box-shadow: var(--ci-bloom); }
+body.mi .mi-metrics { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-lg); }
+body.mi .mi-gallery, body.mi .mi-product-sum { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-lg); }
+
+/* ---- chips and badges ---- */
+body.mi .mi-tabs button, body.mi .mi-chips a { background: var(--ci-elevated); border: 1px solid var(--ci-border); border-radius: var(--ci-r-pill); color: var(--ci-text-2); }
+body.mi .mi-tabs button:hover, body.mi .mi-chips a:hover { border-color: var(--ci-primary); color: var(--ci-primary); background: var(--ci-elevated); }
+body.mi .mi-tabs button.active { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi .pc-badge { background: var(--ci-canvas); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-text-2); }
+body.mi .pc-badge.on, body.mi .mi-gallery-badge { background: rgba(34, 197, 94, .15); border: 1px solid var(--ci-verified); color: var(--ci-verified); border-radius: var(--ci-r-pill); }
+body.mi .confidence-badge, body.mi .price-status-badge { display: inline-block; padding: 2px 10px; border-radius: var(--ci-r-pill); border: 1px solid var(--ci-border-active); background: var(--ci-elevated); color: var(--ci-text-2); text-transform: uppercase; }
+body.mi .confidence-badge.confidence-high { background: rgba(34, 197, 94, .15); border-color: var(--ci-verified); color: var(--ci-verified); }
+body.mi .confidence-badge.confidence-medium { background: rgba(250, 204, 21, .12); border-color: var(--ci-gold); color: var(--ci-gold); }
+body.mi .confidence-badge.confidence-low { background: rgba(239, 68, 68, .12); border-color: var(--ci-danger); color: var(--ci-danger); }
+
+/* ---- search and form controls ---- */
+body.mi .mi-search .input-group { background: var(--ci-search); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); box-shadow: none; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
+body.mi .mi-search .input-group:focus-within { border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); }
+body.mi .mi-search .input-group-text { background: transparent; color: var(--ci-text-2); }
+body.mi .mi-search .form-control { background: transparent; color: var(--ci-text); }
+body.mi .mi-search .form-control::placeholder { color: var(--ci-text-3); }
+body.mi .mi-search .form-control:focus { box-shadow: none; }
+body.mi .mi-search .btn-lime { border-radius: 0 var(--ci-r-md) var(--ci-r-md) 0; }
+body.mi input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=submit]):not([type=button]), body.mi select, body.mi textarea, body.mi .form-control { background: var(--ci-search); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text); }
+body.mi input::placeholder, body.mi textarea::placeholder { color: var(--ci-text-3); }
+body.mi input:focus, body.mi select:focus, body.mi textarea:focus, body.mi .form-control:focus { background: var(--ci-search); border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); color: var(--ci-text); }
+body.mi input:disabled, body.mi select:disabled, body.mi textarea:disabled { opacity: .5; cursor: not-allowed; }
+body.mi .is-invalid, body.mi input[aria-invalid=true] { border-color: var(--ci-danger); }
+body.mi .mi-search .input-group input:focus { border: 0; box-shadow: none; }
+body.mi .mi-search .input-group input { border: 0; border-radius: 0; background: transparent; }
+body.mi label { color: var(--ci-text-2); font-weight: 600; font-size: 14px; }
+body.mi input[type=checkbox], body.mi input[type=radio] { accent-color: var(--ci-primary); }
+
+/* ---- dark tables ---- */
+body.mi table, body.mi .table { width: 100%; color: var(--ci-text); background: var(--ci-surface); border-collapse: separate; border-spacing: 0; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); overflow: hidden; }
+body.mi table thead th, body.mi .table thead th { background: var(--ci-highlight); color: var(--ci-text-2); border: 0; border-bottom: 1px solid var(--ci-border); font-size: 12px; line-height: 16px; font-weight: 600; padding: 12px 14px; }
+body.mi table td, body.mi .table td { padding: 12px 14px; border: 0; border-bottom: 1px solid var(--ci-border); color: var(--ci-text); background: transparent; vertical-align: middle; }
+body.mi table tbody tr:last-child td { border-bottom: 0; }
+body.mi table tbody tr:hover td, body.mi .table tbody tr:hover td { background: var(--ci-elevated); }
+body.mi .table-responsive { border-radius: var(--ci-r-md); }
+
+/* ---- notices: prototype/mock/info boxes use the gold tone (warning), not red ---- */
+body.mi .notice, body.mi .alert, body.mi .alert-warning { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; background: rgba(250, 204, 21, .08); border: 1px solid rgba(250, 204, 21, .45); border-radius: var(--ci-r-md); color: var(--ci-text); }
+body.mi .notice::before { content: "\f071"; font-family: "Font Awesome 5 Free"; font-weight: 900; color: var(--ci-gold); flex: none; line-height: 1.5; }
+body.mi .alert-info { background: rgba(187, 242, 70, .06); border-color: rgba(187, 242, 70, .35); }
+body.mi .alert-danger { background: rgba(239, 68, 68, .1); border-color: rgba(239, 68, 68, .5); }
+body.mi .alert-success { background: rgba(34, 197, 94, .1); border-color: rgba(34, 197, 94, .5); }
