@@ -558,3 +558,27 @@ body.mi .mi-result-empty > i { color: var(--ci-gold); font-size: 20px; margin-to
 body.mi .mi-result-empty strong { display: block; color: var(--ci-text); font-size: 16px; line-height: 24px; }
 body.mi .mi-result-empty span { display: block; margin-top: 4px; color: var(--ci-text-2); font-size: 14px; line-height: 22px; }
 body.mi .mi-result-panel .mi-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ---- products without a market price: compact tiles with a picture (not a wall of empty cards) ---- */
+body.mi .mi-mini-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0; }
+body.mi .mi-mini { display: flex; align-items: center; gap: 16px; min-height: 96px; padding: 12px; background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text); transition: border-color .25s, translate .25s, box-shadow .25s; }
+body.mi .mi-mini:hover { border-color: var(--ci-border-active); translate: 0 -2px; box-shadow: var(--ci-bloom); }
+body.mi .mi-mini-art { flex: none; display: grid; place-items: center; width: 84px; height: 72px; overflow: hidden; border-radius: var(--ci-r-md); background: radial-gradient(ellipse 70% 80% at 50% 90%, var(--ci-primary-glow), transparent 72%), var(--ci-canvas); }
+body.mi .mi-mini-art .mi-art-img { width: 100%; height: 100%; object-fit: cover; }
+body.mi .mi-mini-art svg { max-width: 70%; max-height: 80%; }
+body.mi .mi-mini-art .mi-photo { width: 100%; height: 100%; margin: 0; padding: 4px; object-fit: contain; background: #fff; }
+body.mi .mi-mini-body { display: grid; gap: 2px; min-width: 0; }
+body.mi .mi-mini-body small { color: var(--ci-text-2); font-size: 12px; line-height: 16px; }
+body.mi .mi-mini-body strong { color: var(--ci-text); font-size: 16px; line-height: 22px; font-weight: 700; overflow-wrap: anywhere; }
+body.mi .mi-mini-body em { color: var(--ci-text-2); font-size: 13px; line-height: 18px; font-style: normal; }
+body.mi .mi-compact-list li, body.mi .mi-mini-grid li { display: none; }
+body.mi .compare-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; align-items: stretch; }
+body.mi .compare-grid .card { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+body.mi .compare-grid .card h2 { margin: 0; font-size: 18px; line-height: 24px; font-weight: 700; min-height: 48px; }
+body.mi .compare-grid .card .button { margin-top: auto; }
+body.mi .compare-grid .range { color: var(--ci-primary); font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+body.mi .compare-grid dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; margin: 0; color: var(--ci-text-2); font-size: 14px; }
+body.mi .compare-grid dd { margin: 0; text-align: right; color: var(--ci-text); font-weight: 600; }
+body.mi .compare-grid .mini-empty { display: grid; place-items: center; min-height: 80px; padding: 12px; background: var(--ci-elevated); border: 1px dashed var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text-2); text-align: center; font-size: 14px; }
+body.mi .site-footer .footer-links a { justify-content: flex-start; text-align: left; padding: 0; margin: 0; }
+body.mi button.disabled-control, body.mi button.disabled-control:disabled, body.mi .button.disabled-control { background: var(--ci-elevated); border: 1px solid var(--ci-border); color: var(--ci-text-2); opacity: .8; cursor: not-allowed; }

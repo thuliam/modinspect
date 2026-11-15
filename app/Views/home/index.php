@@ -136,7 +136,7 @@ while (count($featured) < 5 && $byCat) {
 
 <section class="mi-block">
     <div class="container">
-        <div class="mi-head"><div><h2>How it works</h2><p class="mb-0">ใช้งานง่าย 4 ขั้นตอน</p></div></div>
+        <div class="mi-head"><div><h2>ใช้งานอย่างไร</h2><p class="mb-0">ใช้งานง่าย 4 ขั้นตอน</p></div></div>
         <div class="row mi-steps">
             <?php foreach ($steps as $i => $s): ?>
                 <div class="col-md-6 col-xl-3 mb-3">

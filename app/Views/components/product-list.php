@@ -12,8 +12,13 @@ $mi_ready = array_values(array_filter($products, $mi_has_price));
 $mi_pending = array_values(array_filter($products, static fn(array $p): bool => !$mi_has_price($p)));
 ?>
 <?php if ($mi_ready): ?>
-    <div class="cards mi-card-grid">
-        <?php foreach ($mi_ready as $product) require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
+    <?php $miArtFor = static fn(string $n): string => match (strtolower(trim($n))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' }; ?>
+    <div class="row mi-featured mi-ready-grid">
+        <?php foreach ($mi_ready as $product): ?>
+            <div class="col-sm-6 col-lg-4 col-xl-5ths mb-4">
+                <?php $artType = $miArtFor((string) ($product['category_name'] ?? '')); require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
+            </div>
+        <?php endforeach; ?>
     </div>
 <?php endif; ?>
 
@@ -24,14 +29,20 @@ $mi_pending = array_values(array_filter($products, static fn(array $p): bool => 
         <?php else: ?>
             <p class="mi-pending-note">ยังไม่มีรุ่นที่มีข้อมูลราคาผ่านการตรวจสอบเพียงพอ จึงไม่แสดงราคา คุณยังเปิดดูสเปกและใช้ Deal Checker ได้</p>
         <?php endif; ?>
-        <ul class="mi-compact-list">
+        <?php $miArtFor = static fn(string $n): string => match (strtolower(trim($n))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' }; ?>
+        <?php require_once ROOT_PATH . '/app/Views/components/hw-art.php'; ?>
+        <div class="mi-mini-grid mi-compact-list">
             <?php foreach ($mi_pending as $item): ?>
-                <li>
-                    <a href="<?= $base ?>/price/<?= rawurlencode($item['slug']) ?>"><?= htmlspecialchars($item['full_name']) ?></a>
-                    <small><?= htmlspecialchars(trim(($item['category_name'] ?? '') . ' · ' . ($item['brand_name'] ?? ''), ' ·')) ?></small>
-                    <span class="price-status-badge">ข้อมูลยังไม่พอ</span>
-                </li>
+                <?php $miPhoto = mi_product_photo($item, $base); $miType = $miArtFor((string) ($item['category_name'] ?? '')); ?>
+                <a class="mi-mini" href="<?= $base ?>/price/<?= rawurlencode($item['slug']) ?>">
+                    <span class="mi-mini-art<?= $miPhoto ? ' has-photo' : '' ?>"><?= $miPhoto ?? mi_art_img($miType, $base) ?></span>
+                    <span class="mi-mini-body">
+                        <small><?= htmlspecialchars(trim(($item['category_name'] ?? '') . ' · ' . ($item['brand_name'] ?? ''), ' ·')) ?></small>
+                        <strong><?= htmlspecialchars($item['full_name']) ?></strong>
+                        <em>ยังไม่มีราคาตลาด</em>
+                    </span>
+                </a>
             <?php endforeach; ?>
-        </ul>
+        </div>
     </div>
 <?php endif; ?>

@@ -1,6 +1,6 @@
 <section class="container page mi-price-index">
     <div class="mi-page-heading">
-        <span class="eyebrow">Price Index</span>
+        <span class="eyebrow">ดัชนีราคา</span>
         <h1>เช็กราคาคอมมือสอง</h1>
         <p class="lead">ค้นหา CPU/GPU แล้วดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และข้อมูลล่าสุดเมื่อมีข้อมูลที่ผ่านการตรวจสอบพอ</p>
     </div>

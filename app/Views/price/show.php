@@ -151,7 +151,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <section class="card mi-history-card">
             <div class="mi-section-head compact">
                 <div>
-                    <span class="eyebrow">Price History</span>
+                    <span class="eyebrow">ประวัติราคา</span>
                     <h2>ประวัติราคากลาง</h2>
                 </div>
                 <span class="muted">แสดงเมื่อมีข้อมูลย้อนหลัง</span>

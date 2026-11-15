@@ -52,12 +52,12 @@ final class ModuleController extends Controller {
             $factor=['like_new'=>1.08,'good'=>1,'fair'=>.9,'poor'=>.78][$_GET['condition']]??1;
             $result=['product'=>$p,'fast'=>(float)$p['q1']*$factor,'market'=>(float)$p['median']*$factor,'premium'=>(float)$p['q3']*$factor];
         }
-        $this->view('modules/seller-advisor',['title'=>'Seller Price Advisor','products'=>$products,'result'=>$result]);
+        $this->view('modules/seller-advisor',['title'=>'ผู้ช่วยตั้งราคาขาย','products'=>$products,'result'=>$result]);
     }
     public function guide(string $slug): void { $this->view('modules/guide',['title'=>'คู่มือซื้อคอมมือสอง','slug'=>$slug]); }
     public function sellerDashboard(): void { $this->view('modules/seller-dashboard',['title'=>'แดชบอร์ดผู้ขาย','products'=>(new Product())->popular()]); }
-    public function localMatch(): void { $this->view('modules/local-match',['title'=>'Local Match','products'=>(new Product())->popular()]); }
+    public function localMatch(): void { $this->view('modules/local-match',['title'=>'จับคู่ตลาดใกล้คุณ','products'=>(new Product())->popular()]); }
     public function marketReport(): void { $this->view('modules/market-report',['title'=>'รายงานตลาด','products'=>(new Product())->search()]); }
-    public function shop(): void { $d=new Dashboard();$this->view('modules/shop-dashboard',['title'=>'B2B Shop Dashboard','items'=>$d->inventory()]); }
+    public function shop(): void { $d=new Dashboard();$this->view('modules/shop-dashboard',['title'=>'ภาพรวมร้านค้า (B2B)','items'=>$d->inventory()]); }
     public function inventory(): void { $d=new Dashboard();$this->view('modules/inventory',['title'=>'จัดการสต็อก','items'=>$d->inventory()]); }
 }
