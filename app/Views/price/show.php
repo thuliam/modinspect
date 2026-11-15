@@ -156,6 +156,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             </article>
         </div>
 
+        <?php require ROOT_PATH . '/app/Views/components/evidence-explorer.php'; ?>
         <section class="card mi-history-card">
             <div class="mi-section-head compact">
                 <div>

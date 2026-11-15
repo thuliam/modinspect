@@ -37,3 +37,10 @@ Visual acceptance (Sprint 2) is the second gate. Engineering work in Sprints 1, 
 | Public UX not yet a coherent product (mobile header, internal text, empty-card grid) | Medium | Sprint 2 |
 | Full suite was red on baseline (5 stale tests) | Resolved | Repaired this baseline; keep suite in CI |
 | Credentials exposure in the raw LINE export | High (outside repo) | Owner rotates exposed credentials; never process raw export |
+
+## Revision 2026-11-15
+
+The earlier roadmap above is kept as history. The forward plan is the R0/T1/U2/I3/D4/C5/R6 program in `docs/SPRINT_TRACKER.md`
+(provisional windows from 2026-11-16, earliest illustrative beta gate after 2027-02-18 **only if** acceptance, real-data and production gates pass;
+not a delivery promise and not deployment permission). Why it changed: the data foundation grew (99 products, 420 approved owner-text observations,
+46 recorded public snapshots), so trust and honest disclosure (T1) now precede visual and intelligence work.

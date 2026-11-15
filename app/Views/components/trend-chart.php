@@ -12,7 +12,7 @@ $lastMed = (float)$trend[$n - 1]['median'];
 $delta = $firstMed > 0 ? ($lastMed - $firstMed) / $firstMed * 100 : 0;
 ?>
 <div class="mi-trend">
-    <?php $chartId = 'trend' . bin2hex(random_bytes(4)); ?>
+    <?php if ($n > 1): $chartId = 'trend' . bin2hex(random_bytes(4)); ?>
     <div class="mi-trend-canvas"><canvas id="<?= $chartId ?>" role="img" aria-label="กราฟราคากลางรายเดือน แถบสีคือช่วงราคาส่วนกลาง"></canvas></div>
     <?php if (empty($GLOBALS['mi_chartjs_loaded'])): $GLOBALS['mi_chartjs_loaded'] = true; ?>
         <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
@@ -32,6 +32,7 @@ $delta = $firstMed > 0 ? ($lastMed - $firstMed) / $firstMed * 100 : 0;
         });
     })();
     </script>
+    <?php endif; ?>
     <ul class="mi-trend-table">
         <?php foreach ($trend as $r): ?>
             <li><span><?= $label($r['period_start']) ?></span><b>฿<?= number_format((float)$r['median']) ?></b><em>฿<?= number_format((float)$r['q1']) ?>–<?= number_format((float)$r['q3']) ?> · <?= (int)$r['sample_size'] ?> ตัวอย่าง</em></li>

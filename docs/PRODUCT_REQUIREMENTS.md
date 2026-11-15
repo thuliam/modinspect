@@ -51,3 +51,24 @@ Tags: `CONFIRMED` (owner direction, in MVP) Â· `HYPOTHESIS` (idea to validate) Â
 ## Decisions needing the owner
 
 See `docs/DECISION_LOG.md` section "Open owner gates".
+
+## Consolidated requirement status (2026-11-15)
+
+Sources: project blueprint, LINE/Messenger owner discussion, owner UI reviews, master prompt v2. Status: CONFIRMED / PROPOSED / DEFERRED / NEEDS_OWNER_DECISION.
+
+| # | Requirement | Status | Note |
+|---|---|---|---|
+| 1 | Exact model/variant search with Thai/English aliases | CONFIRMED | Resolver + 222 aliases; golden set re-run pending (T1-8) |
+| 2 | Product page with honest price or insufficient-data state | CONFIRMED | Evidence explorer added (T1-3) |
+| 3 | Deal Checker with neutral verdicts | CONFIRMED | Model facts, trend and nearby models added; no invented depreciation |
+| 4 | Evidence traceability, review, deterministic engine, MOCK/REAL separation, asking vs sold | CONFIRMED | Audit tool added |
+| 5 | Practical Admin (products, aliases, sources, imports, observations, review, price index, analytics, audit) | CONFIRMED | Admin on the DropX layout; owner visual check pending |
+| 6 | Release date, model age, specs, named benchmark, source-specific rank, Compare | PROPOSED | Provider licensing unresolved (matrix drafted); no benchmark data without licence |
+| 7 | Used-hardware condition checklist | PROPOSED | Not built; not a certification |
+| 8 | Community price report with moderation | PROPOSED / BETA+1 | Evidence only, never sets snapshots |
+| 9 | Price trend | CONFIRMED (new) | Monthly buckets with 3+ samples; hidden below 2 months |
+| 10 | Backend coarse-location log | CONFIRMED (new) | Province only, admin-only |
+| 11 | Seller Center, watchlist, upgrade advisor | DEFERRED | |
+| 12 | Marketplace, 5 % fee, escrow, public seller blacklist | DEFERRED | Needs legal/trust design and owner GO |
+| 13 | Public visual direction | DECIDED | See UX_UI_SYSTEM (DL-019/DL-021); coral reference superseded |
+| 14 | Confidence policy for 100 % owner-text evidence | NEEDS_OWNER_DECISION | T1-6 |

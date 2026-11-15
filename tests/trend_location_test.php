@@ -36,7 +36,7 @@ $trend = [$trend[0]];
 ob_start();
 require dirname(__DIR__) . '/app/Views/components/trend-chart.php';
 $single = (string)ob_get_clean();
-assert_tl(str_contains($single, 'ยังบอกแนวโน้มไม่ได้'), 'One month must not claim a trend');
+assert_tl(str_contains($single, 'ยังบอกแนวโน้มไม่ได้') && !str_contains($single, '<canvas'), 'One month must not draw a trend chart');
 
 // Schema: the two additive tables exist and the location log has no personal-data columns
 global $config;

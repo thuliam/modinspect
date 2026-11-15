@@ -1,5 +1,18 @@
 ﻿# ModInspect Session Handoff
 
+## CURRENT HANDOFF (2026-11-15, after R0 + T1 slice). Read this first; sections below are history.
+
+- **Repo:** `C:\laragon\www\modinspect`, branch `checkpoint/claude-baseline-2026-11-14`. Remote heads: `origin/main` 4b84d19, `studio`/`office` 4f6713c (not moved). Owner's untracked files `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` and `design/ci/` must stay untouched and uncommitted.
+- **Runtime:** use the absolute PHP path `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` (`php` is not on the cmd PATH). Tests: `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` (41 steps, exit 0 on 2026-11-15). The CI test DB is built from the tracked `modinspect.sql`: every new table must be added there as well as to `database/schema.sql` and a migration.
+- **DB:** shared DEV is the cloud DB in `.env` (not production). Isolated tests use `.env.testing` on `127.0.0.1/modinspect_test`. Never mutate DEV except on an explicit owner instruction.
+- **Owner rules (AGENTS.md "UI Rule"):** no hand-written CSS/JS when a library/template can do it; ask before substituting a supplied template; downloads need approval; zero cost; admin account is the owner's (email login; password reset only via `cli/reset_admin_password.php`, typed by the owner).
+- **Delivered this session:** `cli/price_trust_audit.php` (read-only, exit 1 on P0), `Product::evidence()`, `components/evidence-explorer.php` on the product page, trend chart only with 2+ months, `tests/price_trust_test.php`, `docs/PRODUCT_INTELLIGENCE_PROVIDER_MATRIX.md` (research only, nothing called), PRD/roadmap/tracker rebaseline, DL-032.
+- **Verified (auto):** full suite exit 0; audit on DEV: 46 public prices, 46 replay MATCH, 0 P0, 0 P1; evidence explorer rendered on a DEV product page. **Not verified:** CI on GitHub for the latest commits, owner visual acceptance (none), golden resolver rerun.
+- **Data truth:** 420 approved observations, all owner text (grade C, one source); 88 REAL (Priceza) still pending, 0 approved; 46 recorded snapshots (35 low / 11 medium confidence), 41 legacy snapshots never public.
+- **Owner gates open:** T1-6 confidence policy for 100 % owner-text evidence; U2 visual acceptance of public pages and the new Admin; I3 provider/licence approval; G-4 review of REAL evidence; G-5 rotate credentials exposed in the raw LINE export; G-7 Font Awesome official download; PR #4 merge; any deploy.
+- **Next approved action:** none started. Awaiting the owner's choice among the three options in the last report.
+- **Safety:** no deploy, no spend, never print or commit the raw LINE export, no auto-approval of REAL observations.
+
 ## 0. READ THIS FIRST — current handoff (2026-11-14, Claude takeover)
 
 Everything from section 1 down is the **September OFFICE to STUDIO handoff and is historical**. Current truth is

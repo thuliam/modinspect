@@ -878,3 +878,13 @@ Do not assume previous chat context exists.
 - Admin shell/header/page header/stat cards rebuilt per the DropX template with Bootstrap 4 (light/dark); 12 admin pages fetched without errors; checked visually at desktop (light and dark) and 375px width on an isolated test server; test admin and fixtures removed.
 - Chart.js replaces the SVG trend chart (verified on a DEV product page). AGENTS.md has the no-handwritten-UI rule. `docs/UI_HANDWRITTEN_CODE_AUDIT.md` lists what is still hand-written.
 - Open: public theme still hand-written, `app.css` not removed, login page not restyled, no pixel comparison with the real template.
+
+## [2026-11-15] [AGENT: Claude] - R0 recovery delta + T1 price trust (DL-032)
+
+CURRENT STATE (canonical; older sections above are history and some counts there are stale):
+- Branch `checkpoint/claude-baseline-2026-11-14` at `b21d2ba` plus this session's commit; `origin/main` `4b84d19`; `studio`/`office` `4f6713c` (untouched). Runtime: PHP 8.3.33 CLI, Laragon. Deploy: NOT authorised.
+- Shared DEV as of 2026-11-15 21:49 (UTC+7) (read-only counts): 99 active products, 222 aliases; observations approved 420 (all owner-text), pending 137 (88 REAL pending untouched), excluded 3; 0 REAL (Priceza) approved; snapshots recorded 46, legacy 41 (never public); trend points 47; location log 682.
+- Public prices: 46, all traced and replayed MATCH; all single-source and 100 % owner text; confidence 35 low / 11 medium.
+- Delivered: `cli/price_trust_audit.php`, `components/evidence-explorer.php`, `Product::evidence()`, trend chart only with 2+ months, `tests/price_trust_test.php`, provider matrix (research only), PRD/roadmap/tracker rebaseline.
+- Verification: see SESSION_HANDOFF for exact commands. Browser: evidence explorer rendered on a DEV product page. OWNER acceptance: none recorded.
+- Open: T1-6 confidence policy decision, T1-7 admin explorer, T1-8 golden resolver rerun, U2 visual gate, I3 licensing, G-4/G-5/G-7.

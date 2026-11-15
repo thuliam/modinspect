@@ -86,3 +86,11 @@ Centralised in one file when adopted. No per-page colours or fonts.
 Viewports 390, 768, 1024, 1366, 1440 and a large desktop; keyboard reachability; contrast at least 4.5:1 for text;
 no browser errors or dead actions; screenshots without secrets or PII; honest states for both populated and zero-price products;
 **explicit owner visual acceptance** (not assumed).
+
+## Brand direction reconciliation (2026-11-15)
+
+The master prompt flagged a conflict between an earlier black/coral reference, the black/lime screenshots, and the DropX admin. From the decision log:
+DL-015/DL-016 (coral, owner reference style) were **superseded** by DL-019 (owner chose brand-kit ZIP A: graphite + lime) and DL-021 (owner's
+"Cybernetic Trust" CI master prompt: primary #bbf246, canvas #0a0d14). The public site therefore stays black/lime. The admin is **deliberately** different:
+the owner supplied the DropX admin template and asked for it (DL-030/DL-031), so it uses the template's indigo and light/dark. No silent recolour was done in this session.
+If the owner now wants one shared identity across public and admin, that is a new decision (option: map the admin primary to the CI lime while keeping the DropX layout).

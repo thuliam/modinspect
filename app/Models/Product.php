@@ -75,6 +75,28 @@ final class Product
         usort($out, static fn(array $a, array $b): int => $a['distance'] <=> $b['distance']);
         return array_slice($out, 0, $limit);
     }
+    /**
+     * Evidence behind the price shown publicly: the members of the snapshot that feeds the public read model.
+     * Public-safe: date, asking price, evidence grade, inclusion. No seller, URL, raw text or reference ids.
+     * @return array{snapshot_id:int,included:array,excluded:array,sources:int}|null
+     */
+    public function evidence(int $productId): ?array {
+        $snap = $this->db->prepare("SELECT id FROM price_indices WHERE product_id=:p AND product_variant_id IS NULL AND COALESCE(provenance_status,'legacy_unavailable')<>'legacy_unavailable' ORDER BY last_calculated_at DESC LIMIT 1");
+        $snap->execute(['p' => $productId]);
+        $sid = (int)$snap->fetchColumn();
+        if ($sid <= 0) { return null; }
+        $stmt = $this->db->prepare("SELECT so.inclusion_status, so.exclusion_reason, so.calculation_price, so.snapshot_observed_at observed_at, so.snapshot_source_id source_id,
+                CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' THEN 'owner_text' ELSE 'other' END grade
+            FROM price_snapshot_observations so LEFT JOIN data_sources s ON s.id=so.snapshot_source_id
+            WHERE so.snapshot_id=:sid ORDER BY so.snapshot_observed_at DESC, so.id DESC");
+        $stmt->execute(['sid' => $sid]);
+        $included = []; $excluded = []; $sources = [];
+        foreach ($stmt->fetchAll() as $r) {
+            if ($r['inclusion_status'] === 'included') { $included[] = $r; $sources[$r['source_id'] ?? 'none'] = true; }
+            else { $reason = (string)($r['exclusion_reason'] ?: 'other'); $excluded[$reason] = ($excluded[$reason] ?? 0) + 1; }
+        }
+        return ['snapshot_id' => $sid, 'included' => $included, 'excluded' => $excluded, 'sources' => count($sources)];
+    }
     public function history(int $id): array {
         $stmt=$this->db->prepare("SELECT * FROM price_histories WHERE product_id=:id ORDER BY snapshot_date");
         $stmt->execute(['id'=>$id]); return $stmt->fetchAll();

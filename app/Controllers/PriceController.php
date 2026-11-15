@@ -12,7 +12,7 @@ final class PriceController extends Controller {
     public function show(string $slug): void {
         $model=new Product(); $product=$model->findBySlug($slug);
         if (!$product) { http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบสินค้า']); return; }
-        $this->view('price/show',['title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4)]);
+        $this->view('price/show',['title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'evidence'=>$model->evidence((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4)]);
     }
 }
 
