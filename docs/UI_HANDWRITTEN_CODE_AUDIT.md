@@ -27,3 +27,8 @@ This is the honest inventory of what agents wrote by hand, and what replaces it.
 - `app.css`: 1527 -> 1207 lines after static dead-rule pruning (`scripts/prune_dead_css.php`, test `tests/ui_prune_css_test.php`); `mi-theme.css` 623 -> 605. Computed styles unchanged on all checked public pages.
 - Finding: `app.css` is not removable. The live public theme sits on its `body.mb` layer and base rules; deleting the file would only relocate hand-written CSS. Removing it for real means rebuilding public pages on Bootstrap utilities or adopting a public template (owner decision).
 - `mi-dropx.css` (admin) is template-derived; `admin.css` hard-coded light colours were converted to theme variables so dark mode works.
+
+## Update 2026-11-16 (public rebuild assessment)
+
+- Layout-only rules (replaceable by Bootstrap utilities): `app.css` 210 of 541 (39%), `mi-theme.css` 88 of 480 (18%). The remainder is theme (colour, background, border, type) that Bootstrap 4 does not supply for a dark identity.
+- Not converted: ~15 views would need markup rewrites for a small CSS saving and regression risk. Owner options are recorded on `docs/SPRINT_BOARD.md` row C-7 (accept the theme layer, approve a dark Bootstrap 4 theme download, or supply a public template).
