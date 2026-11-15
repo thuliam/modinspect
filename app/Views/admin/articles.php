@@ -1,11 +1,5 @@
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Content</span>
-        <h1>Articles</h1>
-        <p>Existing article CRUD for guides and public content routes.</p>
-    </div>
-    <button class="btn btn-primary js-article-new" type="button"><i class="fas fa-plus mr-2"></i>Add Article</button>
-</div>
+<?php ob_start(); ?>Articles<?php $dxT = ob_get_clean(); ob_start(); ?>Existing article CRUD for guides and public content routes.<?php $dxD = ob_get_clean(); ob_start(); ?><button class="btn btn-primary js-article-new" type="button"><i class="fas fa-plus mr-2"></i>Add Article</button><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Content',), $dxT, $dxD, $dxA) ?>
 
 <form id="article-form" class="card mi-admin-card mb-3" method="post" action="<?= $base ?>/admin/articles/save">
     <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">

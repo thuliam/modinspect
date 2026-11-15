@@ -56,6 +56,65 @@ $provenanceQuality = is_array($o['provenance_quality'] ?? null) ? $o['provenance
 $provenanceFields = is_array($provenanceQuality['fields'] ?? null) ? $provenanceQuality['fields'] : [];
 $evidenceFields = $evidenceMetadata((string)($o['excerpt'] ?? ''));
 ?>
+<?php ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base . htmlspecialchars($backPath) ?>"><i class="fas fa-arrow-left mr-2"></i>Back to queue</a><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, ['Human Review Detail'], htmlspecialchars((string)$finalProductName), '', $dxA) ?>
+= new App\Services\Auth\AuthorizationService();
+$canCorrect = $authz->can($auth_user ?? null, 'review.correct');
+$canDecide = $authz->can($auth_user ?? null, 'review.decide');
+$o = $observation;
+$final = $o['final_values'] ?? [];
+$productNames = array_column($products, 'full_name', 'id');
+$finalProductName = $productNames[(int)($final['product_id'] ?? $o['product_id'])] ?? $o['full_name'];
+$lane = strtolower((string)($o['lane'] ?? 'unknown'));
+$isPending = (string)$o['verified_status'] === 'pending';
+$sourceUrl = (string)($o['source_url_encrypted'] ?? '');
+$hasSourceLink = preg_match('#^https?://#i', $sourceUrl) === 1;
+$priceLabel = (string)($o['price_type'] ?? 'asking') === 'sold' ? 'Sold / Final Price' : 'Listing / Asking Price';
+$backPath = $back_path ?? '/admin/review-queue';
+$currentPath = '/admin/review/' . (int)$o['id'] . '?return_to=' . rawurlencode($backPath);
+$renderValue = function (mixed $value): string {
+    if ($value === null || $value === '') return 'unknown';
+    return (string)$value;
+};
+$evidenceMetadata = function (string $excerpt): array {
+    $fields = [];
+    foreach (preg_split('/\R/', $excerpt) ?: [] as $line) {
+        if (!str_contains($line, '=')) continue;
+        [$key, $value] = array_map('trim', explode('=', $line, 2));
+        if ($key !== '') $fields[strtoupper($key)] = $value;
+    }
+    return $fields;
+};
+$categoryIcon = function (string $category): string {
+    return match (strtolower($category)) {
+        'cpu' => 'fa-microchip',
+        'gpu' => 'fa-tv',
+        'motherboard' => 'fa-server',
+        'ram' => 'fa-memory',
+        'storage' => 'fa-hdd',
+        'psu' => 'fa-plug',
+        'cooling' => 'fa-fan',
+        default => 'fa-cube',
+    };
+};
+$productImagePath = trim((string)($o['product_image_path'] ?? ''));
+$productImageUrl = $productImagePath !== '' && is_file(ROOT_PATH . '/public/' . ltrim($productImagePath, '/')) ? $base . '/' . ltrim($productImagePath, '/') : null;
+$productIcon = $categoryIcon((string)($o['category_slug'] ?? ''));
+$resolutionDiagnostic = $o['resolution_diagnostic'] ?? null;
+$resolutionConfidenceLabel = is_array($resolutionDiagnostic) && isset($resolutionDiagnostic['confidence'])
+    ? number_format((float)$resolutionDiagnostic['confidence'] * 100, 1) . '%'
+    : 'unknown';
+$displayTitle = (string)($o['display_title'] ?? $o['raw_title'] ?? '-');
+$extractedDisplayTitle = (string)($o['extracted_display_title'] ?? $o['extracted_data_map']['product_name'] ?? $o['extracted_data_map']['product'] ?? $displayTitle);
+$provenanceQuality = is_array($o['provenance_quality'] ?? null) ? $o['provenance_quality'] : [
+    'label' => 'GENERIC SOURCE',
+    'quality' => 'GENERIC_SOURCE',
+    'reason' => 'Source is known, but no exact listing/result item reference is available.',
+    'fields' => [],
+];
+$provenanceFields = is_array($provenanceQuality['fields'] ?? null) ? $provenanceQuality['fields'] : [];
+$evidenceFields = $evidenceMetadata((string)($o['excerpt'] ?? ''));
+?>
 <div class="mi-page-header">
     <div>
         <a class="text-primary font-weight-bold" href="<?= $base . htmlspecialchars($backPath) ?>"><i class="fas fa-arrow-left mr-2"></i>Back to queue</a>

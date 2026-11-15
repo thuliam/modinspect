@@ -18,6 +18,7 @@ assert_tl(LocationHint::detect('ซื้อได้เลย ราคาเ�
 assert_tl(LocationHint::detect('จ.เลย')['province'] === 'เลย', 'Explicit จ.เลย must count');
 assert_tl(array_keys(LocationHint::detect('ภูเก็ต')) === ['province', 'region'], 'Hint must expose province and region only');
 
+$base = '';
 // Trend chart renders the median series and the quartile band from preserved buckets
 $trend = [
     ['period_start' => '2026-09-01', 'q1' => '2325', 'median' => '2400', 'q3' => '2550', 'sample_size' => 7],
@@ -27,15 +28,15 @@ $trend = [
 ob_start();
 require dirname(__DIR__) . '/app/Views/components/trend-chart.php';
 $html = (string)ob_get_clean();
-assert_tl(str_contains($html, 'mi-trend-line') && str_contains($html, 'mi-trend-band'), 'Chart missing line or band');
-assert_tl(substr_count($html, 'mi-trend-dot') === 3, 'Chart must draw one dot per month');
+assert_tl(str_contains($html, '<canvas') && str_contains($html, 'new Chart('), 'Chart.js canvas and init missing');
+assert_tl(substr_count($html, '"med":') === 3, 'Chart data must carry one point per month');
 assert_tl(str_contains($html, '+24.6%'), 'Chart change versus first month must be computed from the buckets');
 
 $trend = [$trend[0]];
 ob_start();
 require dirname(__DIR__) . '/app/Views/components/trend-chart.php';
 $single = (string)ob_get_clean();
-assert_tl(!str_contains($single, '<polyline') && str_contains($single, 'ยังบอกแนวโน้มไม่ได้'), 'One month must not claim a trend');
+assert_tl(str_contains($single, 'ยังบอกแนวโน้มไม่ได้'), 'One month must not claim a trend');
 
 // Schema: the two additive tables exist and the location log has no personal-data columns
 global $config;

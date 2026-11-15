@@ -1,64 +1,58 @@
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Dashboard</span>
-        <h1>Operations Dashboard</h1>
-        <p>Live UAT view of catalog, review backlog, collection health, and public-price readiness.</p>
-    </div>
-    <a class="btn btn-primary" href="<?= $base ?>/admin/review-queue"><i class="fas fa-clipboard-check mr-2"></i>Open Review Queue</a>
-</div>
+<?php ob_start(); ?>Operations Dashboard<?php $dxT = ob_get_clean(); ob_start(); ?>Live UAT view of catalog, review backlog, collection health, and public-price readiness.<?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-primary" href="<?= $base ?>/admin/review-queue"><i class="fas fa-clipboard-check mr-2"></i>Open Review Queue</a><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Dashboard',), $dxT, $dxD, $dxA) ?>
 
 <div class="row mi-metric-row">
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card" href="<?= $base ?>/admin/products">
+        <a class="card mi-metric-card gradient-primary" href="<?= $base ?>/admin/products">
             <span>Active Products</span>
             <strong><?= (int)$products ?></strong>
             <small>CPU <?= (int)$cpu_products ?> / GPU <?= (int)$gpu_products ?></small>
         </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card mi-metric-warning" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending">
+        <a class="card mi-metric-card gradient-warning" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending">
             <span>REAL Pending Reviews</span>
             <strong><?= (int)$real_pending_reviews ?></strong>
             <small>Human decisions required</small>
         </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card" href="<?= $base ?>/admin/review-queue?dataset=MOCK_TEST&status=pending">
+        <a class="card mi-metric-card gradient-info" href="<?= $base ?>/admin/review-queue?dataset=MOCK_TEST&status=pending">
             <span>MOCK/Test Pending</span>
             <strong><?= (int)$mock_test_pending_reviews ?></strong>
             <small>Separate from REAL calibration</small>
         </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card" href="<?= $base ?>/admin/price-observations?dataset=REAL&status=approved">
+        <a class="card mi-metric-card gradient-purple" href="<?= $base ?>/admin/price-observations?dataset=REAL&status=approved">
             <span>Approved REAL</span>
             <strong><?= (int)$approved_real_observations ?></strong>
             <small>No public range until approved evidence exists</small>
         </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card" href="<?= $base ?>/admin/collector-jobs">
+        <a class="card mi-metric-card gradient-ocean" href="<?= $base ?>/admin/collector-jobs">
             <span>Collection Jobs</span>
             <strong><?= (int)$jobs_completed ?></strong>
             <small>Queued <?= (int)$jobs_queued ?> / Running <?= (int)$jobs_running ?> / Failed <?= (int)$jobs_failed ?></small>
         </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card" href="<?= $base ?>/admin/price-indices?provenance_status=recorded">
+        <a class="card mi-metric-card gradient-pink" href="<?= $base ?>/admin/price-indices?provenance_status=recorded">
             <span>Public Eligible Snapshots</span>
             <strong><?= (int)$public_eligible_snapshots ?></strong>
             <small><?= (int)$latest_snapshots ?> total snapshot rows</small>
         </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card" href="<?= $base ?>/admin/price-observations">
+        <a class="card mi-metric-card gradient-primary" href="<?= $base ?>/admin/price-observations">
             <span>Pipeline Evidence</span>
             <strong><?= (int)$evidence ?></strong>
             <small>Candidates <?= (int)$candidates ?> / Extractions <?= (int)$extractions ?></small>
         </a>
     </div>
     <div class="col-xl-3 col-lg-4 col-md-6">
-        <a class="card mi-metric-card" href="<?= $base ?>/admin/sources">
+        <a class="card mi-metric-card gradient-success" href="<?= $base ?>/admin/sources">
             <span>Sources</span>
             <strong><?= (int)$sources ?></strong>
             <small>Paused/disabled <?= (int)$paused_sources ?> / incidents <?= (int)$unresolved_incidents ?></small>

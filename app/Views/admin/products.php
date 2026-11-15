@@ -1,13 +1,7 @@
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Catalog</span>
-        <h1>Products</h1>
-        <p>Canonical Product Master records used by resolution, review, and price snapshots.</p>
-    </div>
-    <button class="btn btn-primary js-product-new" type="button" aria-controls="product-form-panel" aria-expanded="false">
+<?php ob_start(); ?>Products<?php $dxT = ob_get_clean(); ob_start(); ?>Canonical Product Master records used by resolution, review, and price snapshots.<?php $dxD = ob_get_clean(); ob_start(); ?><button class="btn btn-primary js-product-new" type="button" aria-controls="product-form-panel" aria-expanded="false">
         <i class="fas fa-plus mr-2"></i>Add Product
-    </button>
-</div>
+    </button><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Catalog',), $dxT, $dxD, $dxA) ?>
 
 <div id="product-form-panel" class="collapse">
     <form id="product-form" class="card mi-admin-card mi-product-form-card mb-3" method="post" action="<?= $base ?>/admin/products/save">

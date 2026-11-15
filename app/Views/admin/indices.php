@@ -1,11 +1,5 @@
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Market Data</span>
-        <h1>Price Index</h1>
-        <p>Operator view of snapshot readiness and public price-data availability.</p>
-    </div>
-    <button class="btn btn-outline-secondary disabled-control" type="button" disabled><i class="fas fa-sync-alt mr-2"></i>Recalculate via CLI</button>
-</div>
+<?php ob_start(); ?>Price Index<?php $dxT = ob_get_clean(); ob_start(); ?>Operator view of snapshot readiness and public price-data availability.<?php $dxD = ob_get_clean(); ob_start(); ?><button class="btn btn-outline-secondary disabled-control" type="button" disabled><i class="fas fa-sync-alt mr-2"></i>Recalculate via CLI</button><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <form id="indices-filters" class="card mi-admin-card mb-3 js-datatable-filters" data-target="#indices-table">
     <div class="card-body">

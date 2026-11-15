@@ -1,12 +1,6 @@
 <?php $authz=new App\Services\Auth\AuthorizationService(); $canControl=$authz->can($auth_user ?? null,'sources.control'); ?>
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Collection</span>
-        <h1>Sources</h1>
-        <p>Source policy, health, and incident controls. Blocked sources should be paused, not bypassed.</p>
-    </div>
-    <button class="btn btn-outline-secondary disabled-control" type="button" disabled><i class="fas fa-plus mr-2"></i>Register Source</button>
-</div>
+<?php ob_start(); ?>Sources<?php $dxT = ob_get_clean(); ob_start(); ?>Source policy, health, and incident controls. Blocked sources should be paused, not bypassed.<?php $dxD = ob_get_clean(); ob_start(); ?><button class="btn btn-outline-secondary disabled-control" type="button" disabled><i class="fas fa-plus mr-2"></i>Register Source</button><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Collection',), $dxT, $dxD, $dxA) ?>
 
 <div class="card mi-admin-card mb-3">
     <div class="card-header"><h2>Provider Guardrails</h2></div>

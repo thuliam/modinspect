@@ -7,43 +7,31 @@ $label = static function (string $d) use ($thaiMonths): string {
     $t = strtotime($d);
     return $thaiMonths[(int)date('n', $t)] . ' ' . substr((string)((int)date('Y', $t) + 543), 2);
 };
-$W = 640; $H = 220; $padL = 56; $padR = 16; $padT = 16; $padB = 32;
-$lo = min(array_map(static fn($r) => (float)$r['q1'], $trend));
-$hi = max(array_map(static fn($r) => (float)$r['q3'], $trend));
-if ($hi - $lo < 1) { $lo *= .95; $hi *= 1.05; }
-$span = $hi - $lo; $lo -= $span * .1; $hi += $span * .1;
-$monthIndex = static fn(string $d): int => (int)date('Y', strtotime($d)) * 12 + (int)date('n', strtotime($d));
-$first = $monthIndex($trend[0]['period_start']);
-$last = $monthIndex($trend[$n - 1]['period_start']);
-$x = static fn(string $d) => $last === $first ? ($padL + ($W - $padL - $padR) / 2) : $padL + ($monthIndex($d) - $first) / ($last - $first) * ($W - $padL - $padR);
-$y = static fn(float $v) => $padT + (1 - ($v - $lo) / ($hi - $lo)) * ($H - $padT - $padB);
-$med = []; $up = []; $down = [];
-foreach ($trend as $r) {
-    $px = round($x($r['period_start']), 1);
-    $med[] = $px . ',' . round($y((float)$r['median']), 1);
-    $up[] = $px . ',' . round($y((float)$r['q3']), 1);
-    array_unshift($down, $px . ',' . round($y((float)$r['q1']), 1));
-}
 $firstMed = (float)$trend[0]['median'];
 $lastMed = (float)$trend[$n - 1]['median'];
 $delta = $firstMed > 0 ? ($lastMed - $firstMed) / $firstMed * 100 : 0;
 ?>
 <div class="mi-trend">
-    <svg viewBox="0 0 <?= $W ?> <?= $H ?>" role="img" aria-label="กราฟราคากลางรายเดือน แถบสีคือช่วงราคาส่วนกลาง" preserveAspectRatio="xMidYMid meet">
-        <?php foreach ([0, .5, 1] as $g): $gv = $lo + ($hi - $lo) * $g; ?>
-            <line x1="<?= $padL ?>" x2="<?= $W - $padR ?>" y1="<?= round($y($gv), 1) ?>" y2="<?= round($y($gv), 1) ?>" class="mi-trend-grid"/>
-            <text x="<?= $padL - 8 ?>" y="<?= round($y($gv), 1) + 4 ?>" text-anchor="end" class="mi-trend-axis">฿<?= number_format($gv) ?></text>
-        <?php endforeach; ?>
-        <?php if ($n > 1): ?>
-            <polygon points="<?= implode(' ', array_merge($up, $down)) ?>" class="mi-trend-band"/>
-            <polyline points="<?= implode(' ', $med) ?>" class="mi-trend-line"/>
-        <?php endif; ?>
-        <?php foreach ($trend as $r): $px = $x($r['period_start']); ?>
-            <?php if ($n === 1): ?><line x1="<?= round($px, 1) ?>" x2="<?= round($px, 1) ?>" y1="<?= round($y((float)$r['q1']), 1) ?>" y2="<?= round($y((float)$r['q3']), 1) ?>" class="mi-trend-line"/><?php endif; ?>
-            <circle cx="<?= round($px, 1) ?>" cy="<?= round($y((float)$r['median']), 1) ?>" r="4" class="mi-trend-dot"><title><?= $label($r['period_start']) ?> · กลาง ฿<?= number_format((float)$r['median']) ?> · <?= (int)$r['sample_size'] ?> ตัวอย่าง</title></circle>
-            <text x="<?= round($px, 1) ?>" y="<?= $H - 10 ?>" text-anchor="middle" class="mi-trend-axis"><?= $label($r['period_start']) ?></text>
-        <?php endforeach; ?>
-    </svg>
+    <?php $chartId = 'trend' . bin2hex(random_bytes(4)); ?>
+    <div class="mi-trend-canvas"><canvas id="<?= $chartId ?>" role="img" aria-label="กราฟราคากลางรายเดือน แถบสีคือช่วงราคาส่วนกลาง"></canvas></div>
+    <?php if (empty($GLOBALS['mi_chartjs_loaded'])): $GLOBALS['mi_chartjs_loaded'] = true; ?>
+        <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
+    <?php endif; ?>
+    <script>
+    (function () {
+        var rows = <?= json_encode(array_map(static fn($r) => ['m' => $label($r['period_start']), 'q1' => (float)$r['q1'], 'med' => (float)$r['median'], 'q3' => (float)$r['q3'], 'n' => (int)$r['sample_size']], $trend), JSON_UNESCAPED_UNICODE) ?>;
+        var css = getComputedStyle(document.body), c = (css.getPropertyValue('--ci-primary') || '#bbf246').trim(); Chart.defaults.color = (css.getPropertyValue('--ci-text-2') || '#94a3b8').trim(); Chart.defaults.borderColor = (css.getPropertyValue('--ci-border') || '#334155').trim();
+        new Chart(document.getElementById('<?= $chartId ?>'), {
+            type: 'line',
+            data: { labels: rows.map(function (r) { return r.m; }), datasets: [
+                { label: 'Q3', data: rows.map(function (r) { return r.q3; }), borderWidth: 0, pointRadius: 0, fill: '+1', backgroundColor: c + '24' },
+                { label: 'Q1', data: rows.map(function (r) { return r.q1; }), borderWidth: 0, pointRadius: 0, fill: false },
+                { label: 'ราคากลาง', data: rows.map(function (r) { return r.med; }), borderColor: c, backgroundColor: c, borderWidth: 2.5, pointRadius: 4, tension: .25 }
+            ] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (x) { return x.dataset.label + ': ฿' + Math.round(x.parsed.y).toLocaleString('th-TH') + (x.datasetIndex === 2 ? ' (' + rows[x.dataIndex].n + ' ตัวอย่าง)' : ''); } } } }, scales: { y: { ticks: { callback: function (v) { return '฿' + v.toLocaleString('th-TH'); } } } } }
+        });
+    })();
+    </script>
     <ul class="mi-trend-table">
         <?php foreach ($trend as $r): ?>
             <li><span><?= $label($r['period_start']) ?></span><b>฿<?= number_format((float)$r['median']) ?></b><em>฿<?= number_format((float)$r['q1']) ?>–<?= number_format((float)$r['q3']) ?> · <?= (int)$r['sample_size'] ?> ตัวอย่าง</em></li>

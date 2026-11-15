@@ -51,6 +51,14 @@ Phase 0 foundation is complete. Phase 1 CPU/GPU catalog POC count and alias gate
 - Use additive SQL migrations under `database/migrations`; do not rename existing tables/columns casually.
 - Every completed milestone must update `docs/PROJECT_STATUS.md` before it can be reported PASS.
 
+## UI Rule (owner standing order)
+
+- Do NOT hand-write CSS/JS when a library, plugin or owner-supplied template can do the job. The owner stated this as a rule because hand-written UI from agents came out poor.
+- Stack is PHP + Bootstrap 4.1 + jQuery 3.3 + Font Awesome (bundled in `public/assets/admin/vendor`) plus owner-approved libraries (Chart.js, DataTables). Self-host; no CDN.
+- If an owner-supplied template (e.g. DropX Admin zip) cannot be used as-is, ask one concrete question before building. Never imitate it silently, change its colours, or add scope.
+- Allowed custom code: design tokens and a few lines of glue to wire a library. Anything larger needs owner approval first.
+- Downloading any library needs owner approval (state name, source, size). Keep licence credits (see `docs/THIRD_PARTY_LICENSES.md`).
+
 ## Testing
 
 - Prefer deterministic fixture tests before live providers.

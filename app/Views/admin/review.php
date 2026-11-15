@@ -11,21 +11,15 @@ $excluded=(int)($summary['status_totals']['excluded'] ?? 0);
 $activeBatch=null;
 foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') === (string)($batchOption['value'] ?? '')) $activeBatch=$batchOption; }
 ?>
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Market Data</span>
-        <h1>Review Queue</h1>
-        <p>Human review console defaults to REAL pending evidence. MOCK_TEST records remain accessible through filters.</p>
-    </div>
-    <a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-analytics"><i class="fas fa-chart-bar mr-2"></i>Review Analytics</a>
-</div>
+<?php ob_start(); ?>Review Queue<?php $dxT = ob_get_clean(); ob_start(); ?>Human review console defaults to REAL pending evidence. MOCK_TEST records remain accessible through filters.<?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-analytics"><i class="fas fa-chart-bar mr-2"></i>Review Analytics</a><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <div class="row mi-metric-row">
-    <div class="col-xl col-md-4 col-sm-6"><a class="card mi-metric-card mi-metric-warning" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending"><span>REAL Pending</span><strong><?= $realPending ?></strong><small>Calibration review queue</small></a></div>
-    <div class="col-xl col-md-4 col-sm-6"><a class="card mi-metric-card" href="<?= $base ?>/admin/review-queue?dataset=MOCK_TEST&status=pending"><span>MOCK/Test Pending</span><strong><?= $mockPending ?></strong><small>Kept separate from REAL</small></a></div>
-    <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card"><span>Approved</span><strong><?= $approved ?></strong><small>All datasets</small></div></div>
-    <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card"><span>Rejected</span><strong><?= $rejected ?></strong><small>All datasets</small></div></div>
-    <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card"><span>Excluded</span><strong><?= $excluded ?></strong><small>All datasets</small></div></div>
+    <div class="col-xl col-md-4 col-sm-6"><a class="card mi-metric-card gradient-warning" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending"><span>REAL Pending</span><strong><?= $realPending ?></strong><small>Calibration review queue</small></a></div>
+    <div class="col-xl col-md-4 col-sm-6"><a class="card mi-metric-card gradient-success" href="<?= $base ?>/admin/review-queue?dataset=MOCK_TEST&status=pending"><span>MOCK/Test Pending</span><strong><?= $mockPending ?></strong><small>Kept separate from REAL</small></a></div>
+    <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card gradient-info"><span>Approved</span><strong><?= $approved ?></strong><small>All datasets</small></div></div>
+    <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card gradient-purple"><span>Rejected</span><strong><?= $rejected ?></strong><small>All datasets</small></div></div>
+    <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card gradient-ocean"><span>Excluded</span><strong><?= $excluded ?></strong><small>All datasets</small></div></div>
 </div>
 
 <form id="review-filters" class="review-filter-panel js-datatable-filters" data-target="#review-table" method="get" action="<?= $base ?>/admin/review-queue">

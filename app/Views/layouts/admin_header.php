@@ -1,5 +1,6 @@
 <?php
 use App\Core\Csrf;
+use App\Core\Database;
 use App\Services\Auth\AuthorizationService;
 use App\Services\Auth\AuthService;
 
@@ -45,6 +46,27 @@ $groups = [
         ['label' => 'Audit', 'icon' => 'fa-history', 'href' => '/admin/audit-logs', 'permission' => 'audit.view', 'paths' => ['/admin/audit-logs']],
     ],
 ];
+
+if (!function_exists('mi_page_header')) {
+    /** DropX-style page header: breadcrumb (home icon + chevrons), title, description, right-aligned actions. */
+    function mi_page_header(string $base, array $crumbs, string $title, string $description = '', string $actions = ''): string {
+        $html = '<div class="dx-page-head"><nav aria-label="Breadcrumb" class="dx-crumbs d-flex align-items-center text-muted"><a href="' . $base . '/admin" aria-label="Home"><i class="fas fa-home"></i></a>';
+        $last = count($crumbs) - 1;
+        foreach ($crumbs as $i => $c) {
+            $html .= '<i class="fas fa-chevron-right mx-2" aria-hidden="true"></i>' . ($i === $last ? '<span aria-current="page" class="font-weight-bold dx-crumb-current">' . $c . '</span>' : '<span>' . $c . '</span>');
+        }
+        $html .= '</nav><div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mt-2"><div><h1 class="dx-title">' . $title . '</h1>';
+        if ($description !== '') { $html .= '<p class="dx-desc text-muted mb-0">' . $description . '</p>'; }
+        $html .= '</div>';
+        if ($actions !== '') { $html .= '<div class="d-flex align-items-center mt-2 mt-sm-0">' . $actions . '</div>'; }
+        return $html . '</div></div>';
+    }
+}
+$pendingReviews = 0;
+try {
+    $pendingReviews = (int) Database::connection($config['db'])->query("SELECT COUNT(*) FROM price_observations WHERE verified_status='pending'")->fetchColumn();
+} catch (\Throwable $e) { $pendingReviews = 0; }
+$userInitial = htmlspecialchars(strtoupper(substr((string) ($authUser['name'] ?? 'A'), 0, 1)));
 ?>
 <!doctype html>
 <html lang="th">
@@ -66,68 +88,64 @@ $groups = [
 <link rel="apple-touch-icon" href="<?= $base ?>/assets/brand/apple-touch-icon.png">
 </head>
 <body class="mi-admin-body">
-<div class="dashboard-main-wrapper mi-admin-shell">
-    <div class="dashboard-header mi-admin-topbar">
-        <nav class="navbar navbar-expand-lg bg-white fixed-top">
-            <button class="btn btn-link mi-sidebar-toggle js-sidebar-toggle" type="button" aria-label="Toggle admin navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-            <a class="navbar-brand" href="<?= $base ?>/admin"><span class="dx-mark"><i class="fas fa-search"></i></span>ModInspect Admin</a>
-            <span class="mi-topbar-context"><?= htmlspecialchars($title ?? 'Operations') ?></span>
-            <ul class="navbar-nav ml-auto navbar-right-top align-items-center">
-                <li class="nav-item mr-2"><button type="button" id="dxThemeToggle" class="dx-icon-btn" aria-label="Toggle light or dark theme" aria-pressed="false"><i class="fas fa-moon"></i></button></li>
-                <li class="nav-item">
-                    <a class="nav-link mi-public-link" href="<?= $base ?>/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt mr-1"></i> Public Site</a>
-                </li>
-                <li class="nav-item dropdown nav-user">
-                    <a class="nav-link dropdown-toggle mi-user-toggle" href="#" id="adminUserMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="mi-user-avatar"><?= htmlspecialchars(strtoupper(substr((string)($authUser['name'] ?? 'A'),0,1))) ?></span>
-                        <span><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="adminUserMenu">
-                        <div class="mi-user-card">
-                            <strong><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></strong>
-                            <small><?= htmlspecialchars($authUser['email'] ?? '') ?></small>
-                            <span class="badge badge-light"><?= htmlspecialchars($authUser['role'] ?? 'admin') ?></span>
-                        </div>
-                        <form method="post" action="<?= $base ?>/logout" class="px-3 py-2">
-                            <input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                            <button type="submit" class="btn btn-outline-danger btn-block"><i class="fas fa-power-off mr-2"></i>Logout</button>
-                        </form>
-                    </div>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    <aside class="nav-left-sidebar sidebar-dark mi-admin-sidebar">
-        <div class="menu-list">
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <a class="d-xl-none d-lg-none mi-mobile-menu-title" href="<?= $base ?>/admin">Admin Menu</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminSidebarNav" aria-controls="adminSidebarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="adminSidebarNav">
-                    <ul class="navbar-nav flex-column">
-                        <?php foreach($groups as $group => $links): ?>
-                            <?php $visibleLinks=array_values(array_filter($links, fn($link) => $authz->can($authUser, $link['permission']))); ?>
-                            <?php if(!$visibleLinks) continue; ?>
-                            <li class="nav-divider"><?= htmlspecialchars($group) ?></li>
-                            <?php foreach($visibleLinks as $link): ?>
-                                <li class="nav-item">
-                                    <a class="nav-link <?= $isActive($link['paths']) ?>" href="<?= $base.htmlspecialchars($link['href']) ?>">
-                                        <i class="fas fa-fw <?= htmlspecialchars($link['icon']) ?>"></i>
-                                        <span><?= htmlspecialchars($link['label']) ?></span>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            </nav>
+<div class="dx-app d-flex vh-100 overflow-hidden">
+    <div class="dx-backdrop" aria-hidden="true"></div>
+    <aside class="dx-sidebar d-flex flex-column" id="adminSidebarNav">
+        <div class="dx-brand d-flex align-items-center justify-content-between">
+            <a class="dx-logo d-flex align-items-center" href="<?= $base ?>/admin" aria-label="ModInspect Admin dashboard"><span class="dx-mark"><i class="fas fa-search"></i></span><span class="dx-wordmark">ModInspect</span></a>
+            <button type="button" class="dx-close d-lg-none" aria-label="Close sidebar"><i class="fas fa-times"></i></button>
         </div>
+        <nav class="dx-nav flex-grow-1" aria-label="Main navigation">
+            <?php foreach($groups as $group => $links): ?>
+                <?php $visibleLinks=array_values(array_filter($links, fn($link) => $authz->can($authUser, $link['permission']))); ?>
+                <?php if(!$visibleLinks) continue; ?>
+                <div class="dx-group">
+                    <p class="dx-group-label"><?= htmlspecialchars($group) ?></p>
+                    <?php foreach($visibleLinks as $link): ?>
+                        <a class="dx-link <?= $isActive($link['paths']) ?>" href="<?= $base.htmlspecialchars($link['href']) ?>" title="<?= htmlspecialchars($link['label']) ?>">
+                            <i class="fas fa-fw <?= htmlspecialchars($link['icon']) ?>"></i>
+                            <span class="flex-grow-1"><?= htmlspecialchars($link['label']) ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            <?php endforeach; ?>
+        </nav>
     </aside>
-    <main class="dashboard-wrapper mi-admin-main">
-        <div class="dashboard-content mi-admin-content">
+    <div class="dx-column d-flex flex-column flex-grow-1 overflow-hidden">
+        <header class="dx-header">
+            <div class="d-flex align-items-center h-100">
+                <button type="button" class="dx-icon-btn d-lg-none mr-2 js-nav-open" aria-label="Open sidebar"><i class="fas fa-bars"></i></button>
+                <button type="button" class="dx-icon-btn d-none d-lg-flex mr-2 js-sidebar-toggle" aria-label="Collapse or expand sidebar"><i class="fas fa-columns"></i></button>
+                <div class="flex-grow-1 dx-search-wrap">
+                    <label class="dx-search mb-0">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="dxSearch" class="flex-grow-1" placeholder="Search admin pages..." autocomplete="off" aria-label="Search admin pages">
+                        <kbd class="d-none d-sm-inline">Ctrl K</kbd>
+                    </label>
+                </div>
+                <div class="d-flex align-items-center ml-3">
+                    <button type="button" class="dx-icon-btn d-none d-md-flex mr-2" id="dxFullscreen" aria-label="Toggle fullscreen"><i class="fas fa-expand"></i></button>
+                    <button type="button" id="dxThemeToggle" class="dx-icon-btn mr-2" aria-label="Toggle light or dark theme" aria-pressed="false"><i class="fas fa-moon"></i></button>
+                    <a class="dx-icon-btn position-relative mr-2" href="<?= $base ?>/admin/review-queue" aria-label="Review queue"><i class="fas fa-bell"></i><?php if ($pendingReviews > 0): ?><span class="dx-dot" title="<?= $pendingReviews ?> observations pending review"></span><?php endif; ?></a>
+                    <div class="dropdown">
+                        <button class="dx-user dropdown-toggle-split" type="button" id="adminUserMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="dx-avatar"><?= $userInitial ?></span>
+                            <span class="d-none d-md-block text-left"><span class="dx-user-name"><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></span><span class="dx-user-role"><i class="fas fa-shield-alt"></i><?= htmlspecialchars($authUser['role'] ?? 'admin') ?></span></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right dx-user-menu" aria-labelledby="adminUserMenu">
+                            <div class="dx-user-head"><strong><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></strong><small><?= htmlspecialchars($authUser['email'] ?? '') ?></small></div>
+                            <a class="dropdown-item" href="<?= $base ?>/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt fa-fw mr-2"></i>Public site</a>
+                            <div class="dropdown-divider"></div>
+                            <form method="post" action="<?= $base ?>/logout" class="m-0">
+                                <input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-power-off fa-fw mr-2"></i>Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="dx-content flex-grow-1">
             <?php if(!empty($_SESSION['flash']) && is_array($_SESSION['flash'])): ?>
                 <?php $flash=$_SESSION['flash']; unset($_SESSION['flash']); ?>
                 <div class="alert alert-<?= htmlspecialchars((string)($flash['type'] ?? 'info')) ?> alert-dismissible fade show" role="alert">
@@ -135,3 +153,4 @@ $groups = [
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
             <?php endif; ?>
+            <div class="dx-page">

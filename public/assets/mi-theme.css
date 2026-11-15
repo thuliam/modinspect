@@ -586,12 +586,7 @@ body.mi button.disabled-control, body.mi button.disabled-control:disabled, body.
 body.mi .mi-brand-tile > span:not(.mi-brand-logo) { color: var(--ci-text); font-size: 16px; font-weight: 800; letter-spacing: .02em; }
 
 /* ---- Trend chart + similar products (DL-029) ---- */
-body.mi .mi-trend svg { width: 100%; height: auto; max-height: 260px; display: block; }
-body.mi .mi-trend-grid { stroke: var(--ci-border); stroke-width: 1; }
-body.mi .mi-trend-axis { fill: var(--ci-text-3, #8b93a7); font-size: 11px; font-family: var(--ci-font); }
-body.mi .mi-trend-band { fill: var(--ci-primary); opacity: .14; }
-body.mi .mi-trend-line { fill: none; stroke: var(--ci-primary); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
-body.mi .mi-trend-dot { fill: var(--ci-primary); stroke: var(--ci-surface); stroke-width: 2; }
+body.mi .mi-trend-canvas { position: relative; height: 260px; }
 body.mi .mi-trend-table { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
 body.mi .mi-trend-table li { display: grid; grid-template-columns: 72px 96px 1fr; gap: 12px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--ci-border); font-size: .9rem; }
 body.mi .mi-trend-table b { font-variant-numeric: tabular-nums; color: var(--ci-text); }

@@ -1,17 +1,12 @@
 <?php $t = $report['totals']; $regionNames = ['central' => 'Central', 'east' => 'East', 'north' => 'North', 'northeast' => 'Northeast', 'south' => 'South']; ?>
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Market Data</span>
-        <h1>Market Trends &amp; Locations</h1>
-        <p>Monthly price movement from approved observations, and the coarse place (province only) listings were offered from. Private: not shown on public pages.</p>
-    </div>
-</div>
+<?php ob_start(); ?>Market Trends &amp; Locations<?php $dxT = ob_get_clean(); ob_start(); ?>Monthly price movement from approved observations, and the coarse place (province only) listings were offered from. Private: not shown on public pages.<?php $dxD = ob_get_clean(); ob_start(); ?><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <div class="row mi-metric-row">
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card"><span>Trend months</span><strong><?= (int) $t['trend_points'] ?></strong><small>Months with at least 3 approved samples</small></div></div>
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card"><span>Products with a trend</span><strong><?= (int) $t['trend_products'] ?></strong><small><?= count(array_filter($report['trends'], static fn($x) => (int) $x['months'] > 1)) ?> have two or more months</small></div></div>
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card"><span>Listings with a province</span><strong><?= (int) $t['location_rows'] ?></strong><small>From owner-collected text, province granularity only</small></div></div>
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card <?= $t['top_share'] > 50 ? 'mi-metric-warning' : '' ?>"><span>Largest province share</span><strong><?= number_format((float) $t['top_share'], 0) ?>%</strong><small><?= htmlspecialchars((string) ($t['top_province'] ?? '-')) ?><?= $t['top_share'] > 50 ? ' - one province dominates; may be repeated posts from one seller' : '' ?></small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-primary"><span>Trend months</span><strong><?= (int) $t['trend_points'] ?></strong><small>Months with at least 3 approved samples</small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-success"><span>Products with a trend</span><strong><?= (int) $t['trend_products'] ?></strong><small><?= count(array_filter($report['trends'], static fn($x) => (int) $x['months'] > 1)) ?> have two or more months</small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-info"><span>Listings with a province</span><strong><?= (int) $t['location_rows'] ?></strong><small>From owner-collected text, province granularity only</small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card <?= $t['top_share'] > 50 ? 'gradient-warning' : 'gradient-purple' ?>"><span>Largest province share</span><strong><?= number_format((float) $t['top_share'], 0) ?>%</strong><small><?= htmlspecialchars((string) ($t['top_province'] ?? '-')) ?><?= $t['top_share'] > 50 ? ' - one province dominates; may be repeated posts from one seller' : '' ?></small></div></div>
 </div>
 
 <div class="row">

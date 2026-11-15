@@ -8,14 +8,8 @@ $templateCsvUrl=$base.'/admin/collector-jobs/template.csv';
 $templateJsonUrl=$base.'/admin/collector-jobs/template.json';
 $errorLabel=static fn(string $value): string => ucwords(strtolower(str_replace('_',' ',$value)));
 ?>
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Collection</span>
-        <h1>Imports</h1>
-        <p>Feed evidence files into dry-run validation, then explicitly confirm eligible rows into the review pipeline.</p>
-    </div>
-    <a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending"><i class="fas fa-clipboard-check mr-2"></i>Review Pending</a>
-</div>
+<?php ob_start(); ?>Imports<?php $dxT = ob_get_clean(); ob_start(); ?>Feed evidence files into dry-run validation, then explicitly confirm eligible rows into the review pipeline.<?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending"><i class="fas fa-clipboard-check mr-2"></i>Review Pending</a><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Collection',), $dxT, $dxD, $dxA) ?>
 
 <div class="card mi-admin-card mb-3">
     <div class="card-header d-flex justify-content-between align-items-center">

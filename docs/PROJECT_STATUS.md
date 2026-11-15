@@ -873,3 +873,8 @@ Do not assume previous chat context exists.
 - New page `/admin/market-trends` + `App\Services\Admin\MarketTrendReport`; nav item under Market Data.
 - Location log populated on shared DEV from the owner's LINE export: 682 listings with a province (Bangkok 292, Nonthaburi 211 - likely repeated posts).
 - Full `tests/run.php` passed. Not done: other admin pages were not re-checked one by one; login page unchanged.
+
+## [2026-11-15] [AGENT: Claude] - Dev/UX/QA/Doc: DropX layout, Chart.js, UI rule (DL-031)
+- Admin shell/header/page header/stat cards rebuilt per the DropX template with Bootstrap 4 (light/dark); 12 admin pages fetched without errors; checked visually at desktop (light and dark) and 375px width on an isolated test server; test admin and fixtures removed.
+- Chart.js replaces the SVG trend chart (verified on a DEV product page). AGENTS.md has the no-handwritten-UI rule. `docs/UI_HANDWRITTEN_CODE_AUDIT.md` lists what is still hand-written.
+- Open: public theme still hand-written, `app.css` not removed, login page not restyled, no pixel comparison with the real template.

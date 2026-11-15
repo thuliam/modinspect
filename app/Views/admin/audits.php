@@ -1,10 +1,5 @@
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / System</span>
-        <h1>Audit Logs</h1>
-        <p>Concise audit trail for administrative mutations. Full payloads are collapsed by default.</p>
-    </div>
-</div>
+<?php ob_start(); ?>Audit Logs<?php $dxT = ob_get_clean(); ob_start(); ?>Concise audit trail for administrative mutations. Full payloads are collapsed by default.<?php $dxD = ob_get_clean(); ob_start(); ?><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'System',), $dxT, $dxD, $dxA) ?>
 
 <form id="audits-filters" class="card mi-admin-card mb-3 js-datatable-filters" data-target="#audits-table">
     <div class="card-body">

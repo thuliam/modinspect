@@ -1,127 +1,138 @@
-/* Admin skin based on the DropX Admin template (DataDropX, https://datadropx.net; MIT-style licence that requires the visible
-   "Designed & developed by DataDropX" credit, kept in the admin footer). Only the visual language is adopted (tokens, layout metrics,
-   card/badge/table/nav styling); the template's React/Tailwind code is not used: the admin stays PHP + Bootstrap 4 + jQuery.
-   Loaded after mi-admin.css. It re-points the --ci-* tokens that mi-admin.css consumes, so every existing admin override recolours. */
+/* Admin skin: DropX Admin template (DataDropX, https://datadropx.net; licence requires the visible credit kept in the admin footer).
+   The template is Tailwind/React; its layout is reproduced here with Bootstrap 4 utility classes in the PHP markup, and only what
+   Bootstrap 4.1 cannot express (tokens, nav states, gradient cards, sticky shell) lives in this file. Values are the template's
+   own (globals.css, sidebar.tsx, header.tsx, page-header.tsx, card.tsx, gradient-card.tsx, advanced-table.tsx).
+   Loaded after mi-admin.css: it re-points the --ci-* tokens mi-admin.css consumes. */
 
-/* ---- tokens: light (default) and dark ---- */
+/* ---- tokens (template globals.css): light default, dark via html[data-theme=dark] ---- */
 body.mi-admin-body {
-    --ci-canvas: #f9fafb;
-    --ci-surface: #ffffff;
-    --ci-elevated: #f3f4f6;
-    --ci-highlight: #f3f4f6;
-    --ci-search: #ffffff;
-    --ci-border: #e5e7eb;
-    --ci-border-active: #d1d5db;
-    --ci-text: #111827;
-    --ci-text-2: #6b7280;
-    --ci-primary: #6366f1;
-    --ci-on-primary: #ffffff;
-    --ci-verified: #10b981;
-    --ci-gold: #d97706;
-    --ci-danger: #ef4444;
-    --ci-btn-glow: 0 0 0 3px rgba(99, 102, 241, .22);
-    --ci-r-md: 8px;
-    --ci-r-pill: 999px;
-    --dx-brand: #c2410c;
-    --dx-radius-card: 12px;
-    --dx-shadow-card: 0 1px 3px 0 rgb(0 0 0 / .05), 0 1px 2px -1px rgb(0 0 0 / .05);
-    --dx-shadow-menu: 0 8px 24px -6px rgb(0 0 0 / .14), 0 2px 6px -2px rgb(0 0 0 / .06);
-    --dx-sidebar: #ffffff;
-    --dx-sidebar-fg: #374151;
-    --dx-sidebar-accent: #f3f4f6;
+    --ci-canvas: #f9fafb; --ci-surface: #ffffff; --ci-elevated: #f3f4f6; --ci-highlight: #f3f4f6; --ci-search: #ffffff;
+    --ci-border: #e5e7eb; --ci-border-active: #d1d5db; --ci-text: #111827; --ci-text-2: #6b7280;
+    --ci-primary: #6366f1; --ci-on-primary: #ffffff; --ci-verified: #10b981; --ci-gold: #d97706; --ci-danger: #ef4444;
+    --ci-btn-glow: 0 0 0 3px rgba(99, 102, 241, .22); --ci-r-md: 8px; --ci-r-pill: 999px;
+    --dx-brand: #c2410c; --dx-sidebar: #ffffff; --dx-sidebar-fg: #374151; --dx-sidebar-accent: #f3f4f6;
     --dx-primary-soft: rgba(99, 102, 241, .08);
+    --dx-shadow-card: 0 1px 3px 0 rgb(0 0 0 / .05), 0 1px 2px -1px rgb(0 0 0 / .05);
+    --dx-shadow-dropdown: 0 8px 24px -6px rgb(0 0 0 / .14), 0 2px 6px -2px rgb(0 0 0 / .06);
     color-scheme: light;
 }
 html[data-theme="dark"] body.mi-admin-body {
-    --ci-canvas: #0f172a;
-    --ci-surface: #1e293b;
-    --ci-elevated: #263247;
-    --ci-highlight: #334155;
-    --ci-search: #0f172a;
-    --ci-border: #334155;
-    --ci-border-active: #475569;
-    --ci-text: #f1f5f9;
-    --ci-text-2: #94a3b8;
-    --ci-primary: #818cf8;
-    --ci-on-primary: #0f172a;
-    --ci-verified: #34d399;
-    --ci-gold: #fbbf24;
-    --ci-danger: #f87171;
+    --ci-canvas: #0f172a; --ci-surface: #1e293b; --ci-elevated: #263247; --ci-highlight: #334155; --ci-search: #0f172a;
+    --ci-border: #334155; --ci-border-active: #475569; --ci-text: #f1f5f9; --ci-text-2: #94a3b8;
+    --ci-primary: #818cf8; --ci-on-primary: #0f172a; --ci-verified: #34d399; --ci-gold: #fbbf24; --ci-danger: #f87171;
     --ci-btn-glow: 0 0 0 3px rgba(129, 140, 248, .3);
-    --dx-brand: #e85002;
-    --dx-shadow-card: none;
-    --dx-shadow-menu: 0 8px 24px -6px rgb(0 0 0 / .5);
-    --dx-sidebar: #1e293b;
-    --dx-sidebar-fg: #cbd5e1;
-    --dx-sidebar-accent: #334155;
-    --dx-primary-soft: rgba(129, 140, 248, .14);
+    --dx-brand: #e85002; --dx-sidebar: #1e293b; --dx-sidebar-fg: #cbd5e1; --dx-sidebar-accent: #334155;
+    --dx-primary-soft: rgba(129, 140, 248, .14); --dx-shadow-card: none; --dx-shadow-dropdown: 0 8px 24px -6px rgb(0 0 0 / .5);
     color-scheme: dark;
 }
-body.mi-admin-body { font-size: 14px; line-height: 1.5; }
-body.mi-admin-body.mi-admin-body a:hover { text-decoration: none; }
+body.mi-admin-body { font-size: 14px; line-height: 1.5; background: var(--ci-canvas); color: var(--ci-text); }
+body.mi-admin-body a:hover { text-decoration: none; }
 
-/* ---- shell: 68px topbar, 252px sidebar ---- */
-body.mi-admin-body .mi-admin-topbar .navbar { min-height: 68px; height: 68px; padding: 0 20px; background: var(--ci-surface) !important; border-bottom: 1px solid var(--ci-border); box-shadow: none; }
-body.mi-admin-body .mi-admin-topbar .navbar-brand { font-weight: 800; font-size: 16px; letter-spacing: -.01em; margin-right: 16px; display: inline-flex; align-items: center; gap: 8px; }
-body.mi-admin-body .mi-admin-topbar .navbar-brand .dx-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--ci-primary); color: var(--ci-on-primary); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
-body.mi-admin-body .mi-topbar-context { font-size: 13px; font-weight: 500; color: var(--ci-text-2); padding-left: 16px; border-left: 1px solid var(--ci-border); }
-body.mi-admin-body .dx-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--ci-border); border-radius: 10px; background: transparent; color: var(--ci-text-2); cursor: pointer; transition: background .15s, color .15s; }
-body.mi-admin-body .dx-icon-btn:hover { background: var(--dx-sidebar-accent); color: var(--ci-text); }
-body.mi-admin-body .mi-sidebar-toggle { color: var(--ci-text-2); font-size: 15px; margin-right: 8px; }
-body.mi-admin-body .mi-public-link, body.mi-admin-body .mi-user-toggle { color: var(--ci-text-2); font-weight: 500; font-size: 13px; }
-body.mi-admin-body .mi-public-link:hover, body.mi-admin-body .mi-user-toggle:hover { color: var(--ci-text); }
-body.mi-admin-body .mi-user-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--dx-primary-soft); color: var(--ci-primary); border: 0; font-weight: 700; font-size: 13px; }
-body.mi-admin-body .dropdown-menu { box-shadow: var(--dx-shadow-menu); border-radius: 12px; }
-
-body.mi-admin-body .mi-admin-sidebar { width: 252px; padding-top: 68px; background: var(--dx-sidebar); border-right: 1px solid var(--ci-border); }
-body.mi-admin-body .mi-admin-sidebar .menu-list { padding: 12px 12px 24px; }
-body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-divider,
-body.mi-admin-body .mi-admin-sidebar .nav-divider { padding: 20px 12px 6px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ci-text-2); }
-body.mi-admin-body .mi-admin-sidebar .nav-divider:first-child { padding-top: 4px; }
-body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-link,
-body.mi-admin-body .mi-admin-sidebar .nav-link { display: flex; align-items: center; gap: 12px; padding: 7px 12px; margin: 1px 0; font-size: 13px; font-weight: 500; color: var(--dx-sidebar-fg); border-radius: 6px; box-shadow: none; transition: background .15s, color .15s; }
-body.mi-admin-body .mi-admin-sidebar .nav-link i { width: 16px; font-size: 14px; color: var(--ci-text-2); text-align: center; }
-body.mi-admin-body .mi-admin-sidebar .nav-link:hover, body.mi-admin-body .mi-admin-sidebar .nav-link:focus { background: var(--dx-sidebar-accent); color: var(--ci-text); }
-body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-link.active,
-body.mi-admin-body .mi-admin-sidebar .nav-link.active { background: var(--dx-primary-soft); color: var(--ci-primary); box-shadow: none; }
-body.mi-admin-body .mi-admin-sidebar .nav-link.active i { color: var(--ci-primary); }
-body.mi-admin-body .mi-admin-main { margin-left: 252px; padding-top: 68px; background: var(--ci-canvas); }
-body.mi-admin-body .mi-admin-content { padding: 24px; max-width: 1600px; }
-body.mi-sidebar-collapsed.mi-admin-body .mi-admin-sidebar { width: 60px; }
-body.mi-sidebar-collapsed.mi-admin-body .mi-admin-sidebar .nav-link { justify-content: center; padding: 8px 0; }
-body.mi-sidebar-collapsed.mi-admin-body .mi-admin-main { margin-left: 60px; }
+/* ---- shell: flex row (sidebar | header + scrolling main), as in app/(admin)/layout.tsx ---- */
+/* Bootstrap 4.1 has no overflow-hidden utility */
+.dx-app { overflow: hidden; }
+.dx-column { min-width: 0; overflow: hidden; }
+.dx-sidebar { width: 252px; flex: 0 0 252px; background: var(--dx-sidebar); border-right: 1px solid var(--ci-border); transition: width .2s; z-index: 1040; }
+.dx-brand { height: 68px; padding: 0 16px; border-bottom: 1px solid var(--ci-border); }
+.dx-logo { gap: 10px; color: var(--ci-text); font-weight: 800; font-size: 16px; }
+.dx-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--ci-primary); color: var(--ci-on-primary); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
+.dx-close { border: 0; background: none; color: var(--ci-text-2); }
+.dx-nav { overflow-y: auto; padding: 16px 12px; }
+.dx-group + .dx-group { margin-top: 24px; }
+.dx-group-label { margin: 0 0 6px; padding: 0 12px; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ci-text-2); }
+.dx-link { display: flex; align-items: center; gap: 12px; padding: 7px 12px; margin: 2px 0; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--dx-sidebar-fg); transition: background .15s, color .15s; }
+.dx-link i { width: 16px; font-size: 14px; color: var(--ci-text-2); text-align: center; }
+body.mi-admin-body a.dx-link { color: var(--dx-sidebar-fg); }
+body.mi-admin-body a.dx-link.active { color: var(--ci-primary); }
+body.mi-admin-body a.dx-logo, body.mi-admin-body a.dx-icon-btn { color: var(--ci-text-2); }
+body.mi-admin-body a.dx-logo { color: var(--ci-text); }
+body.mi-admin-body a.dx-link:hover { background: var(--dx-sidebar-accent); color: var(--ci-text); }
+.dx-link.active { background: var(--dx-primary-soft); }
+.dx-link.active i { color: var(--ci-primary); }
+body.mi-sidebar-collapsed .dx-sidebar { width: 60px; flex-basis: 60px; }
+body.mi-sidebar-collapsed .dx-wordmark, body.mi-sidebar-collapsed .dx-group-label, body.mi-sidebar-collapsed .dx-link span { display: none; }
+body.mi-sidebar-collapsed .dx-link { justify-content: center; padding: 8px; }
+body.mi-sidebar-collapsed .dx-brand { justify-content: center; padding: 0; }
+.dx-backdrop { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, .4); z-index: 1030; }
 @media (max-width: 991.98px) {
-    body.mi-admin-body .mi-admin-sidebar { width: 252px; }
-    body.mi-admin-body .mi-admin-main, body.mi-sidebar-collapsed.mi-admin-body .mi-admin-main { margin-left: 0; }
-    body.mi-admin-body .mi-admin-content { padding: 16px; }
-    body.mi-admin-body .mi-topbar-context { display: none; }
+    .dx-sidebar { position: fixed; top: 0; bottom: 0; left: 0; transform: translateX(-100%); transition: transform .2s; width: 252px; }
+    body.dx-nav-open .dx-sidebar { transform: none; }
+    body.dx-nav-open .dx-backdrop { display: block; }
+    body.mi-sidebar-collapsed .dx-sidebar { width: 252px; }
 }
 
-/* ---- page header, cards, stat cards ---- */
-body.mi-admin-body .mi-page-header { margin-bottom: 20px; }
-body.mi-admin-body .mi-page-header h1 { font-size: 20px; font-weight: 600; letter-spacing: -.01em; margin: 2px 0 0; }
-body.mi-admin-body .mi-page-header p, body.mi-admin-body .mi-page-header .text-muted { font-size: 13px; }
-body.mi-admin-body .card, body.mi-admin-body .mi-admin-card, body.mi-admin-body .mi-metric-card, body.mi-admin-body .mi-table-card, body.mi-admin-body .mi-product-form-card, body.mi-admin-body .modal-content { border-radius: var(--dx-radius-card); border: 1px solid var(--ci-border); box-shadow: var(--dx-shadow-card); background: var(--ci-surface); }
-body.mi-admin-body .card-header { font-size: 14px; font-weight: 600; padding: 16px 20px 8px; border: 0; background: transparent !important; }
-body.mi-admin-body .card-body { padding: 12px 20px 20px; }
-body.mi-admin-body .mi-metric-card { padding: 18px 20px; }
-body.mi-admin-body .mi-metric-card strong, body.mi-admin-body .mi-metric-card b { color: var(--ci-text); font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
-body.mi-admin-body .mi-metric-card span, body.mi-admin-body .mi-metric-card small { color: var(--ci-text-2); font-size: 12px; }
-body.mi-admin-body .mi-metric-warning { border-color: color-mix(in srgb, var(--ci-gold) 55%, transparent); }
+.dx-header { height: 68px; flex: 0 0 68px; padding: 0 20px; background: var(--ci-surface); border-bottom: 1px solid var(--ci-border); z-index: 1020; }
+.dx-icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--ci-border); border-radius: 8px; background: var(--ci-canvas); color: var(--ci-text-2); box-shadow: var(--dx-shadow-card); cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.dx-icon-btn:hover { border-color: color-mix(in srgb, var(--ci-primary) 30%, transparent); background: var(--dx-primary-soft); color: var(--ci-primary); text-decoration: none; }
+.dx-dot { position: absolute; right: 8px; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--ci-danger); border: 2px solid var(--ci-surface); }
+.dx-search-wrap { max-width: 576px; min-width: 0; }
+.dx-search { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; border: 1px solid var(--ci-border); border-radius: 12px; background: var(--ci-canvas); box-shadow: var(--dx-shadow-card); color: var(--ci-text-2); width: 100%; }
+.dx-search:focus-within { border-color: color-mix(in srgb, var(--ci-primary) 30%, transparent); box-shadow: 0 0 0 4px var(--dx-primary-soft); }
+.dx-search input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ci-text); font-size: 14px; min-width: 0; }
+.dx-search kbd { margin-left: auto; padding: 1px 6px; font-size: 11px; font-weight: 600; border: 1px solid var(--ci-border); border-radius: 6px; background: var(--ci-elevated); color: var(--ci-text-2); box-shadow: none; }
+.dx-user { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 4px; border: 1px solid var(--ci-border); border-radius: 12px; background: var(--ci-canvas); box-shadow: var(--dx-shadow-card); color: var(--ci-text); }
+.dx-user:hover { background: var(--dx-primary-soft); }
+.dx-avatar { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--ci-primary), #14b8a6); color: #fff; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+.dx-user-name { display: block; font-size: 12px; font-weight: 600; line-height: 1; }
+.dx-user-role { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 11px; color: var(--ci-text-2); }
+.dx-user-role i { color: var(--ci-verified); font-size: 10px; }
+.dx-user-menu { width: 240px; padding: 6px; border: 1px solid var(--ci-border); border-radius: 12px; background: var(--ci-surface); box-shadow: var(--dx-shadow-dropdown); }
+.dx-user-head { display: grid; padding: 6px 10px 10px; border-bottom: 1px solid var(--ci-border); margin-bottom: 4px; }
+.dx-user-head small { color: var(--ci-text-2); }
+.dx-user-menu .dropdown-item { border-radius: 6px; font-size: 14px; color: var(--ci-text); }
+.dx-user-menu .dropdown-item:hover { background: var(--ci-elevated); }
+.dx-user-menu .dropdown-item.text-danger { color: var(--ci-danger) !important; }
+.dx-content { overflow-y: auto; padding: 24px; }
+@media (max-width: 991.98px) { .dx-content { padding: 16px; } .dx-header { padding: 0 16px; } }
+.dx-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--ci-border); display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; font-size: 12px; color: var(--ci-text-2); }
+.dx-footer a { color: var(--dx-brand); font-weight: 600; }
+.dx-footer a:hover { text-decoration: underline; }
 
-/* ---- tables ---- */
-body.mi-admin-body .table thead th, body.mi-admin-body table.dataTable thead th, body.mi-admin-body .mi-admin-table thead th { background: var(--ci-elevated); color: var(--ci-text-2); font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: .01em; padding: 10px 14px; border-bottom: 1px solid var(--ci-border); }
-body.mi-admin-body .table td, body.mi-admin-body table.dataTable td, body.mi-admin-body .mi-admin-table td { padding: 12px 14px; font-size: 13px; vertical-align: middle; }
+/* ---- page header (page-header.tsx) ---- */
+.dx-page-head { margin-bottom: 24px; }
+.dx-crumbs { font-size: 14px; }
+.dx-crumbs i { font-size: 12px; }
+.dx-crumb-current { color: var(--ci-text); }
+.dx-title { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: -.01em; }
+.dx-desc { margin-top: 2px; font-size: 14px; }
+
+/* ---- cards (card.tsx: rounded-xl, border, shadow-card) and gradient stat cards (gradient-card.tsx) ---- */
+body.mi-admin-body .card, body.mi-admin-body .mi-admin-card, body.mi-admin-body .mi-table-card, body.mi-admin-body .mi-product-form-card, body.mi-admin-body .modal-content { border-radius: 12px; border: 1px solid var(--ci-border); box-shadow: var(--dx-shadow-card); background: var(--ci-surface); }
+body.mi-admin-body .card-header { font-size: 14px; font-weight: 600; padding: 20px 20px 4px; border: 0; background: transparent !important; }
+body.mi-admin-body .card-body { padding: 12px 20px 20px; }
+body.mi-admin-body .mi-metric-card { position: relative; overflow: hidden; display: block; padding: 20px; border-radius: 12px; border: 0; color: #fff; box-shadow: none; }
+body.mi-admin-body .mi-metric-card::before { content: ""; position: absolute; right: -12px; top: -12px; width: 80px; height: 80px; border-radius: 50%; background: rgba(255, 255, 255, .1); }
+body.mi-admin-body .mi-metric-card::after { content: ""; position: absolute; right: -16px; bottom: -16px; width: 96px; height: 96px; border-radius: 50%; background: rgba(255, 255, 255, .05); }
+body.mi-admin-body .mi-metric-card > * { position: relative; z-index: 1; }
+body.mi-admin-body .mi-metric-card span { display: block; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, .8); }
+body.mi-admin-body .mi-metric-card strong, body.mi-admin-body .mi-metric-card b { display: block; margin-top: 8px; font-size: 24px; font-weight: 700; color: #fff; }
+body.mi-admin-body .mi-metric-card small { display: block; margin-top: 6px; font-size: 12px; color: rgba(255, 255, 255, .7) !important; }
+body.mi-admin-body a.mi-metric-card:hover { text-decoration: none; color: #fff; filter: brightness(1.05); }
+.mi-metric-row > [class*="col-"] { margin-bottom: 16px; }
+body.mi-admin-body .gradient-primary { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+body.mi-admin-body .gradient-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+body.mi-admin-body .gradient-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+body.mi-admin-body .gradient-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+body.mi-admin-body .gradient-info { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+body.mi-admin-body .gradient-purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+body.mi-admin-body .gradient-pink { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+body.mi-admin-body .gradient-ocean { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+body.mi-admin-body .gradient-sunset { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); }
+
+/* ---- tables (advanced-table.tsx + .data-table in globals.css) ---- */
+body.mi-admin-body .table thead th, body.mi-admin-body table.dataTable thead th, body.mi-admin-body .mi-admin-table thead th { background: transparent; color: var(--ci-text-2); font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; padding: 12px 16px; border-bottom: 1px solid var(--ci-border); }
+body.mi-admin-body .table td, body.mi-admin-body table.dataTable td, body.mi-admin-body .mi-admin-table td { padding: 14px 16px; font-size: 14px; vertical-align: middle; }
 body.mi-admin-body .table-hover tbody tr:hover td, body.mi-admin-body table.dataTable tbody tr:hover td, body.mi-admin-body .mi-admin-table tbody tr:hover td { background: var(--ci-elevated); }
 body.mi-admin-body .table-striped tbody tr:nth-of-type(odd) td, body.mi-admin-body table.dataTable.stripe tbody tr.odd td { background: transparent; }
+body.mi-admin-body .mi-table-card { border-radius: 8px; }
 
-/* ---- badges (soft, pill) and buttons ---- */
-body.mi-admin-body .badge, body.mi-admin-body .mi-status-approved, body.mi-admin-body .mi-status-pending, body.mi-admin-body .mi-status-rejected, body.mi-admin-body .mi-status-excluded, body.mi-admin-body .lane-badge { border: 0 !important; border-radius: var(--ci-r-pill); padding: 3px 10px; font-size: 12px; font-weight: 500; }
-body.mi-admin-body .badge-success, body.mi-admin-body .mi-status-approved, body.mi-admin-body .lane-badge.lane-green { background: color-mix(in srgb, var(--ci-verified) 14%, transparent); color: var(--ci-verified); }
-body.mi-admin-body .badge-warning, body.mi-admin-body .mi-status-pending, body.mi-admin-body .lane-badge.lane-amber { background: color-mix(in srgb, var(--ci-gold) 14%, transparent); color: var(--ci-gold); }
-body.mi-admin-body .badge-danger, body.mi-admin-body .mi-status-rejected, body.mi-admin-body .lane-badge.lane-red { background: color-mix(in srgb, var(--ci-danger) 12%, transparent); color: var(--ci-danger); }
+/* ---- badges (badge.tsx: soft pill), buttons, forms ---- */
+body.mi-admin-body .badge, body.mi-admin-body .mi-status-approved, body.mi-admin-body .mi-status-pending, body.mi-admin-body .mi-status-rejected, body.mi-admin-body .mi-status-excluded, body.mi-admin-body .lane-badge { border: 0 !important; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 500; }
+body.mi-admin-body .badge-success, body.mi-admin-body .mi-status-approved, body.mi-admin-body .lane-badge.lane-green { background: color-mix(in srgb, var(--ci-verified) 10%, transparent); color: var(--ci-verified); }
+body.mi-admin-body .badge-warning, body.mi-admin-body .mi-status-pending, body.mi-admin-body .lane-badge.lane-amber { background: color-mix(in srgb, var(--ci-gold) 10%, transparent); color: var(--ci-gold); }
+body.mi-admin-body .badge-danger, body.mi-admin-body .mi-status-rejected, body.mi-admin-body .lane-badge.lane-red { background: color-mix(in srgb, var(--ci-danger) 10%, transparent); color: var(--ci-danger); }
 body.mi-admin-body .badge-secondary, body.mi-admin-body .badge-light, body.mi-admin-body .badge-info, body.mi-admin-body .mi-status-excluded, body.mi-admin-body .lane-badge { background: var(--ci-elevated); color: var(--ci-text-2); }
-body.mi-admin-body .btn { border-radius: 8px; font-weight: 500; font-size: 13px; padding: 7px 14px; }
+body.mi-admin-body .btn { border-radius: 8px; font-weight: 500; font-size: 14px; }
 body.mi-admin-body .btn-primary { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); }
 body.mi-admin-body .btn-primary:hover, body.mi-admin-body .btn-primary:focus { filter: brightness(.94); box-shadow: var(--ci-btn-glow); }
 body.mi-admin-body .btn-outline-primary, body.mi-admin-body .btn-secondary, body.mi-admin-body .btn-light, body.mi-admin-body .btn-outline-secondary { background: var(--ci-surface); border: 1px solid var(--ci-border); color: var(--ci-text); }
@@ -129,14 +140,11 @@ body.mi-admin-body .btn-outline-primary:hover, body.mi-admin-body .btn-secondary
 body.mi-admin-body .btn-success { background: color-mix(in srgb, var(--ci-verified) 14%, transparent); border-color: transparent; color: var(--ci-verified); }
 body.mi-admin-body .btn-danger, body.mi-admin-body .btn-outline-danger { background: color-mix(in srgb, var(--ci-danger) 12%, transparent); border-color: transparent; color: var(--ci-danger); }
 body.mi-admin-body .btn-warning { background: color-mix(in srgb, var(--ci-gold) 14%, transparent); border-color: transparent; color: var(--ci-gold); }
-body.mi-admin-body .form-control, body.mi-admin-body .custom-select, body.mi-admin-body select, body.mi-admin-body textarea { border-radius: 8px; font-size: 13px; }
+body.mi-admin-body .form-control, body.mi-admin-body .custom-select, body.mi-admin-body select, body.mi-admin-body textarea { border-radius: 8px; font-size: 14px; }
 body.mi-admin-body .alert-info { background: var(--dx-primary-soft); border-color: color-mix(in srgb, var(--ci-primary) 35%, transparent); }
 body.mi-admin-body .alert-success { background: color-mix(in srgb, var(--ci-verified) 10%, transparent); }
 body.mi-admin-body .alert-warning, body.mi-admin-body .notice { background: color-mix(in srgb, var(--ci-gold) 10%, transparent); border-color: color-mix(in srgb, var(--ci-gold) 45%, transparent); }
 body.mi-admin-body .alert-danger { background: color-mix(in srgb, var(--ci-danger) 10%, transparent); }
-
-/* ---- footer credit (required by the DropX licence) ---- */
-body.mi-admin-body .dx-footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--ci-border); display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; font-size: 12px; color: var(--ci-text-2); }
-body.mi-admin-body .dx-footer a { color: var(--dx-brand); font-weight: 600; }
-body.mi-admin-body .dx-footer a:hover { text-decoration: underline; }
-@media (prefers-reduced-motion: reduce) { body.mi-admin-body * { transition: none !important; } }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: var(--ci-border); border-radius: 3px; }
+@media (prefers-reduced-motion: reduce) { body.mi-admin-body * { transition: none !important; animation: none !important; } }

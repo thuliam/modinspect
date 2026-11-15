@@ -1,11 +1,5 @@
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Catalog</span>
-        <h1>Aliases</h1>
-        <p>Resolver mapping from observed market naming to canonical Product Master records.</p>
-    </div>
-    <button class="btn btn-primary js-alias-new" type="button"><i class="fas fa-plus mr-2"></i>Add Alias</button>
-</div>
+<?php ob_start(); ?>Aliases<?php $dxT = ob_get_clean(); ob_start(); ?>Resolver mapping from observed market naming to canonical Product Master records.<?php $dxD = ob_get_clean(); ob_start(); ?><button class="btn btn-primary js-alias-new" type="button"><i class="fas fa-plus mr-2"></i>Add Alias</button><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Catalog',), $dxT, $dxD, $dxA) ?>
 
 <form id="alias-form" class="card mi-admin-card mb-3" method="post" action="<?= $base ?>/admin/product-aliases/save">
     <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">

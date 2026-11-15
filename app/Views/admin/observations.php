@@ -1,11 +1,5 @@
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Market Data</span>
-        <h1>Observations</h1>
-        <p>Operational observation view. Full evidence and review decisions stay behind detail workflows.</p>
-    </div>
-    <a class="btn btn-primary" href="<?= $base ?>/admin/review-queue"><i class="fas fa-clipboard-check mr-2"></i>Review Queue</a>
-</div>
+<?php ob_start(); ?>Observations<?php $dxT = ob_get_clean(); ob_start(); ?>Operational observation view. Full evidence and review decisions stay behind detail workflows.<?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-primary" href="<?= $base ?>/admin/review-queue"><i class="fas fa-clipboard-check mr-2"></i>Review Queue</a><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <form id="observations-filters" class="card mi-admin-card mb-3 js-datatable-filters" data-target="#observations-table">
     <div class="card-body">

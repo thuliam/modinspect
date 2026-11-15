@@ -1,12 +1,6 @@
 <?php $filters=$report['filters'] ?? []; ?>
-<div class="mi-page-header">
-    <div>
-        <span class="mi-breadcrumb">Admin / Market Data</span>
-        <h1>Review Analytics</h1>
-        <p>Review quality and calibration metrics. Fixture metrics are labeled separately from REAL market evidence.</p>
-    </div>
-    <a class="btn btn-primary" href="<?= $base ?>/admin/review-queue"><i class="fas fa-clipboard-check mr-2"></i>Review Queue</a>
-</div>
+<?php ob_start(); ?>Review Analytics<?php $dxT = ob_get_clean(); ob_start(); ?>Review quality and calibration metrics. Fixture metrics are labeled separately from REAL market evidence.<?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-primary" href="<?= $base ?>/admin/review-queue"><i class="fas fa-clipboard-check mr-2"></i>Review Queue</a><?php $dxA = ob_get_clean(); ?>
+<?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <form class="card mi-admin-card mb-3" method="get" action="<?= $base ?>/admin/review-analytics">
     <div class="card-body">
@@ -24,12 +18,12 @@
 <div class="notice mb-3">Dataset: <?= htmlspecialchars((string)$report['dataset_label']) ?> / Calibration: <?= htmlspecialchars((string)$report['calibration_status']) ?> / MOCK_TEST metrics are not live-market proof.</div>
 
 <div class="row mi-metric-row">
-    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card"><span>Sample</span><strong><?= (int)$report['sample_size'] ?></strong><small>REAL <?= (int)$report['real_records'] ?> / MOCK <?= (int)$report['mock_test_records'] ?></small></div></div>
-    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card mi-metric-warning"><span>Backlog</span><strong><?= (int)$report['lifecycle']['review_backlog'] ?></strong><small>Pending decisions</small></div></div>
-    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card"><span>Reviewed</span><strong><?= (int)$report['lifecycle']['reviewed_count'] ?></strong><small><?= number_format((float)$report['lifecycle']['decision_rate'],1) ?>% decision rate</small></div></div>
-    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card"><span>Corrected</span><strong><?= (int)$report['lifecycle']['corrected_reviews'] ?></strong><small><?= number_format((float)$report['lifecycle']['correction_rate'],1) ?>% correction rate</small></div></div>
-    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card"><span>Green Precision</span><strong><?= $report['green_precision']['clean_green_precision']===null ? '-' : number_format((float)$report['green_precision']['clean_green_precision'],1).'%' ?></strong><small>After human review</small></div></div>
-    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card"><span>Live Yield</span><strong><?= $report['valid_observation_yield']['yield_percent']===null ? '-' : number_format((float)$report['valid_observation_yield']['yield_percent'],1).'%' ?></strong><small>MOCK excluded</small></div></div>
+    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card gradient-primary"><span>Sample</span><strong><?= (int)$report['sample_size'] ?></strong><small>REAL <?= (int)$report['real_records'] ?> / MOCK <?= (int)$report['mock_test_records'] ?></small></div></div>
+    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card gradient-warning"><span>Backlog</span><strong><?= (int)$report['lifecycle']['review_backlog'] ?></strong><small>Pending decisions</small></div></div>
+    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card gradient-info"><span>Reviewed</span><strong><?= (int)$report['lifecycle']['reviewed_count'] ?></strong><small><?= number_format((float)$report['lifecycle']['decision_rate'],1) ?>% decision rate</small></div></div>
+    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card gradient-purple"><span>Corrected</span><strong><?= (int)$report['lifecycle']['corrected_reviews'] ?></strong><small><?= number_format((float)$report['lifecycle']['correction_rate'],1) ?>% correction rate</small></div></div>
+    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card gradient-ocean"><span>Green Precision</span><strong><?= $report['green_precision']['clean_green_precision']===null ? '-' : number_format((float)$report['green_precision']['clean_green_precision'],1).'%' ?></strong><small>After human review</small></div></div>
+    <div class="col-xl-2 col-md-4"><div class="card mi-metric-card gradient-pink"><span>Live Yield</span><strong><?= $report['valid_observation_yield']['yield_percent']===null ? '-' : number_format((float)$report['valid_observation_yield']['yield_percent'],1).'%' ?></strong><small>MOCK excluded</small></div></div>
 </div>
 
 <div class="row">

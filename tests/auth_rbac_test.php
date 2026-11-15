@@ -130,7 +130,7 @@ try {
     assert_auth(str_contains(render_auth(fn() => (new AdminController())->index()), 'Auth Admin'), 'ADMIN dashboard should render authenticated identity');
 
     auth_session((int)$reviewer['user_id']);
-    assert_auth(str_contains(render_auth(fn() => (new AdminController())->review()), '<h1>Review Queue</h1>'), 'REVIEWER should view review queue');
+    assert_auth(str_contains(render_auth(fn() => (new AdminController())->review()), '>Review Queue</h1>'), 'REVIEWER should view review queue');
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['REQUEST_URI'] = '/admin/sources/action';
     $_POST = ['_token' => Csrf::token(), 'source_id' => 1, 'action' => 'pause', 'reason' => 'denied'];
@@ -140,7 +140,7 @@ try {
     auth_session((int)$operator['user_id']);
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs';
-    assert_auth(str_contains(render_auth(fn() => (new AdminController())->jobs()), '<h1>Imports</h1>'), 'OPERATOR should view jobs');
+    assert_auth(str_contains(render_auth(fn() => (new AdminController())->jobs()), '>Imports</h1>'), 'OPERATOR should view jobs');
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['REQUEST_URI'] = '/admin/review-queue/decision';
     $_POST = ['_token' => Csrf::token(), 'observation_id' => 1, 'decision' => 'approved'];
