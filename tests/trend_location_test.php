@@ -14,6 +14,8 @@ assert_tl($h === ['province' => 'เชียงใหม่', 'region' => 'nort
 assert_tl(LocationHint::detect('นัดรับ กทม. ย่านลาดพร้าว')['province'] === 'กรุงเทพมหานคร', 'BKK alias not normalised');
 assert_tl(LocationHint::detect('โคราช')['province'] === 'นครราชสีมา', 'Korat alias not normalised');
 assert_tl(LocationHint::detect('ขายการ์ดจอ ราคา 5000') === null, 'No location must give null');
+assert_tl(LocationHint::detect('ซื้อได้เลย ราคาเท่านี้เลย') === null, 'Everyday word เลย must not count as Loei');
+assert_tl(LocationHint::detect('จ.เลย')['province'] === 'เลย', 'Explicit จ.เลย must count');
 assert_tl(array_keys(LocationHint::detect('ภูเก็ต')) === ['province', 'region'], 'Hint must expose province and region only');
 
 // Trend chart renders the median series and the quartile band from preserved buckets

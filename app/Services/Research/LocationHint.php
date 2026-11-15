@@ -16,6 +16,8 @@ final class LocationHint
         'northeast' => ['นครราชสีมา', 'ขอนแก่น', 'อุดรธานี', 'อุบลราชธานี', 'บุรีรัมย์', 'สุรินทร์', 'ศรีสะเกษ', 'ชัยภูมิ', 'มหาสารคาม', 'ร้อยเอ็ด', 'กาฬสินธุ์', 'สกลนคร', 'นครพนม', 'มุกดาหาร', 'เลย', 'หนองคาย', 'หนองบัวลำภู', 'ยโสธร', 'อำนาจเจริญ', 'บึงกาฬ'],
         'south' => ['นครศรีธรรมราช', 'สุราษฎร์ธานี', 'ภูเก็ต', 'สงขลา', 'กระบี่', 'ตรัง', 'พัทลุง', 'ชุมพร', 'ระนอง', 'พังงา', 'สตูล', 'ปัตตานี', 'ยะลา', 'นราธิวาส'],
     ];
+    /** Names that are also everyday Thai words (เลย = "at all/immediately"): only counted after จ. / จังหวัด. */
+    private const AMBIGUOUS = ['เลย', 'ตาก', 'น่าน', 'ตรัง', 'แพร่', 'ชัยนาท'];
     /** Common short forms people write instead of the official province name. */
     private const ALIASES = [
         'กทม' => 'กรุงเทพมหานคร', 'กรุงเทพ' => 'กรุงเทพมหานคร', 'โคราช' => 'นครราชสีมา', 'อยุธยา' => 'พระนครศรีอยุธยา',
@@ -29,8 +31,8 @@ final class LocationHint
         $best = null; $bestPos = PHP_INT_MAX;
         foreach (self::REGIONS as $region => $provinces) {
             foreach ($provinces as $name) {
-                $pos = mb_strpos($text, $name, 0, 'UTF-8');
-                if ($pos !== false && $pos < $bestPos) { $best = [$name, $region]; $bestPos = $pos; }
+                $pos = self::find($text, $name);
+                if ($pos !== null && $pos < $bestPos) { $best = [$name, $region]; $bestPos = $pos; }
             }
         }
         foreach (self::ALIASES as $short => $name) {
@@ -38,6 +40,15 @@ final class LocationHint
             if ($pos !== false && $pos < $bestPos) { $best = [$name, self::regionOf($name)]; $bestPos = $pos; }
         }
         return $best === null ? null : ['province' => $best[0], 'region' => $best[1]];
+    }
+
+    private static function find(string $text, string $name): ?int
+    {
+        if (in_array($name, self::AMBIGUOUS, true)) {
+            return preg_match('/(?:จ\.\s*|จังหวัด\s*)' . preg_quote($name, '/') . '/u', $text, $m, PREG_OFFSET_CAPTURE) === 1 ? (int)$m[0][1] : null;
+        }
+        $pos = mb_strpos($text, $name, 0, 'UTF-8');
+        return $pos === false ? null : $pos;
     }
 
     public static function regionOf(string $province): ?string
