@@ -48,12 +48,12 @@
         "size": "500x87"
     },
     "corsair": {
-        "file": "File:Corsair Gaming logo.png",
-        "page": "https://commons.wikimedia.org/wiki/File:Corsair_Gaming_logo.png",
-        "license": "Public domain",
+        "file": "Corsair logo (press kit, stacked, black)",
+        "page": "https://cwsmgmt.corsair.com/press/CORSAIRLogo2020_stack_K.png",
+        "license": "Official Corsair press logo supplied by the site owner; trademark of Corsair, use per Corsair brand guidelines",
         "restrictions": "trademarked",
         "author": "Corsair",
-        "size": "500x499"
+        "size": "600x455"
     },
     "kingston": {
         "file": "File:Kingston Technology Corporation logo.png",

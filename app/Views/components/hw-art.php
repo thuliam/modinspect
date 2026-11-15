@@ -139,6 +139,8 @@ if (!function_exists('mi_brand_logo')) {
         $file = $alias[$key] ?? $key;
         $path = ROOT_PATH . '/public/assets/brands/' . $file . '.png';
         if (!preg_match('/^[a-z0-9-]+$/', $file) || !is_file($path)) { return '<span>' . htmlspecialchars($name) . '</span>'; }
+        $size = @getimagesize($path);
+        if ($size && $size[1] > 0 && $size[0] / $size[1] < 1.8) { $h = (int) round($h * 1.8); }   // stacked logos (mark above name) need more height to stay legible
         return '<span class="mi-brand-logo' . ($file === 'nvidia' ? ' is-dark' : '') . '"><img src="' . $base . '/assets/brands/' . $file . '.png?v=' . (int) @filemtime($path) . '" alt="' . htmlspecialchars($name) . '" style="height:' . $h . 'px"></span>';
     }
 }
