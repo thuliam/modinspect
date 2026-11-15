@@ -31,7 +31,8 @@ $confidence = $manifest['confidence'] ?? [];
 ?>
 <?php require_once ROOT_PATH . '/app/Views/components/hw-art.php'; ?>
 <article class="card product-card mi-product-card <?= $hasMarketSnapshot ? 'has-price' : 'no-price' ?>">
-    <?php if (!empty($artType)): ?><div class="pc-art"><?= mi_art_img($artType, $base) ?><span class="pc-badge <?= $hasMarketSnapshot ? 'on' : '' ?>"><?= $hasMarketSnapshot ? 'มีราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span></div><?php endif; ?>
+    <?php $photo = mi_product_photo($product, $base); ?>
+    <?php if (!empty($artType) || $photo): ?><div class="pc-art<?= $photo ? ' has-photo' : '' ?>"><?= $photo ?? mi_art_img($artType ?? 'ssd', $base) ?><span class="pc-badge <?= $hasMarketSnapshot ? 'on' : '' ?>"><?= $hasMarketSnapshot ? 'มีราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span></div><?php endif; ?>
     <div class="product-card-meta">
         <span><?= htmlspecialchars($product['category_name'] ?? 'Hardware') ?></span>
         <span><?= htmlspecialchars($product['brand_name'] ?? '') ?></span>

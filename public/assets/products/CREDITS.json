@@ -1,0 +1,63 @@
+{
+    "amd-radeon-rx-6600-xt": {
+        "file": "File:Asus AMD RX 6600 XT GPU. With dual fan. (52000339764).jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:Asus_AMD_RX_6600_XT_GPU._With_dual_fan._(52000339764).jpg",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+        "author": "Chi Ho Chan from Hong Kong",
+        "matchedModelInTitle": true,
+        "note": "ASUS board partner card"
+    },
+    "amd-ryzen-7-5800x": {
+        "file": "File:AMD Ryzen 7 5800X 19339.jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:AMD_Ryzen_7_5800X_19339.jpg",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+        "author": "Michael Wolf (Webseite)",
+        "matchedModelInTitle": true
+    },
+    "intel-core-i5-13600k": {
+        "file": "File:Intel Core i5 13600K.jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:Intel_Core_i5_13600K.jpg",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "author": "4300streetcar",
+        "matchedModelInTitle": true
+    },
+    "nvidia-geforce-rtx-3070": {
+        "file": "File:MSI GeForce RTX 3070 VENTUS 3X OC.jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:MSI_GeForce_RTX_3070_VENTUS_3X_OC.jpg",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+        "author": "TheStriker",
+        "matchedModelInTitle": true,
+        "note": "MSI Ventus 3X OC board partner card"
+    },
+    "nvidia-geforce-rtx-3080": {
+        "file": "File:ASUS ROG STRIX-RTX3080-O10G-Gundam 20210131.jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:ASUS_ROG_STRIX-RTX3080-O10G-Gundam_20210131.jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "author": "Solomon203",
+        "matchedModelInTitle": true,
+        "note": "ASUS ROG Strix special edition card (same GPU)"
+    },
+    "nvidia-geforce-rtx-4070": {
+        "file": "File:2023 Gigabyte GeForce RTX 4070 Aero OC 12GB (3).jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:2023_Gigabyte_GeForce_RTX_4070_Aero_OC_12GB_(3).jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "author": "Jacek Halicki",
+        "matchedModelInTitle": true,
+        "note": "Gigabyte Aero OC board partner card"
+    },
+    "samsung-970-evo-plus-1tb": {
+        "file": "File:2023 Napęd Samsung 970 EVO Plus 250GB (3).jpg",
+        "page": "https://commons.wikimedia.org/wiki/File:2023_Nap%C4%99d_Samsung_970_EVO_Plus_250GB_(3).jpg",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+        "author": "Jacek Halicki",
+        "matchedModelInTitle": true,
+        "note": "photo shows the 250GB capacity of the same model"
+    }
+}

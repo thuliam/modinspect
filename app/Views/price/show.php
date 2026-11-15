@@ -47,13 +47,13 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <div class="col-lg-6 mb-3">
             <div class="mi-gallery">
                 <span class="mi-gallery-badge"><i class="fas fa-<?= $hasMarketSnapshot ? 'chart-line' : 'info-circle' ?>" aria-hidden="true"></i> <?= $hasMarketSnapshot ? 'มีข้อมูลราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span>
-                <div class="mi-gallery-art"><?= mi_art($artType) ?></div>
+                <div class="mi-gallery-art<?= ($photo = mi_product_photo($product, $base, 'mi-photo')) ? ' has-photo' : '' ?>"><?= $photo ?? mi_art_img($artType, $base) ?></div>
                 <div class="mi-gallery-meta">
                     <span><?= htmlspecialchars($product['category_name']) ?></span>
                     <?php if (!empty($product['brand_name'])): ?><span><?= htmlspecialchars($product['brand_name']) ?></span><?php endif; ?>
                     <?php if (!empty($product['generation'])): ?><span><?= htmlspecialchars($product['generation']) ?></span><?php endif; ?>
                 </div>
-                <small>ภาพประกอบเป็นภาพวาดประเภทสินค้า ไม่ใช่ภาพถ่ายสินค้าจริง</small>
+                <small><?= !empty($photo) ? 'ภาพถ่ายตัวอย่างของรุ่นนี้ (ไม่ใช่ชิ้นที่ประกาศขาย) · ดูเครดิตในหน้าวิธีคำนวณ' : 'ภาพประกอบเป็นภาพวาดประเภทสินค้า ไม่ใช่ภาพถ่ายสินค้าจริง' ?></small>
             </div>
         </div>
         <div class="col-lg-6 mb-3">

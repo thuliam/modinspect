@@ -103,3 +103,18 @@ if (!function_exists('mi_logo')) {
         return mi_art($type);
     }
 }
+if (!function_exists('mi_product_photo')) {
+    /**
+     * Real photograph of the catalogue item when one is stored as public/assets/products/{slug}.jpg
+     * (freely licensed files from Wikimedia Commons, credits in CREDITS.json and on the methodology page). Null when none.
+     */
+    function mi_product_photo(array $product, string $base, string $class = 'mi-photo'): ?string
+    {
+        $slug = (string) ($product['slug'] ?? '');
+        $file = ROOT_PATH . '/public/assets/products/' . $slug . '.jpg';
+        if ($slug === '' || !preg_match('/^[a-z0-9-]+$/', $slug) || !is_file($file)) {
+            return null;
+        }
+        return '<img class="' . $class . '" src="' . $base . '/assets/products/' . $slug . '.jpg?v=' . (int) @filemtime($file) . '" alt="' . htmlspecialchars((string) ($product['full_name'] ?? '')) . ' (ภาพถ่ายประกอบ ดูเครดิตในหน้าวิธีคำนวณ)" loading="lazy">';
+    }
+}

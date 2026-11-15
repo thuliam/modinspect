@@ -311,3 +311,9 @@ body.mi .site-footer .footer-grid { display: flex; grid-template-columns: none; 
 body.mi .site-footer .footer-links { display: block; }
 body.mi .site-footer .footer-links a { text-decoration: none; white-space: nowrap; }
 body.mi .site-footer .footer-links li { display: block; }
+
+/* real product photographs (Wikimedia Commons, credited): shown on a light backdrop, never cropped */
+body.mi .pc-art.has-photo, body.mi .mi-gallery-art.has-photo { background: #e8ebe7; }
+body.mi .pc-art .mi-photo { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+body.mi .mi-gallery-art.has-photo { border-radius: 12px; overflow: hidden; margin: 12px 0; }
+body.mi .mi-gallery-art .mi-photo { display: block; width: 100%; height: 100%; max-height: 320px; object-fit: contain; padding: 12px; }
