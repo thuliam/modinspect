@@ -22,12 +22,22 @@ $steps = [
     ['fa' => 'fa-check-circle', 'title' => 'ตัดสินใจ', 'text' => 'ตรวจสภาพ ประกัน อุปกรณ์เอง แล้วค่อยซื้อ'],
 ];
 $artFor = static fn(string $name): string => match (strtolower(trim($name))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' };
-$featured = array_slice($products ?? [], 0, 10);
+// one row of five, mixing categories so the row is not five copies of the same kind
+$byCat = [];
+foreach (($products ?? []) as $p) { $byCat[(string) ($p['category_name'] ?? '')][] = $p; }
+$featured = [];
+while (count($featured) < 5 && $byCat) {
+    foreach ($byCat as $k => $list) {
+        $featured[] = array_shift($byCat[$k]);
+        if (!$byCat[$k]) { unset($byCat[$k]); }
+        if (count($featured) >= 5) { break; }
+    }
+}
 ?>
 <section class="mi-hero">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-6 mi-hero-copy">
+            <div class="col-lg-5 mi-hero-copy">
                 <h1 class="reveal">เช็กราคา<br><em>อุปกรณ์ IT มือสอง</em></h1>
                 <p class="mi-sub reveal" style="--d:100ms">ค้นหา <i>•</i> เทียบ <i>•</i> ตรวจสอบที่มา <i>•</i> ตัดสินใจได้คุ้มกว่า</p>
                 <form class="mi-search reveal" style="--d:200ms" action="<?= $base ?>/price" method="get">
@@ -46,7 +56,7 @@ $featured = array_slice($products ?? [], 0, 10);
                 </div>
                 <p class="mi-data-note reveal" style="--d:400ms">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
             </div>
-            <div class="col-lg-6 mi-hero-art reveal" style="--d:150ms"><?= mi_art('hero') ?></div>
+            <div class="col-lg-7 mi-hero-art reveal" style="--d:150ms"><img src="<?= $base ?>/assets/brand/hero-hardware.png" width="1026" height="436" alt="โน้ตบุ๊ก คอมพิวเตอร์ตั้งโต๊ะ การ์ดจอ SSD และจอภาพ (ภาพประกอบ)"></div>
         </div>
     </div>
 </section>
@@ -58,7 +68,7 @@ $featured = array_slice($products ?? [], 0, 10);
             <?php foreach ($cats as $i => $c): ?>
                 <div class="col-6 col-md-4 col-xl-2 mb-3">
                     <a class="mi-cat reveal" style="--d:<?= $i * 70 ?>ms" href="<?= $base . $c['href'] ?>">
-                        <span class="mi-cat-art"><?= isset($c['art']) ? mi_art($c['art']) : '<i class="fas ' . $c['icon'] . '" aria-hidden="true"></i>' ?></span>
+                        <span class="mi-cat-art"><?= isset($c['art']) ? mi_art_img($c['art'], $base) : '<i class="fas ' . $c['icon'] . '" aria-hidden="true"></i>' ?></span>
                         <strong><?= htmlspecialchars($c['title']) ?></strong>
                         <small><?= htmlspecialchars($c['sub']) ?></small>
                         <span class="mi-go"><i class="fas fa-chevron-right" aria-hidden="true"></i></span>
@@ -100,7 +110,7 @@ $featured = array_slice($products ?? [], 0, 10);
         <?php if ($featured): ?>
             <div class="row mi-featured">
                 <?php foreach ($featured as $product): ?>
-                    <div class="col-sm-6 col-lg-4 col-xl mb-3" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
+                    <div class="col-sm-6 col-lg-4 col-xl-5ths mb-4" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
                         <?php $artType = $artFor((string) ($product['category_name'] ?? '')); require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
                     </div>
                 <?php endforeach; ?>
@@ -142,7 +152,7 @@ $featured = array_slice($products ?? [], 0, 10);
 <section class="mi-block pb-5">
     <div class="container">
         <div class="mi-cta reveal">
-            <div class="mi-cta-art"><?= mi_art('laptop') ?></div>
+            <div class="mi-cta-art"><img src="<?= $base ?>/assets/brand/cta-hardware.png" width="600" height="280" alt="" loading="lazy"></div>
             <div class="mi-cta-copy"><h2>เจอราคาประกาศแล้วไม่แน่ใจ?</h2><p>เปรียบเทียบราคาที่คุณเจอกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p></div>
             <div class="mi-cta-act"><a class="btn btn-lime" href="<?= $base ?>/deal-checker"><i class="fas fa-balance-scale" aria-hidden="true"></i> เปิด Deal Checker</a><a class="btn btn-ghost" href="<?= $base ?>/price"><i class="fas fa-search" aria-hidden="true"></i> เลือกดูรุ่น</a></div>
         </div>

@@ -89,4 +89,17 @@ if (!function_exists('mi_logo')) {
         $file = ROOT_PATH . '/public/assets/brand/modinpect-lockup-dark.png';
         return '<img class="mi-logo" src="' . $base . '/assets/brand/modinpect-lockup-dark.png?v=' . (int) @filemtime($file) . '" width="900" height="181" alt="modinpect">';
     }
+}if (!function_exists('mi_art_img')) {
+    /**
+     * Category artwork: derived crops from the owner's approved reference where one exists (gpu, ram), otherwise the SVG drawing.
+     * The crops are low resolution and temporary until proper renders are supplied. $alt is empty because the card text names the item.
+     */
+    function mi_art_img(string $type, string $base): string
+    {
+        $map = ['gpu' => 'cat-gpu.jpg', 'ram' => 'cat-ram.jpg'];
+        if (isset($map[$type]) && is_file(ROOT_PATH . '/public/assets/brand/' . $map[$type])) {
+            return '<img class="mi-art-img mi-art-' . $type . '" src="' . $base . '/assets/brand/' . $map[$type] . '?v=' . (int) @filemtime(ROOT_PATH . '/public/assets/brand/' . $map[$type]) . '" alt="" loading="lazy">';
+        }
+        return mi_art($type);
+    }
 }

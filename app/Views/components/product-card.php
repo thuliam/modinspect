@@ -31,7 +31,7 @@ $confidence = $manifest['confidence'] ?? [];
 ?>
 <?php require_once ROOT_PATH . '/app/Views/components/hw-art.php'; ?>
 <article class="card product-card mi-product-card <?= $hasMarketSnapshot ? 'has-price' : 'no-price' ?>">
-    <?php if (!empty($artType)): ?><div class="pc-art"><?= mi_art($artType) ?></div><?php endif; ?>
+    <?php if (!empty($artType)): ?><div class="pc-art"><?= mi_art_img($artType, $base) ?><span class="pc-badge <?= $hasMarketSnapshot ? 'on' : '' ?>"><?= $hasMarketSnapshot ? 'มีราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span></div><?php endif; ?>
     <div class="product-card-meta">
         <span><?= htmlspecialchars($product['category_name'] ?? 'Hardware') ?></span>
         <span><?= htmlspecialchars($product['brand_name'] ?? '') ?></span>
@@ -52,8 +52,7 @@ $confidence = $manifest['confidence'] ?? [];
         </span>
         <small class="confidence-reason"><?= htmlspecialchars(mi_public_confidence_reason($confidence)) ?></small>
     <?php else: ?>
-        <span class="price-status-badge">ยังไม่มีราคาตลาด</span>
         <p class="compact-status">ข้อมูลราคายังไม่เพียงพอ</p>
     <?php endif; ?>
-    <a class="product-card-action" href="<?= $base ?>/price/<?= rawurlencode($product['slug']) ?>">ดูรายละเอียด</a>
+    <a class="product-card-action" href="<?= $base ?>/price/<?= rawurlencode($product['slug']) ?>">ดูรายละเอียด <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
 </article>

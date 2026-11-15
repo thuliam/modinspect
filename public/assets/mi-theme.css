@@ -194,3 +194,120 @@ body.mi .mi-flow li b { flex: none; display: grid; place-items: center; width: 2
 body.mi .mi-flow li.active { border-color: rgba(212, 241, 57, .55); color: #fff; }
 body.mi .mi-flow li.active b { background: var(--mi-lime); border-color: var(--mi-lime); color: var(--mb-on-accent); }
 body.mi .mi-deal-form .form-control, body.mi .mi-deal-form input, body.mi .mi-deal-form select { border-radius: var(--mb-radius-sm); }
+
+/* =====================================================================================================
+   DL-020 visual remediation: width, proportions, real hardware imagery, type scale, material system.
+   Scale: hero h1 clamp 36-56px, section h2 24-30px, card title 17-19px, body 15-16px, meta 13px.
+   Material: base #0d1110, card #1a211e -> #111613, hairline rgba(255,255,255,.11), radius 16px, lime only on hero/featured/CTA.
+   ===================================================================================================== */
+body.mi { --mi-card: linear-gradient(165deg, #1a211e 0, #111613 100%); --mi-r: 16px; font-size: 16px; }
+body.mi .container { max-width: 1560px; padding-left: clamp(20px, 3vw, 48px); padding-right: clamp(20px, 3vw, 48px); }
+body.mi .col-xl-5ths { position: relative; width: 100%; padding-right: 12px; padding-left: 12px; }
+@media (min-width: 1200px) { body.mi .col-xl-5ths { flex: 0 0 20%; max-width: 20%; } }
+body.mi .row { margin-left: -12px; margin-right: -12px; }
+body.mi .row > [class*="col-"] { padding-left: 12px; padding-right: 12px; }
+
+/* hero: text 5/12, hardware 7/12, substantial but not tall */
+body.mi .mi-hero { padding: clamp(40px, 6vh, 72px) 0 clamp(32px, 5vh, 56px); background: radial-gradient(ellipse 60% 90% at 78% 50%, rgba(212, 241, 57, .16), transparent 70%), linear-gradient(180deg, #0d1110, #101614); }
+body.mi .mi-hero::before { display: none; }
+body.mi .mi-hero-copy h1 { font-size: clamp(2.25rem, 3.9vw, 3.5rem); line-height: 1.2; margin-bottom: 14px; }
+body.mi .mi-sub { font-size: clamp(1.05rem, 1.35vw, 1.3rem); margin-bottom: 26px; }
+body.mi .mi-search { max-width: none; }
+body.mi .mi-search .form-control { height: 60px; font-size: 1.05rem; }
+body.mi .mi-search .btn-lime { min-width: 120px; font-size: 1.05rem; }
+body.mi .mi-chips { font-size: 15px; }
+body.mi .mi-chips a { padding: 5px 16px; font-size: 14px; }
+body.mi .mi-data-note { font-size: 13px; max-width: none; }
+body.mi .mi-hero-art { display: flex; align-items: center; justify-content: center; padding: 0; }
+body.mi .mi-hero-art img { display: block; width: 100%; max-width: 100%; height: auto; margin: 0; filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .55)); }
+html.motion-full body.mi .mi-hero-art img { animation: miFloat 9s ease-in-out infinite; }
+@media (max-width: 991.98px) { body.mi .mi-hero-art img { width: 100%; margin: 0; } }
+
+/* section rhythm */
+body.mi .mi-block { padding: clamp(28px, 4vw, 44px) 0; }
+body.mi .mi-head { margin-bottom: 24px; }
+body.mi .mi-head h2 { font-size: clamp(1.5rem, 2.1vw, 1.9rem); }
+body.mi .mi-head > a { font-size: 15px; }
+body.mi .mi-slash { width: 20px; height: 26px; }
+
+/* categories: artwork dominates the card */
+body.mi .mi-cat { min-height: 0; padding: 0; overflow: hidden; border-radius: var(--mi-r); background: var(--mi-card); }
+body.mi .mi-cat-art { display: grid; place-items: center; height: clamp(120px, 10vw, 156px); margin: 0; border-radius: 0; background: radial-gradient(ellipse 70% 80% at 50% 85%, rgba(212, 241, 57, .22), transparent 72%), #0e1311; overflow: hidden; }
+body.mi .mi-cat-art .mi-art-img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.16, .84, .24, 1); }
+body.mi .mi-cat-art .mi-art-ssd { width: auto; height: 100%; object-fit: contain; }
+body.mi .mi-cat-art svg { max-width: 62%; max-height: 80%; filter: drop-shadow(0 10px 18px rgba(212, 241, 57, .25)); transition: transform .6s cubic-bezier(.16, .84, .24, 1); }
+body.mi .mi-cat:hover .mi-art-img, body.mi .mi-cat:hover .mi-cat-art svg { transform: scale(1.07); }
+body.mi .mi-cat-art > i { font-size: 52px; }
+body.mi .mi-cat strong { display: block; padding: 14px 18px 0; font-size: 1.15rem; line-height: 1.3; }
+body.mi .mi-cat small { padding: 2px 18px 18px; font-size: 14px; }
+body.mi .mi-go { right: 14px; bottom: 16px; width: 30px; height: 30px; font-size: 12px; background: rgba(212, 241, 57, .08); }
+
+/* benefits */
+body.mi .mi-why { align-items: center; gap: 18px; padding: 24px; border-radius: var(--mi-r); background: var(--mi-card); }
+body.mi .mi-why-ico { width: 60px; height: 60px; border-radius: 16px; font-size: 26px; background: linear-gradient(145deg, rgba(212, 241, 57, .2), rgba(212, 241, 57, .05)); border: 1px solid rgba(212, 241, 57, .3); }
+body.mi .mi-why h3 { margin-bottom: 6px; font-size: 1.15rem; }
+body.mi .mi-why p { font-size: 15px; line-height: 1.65; }
+
+/* featured product cards: media first, five per row on wide screens */
+body.mi .mi-product-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; border-radius: var(--mi-r); background: var(--mi-card); }
+body.mi .mi-product-card > :not(.pc-art) { margin-left: 18px; margin-right: 18px; }
+body.mi .pc-art { position: relative; height: clamp(150px, 12vw, 190px); margin: 0; border-radius: 0; background: radial-gradient(ellipse 70% 80% at 50% 90%, rgba(212, 241, 57, .24), transparent 72%), #0e1311; overflow: hidden; }
+body.mi .pc-art .mi-art-img { width: 100%; height: 100%; object-fit: cover; }
+body.mi .pc-art .mi-art-ssd { width: auto; height: 88%; object-fit: contain; }
+body.mi .pc-art svg { max-width: 58%; max-height: 74%; filter: drop-shadow(0 12px 22px rgba(212, 241, 57, .28)); }
+body.mi .pc-badge { position: absolute; top: 12px; left: 12px; padding: 3px 12px; border-radius: 999px; background: rgba(13, 17, 16, .82); border: 1px solid var(--mb-line); color: var(--mb-soft); font-size: 12px; font-weight: 600; }
+body.mi .pc-badge.on { background: var(--mi-lime); border-color: var(--mi-lime); color: var(--mb-on-accent); }
+body.mi .product-card-meta { margin-top: 16px; display: flex; justify-content: space-between; color: var(--mb-muted); font-size: 13px; }
+body.mi .mi-product-card h3 { margin-top: 6px; font-size: 1.1rem; line-height: 1.4; min-height: 2.8em; }
+body.mi .mi-product-card .product-spec { font-size: 14px; line-height: 1.6; color: var(--mb-soft); }
+body.mi .mi-product-card .compact-status { margin-bottom: 14px; font-size: 14px; color: var(--mb-muted); }
+body.mi .product-card-action { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: auto; margin-bottom: 18px; padding: 10px 14px; border: 1px solid rgba(212, 241, 57, .5); border-radius: 12px; color: var(--mi-lime); font-weight: 700; font-size: 15px; transition: background .25s, color .25s; }
+body.mi .mi-product-card:hover .product-card-action { background: var(--mi-lime); color: var(--mb-on-accent); }
+body.mi .mi-tabs button { padding: 6px 18px; font-size: 14px; }
+
+/* how it works: numbered steps joined by arrows */
+body.mi .mi-steps { padding-top: 14px; }
+body.mi .mi-step { gap: 16px; padding: 22px; border-radius: var(--mi-r); background: var(--mi-card); }
+body.mi .mi-step b { position: absolute; top: -12px; left: 18px; width: 30px; height: 30px; font-size: 15px; box-shadow: 0 0 0 4px var(--mb-bg); }
+body.mi .mi-step > i { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 14px; background: rgba(212, 241, 57, .1); font-size: 24px; }
+body.mi .mi-step h3 { font-size: 1.1rem; }
+body.mi .mi-step p { font-size: 14.5px; }
+@media (min-width: 1200px) {
+    body.mi .mi-steps > [class*="col-"]:not(:last-child) .mi-step::after { content: "\f054"; font-family: "Font Awesome 5 Free"; font-weight: 900; position: absolute; right: -22px; top: 50%; translate: 0 -50%; z-index: 1; display: grid; place-items: center; width: 20px; height: 20px; color: var(--mi-lime); font-size: 14px; }
+}
+
+/* metrics */
+body.mi .mi-metrics { padding: 32px clamp(20px, 3vw, 40px); border-radius: 20px; background: radial-gradient(ellipse 50% 120% at 0% 0%, rgba(212, 241, 57, .1), transparent 60%), var(--mi-card); }
+body.mi .mi-metrics .row > [class*="col-"] + [class*="col-"] { border-left: 1px solid var(--mb-line); }
+@media (max-width: 767.98px) { body.mi .mi-metrics .row > [class*="col-"] + [class*="col-"] { border-left: 0; } body.mi .mi-metrics .row > [class*="col-"] { margin-bottom: 20px; } }
+body.mi .mi-metrics b { font-size: clamp(2.4rem, 4.4vw, 3.8rem); }
+body.mi .mi-metrics span { font-size: 15px; }
+
+/* CTA */
+body.mi .mi-cta { position: relative; flex-wrap: nowrap; gap: 32px; padding: clamp(24px, 3vw, 40px) clamp(24px, 4vw, 56px); border-radius: 24px; background: radial-gradient(ellipse 50% 140% at 100% 50%, rgba(212, 241, 57, .22), transparent 65%), linear-gradient(110deg, #1d2810 0, #10150f 55%, #0e1210 100%); }
+body.mi .mi-cta-art { order: 3; width: clamp(240px, 26vw, 380px); margin: -24px -20px -24px 0; filter: none; }
+body.mi .mi-cta-art img { display: block; width: 100%; height: auto; }
+body.mi .mi-cta-copy { order: 1; flex: 1 1 360px; }
+body.mi .mi-cta-act { order: 2; flex-direction: column; }
+body.mi .mi-cta-copy h2 { font-size: clamp(1.6rem, 2.8vw, 2.5rem); }
+body.mi .mi-cta-copy p { font-size: 1.05rem; max-width: 34rem; }
+@media (max-width: 991.98px) { body.mi .mi-cta { flex-wrap: wrap; } body.mi .mi-cta-art { order: 0; width: 220px; margin: 0; } body.mi .mi-cta-act { flex-direction: row; } }
+
+/* footer */
+body.mi .site-footer { padding: 56px 0 24px; margin-top: 24px; }
+body.mi .site-footer .mi-logo { height: 48px; margin-bottom: 4px; }
+body.mi .site-footer p { max-width: 28rem; font-size: 15px; line-height: 1.7; }
+body.mi .site-footer h4 { font-size: 15px; margin-bottom: 16px; }
+body.mi .footer-links a { font-size: 15px; }
+body.mi .footer-links li { margin-bottom: 10px; }
+body.mi .footer-copy { margin-top: 12px; }
+
+/* header balance with the wider grid */
+body.mi .mi-logo { height: 44px; }
+body.mi .navbar-nav .nav-link { padding: 8px 18px; font-size: 16px; }
+@media (max-width: 575.98px) { body.mi .mi-logo { height: 34px; } body.mi .mi-hero-copy h1 { font-size: 2rem; } }
+body.mi .product-card-action::after { content: none; }
+body.mi .site-footer .footer-grid { display: flex; grid-template-columns: none; gap: 0; }
+body.mi .site-footer .footer-links { display: block; }
+body.mi .site-footer .footer-links a { text-decoration: none; white-space: nowrap; }
+body.mi .site-footer .footer-links li { display: block; }
