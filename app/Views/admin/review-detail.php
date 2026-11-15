@@ -34,7 +34,7 @@ $categoryIcon = function (string $category): string {
         'ram' => 'fa-memory',
         'storage' => 'fa-hdd',
         'psu' => 'fa-plug',
-        'cooling' => 'fa-fan',
+        'cooling' => 'fa-snowflake',
         default => 'fa-cube',
     };
 };
@@ -93,7 +93,7 @@ $categoryIcon = function (string $category): string {
         'ram' => 'fa-memory',
         'storage' => 'fa-hdd',
         'psu' => 'fa-plug',
-        'cooling' => 'fa-fan',
+        'cooling' => 'fa-snowflake',
         default => 'fa-cube',
     };
 };

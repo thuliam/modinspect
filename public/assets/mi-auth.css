@@ -1,16 +1,11 @@
-/* Login page in the CI look (Phase C7). Loaded after admin.css; scoped to body.mi-auth-body so Admin pages are untouched. */
-body.mi-auth-body { background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(187, 242, 70, .1), transparent 70%), var(--ci-canvas); color: var(--ci-text-2); font-family: var(--ci-font); min-height: 100vh; }
-body.mi-auth-body .mi-auth-card { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-lg); box-shadow: var(--ci-bloom); overflow: hidden; }
-body.mi-auth-body .mi-auth-card .card-header, body.mi-auth-body .mi-auth-card .card-footer { background: transparent !important; border-color: var(--ci-border); }
-body.mi-auth-body .mi-auth-logo { display: block; width: auto; height: 44px; margin: 4px auto 14px; }
-body.mi-auth-body .mi-auth-card h1 { color: var(--ci-text); font-family: var(--ci-font); font-size: 22px; line-height: 28px; font-weight: 700; margin-bottom: 4px; }
-body.mi-auth-body .mi-auth-card p { color: var(--ci-text-2); font-size: 14px; line-height: 20px; margin: 0; }
-body.mi-auth-body label { color: var(--ci-text-2); font-size: 14px; font-weight: 600; }
-body.mi-auth-body .form-control { background: var(--ci-search); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text); }
-body.mi-auth-body .form-control:focus { background: var(--ci-search); border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); color: var(--ci-text); }
-body.mi-auth-body .btn-primary { background: var(--ci-primary); border: 1px solid var(--ci-primary); border-radius: var(--ci-r-md); color: var(--ci-on-primary); font-weight: 700; }
-body.mi-auth-body .btn-primary:hover { background: var(--ci-primary); color: var(--ci-on-primary); box-shadow: var(--ci-btn-glow); }
-body.mi-auth-body .btn-primary:focus, body.mi-auth-body .btn-primary:focus-visible { box-shadow: 0 0 0 2px var(--ci-canvas), 0 0 0 4px var(--ci-primary); }
-body.mi-auth-body .alert-danger { background: rgba(239, 68, 68, .1); border: 1px solid rgba(239, 68, 68, .5); border-radius: var(--ci-r-md); color: var(--ci-text); }
-body.mi-auth-body a { color: var(--ci-primary); }
-body.mi-auth-body a:hover { color: var(--ci-primary); text-decoration: underline; text-underline-offset: 4px; }
+/* Login page: same tokens, card and button look as the Admin (mi-dropx.css supplies them through body.mi-admin-body).
+   Only page layout is defined here. */
+body.mi-auth-body { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+body.mi-auth-body .mi-auth-container { width: 100%; max-width: 420px; margin: 0; padding: 0; }
+body.mi-auth-body .mi-auth-card .card-header, body.mi-auth-body .mi-auth-card .card-footer { background: transparent !important; border-color: var(--ci-border); padding: 24px; }
+body.mi-auth-body .mi-auth-card .card-body { padding: 8px 24px 24px; }
+body.mi-auth-body .mi-auth-card h1 { font-size: 20px; font-weight: 600; margin: 12px 0 4px; color: var(--ci-text); }
+body.mi-auth-body .mi-auth-card p { color: var(--ci-text-2); font-size: 14px; margin: 0; }
+body.mi-auth-body .mi-auth-card label { display: block; font-size: 13px; font-weight: 600; color: var(--ci-text-2); margin-bottom: 6px; }
+body.mi-auth-body .mi-auth-card .dx-mark { width: 40px; height: 40px; font-size: 18px; border-radius: 10px; }
+body.mi-auth-body .mi-auth-card a { color: var(--ci-primary); }

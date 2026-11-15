@@ -36,7 +36,7 @@ $groups = [
         ['label' => 'Price Index', 'icon' => 'fa-tags', 'href' => '/admin/price-indices', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-indices']],
     ],
     'COLLECTION' => [
-        ['label' => 'Sources', 'icon' => 'fa-broadcast-tower', 'href' => '/admin/sources', 'permission' => 'sources.view', 'paths' => ['/admin/sources']],
+        ['label' => 'Sources', 'icon' => 'fa-rss', 'href' => '/admin/sources', 'permission' => 'sources.view', 'paths' => ['/admin/sources']],
         ['label' => 'Imports', 'icon' => 'fa-download', 'href' => '/admin/collector-jobs', 'permission' => 'collection.jobs.view', 'paths' => ['/admin/collector-jobs']],
     ],
     'CONTENT' => [

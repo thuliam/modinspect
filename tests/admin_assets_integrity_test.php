@@ -49,7 +49,11 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/
     if (!$viewFile->isFile() || $viewFile->getExtension() !== 'php') {
         continue;
     }
-    if (preg_match_all('/\bfa[sbrl]?\s+(fa-[a-z0-9-]+)/', (string)file_get_contents($viewFile->getPathname()), $icons)) {
+    // icons named as data (e.g. the admin sidebar array 'icon' => 'fa-rss') as well as in class attributes
+    $source = (string)file_get_contents($viewFile->getPathname());
+    preg_match_all('/\bfa[sbrl]?\s+(fa-[a-z0-9-]+)|\'icon\'\s*=>\s*\'(fa-[a-z0-9-]+)\'/', $source, $iconMatches, PREG_SET_ORDER);
+    $icons = [1 => array_values(array_filter(array_map(static fn($m) => $m[2] ?? $m[1] ?? '', $iconMatches)))];
+    if ($icons[1]) {
         foreach (array_unique($icons[1]) as $icon) {
             if (!preg_match('/\.' . preg_quote($icon, '/') . '[\s,{:]/', $faCss)) {
                 $missingIcons[$icon] = basename($viewFile->getPathname());

@@ -33,6 +33,7 @@ require_once ROOT_PATH . '/app/Views/components/hw-art.php';
 <script>(function(){var d=document.documentElement,q=matchMedia("(prefers-reduced-motion: reduce)").matches?"calm":"full",m=q;try{var s=localStorage.getItem("mi-motion");if(s==="full"||s==="calm"){m=s}}catch(e){}d.classList.add("js","motion-"+m)})()</script>
 </head>
 <body class="mb mi<?= $relativePath === '/' ? ' is-home' : '' ?>">
+<a class="sr-only sr-only-focusable mi-skip" href="#main">ข้ามไปยังเนื้อหา</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
     <linearGradient id="miLime" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6ff6a"/><stop offset="1" stop-color="#9dbd1a"/></linearGradient>
     <linearGradient id="miMetal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b4440"/><stop offset="1" stop-color="#171c1a"/></linearGradient>
@@ -66,4 +67,4 @@ require_once ROOT_PATH . '/app/Views/components/hw-art.php';
         </div>
     </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">

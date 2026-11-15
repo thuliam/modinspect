@@ -390,7 +390,7 @@ body.mi .pc-badge.on, body.mi .mi-gallery-badge { background: rgba(34, 197, 94, 
 body.mi .confidence-badge, body.mi .price-status-badge { display: inline-block; padding: 2px 10px; border-radius: var(--ci-r-pill); border: 1px solid var(--ci-border-active); background: var(--ci-elevated); color: var(--ci-text-2); text-transform: uppercase; }
 body.mi .confidence-badge.confidence-high { background: rgba(34, 197, 94, .15); border-color: var(--ci-verified); color: var(--ci-verified); }
 body.mi .confidence-badge.confidence-medium { background: rgba(250, 204, 21, .12); border-color: var(--ci-gold); color: var(--ci-gold); }
-body.mi .confidence-badge.confidence-low { background: rgba(239, 68, 68, .12); border-color: var(--ci-danger); color: var(--ci-danger); }
+body.mi .confidence-badge.confidence-low { background: rgba(239, 68, 68, .12); border-color: var(--ci-danger); color: #f87171; }
 
 /* ---- search and form controls ---- */
 body.mi .mi-search .input-group { background: var(--ci-search); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); box-shadow: none; overflow: hidden; transition: border-color .2s, box-shadow .2s; }
@@ -590,20 +590,20 @@ body.mi .mi-trend-canvas { position: relative; height: 260px; }
 body.mi .mi-trend-table { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
 body.mi .mi-trend-table li { display: grid; grid-template-columns: 72px 96px 1fr; gap: 12px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--ci-border); font-size: .9rem; }
 body.mi .mi-trend-table b { font-variant-numeric: tabular-nums; color: var(--ci-text); }
-body.mi .mi-trend-table em { font-style: normal; color: var(--ci-text-3, #8b93a7); }
+body.mi .mi-trend-table em { font-style: normal; color: var(--ci-text-2); }
 body.mi .mi-trend-note { margin: 12px 0 0; color: var(--ci-text-2); font-size: .88rem; }
 body.mi .mi-similar { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 body.mi .mi-similar li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 14px; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); }
 body.mi .mi-similar a { display: grid; gap: 2px; color: var(--ci-text); text-decoration: none; min-width: 0; }
 body.mi .mi-similar a:hover .mi-similar-name { color: var(--ci-primary); }
 body.mi .mi-similar-name { font-weight: 600; overflow-wrap: anywhere; }
-body.mi .mi-similar-why { color: var(--ci-text-3, #8b93a7); font-size: .82rem; }
+body.mi .mi-similar-why { color: var(--ci-text-2); font-size: .82rem; }
 body.mi .mi-similar-price { display: grid; text-align: right; font-variant-numeric: tabular-nums; }
 body.mi .mi-similar-price small.up { color: #ffb86b; }
 body.mi .mi-similar-price small.down { color: var(--ci-primary); }
 body.mi .mi-deal-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 0; }
 body.mi .mi-deal-facts div { display: grid; gap: 2px; }
-body.mi .mi-deal-facts dt { color: var(--ci-text-3, #8b93a7); font-weight: 400; font-size: .82rem; }
+body.mi .mi-deal-facts dt { color: var(--ci-text-2); font-weight: 400; font-size: .82rem; }
 body.mi .mi-deal-facts dd { margin: 0; font-weight: 600; }
 @media (max-width: 575px) { body.mi .mi-trend-table li { grid-template-columns: 64px 84px 1fr; gap: 8px; font-size: .84rem; } }
 
@@ -618,3 +618,5 @@ body.mi .mi-detail-single .mi-context-list { display: grid; grid-template-column
 body.mi .pc-art-type { align-content: center; justify-items: center; gap: 4px; text-align: center; padding: 28px 16px 8px; }
 body.mi .pc-art-type .pc-art-cat { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ci-text-2); }
 body.mi .pc-art-type strong { font-size: 1.35rem; line-height: 1.2; color: var(--ci-text); overflow-wrap: anywhere; }
+body.mi .mi-skip:focus { position: fixed; top: 8px; left: 8px; z-index: 2000; padding: 8px 16px; border-radius: var(--ci-r-md); background: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi main:focus { outline: 0; }

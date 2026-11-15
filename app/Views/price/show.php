@@ -125,7 +125,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                     <?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?>
                 </span>
                 <p><?= htmlspecialchars(mi_public_confidence_reason($confidence)) ?></p>
-                <p class="small text-muted">ราคานี้มาจากราคาประกาศมือสองที่ผ่านการตรวจสอบ ไม่ใช่ราคาปิดดีลจริง และอาจต่างตามสภาพ ประกัน อุปกรณ์ และบริการของผู้ขาย</p>
+                <p class="mi-trend-note">ราคานี้มาจากราคาประกาศมือสองที่ผ่านการตรวจสอบ ไม่ใช่ราคาปิดดีลจริง และอาจต่างตามสภาพ ประกัน อุปกรณ์ และบริการของผู้ขาย</p>
                 <dl class="mi-context-list">
                     <div><dt>จำนวนตัวอย่าง</dt><dd><?= (int) $product['valid_sample_size'] ?> รายการ</dd></div>
                     <div><dt>ข้อมูลล่าสุด</dt><dd><?= htmlspecialchars($product['last_calculated_at'] ?? '-') ?></dd></div>
