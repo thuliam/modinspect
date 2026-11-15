@@ -18,8 +18,11 @@
                 <div class="alert"><?= htmlspecialchars($error) ?></div>
             <?php endforeach; ?>
 
-            <label for="deal-product">สินค้า</label>
-            <select id="deal-product" name="product_id" required>
+            <div class="mi-field">
+
+                <label for="deal-product">สินค้า</label>
+
+                <select id="deal-product" name="product_id" required>
                 <option value="">เลือกรุ่นสินค้า</option>
                 <?php foreach ($products as $p): ?>
                     <option value="<?= (int) $p['id'] ?>" <?= (string) ($_GET['product'] ?? '') === (string) $p['id'] ? 'selected' : '' ?>>
@@ -28,8 +31,13 @@
                 <?php endforeach; ?>
             </select>
 
-            <label for="deal-price">ราคาที่พบ (บาท)</label>
-            <input id="deal-price" type="number" name="user_price" min="1" max="10000000" step="1" value="<?= htmlspecialchars((string) ($_GET['user_price'] ?? '')) ?>" placeholder="เช่น 7900" required>
+            </div>
+
+                        <div class="mi-field">
+                <label for="deal-price">ราคาที่พบ (บาท)</label>
+                <input id="deal-price" type="number" name="user_price" min="1" max="10000000" step="1" value="<?= htmlspecialchars((string) ($_GET['user_price'] ?? '')) ?>" placeholder="เช่น 7900" required>
+                <small class="mi-hint">ใส่ราคาที่ผู้ขายประกาศ ไม่ใช่ราคาที่ตกลงกันแล้ว</small>
+            </div>
 
             <div class="two">
                 <div>
@@ -50,9 +58,11 @@
 
             <fieldset class="mi-check-fieldset">
                 <legend>หลักฐานและอุปกรณ์ที่มี</legend>
+                <div class="mi-checks">
                 <label class="check"><input type="checkbox" name="has_box"> มีกล่อง</label>
                 <label class="check"><input type="checkbox" name="has_receipt"> มีใบเสร็จ</label>
                 <label class="check"><input type="checkbox" name="has_benchmark"> มีผลทดสอบ</label>
+                </div>
             </fieldset>
 
             <label class="check consent-row">
@@ -60,7 +70,7 @@
                 ยินยอมให้นำข้อมูลที่ไม่ระบุตัวตนไปปรับปรุงดัชนีราคา
             </label>
 
-            <button type="submit">ประเมินตำแหน่งราคา</button>
+            <button type="submit" class="mi-submit">ประเมินตำแหน่งราคา</button>
         </form>
 
         <aside class="mi-deal-help">
@@ -70,7 +80,7 @@
                     <li>ต่ำกว่าช่วงราคาที่พบ</li>
                     <li>อยู่ในช่วงตลาด</li>
                     <li>สูงกว่าช่วงที่พบเล็กน้อย</li>
-                    <li>Premium asking price</li>
+                    <li>ตั้งราคาสูงกว่าช่วงตลาดมาก</li>
                     <li>ข้อมูลไม่เพียงพอ</li>
                 </ul>
             </div>

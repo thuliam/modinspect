@@ -29,7 +29,7 @@ if (!is_file($in)) { fwrite(STDERR, "Input not found: $in\n"); exit(2); }
 $fh = fopen($in, 'rb');
 $header = fgetcsv($fh, 0, ',', '"', '');
 $header[0] = ltrim((string)$header[0], "\xEF\xBB\xBF");
-$records = []; $skipped = [];
+$records = []; $skipped = []; $seen = [];
 $skip = static function (string $why) use (&$skipped) { $skipped[$why] = ($skipped[$why] ?? 0) + 1; };
 while (($cells = fgetcsv($fh, 0, ',', '"', '')) !== false) {
     if (count($cells) < count($header)) { $cells = array_pad($cells, count($header), ''); }
@@ -44,6 +44,10 @@ while (($cells = fgetcsv($fh, 0, ',', '"', '')) !== false) {
     if (!in_array(($r['enrichment_status'] ?? ''), ['complete', 'partial', 'not_applicable', ''], true)) { $skip('enrichment_' . $r['enrichment_status']); continue; }
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)($r['note_date'] ?? ''))) { $skip('no_date'); continue; }
     $title = trim((string)$r['title']);
+    // reposts: the same text and price must count once, otherwise one seller inflates the sample
+    $dupKey = md5(mb_strtolower(preg_replace('/\s+/u', '', $title)) . '|' . (int)$r['asking_price_thb']);
+    if (isset($seen[$dupKey])) { $skip('repost_duplicate'); continue; }
+    $seen[$dupKey] = true;
     $records[] = [
         'source_label' => 'owner_collected_facebook_text',
         'provenance_grade' => 'OWNER_TEXT_NO_URL',

@@ -513,3 +513,48 @@ body.mi .mi-brand-tile .mi-brand-logo img { max-width: 110px; }
 body.mi .mi-brands-block .mi-note { margin-top: 14px; }
 body.mi .mi-brand-logo.is-dark { background: #000; }
 body.mi .mi-grade-note { margin: 12px 0 0; padding: 10px 14px; background: rgba(250, 204, 21, .08); border: 1px solid rgba(250, 204, 21, .45); border-radius: var(--ci-r-md); color: var(--ci-text); font-size: 14px; line-height: 20px; } body.mi .mi-grade-note i { color: var(--ci-gold); margin-right: 6px; }
+
+/* ---- Deal Checker: form and result (UX pass) ---- */
+body.mi .mi-deal-layout { grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 24px; }
+@media (max-width: 991.98px) { body.mi .mi-deal-layout { grid-template-columns: 1fr; } }
+body.mi .mi-deal-form { display: grid; gap: 20px; padding: 28px; }
+body.mi .mi-deal-form .mi-field, body.mi .mi-deal-form .two > div { display: grid; gap: 8px; }
+body.mi .mi-deal-form .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 575.98px) { body.mi .mi-deal-form .two { grid-template-columns: 1fr; } }
+body.mi .mi-deal-form label { margin: 0; color: var(--ci-text); font-size: 14px; font-weight: 600; }
+body.mi .mi-deal-form select, body.mi .mi-deal-form input[type=number], body.mi .mi-deal-form input[type=text] { width: 100%; min-height: 48px; padding: 0 14px; }
+body.mi .mi-hint { color: var(--ci-text-2); font-size: 13px; line-height: 18px; }
+body.mi .mi-check-fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+body.mi .mi-check-fieldset legend { width: auto; margin: 0 0 10px; padding: 0; color: var(--ci-text); font-size: 14px; line-height: 20px; font-weight: 600; }
+body.mi .mi-checks { display: flex; flex-wrap: wrap; gap: 10px; }
+body.mi .mi-checks .check, body.mi .consent-row { display: inline-flex; align-items: center; gap: 10px; margin: 0; min-height: 44px; padding: 0 16px; background: var(--ci-elevated); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text); font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color .2s; }
+body.mi .mi-checks .check:hover, body.mi .consent-row:hover { border-color: var(--ci-border-active); }
+body.mi .mi-checks .check:has(input:checked), body.mi .consent-row:has(input:checked) { border-color: var(--ci-primary); }
+body.mi .mi-checks .check input, body.mi .consent-row input { width: 18px; height: 18px; margin: 0; flex: none; }
+body.mi .consent-row { display: flex; padding: 12px 16px; line-height: 20px; color: var(--ci-text-2); }
+body.mi .mi-submit { width: 100%; min-height: 52px; font-size: 16px; }
+body.mi .mi-deal-help { display: grid; gap: 16px; }
+body.mi .mi-deal-help .card { padding: 20px 22px; }
+body.mi .mi-deal-help h2 { margin: 0 0 10px; font-size: 18px; line-height: 24px; font-weight: 700; }
+body.mi .mi-deal-help ul { margin: 0; padding-left: 20px; color: var(--ci-text-2); font-size: 14px; line-height: 24px; }
+body.mi .mi-deal-help p { margin: 0; color: var(--ci-text-2); font-size: 14px; line-height: 22px; }
+/* result */
+body.mi .mi-result-panel { max-width: none; margin: 0; padding: 28px; text-align: left; display: grid; gap: 20px; }
+body.mi .mi-result-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+body.mi .mi-result-kicker { display: block; color: var(--ci-text-2); font-size: 13px; line-height: 18px; }
+body.mi .mi-result-panel .big-price { margin: 4px 0 0; font-size: 48px; line-height: 56px; font-weight: 800; color: var(--ci-text); font-variant-numeric: tabular-nums; }
+body.mi .mi-verdict { display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: var(--ci-r-pill); border: 1px solid var(--ci-border-active); background: var(--ci-elevated); color: var(--ci-text-2); font-size: 14px; font-weight: 700; }
+body.mi .mi-verdict-ok { background: rgba(34, 197, 94, .15); border-color: var(--ci-verified); color: var(--ci-verified); }
+body.mi .mi-verdict-warn { background: rgba(250, 204, 21, .12); border-color: var(--ci-gold); color: var(--ci-gold); }
+body.mi .mi-verdict-bad { background: rgba(239, 68, 68, .12); border-color: var(--ci-danger); color: var(--ci-danger); }
+body.mi .mi-result-text { margin: 0; color: var(--ci-text); font-size: 16px; line-height: 26px; }
+body.mi .mi-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 575.98px) { body.mi .mi-compare { grid-template-columns: 1fr; } }
+body.mi .mi-compare > div { padding: 16px 18px; background: var(--ci-elevated); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); }
+body.mi .mi-compare span { display: block; color: var(--ci-text-2); font-size: 13px; }
+body.mi .mi-compare b { display: block; margin-top: 4px; color: var(--ci-primary); font-size: 22px; line-height: 28px; font-weight: 800; font-variant-numeric: tabular-nums; }
+body.mi .mi-result-empty { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; background: var(--ci-elevated); border: 1px dashed var(--ci-border-active); border-radius: var(--ci-r-md); }
+body.mi .mi-result-empty > i { color: var(--ci-gold); font-size: 20px; margin-top: 2px; }
+body.mi .mi-result-empty strong { display: block; color: var(--ci-text); font-size: 16px; line-height: 24px; }
+body.mi .mi-result-empty span { display: block; margin-top: 4px; color: var(--ci-text-2); font-size: 14px; line-height: 22px; }
+body.mi .mi-result-panel .mi-actions { display: flex; flex-wrap: wrap; gap: 12px; }
