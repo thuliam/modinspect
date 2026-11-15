@@ -46,6 +46,8 @@ Dated, short, with consequences. Owner-level decisions are marked **OWNER**. ADR
 
 | DL-034 | Module A/B of the overnight run (owner: bundle into big modules, no per-step commits) | A: dead-CSS pruning with a verified zero-diff method; `app.css` stays (cannot be removed without a public rebuild). B: search UX (priced count, chips keep the query, popular suggestions on empty results). Earlier in the run: admin sweep fixes, login restyle, AA contrast, icon guard (board C-1..C-3). | Owner |
 
+| DL-035 | Claude took over the Codex lane (owner, 2026-11-16); LS-1 data/backend/test tasks D-1..D-8 done | New: cross-batch duplicate filter for owner-intake files (row ids are per extraction, so id checks miss repeats), province repost marker + report (migration 017), per-snapshot evidence report and admin page, golden resolver test (19 cases), migration/dump drift guard, Thai spec summaries (migration 018, 81 rows), calibration report with fixture and live apart. Findings: the new extraction contributes 0 new CPU/GPU listings (nothing imported); repost rate 31.7% overall and 55.5% for Nonthaburi, so the province log is skewed by repeated posts; live green precision (99.72%) is not independent review evidence. DEV writes: migrations 017 and 018, repost marker on 682 log rows. | Owner |
+
 
 ## Reconcile plan for branches (OWNER decision)
 

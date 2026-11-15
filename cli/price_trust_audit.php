@@ -26,6 +26,7 @@ $snapshots = new PriceSnapshotService();
 
 $isMock = static fn(string $key, string $name, string $domain): bool => (bool)preg_match('/mock|fixture|test/i', $key . ' ' . $name) || str_starts_with(strtolower($domain), 'mock.');
 
+$sourceKeys = [];
 $rows = []; $findings = []; $summary = ['public_priced' => 0, 'p0' => 0, 'p1' => 0, 'replay_match' => 0, 'single_source' => 0, 'owner_text_only' => 0, 'multi_source' => 0];
 
 foreach ((new Product())->search() as $p) {
@@ -52,6 +53,7 @@ foreach ((new Product())->search() as $p) {
     $sources = []; $ownerText = 0; $mock = 0; $notApproved = 0; $badType = 0;
     foreach ($members as $o) {
         $sources[$o['source_id'] ?? 'none'] = true;
+        $sk = (string)($o['source_key'] !== '' ? $o['source_key'] : 'unknown'); $sourceKeys[$sk] = ($sourceKeys[$sk] ?? 0) + 1;
         if (str_starts_with(strtolower($o['source_key']), 'offline_owner_text_')) { $ownerText++; }
         if ($isMock($o['source_key'], $o['source_name'], $o['domain'])) { $mock++; }
         if ($o['verified_status'] !== 'approved') { $notApproved++; }
@@ -72,7 +74,10 @@ foreach ((new Product())->search() as $p) {
     $rows[] = ['product' => $p['full_name'], 'snapshot' => (int)$s['id'], 'replay' => $replay, 'n' => $n, 'sources' => $distinct, 'owner_text' => $ownerText, 'fresh' => $fr, 'confidence' => $s['confidence_label'], 'method' => $s['confidence_method_version'], 'findings' => $f];
 }
 
-if ($json) { echo json_encode(['summary' => $summary, 'products' => $rows], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL; exit($summary['p0'] > 0 ? 1 : 0); }
+$dupRate = null;
+try { $dupRate = (new \App\Services\Admin\DuplicatePostReport())->build(); } catch (\Throwable $e) { $dupRate = null; }
+arsort($sourceKeys);
+if ($json) { echo json_encode(['summary' => $summary, 'sources' => $sourceKeys, 'duplicate_rate' => $dupRate ? ['overall' => $dupRate['overall'], 'provinces' => array_slice($dupRate['provinces'], 0, 10)] : null, 'products' => $rows], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . PHP_EOL; exit($summary['p0'] > 0 ? 1 : 0); }
 
 printf("%-36s %5s %-6s %4s %3s %4s %5s %-8s\n", 'product', 'snap', 'replay', 'n', 'src', 'txt', 'fresh', 'conf');
 foreach ($rows as $r) {
@@ -80,4 +85,6 @@ foreach ($rows as $r) {
     printf("%-36s %5d %-6s %4d %3d %4d %5.2f %-8s %s\n", mb_substr($r['product'], 0, 36), $r['snapshot'], $r['replay'], $r['n'], $r['sources'], $r['owner_text'], $r['fresh'], $r['confidence'], $r['findings'] ? '<< ' . implode('; ', array_map(static fn($x) => $x[0] . ' ' . $x[1], $r['findings'])) : '');
 }
 echo "\nSUMMARY " . json_encode($summary) . "\n";
+echo 'SOURCES ' . json_encode($sourceKeys) . "\n";
+if ($dupRate) { echo 'REPOST RATE (province log) ' . json_encode($dupRate['overall']) . "\n"; }
 exit($summary['p0'] > 0 ? 1 : 0);

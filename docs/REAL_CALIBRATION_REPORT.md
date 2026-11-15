@@ -477,3 +477,21 @@ Safety:
 - `php -l app\Views\admin\review.php`: pass.
 - `php cli\data_integrity_check.php`: `ok=true`, `problem_count=0`.
 - `php cli\auth_status.php`: zero users/admins, admin routes protected.
+
+## Update 2026-11-15 (LS-1 D-8): fixture metrics and live metrics kept apart
+
+Source: `php cli/price_confidence_report.php` and `php cli/review_calibration_report.php`, run once against the isolated TEST database and once read-only against the shared DEV database. Numbers below are copied from the command output.
+
+| | FIXTURE / TEST database (`modinspect_test`) | LIVE shared DEV (`thuliam_modinspect`) |
+|---|---:|---:|
+| Review calibration sample | 15 (all MOCK_TEST) | 560 (549 real-type, 11 mock/test) |
+| Pending / approved / excluded | 13 / 2 / 0 | 137 / 420 / 3 |
+| Decision rate | 13.33 % | 75.54 % |
+| Green-lane clean precision | not meaningful (0 reviewed) | 99.72 % (354 of 355 reviewed green records) |
+| Calibration status | MOCK_TEST | CALIBRATING |
+| Public snapshots reported by the confidence report | 0 | 20 listed (latest per product; confidence-v2) |
+
+How to read this, honestly:
+- The 99.72 % live "green precision" is **not** independent evidence of extraction quality. The 420 approvals were applied in bulk by `cli/owner_intake_approve.php` under the owner's instruction with a fixed outlier rule, not by a reviewer reading each row; `corrected_reviews` is 0 because nobody corrected anything. It measures that the rule approved what the lane called green, not that the listings are right.
+- Fixture metrics establish an engineering baseline only and never prove live-market quality (project rule). No threshold was changed.
+- Real calibration needs a human review of a sampled set of the live rows (owner gate G-4).

@@ -36,6 +36,9 @@ $report = json_decode(implode("\n", $out), true);
 assert_pt(is_array($report) && isset($report['summary']), 'price_trust_audit --json must return a summary');
 assert_pt($report['summary']['p0'] === 0 && $code === 0, 'price_trust_audit found a P0 on the test database');
 
+assert_pt(array_key_exists('sources', $report) && is_array($report['sources']), 'Audit JSON must carry per-source-key counts');
+assert_pt(array_key_exists('duplicate_rate', $report), 'Audit JSON must carry the repost rate key (null when the log is empty)');
+
 // Policy confidence-v2 (DL-033): evidence that is entirely owner-collected text can never exceed the 'low' band
 $svc = new \App\Services\Pricing\SnapshotConfidenceService();
 $today = date('Y-m-d');

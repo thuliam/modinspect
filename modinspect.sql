@@ -1874,6 +1874,9 @@ CREATE TABLE listing_location_log (
   asking_price_thb INT UNSIGNED NULL,
   source_label VARCHAR(80) NOT NULL DEFAULT 'owner_collected_facebook_text',
   recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  dedupe_key CHAR(12) NULL,
+  is_repost TINYINT(1) NOT NULL DEFAULT 0,
   UNIQUE KEY uq_location_row (row_ref),
-  INDEX idx_location_province (province)
+  INDEX idx_location_province (province),
+  INDEX idx_location_repost (province, is_repost)
 ) ENGINE=InnoDB;

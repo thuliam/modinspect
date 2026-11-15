@@ -53,6 +53,7 @@ $router->post('/admin/review-queue/decision',[AdminController::class,'reviewDeci
 $router->post('/admin/review-queue/correction',[AdminController::class,'reviewCorrection']);
 $router->get('/admin/price-indices',[AdminController::class,'indices']);
 $router->get('/admin/price-indices/data',[AdminController::class,'indicesData']);
+$router->get('/admin/snapshots/{id}',[AdminController::class,'snapshotEvidence']);
 $router->get('/admin/sources',[AdminController::class,'sources']);
 $router->get('/admin/sources/data',[AdminController::class,'sourcesData']);
 $router->post('/admin/sources/action',[AdminController::class,'sourceAction']);

@@ -41,16 +41,17 @@
             </div>
             <div class="table-responsive">
                 <table class="table table-hover mi-admin-table mb-0">
-                    <thead><tr><th>Province</th><th>Category</th><th class="text-right">Listings</th><th class="text-right">Median ask</th></tr></thead>
+                    <thead><tr><th>Province</th><th>Category</th><th class="text-right">Listings</th><th class="text-right">Median ask</th><th class="text-right">Repost rate</th></tr></thead>
                     <tbody>
-                    <?php foreach (array_slice($report['locations'], 0, 40) as $l): ?>
-                        <tr><td><?= htmlspecialchars($l['province']) ?></td><td><?= htmlspecialchars((string) $l['category']) ?></td><td class="text-right"><?= (int) $l['n'] ?></td><td class="text-right"><?= $l['median'] === null ? '<span class="text-muted">needs 3+</span>' : '฿' . number_format((float) $l['median']) ?></td></tr>
+                    <?php $repost = []; foreach (($dup['provinces'] ?? []) as $dp) { $repost[$dp['province']] = $dp['repost_rate']; } foreach (array_slice($report['locations'], 0, 40) as $l): ?>
+                        <tr><td><?= htmlspecialchars($l['province']) ?></td><td><?= htmlspecialchars((string) $l['category']) ?></td><td class="text-right"><?= (int) $l['n'] ?></td><td class="text-right"><?= $l['median'] === null ? '<span class="text-muted">needs 3+</span>' : '฿' . number_format((float) $l['median']) ?></td><td class="text-right"><?php $rr = $repost[$l['province']] ?? null; echo $rr === null ? '-' : '<span class="badge ' . ($rr >= 0.5 ? 'badge-warning' : 'badge-secondary') . '">' . number_format($rr * 100) . '%</span>'; ?></td></tr>
                     <?php endforeach; ?>
-                    <?php if (!$report['locations']): ?><tr><td colspan="4" class="text-muted">No location log yet. Import with <code>php cli/location_log_import.php --file=...</code>.</td></tr><?php endif; ?>
+                    <?php if (!$report['locations']): ?><tr><td colspan="5" class="text-muted">No location log yet. Import with <code>php cli/location_log_import.php --file=...</code>.</td></tr><?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+<?php if (!empty($dup['overall']['listings'])): ?><div class="notice mb-3">Repeated posts: <b><?= number_format($dup['overall']['repost_rate'] * 100) ?>%</b> of the <?= (int) $dup['overall']['listings'] ?> listings with a province are reposts of an earlier listing. A province with a high repost rate shows one poster, not a market pattern.</div><?php endif; ?>
 <div class="notice">Location is a context signal only. It never changes a price snapshot or confidence. Only the province is stored: no seller, shop, phone, district or address.</div>

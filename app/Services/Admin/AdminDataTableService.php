@@ -402,7 +402,8 @@ final class AdminDataTableService
             number_format((float)($row['fresh_sample_ratio'] ?? 0), 1) . '%',
             '<span class="badge badge-light">' . $this->h($row['provenance_status'] ?? 'legacy_unavailable') . '</span>',
             $this->h($row['last_calculated_at'] ?? '-'),
-            '<a class="btn btn-sm btn-outline-primary" href="' . $base . '/price/' . $this->h($row['slug'] ?? '') . '" target="_blank" rel="noopener">Public</a>',
+            '<a class="btn btn-sm btn-outline-primary" href="' . $base . '/price/' . $this->h($row['slug'] ?? '') . '" target="_blank" rel="noopener">Public</a>'
+                . ($hasSnapshot && !empty($row['snapshot_id']) ? ' <a class="btn btn-sm btn-outline-secondary" href="' . $base . '/admin/snapshots/' . (int)$row['snapshot_id'] . '">Evidence</a>' : ''),
         ];
     }
 

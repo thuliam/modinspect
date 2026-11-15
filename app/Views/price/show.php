@@ -69,6 +69,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <span class="eyebrow"><?= htmlspecialchars($product['category_name']) ?></span>
                 <h1><?= htmlspecialchars($product['full_name']) ?></h1>
                 <?php if (!empty($product['spec_summary'])): ?><p class="mi-product-spec"><?= htmlspecialchars($product['spec_summary']) ?></p><?php endif; ?>
+                <?php if (strtolower((string) ($product['brand_name'] ?? '')) === 'generic'): ?><p class="mi-trend-note">ราคานี้เป็นราคากลางของสเปกนี้ ไม่แยกยี่ห้อและรุ่นย่อย</p><?php endif; ?>
                 <?php if ($hasMarketSnapshot): ?>
                     <?php $rangeProduct = $product; $rangeSize = 'lg'; require ROOT_PATH . '/app/Views/components/range-answer.php'; ?>
                     <?php $eg = $evidence_grades ?? ['total' => 0, 'owner_text' => 0]; ?>

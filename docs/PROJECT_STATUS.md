@@ -898,3 +898,7 @@ CURRENT STATE (canonical; older sections above are history and some counts there
 - Admin: 14 pages swept light/dark/mobile, AA contrast fixes, icon guard extended, login restyled, skip link (board C-1..C-3).
 - Module A: CSS pruner + `app.css` -33% bytes, verified zero computed-style change. Module B: search UX polish. Full suite exit 0 (43 steps).
 - Not verified: live UAT Admin while signed in; Codex lane (D-1..D-8) not started as of this entry.
+
+## [2026-11-16] [AGENT: Claude] - LS-1 data lane takeover (DL-035)
+- D-1..D-8 done (see docs/SPRINT_BOARD.md for evidence). Full suite exit 0 (47 steps). New DEV state: migrations 017 and 018 applied; spec summaries Thai; repost marker on the 682 province rows. No observation was imported or approved (the new extraction has no new CPU/GPU listings).
+- Open: Admin on the live UAT server not re-checked (browser pane signed out); public pages on Bootstrap utilities still to do.
