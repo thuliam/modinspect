@@ -152,3 +152,8 @@ Progress, T1 only: earned weight 18 of 23 = 78.3 % AUTO (T1-6 now earned); OWNER
 weights in the master prompt (data 30, UX 20, workflow 15, intelligence 10, deal 10, release 15) differ from the earlier epic weights and no
 full criteria audit has been done under them. Dimensions: DATA = REAL_PENDING (88 REAL pending, 0 REAL approved) plus 420 owner-text approved (grade C, one source);
 RELEASE = NOT_READY (no staging; production not authorised).
+
+## Parallel work board (2026-11-15)
+
+The long sprint LS-1 is split between Claude (UI, browser verification) and Codex (data, backend, tests). Who does what, the file-ownership lock,
+status and evidence live in `docs/SPRINT_BOARD.md`; the copy-ready Codex prompt is `docs/CODEX_LS1_PROMPT.md`. This tracker keeps the sprint-level scorecard only.

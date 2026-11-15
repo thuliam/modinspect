@@ -11,6 +11,7 @@
 - **Data truth:** 420 approved observations, all owner text (grade C, one source); 88 REAL (Priceza) still pending, 0 approved; 46 recorded public snapshots, all low confidence after confidence-v2 (were 35 low / 11 medium), 41 legacy snapshots never public.
 - **Owner gates open:** T1-6 confidence policy for 100 % owner-text evidence; U2 visual acceptance of public pages and the new Admin; I3 provider/licence approval; G-4 review of REAL evidence; G-5 rotate credentials exposed in the raw LINE export; G-7 Font Awesome official download; PR #4 merge; any deploy.
 - **Update (later 2026-11-15):** owner chose option A. confidence-v2 (owner-text-only cap) is live, 11 DEV snapshots recalculated, U2 first slice delivered (DL-033). **Next:** owner visual review of public pages; then rest of U2 (708px, a11y/contrast, photos, home polish) or the options the owner picks.
+- **Parallel agents:** Long Sprint LS-1 is split between Claude and Codex: read `docs/SPRINT_BOARD.md` (lock, tasks, status) and, for Codex, `docs/CODEX_LS1_PROMPT.md`. Respect the file-ownership table.
 - **Safety:** no deploy, no spend, never print or commit the raw LINE export, no auto-approval of REAL observations.
 
 ## 0. READ THIS FIRST — current handoff (2026-11-14, Claude takeover)
