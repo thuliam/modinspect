@@ -40,7 +40,8 @@ $confidence = $manifest['confidence'] ?? [];
 <?php require_once ROOT_PATH . '/app/Views/components/hw-art.php'; ?>
 <article class="card product-card mi-product-card <?= $hasMarketSnapshot ? 'has-price' : 'no-price' ?><?= !empty($cardHorizontal) ? ' mi-card-wide' : '' ?>">
     <?php $photo = mi_product_photo($product, $base); ?>
-    <?php if (!empty($artType) || $photo): ?><div class="pc-art<?= $photo ? ' has-photo' : '' ?>"><?= $photo ?? mi_art_img($artType ?? 'ssd', $base) ?><span class="pc-badge <?= $hasMarketSnapshot ? 'on' : '' ?>"><?= $hasMarketSnapshot ? 'มีราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span></div><?php endif; ?>
+    <?php $badgeOn = $hasMarketSnapshot && in_array(strtolower((string) ($product['confidence_label'] ?? '')), ['medium', 'high'], true); // lime only when confidence supports it ?>
+    <?php if (!empty($artType) || $photo): ?><div class="pc-art<?= $photo ? ' has-photo' : ' pc-art-type' ?>"><?php if ($photo): ?><?= $photo ?><?php else: ?><span class="pc-art-cat"><?= htmlspecialchars($product['category_name'] ?? '') ?></span><strong><?= htmlspecialchars((string) ($product['model_name'] ?: $product['full_name'])) ?></strong><?php endif; ?><span class="pc-badge <?= $badgeOn ? 'on' : '' ?>"><?= $hasMarketSnapshot ? 'มีช่วงราคา' : 'ยังไม่มีราคาตลาด' ?></span></div><?php endif; ?>
     <div class="product-card-meta">
         <span><?= htmlspecialchars($product['category_name'] ?? 'Hardware') ?></span>
         <?= mi_brand_logo($product['brand_name'] ?? '', $base, 18) ?>

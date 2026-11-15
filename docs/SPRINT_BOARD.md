@@ -39,9 +39,9 @@ never "looks fine". Nothing is DONE without evidence.
 | C-1 | Admin: open every page and state on the live UAT server, fix mismatches with the DropX layout (Bootstrap first) | OWNER_WAIT | Needs the owner to sign in once in the app's browser pane (password never shared). Public pages already viewed on `192.168.1.10`. |
 | C-2 | Admin login page restyled to match the Admin shell | TODO | |
 | C-3 | Public pages at 708px; keyboard/focus and AA contrast audit with fixes | TODO | |
-| C-4 | Replace repeated generic category art on product cards with licensed photos where they exist, otherwise one clear category icon | TODO | Uses only assets already in the repo; no downloads |
-| C-5 | Thai/English consistency of spec text on cards and detail (display layer only) | TODO | Data-level fix is D-5 (Codex) |
-| C-6 | Mixed signals on cards (green "has market data" vs red "low confidence") reworded | TODO | |
+| C-4 | Replace repeated generic category art on product cards with licensed photos where they exist, otherwise a model-name tile (category + model in type) | DONE (Claude, 2026-11-15) | Viewed on the UAT server `/price?category=gpu`: 14 type tiles + 2 photos, no repeated artwork; full suite exit 0; no new assets |
+| C-5 | Thai/English consistency of spec text on cards and detail (display layer only) | BLOCKED (waits for D-5) | Cards no longer show spec text (U2 slice); detail page still shows the stored mixed-language text until D-5 cleans the data. No display-layer translation hack. |
+| C-6 | Mixed signals on cards (green "has market data" vs red "low confidence") reworded | DONE (Claude, 2026-11-15) | Badge now "มีช่วงราคา", lime only when confidence is medium/high (0 lime badges on the GPU list, all low); UAT screenshot; suite exit 0 |
 | C-7 | Remove `app.css` in verified slices (library-first) | TODO | Check all public pages before each deletion |
 | C-8 | Render Codex outputs: duplicate-post rate in `/admin/market-trends`, per-snapshot evidence view | TODO | Waits for D-2 and D-4 services |
 | C-9 | Merge `codex/ls1-data` into the checkpoint branch, full suite, final report | TODO | At sprint end |
