@@ -317,3 +317,30 @@ body.mi .pc-art.has-photo, body.mi .mi-gallery-art.has-photo { background: #e8eb
 body.mi .pc-art .mi-photo { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
 body.mi .mi-gallery-art.has-photo { border-radius: var(--ci-r-md); overflow: hidden; margin: 12px 0; }
 body.mi .mi-gallery-art .mi-photo { display: block; width: 100%; height: 100%; max-height: 320px; object-fit: contain; padding: 12px; }
+
+/* =====================================================================================================
+   Phase B: CI type scale (DESIGN.md). display 48/56 w800 (mobile 32/40), headline-lg 32/40 w700 (24/32), headline-md 22/28 w700,
+   title 18/24 w600, body 16/24 and 14/20 (Thai line-height >= 1.5), label 12/16 w600, label-sm 10/14 w700 uppercase for English pills.
+   Thai weights 800 map to Prompt 600 (the Thai face tops out at 600 here).
+   ===================================================================================================== */
+body.mi { font-family: var(--ci-font); font-size: 16px; line-height: 1.5; font-variant-numeric: normal; }
+body.mi h1, body.mi h2, body.mi h3, body.mi h4, body.mi .brand { font-family: var(--ci-font); }
+body.mi .mi-hero-copy h1 { font-size: 48px; line-height: 56px; font-weight: 800; letter-spacing: -.01em; }
+body.mi .mi-head h2, body.mi .mi-trust-title, body.mi .mi-cta-copy h2 { font-size: 32px; line-height: 40px; font-weight: 700; letter-spacing: 0; }
+body.mi .mi-metrics h2 { font-size: 22px; line-height: 28px; font-weight: 700; }
+body.mi .mi-cat strong, body.mi .mi-why h3, body.mi .mi-step h3, body.mi .mi-product-card h3, body.mi .mi-product-sum h1 + p, body.mi .mi-cta-copy h3 { font-size: 18px; line-height: 24px; font-weight: 600; }
+body.mi .mi-product-sum h1, body.mi .mi-page-heading h1, body.mi .mi-product-hero h1 { font-size: 32px; line-height: 40px; font-weight: 800; }
+body.mi .mi-sub, body.mi .lead, body.mi .mi-cta-copy p { font-size: 16px; line-height: 24px; }
+body.mi .mi-why p, body.mi .mi-step p, body.mi .mi-cat small, body.mi .mi-product-card .product-spec, body.mi .mi-product-card .compact-status, body.mi .mi-data-note, body.mi .mi-note, body.mi .footer-links a, body.mi .site-footer p { font-size: 14px; line-height: 20px; }
+body.mi .eyebrow, body.mi .meta, body.mi .product-card-meta, body.mi .pc-badge, body.mi .motion-toggle, body.mi .footer-copy { font-size: 12px; line-height: 16px; font-weight: 600; }
+body.mi .confidence-badge, body.mi .price-status-badge { font-size: 10px; line-height: 14px; font-weight: 700; letter-spacing: .025em; }
+/* numbers: price, score and metrics keep a weight and tabular figures (no more monospace) */
+body.mi .mi-metrics b, body.mi .mb-range, body.mi .mb-range *, body.mi .mi-product-sum .price, body.mi .history strong { font-family: var(--ci-font); font-weight: 800; font-variant-numeric: tabular-nums; }
+body.mi .mi-metrics b { font-size: 48px; line-height: 56px; }
+body.mi .navbar-nav .nav-link, body.mi .btn, body.mi .mi-tabs button, body.mi .mi-chips a { font-family: var(--ci-font); }
+@media (max-width: 767.98px) {
+    body.mi .mi-hero-copy h1 { font-size: 32px; line-height: 40px; }
+    body.mi .mi-head h2, body.mi .mi-trust-title, body.mi .mi-cta-copy h2 { font-size: 24px; line-height: 32px; }
+    body.mi .mi-metrics b { font-size: 32px; line-height: 40px; }
+    body.mi .mi-product-sum h1, body.mi .mi-page-heading h1, body.mi .mi-product-hero h1 { font-size: 24px; line-height: 32px; }
+}
