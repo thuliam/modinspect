@@ -29,9 +29,13 @@ REQUIRED = {
 ASSET_EXTENSIONS = {
     ".css", ".js", ".jpg", ".jpeg", ".png", ".webp",
     ".gif", ".svg", ".ico", ".woff", ".woff2", ".ttf", ".otf",
+    # credits (Wikimedia Commons photos, brand logos) and font licences must ship with the files they describe
+    ".json", ".txt", ".eot",
 }
 # A development-only README lives under the public assets directory.
 INTENTIONAL_EXCLUSIONS = {"public/assets/admin/README.md"}
+# Manufacturer product photos kept for review only: usage rights are not confirmed, so they must never be packaged for deployment.
+EXCLUDED_PREFIXES = ("public/assets/products-mfr/",)
 
 
 def fail(reason: str) -> None:
@@ -44,13 +48,13 @@ def include(relative: str) -> bool:
         fail("unsafe repository path")
     if any(part.startswith(".") for part in p.parts) and relative != "public/.htaccess":
         fail("hidden or environment-like file in deploy scope: " + relative)
-    if relative in INTENTIONAL_EXCLUSIONS:
+    if relative in INTENTIONAL_EXCLUSIONS or relative.startswith(EXCLUDED_PREFIXES):
         return False
     if p.parts[0] in {"app", "config"}:
         if p.suffix != ".php":
             fail("unreviewed non-PHP file in application/config: " + relative)
         return True
-    if relative in {"public/index.php", "public/.htaccess"}:
+    if relative in {"public/index.php", "public/.htaccess", "public/favicon.ico"}:
         return True
     if len(p.parts) >= 3 and p.parts[:2] == ("public", "assets"):
         if p.suffix.lower() not in ASSET_EXTENSIONS:

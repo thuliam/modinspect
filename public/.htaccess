@@ -11,3 +11,12 @@ RewriteRule ^ index.php [QSA,L]
         Header set Access-Control-Allow-Origin "*"
     </FilesMatch>
 </IfModule>
+
+# Baseline security headers. No Content-Security-Policy yet (inline motion script and art sizing must move to files first), and no HSTS
+# until HTTPS works on every page. See docs/DEPLOYMENT_RUNBOOK_HOSTATOM.md.
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+</IfModule>
