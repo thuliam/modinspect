@@ -28,6 +28,11 @@ final class Product
         $stmt=$this->db->prepare($sql); $stmt->execute($params); return $stmt->fetchAll();
     }
     /** Plain public counts for the home page: models listed, names recognised, models with an eligible price. No admin data. */
+    /** Brands that have at least one active product, most products first (feeds the brand strip on the home page). */
+    public function brandsInCatalog(): array {
+        return array_column($this->db->query("SELECT b.name, COUNT(*) n FROM products p JOIN brands b ON b.id=p.brand_id WHERE p.is_active=1 GROUP BY b.id, b.name ORDER BY n DESC, b.name")->fetchAll(), 'name');
+    }
+
     public function publicCounts(): array {
         $all = $this->search();
         $priced = count(array_filter($all, static fn(array $p): bool => !empty($p['median']) && (int)($p['valid_sample_size'] ?? 0) > 0 && (int)($p['accepted_observation_count'] ?? 0) > 0));

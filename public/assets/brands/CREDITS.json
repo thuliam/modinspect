@@ -94,5 +94,13 @@
         "restrictions": "",
         "author": "Micro-Star International (MSI)",
         "size": "500x126"
+    },
+    "thermaltake": {
+        "file": "File:Thermaltake Premium logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Thermaltake_Premium_logo.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Thermaltake Technology",
+        "size": "500x79"
     }
 }

@@ -99,7 +99,7 @@ while (count($featured) < 5 && $byCat) {
     <div class="container">
         <div class="mi-head"><h2><i class="mi-slash"></i>ยี่ห้อที่มีในระบบ</h2></div>
         <div class="mi-brands">
-            <?php foreach (['AMD', 'Intel', 'NVIDIA', 'ASUS', 'MSI', 'Gigabyte', 'ASRock', 'Corsair', 'Kingston', 'Samsung', 'WD', 'Cooler Master'] as $b): ?>
+            <?php foreach ($brands ?? [] as $b): ?>
                 <a class="mi-brand-tile" href="<?= $base ?>/price?q=<?= rawurlencode($b) ?>" aria-label="ดูรุ่นของ <?= $b ?>"><?= mi_brand_logo($b, $base, 28) ?></a>
             <?php endforeach; ?>
         </div>

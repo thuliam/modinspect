@@ -582,3 +582,5 @@ body.mi .compare-grid dd { margin: 0; text-align: right; color: var(--ci-text); 
 body.mi .compare-grid .mini-empty { display: grid; place-items: center; min-height: 80px; padding: 12px; background: var(--ci-elevated); border: 1px dashed var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text-2); text-align: center; font-size: 14px; }
 body.mi .site-footer .footer-links a { justify-content: flex-start; text-align: left; padding: 0; margin: 0; }
 body.mi button.disabled-control, body.mi button.disabled-control:disabled, body.mi .button.disabled-control { background: var(--ci-elevated); border: 1px solid var(--ci-border); color: var(--ci-text-2); opacity: .8; cursor: not-allowed; }
+/* brand tile without a logo file: the name in plain type, same footprint as a logo tile */
+body.mi .mi-brand-tile > span:not(.mi-brand-logo) { color: var(--ci-text); font-size: 16px; font-weight: 800; letter-spacing: .02em; }
