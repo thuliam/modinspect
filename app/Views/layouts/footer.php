@@ -41,7 +41,7 @@
 </footer>
 <script src="<?= $base ?>/assets/admin/vendor/jquery/jquery-3.3.1.min.js"></script>
 <script src="<?= $base ?>/assets/admin/vendor/bootstrap/js/bootstrap.bundle.js"></script>
-<script src="<?= $base ?>/assets/spec-builder.js" defer></script>
+<script src="<?= $base ?>/assets/spec-builder.js?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/spec-builder.js") ?>" defer></script>
 <script src="<?= $base ?>/assets/site.js?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/site.js') ?>" defer></script>
 </body>
 </html>

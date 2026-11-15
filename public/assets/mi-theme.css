@@ -397,11 +397,11 @@ body.mi .mi-search .input-group { background: var(--ci-search); border: 1px soli
 body.mi .mi-search .input-group:focus-within { border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); }
 body.mi .mi-search .input-group-text { background: transparent; color: var(--ci-text-2); }
 body.mi .mi-search .form-control { background: transparent; color: var(--ci-text); }
-body.mi .mi-search .form-control::placeholder { color: var(--ci-text-3); }
+body.mi .mi-search .form-control::placeholder { color: var(--ci-text-2); }
 body.mi .mi-search .form-control:focus { box-shadow: none; }
 body.mi .mi-search .btn-lime { border-radius: 0 var(--ci-r-md) var(--ci-r-md) 0; }
 body.mi input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=submit]):not([type=button]), body.mi select, body.mi textarea, body.mi .form-control { background: var(--ci-search); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text); }
-body.mi input::placeholder, body.mi textarea::placeholder { color: var(--ci-text-3); }
+body.mi input::placeholder, body.mi textarea::placeholder { color: var(--ci-text-2); }
 body.mi input:focus, body.mi select:focus, body.mi textarea:focus, body.mi .form-control:focus { background: var(--ci-search); border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); color: var(--ci-text); }
 body.mi input:disabled, body.mi select:disabled, body.mi textarea:disabled { opacity: .5; cursor: not-allowed; }
 body.mi .is-invalid, body.mi input[aria-invalid=true] { border-color: var(--ci-danger); }
@@ -424,3 +424,80 @@ body.mi .notice::before { content: "\f071"; font-family: "Font Awesome 5 Free"; 
 body.mi .alert-info { background: rgba(187, 242, 70, .06); border-color: rgba(187, 242, 70, .35); }
 body.mi .alert-danger { background: rgba(239, 68, 68, .1); border-color: rgba(239, 68, 68, .5); }
 body.mi .alert-success { background: rgba(34, 197, 94, .1); border-color: rgba(34, 197, 94, .5); }
+
+/* ---- Phase C5: /build page on the dark surface (legacy light-theme rules overridden) ---- */
+body.mi .draft-pill { background: rgba(34, 197, 94, .15); border: 1px solid var(--ci-verified); border-radius: var(--ci-r-pill); color: var(--ci-verified); font-size: 12px; font-weight: 600; padding: 4px 12px; }
+body.mi .component-nav a { color: var(--ci-text-2); border-radius: var(--ci-r-md); border: 1px solid transparent; min-height: 44px; transition: background .2s, border-color .2s, color .2s; }
+body.mi .component-nav a.available { background: var(--ci-elevated); color: var(--ci-text); border-color: var(--ci-border); }
+body.mi .component-nav a.available:hover { border-color: var(--ci-primary); color: var(--ci-primary); }
+body.mi .component-nav a.disabled { opacity: .55; color: var(--ci-text-2); }
+body.mi .component-nav a small { color: var(--ci-text-2); }
+body.mi .part-filters { background: var(--ci-elevated); border-bottom: 1px solid var(--ci-border); color: var(--ci-text-2); }
+body.mi .part-option { color: var(--ci-text); border: 1px solid transparent; border-radius: var(--ci-r-md); }
+body.mi .part-option:hover { background: var(--ci-elevated); }
+body.mi .part-option:has(input:checked) { border-color: var(--ci-primary); background: var(--ci-elevated); }
+body.mi .part-option input:checked + .part-radio { border: 5px solid var(--ci-primary); }
+body.mi .part-radio { border: 2px solid var(--ci-border-active); background: var(--ci-canvas); }
+body.mi .budget-state { border-radius: var(--ci-r-md); border: 1px solid var(--ci-border); font-weight: 600; }
+body.mi .budget-state.ok { background: rgba(34, 197, 94, .12); border-color: var(--ci-verified); color: var(--ci-verified); }
+body.mi .budget-state.over, body.mi .budget-state.warn { background: rgba(239, 68, 68, .12); border-color: var(--ci-danger); color: var(--ci-danger); }
+body.mi .unavailable-slot, body.mi .summary-empty, body.mi .build-item, body.mi .summary-money > div { background: var(--ci-elevated); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text-2); }
+body.mi .primary-total b, body.mi .build-totals b, body.mi .summary-money b { color: var(--ci-primary); font-variant-numeric: tabular-nums; font-weight: 800; }
+body.mi .spec-controls label { color: var(--ci-text-2); }
+body.mi .badge { background: var(--ci-elevated); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-text-2); font-size: 12px; font-weight: 600; padding: 3px 10px; }
+body.mi .disabled-control { background: var(--ci-elevated); border: 1px solid var(--ci-border); color: var(--ci-text-2); }
+body.mi main h1 { font-size: 32px; line-height: 40px; font-weight: 800; color: var(--ci-text); }
+@media (max-width: 767.98px) { body.mi main h1 { font-size: 24px; line-height: 32px; } }
+body.mi .mi-hero-copy h1 { font-size: 48px; line-height: 56px; }
+@media (max-width: 767.98px) { body.mi .mi-hero-copy h1 { font-size: 32px; line-height: 40px; } }
+
+/* ---- Phase D: content and assets ---- */
+body.mi .mi-product-card .compact-status { display: none; }   /* the badge on the image already says it; one honest note sits above the row */
+body.mi .mi-featured-note { margin: -8px 0 16px; padding: 10px 14px; background: var(--ci-elevated); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text-2); font-size: 14px; line-height: 20px; }
+body.mi .mi-featured-note i { color: var(--ci-gold); margin-right: 6px; }
+/* photographs sit in a dark frame, never edge to edge against the theme */
+body.mi .pc-art.has-photo, body.mi .mi-gallery-art.has-photo { background: radial-gradient(ellipse 70% 80% at 50% 90%, var(--ci-primary-glow), transparent 72%), var(--ci-canvas); }
+body.mi .pc-art .mi-photo { width: calc(100% - 28px); height: calc(100% - 28px); margin: 14px; padding: 8px; border-radius: var(--ci-r-md); background: #fff; object-fit: contain; }
+body.mi .mi-gallery-art .mi-photo { width: calc(100% - 28px); margin: 14px; padding: 12px; border-radius: var(--ci-r-md); background: #fff; }
+body.mi .mi-hero::before { content: ""; position: absolute; top: -10%; right: 4%; width: 22%; height: 130%; transform: skewX(-24deg); background: linear-gradient(180deg, transparent, var(--ci-primary-glow) 55%, transparent); opacity: .35; pointer-events: none; display: block; }
+
+/* ---- Phase E: motion, tap targets, contrast ---- */
+@keyframes ciRise { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
+@keyframes ciFade { from { opacity: 0; } to { opacity: 1; } }
+/* reveal: starts within 120ms, finishes in about half a second; the hero never waits for JavaScript */
+.js body.mi .reveal { transition: opacity .4s var(--ease) min(var(--d, 0ms), 120ms), transform .5s var(--ease) min(var(--d, 0ms), 120ms); transform: translate3d(0, 16px, 0); }
+.js body.mi .mi-hero .reveal { opacity: 1; transform: none; transition: none; animation: ciRise .45s var(--ease) min(var(--d, 0ms), 100ms) both; }
+html.motion-calm body.mi .reveal { transform: translate3d(0, 6px, 0); }
+html.motion-calm body.mi .mi-hero .reveal { animation-name: ciFade; }
+@media (prefers-reduced-motion: reduce) { html.motion-full body.mi .mi-hero-art img { animation: none; } }
+/* tap targets: 44px minimum */
+body.mi .btn, body.mi .button, body.mi button[type=submit], body.mi .product-card-action, body.mi .mi-tabs button, body.mi .mi-chips a, body.mi .motion-toggle, body.mi .navbar-toggler,
+body.mi .footer-links a, body.mi .dropdown-item, body.mi .mi-head > a, body.mi .login-button, body.mi .component-nav a, body.mi .breadcrumbs a, body.mi .navbar-nav .nav-link { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+body.mi .navbar-nav .nav-link { display: flex; }
+body.mi .nav-icon { width: 44px; height: 44px; }
+body.mi .footer-links li { margin-bottom: 0; }
+body.mi .footer-links a { justify-content: flex-start; padding: 0; }
+body.mi .dropdown-item { justify-content: flex-start; }
+body.mi .mi-cat, body.mi .mi-go { min-height: 0; }
+body.mi .mi-go { width: 44px; height: 44px; right: 8px; bottom: 8px; background: transparent; border: 0; }
+body.mi .mi-go i { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--ci-border-active); border-radius: 50%; background: rgba(187, 242, 70, .08); }
+body.mi .breadcrumbs a { padding: 0 4px; }
+body.mi .breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 0 4px; }
+@media (min-width: 992px) { body.mi .navbar-expand-lg .navbar-toggler { display: none; } }
+@media (max-width: 991.98px) { body.mi .navbar-toggler { display: inline-flex; } }
+
+/* ---- Phase F fixes: tap targets and the last contrast gaps found by the sweep ---- */
+body.mi .mi-product-card { position: relative; }
+body.mi .mi-product-card h3 a::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+body.mi .mi-product-card .product-card-action { position: relative; z-index: 2; }
+body.mi .footer-links a { min-width: 44px; }
+body.mi .mi-category-chips a, body.mi .mi-compact-list a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; justify-content: center; }
+body.mi .mi-compact-list a { justify-content: flex-start; }
+body.mi #photo-credits li a, body.mi .prose li a { display: inline-block; padding: 10px 0; }
+body.mi .navbar-brand { padding: 5px 0; min-height: 44px; display: inline-flex; align-items: center; }
+body.mi .brand-name, body.mi .part-option .brand-name, body.mi .component-nav small, body.mi .part-option small, body.mi .part-option span { color: var(--ci-text-2); }
+body.mi .part-option b, body.mi .part-option strong { color: var(--ci-text); }
+body.mi .mi-product-card h3 a { display: block; min-height: 44px; }
+body.mi .socket-hint, body.mi .component-nav span, body.mi .spec-summary span, body.mi .spec-controls span, body.mi .component-head span, body.mi .summary-money span, body.mi .build-item span, body.mi .summary-empty { color: var(--ci-text-2); }
+body.mi .component-nav a.available b, body.mi .component-nav a.available span b { color: var(--ci-text); }
+html.motion-calm body.mi .reveal { transition-duration: .35s, .4s; }

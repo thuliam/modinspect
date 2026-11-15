@@ -49,7 +49,7 @@ if (!function_exists('mi_art_laptop')) {
 if (!function_exists('mi_art_cpu')) {
     function mi_art_cpu(float $x = 0, float $y = 0, float $s = 1): string
     {
-        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="6" y="6" width="84" height="84" rx="7" fill="none" stroke="#8c938f" stroke-width="3" stroke-dasharray="2.6 4"/><rect x="14" y="14" width="68" height="68" rx="7" fill="url(#miMetal)" stroke="#59625d"/><rect x="28" y="28" width="40" height="40" rx="4" fill="#0c100e" stroke="#d4f139" stroke-width="1.5"/><path d="M38 48h20M48 38v20" stroke="#d4f139" stroke-width="2" stroke-linecap="round"/></g>';
+        return '<g transform="translate(' . $x . ' ' . $y . ') scale(' . $s . ')"><rect x="6" y="6" width="84" height="84" rx="7" fill="none" stroke="#8c938f" stroke-width="3" stroke-dasharray="2.6 4"/><rect x="14" y="14" width="68" height="68" rx="7" fill="url(#miMetal)" stroke="#59625d"/><rect x="28" y="28" width="40" height="40" rx="4" fill="#0c100e" stroke="#d4f139" stroke-width="1.5"/><text x="48" y="53" fill="#bbf246" font-family="Arial,sans-serif" font-size="13" font-weight="700" text-anchor="middle">CPU</text></g>';
     }
 }
 if (!function_exists('mi_art_ram')) {

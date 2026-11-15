@@ -50,10 +50,10 @@ while (count($featured) < 5 && $byCat) {
                 </form>
                 <div class="mi-chips reveal" style="--d:300ms" aria-label="Search examples">
                     <span><i class="fas fa-fire" aria-hidden="true"></i> ยอดนิยม:</span>
-                    <a href="<?= $base ?>/price?q=5700X3D">5700X3D</a>
-                    <a href="<?= $base ?>/price?q=RTX+3070">RTX 3070</a>
-                    <a href="<?= $base ?>/price?q=RX+6700">RX 6700</a>
-                </div>
+                    <?php foreach (array_slice($featured, 0, 3) as $chip): ?>
+                        <a href="<?= $base ?>/price?q=<?= rawurlencode((string) $chip['model_name']) ?>"><?= htmlspecialchars((string) $chip['model_name']) ?></a>
+                    <?php endforeach; ?>
+                    </div>
                 <p class="mi-data-note reveal" style="--d:400ms">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
             </div>
             <div class="col-lg-7 mi-hero-art reveal" style="--d:150ms"><img src="<?= $base ?>/assets/brand/hero-hardware.png" width="1026" height="436" alt="โน้ตบุ๊ก คอมพิวเตอร์ตั้งโต๊ะ การ์ดจอ SSD และจอภาพ (ภาพประกอบ)"></div>
@@ -108,6 +108,7 @@ while (count($featured) < 5 && $byCat) {
             <a href="<?= $base ?>/price">ดูรุ่นเพิ่มเติม <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         <?php if ($featured): ?>
+            <?php if ((int) $counts['priced'] === 0): ?><p class="mi-note mi-featured-note"><i class="fas fa-info-circle" aria-hidden="true"></i> ยังไม่มีรุ่นที่มีราคาตลาดผ่านการตรวจสอบ ระบบจึงไม่แสดงราคา เปิดดูสเปกและใช้ Deal Checker ได้</p><?php endif; ?>
             <div class="row mi-featured">
                 <?php foreach ($featured as $product): ?>
                     <div class="col-sm-6 col-lg-4 col-xl-5ths mb-4" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
