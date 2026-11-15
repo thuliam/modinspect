@@ -122,8 +122,8 @@ while (count($featured) < 5 && $byCat) {
         <?php if ($featured): ?>
             <?php if ((int) $counts['priced'] === 0): ?><p class="mi-note mi-featured-note"><i class="fas fa-info-circle" aria-hidden="true"></i> ยังไม่มีรุ่นที่มีราคาตลาดผ่านการตรวจสอบ ระบบจึงไม่แสดงราคา เปิดดูสเปกและใช้ Deal Checker ได้</p><?php endif; ?>
             <div class="row mi-featured">
-                <?php foreach ($featured as $product): ?>
-                    <div class="col-sm-6 col-lg-4 col-xl-5ths mb-4" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
+                <?php foreach (array_slice($featured, 0, 4) as $product): ?>
+                    <div class="col-sm-6 col-lg-4 col-xl-3 mb-4" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
                         <?php $artType = $artFor((string) ($product['category_name'] ?? '')); require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
                     </div>
                 <?php endforeach; ?>
@@ -155,7 +155,7 @@ while (count($featured) < 5 && $byCat) {
                 <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['models'] ?>"><?= (int) $counts['models'] ?></b><span>รุ่นในฐานข้อมูล</span></div>
                 <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['aliases'] ?>"><?= (int) $counts['aliases'] ?></b><span>ชื่อเรียกที่ระบบรู้จัก</span></div>
                 <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['categories'] ?>"><?= (int) $counts['categories'] ?></b><span>หมวดสินค้า</span></div>
-                <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['priced'] ?>"><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีราคาผ่านการตรวจสอบ</span></div>
+                <div class="col-6 col-md-3"><b data-count="<?= (int) $counts['priced'] ?>"><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีช่วงราคาอ้างอิง (ข้อมูลยังจำกัด)</span></div>
             </div>
             <p class="mi-note">ตัวเลขนับจากฐานข้อมูลจริง ไม่ปัดขึ้น ถ้ายังเป็น 0 คือยังไม่มีข้อมูลที่ผ่านการตรวจสอบพอจะแสดงราคา</p>
         </div>

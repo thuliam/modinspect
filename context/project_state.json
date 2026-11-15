@@ -297,13 +297,13 @@
             "p1": 0,
             "single_source": 46,
             "owner_text_only": 46,
-            "confidence_low": 35,
-            "confidence_medium": 11
+            "confidence_low": 46,
+            "confidence_medium": 0
         },
         "sprints": {
             "R0": "DONE",
             "T1": "IN_PROGRESS",
-            "U2": "NOT_STARTED",
+            "U2": "IN_PROGRESS",
             "I3": "NOT_STARTED",
             "D4": "PARTIAL",
             "C5": "NOT_STARTED",
@@ -311,18 +311,18 @@
         },
         "scorecard": {
             "overall": "NOT_BASELINED",
-            "t1_auto_percent": 60.9,
+            "t1_auto_percent": 78.3,
             "owner_percent": 0
         },
         "owner_gates": [
-            "T1-6 confidence policy for owner-text-only evidence",
             "U2 visual acceptance",
             "I3 provider licence approval",
             "G-4",
             "G-5",
             "G-7",
             "PR #4 merge",
-            "deploy"
+            "deploy",
+            "U2 visual acceptance of the first slice"
         ],
         "docs": [
             "docs/PROJECT_STATUS.md",
@@ -334,6 +334,7 @@
             "docs/PRODUCT_INTELLIGENCE_PROVIDER_MATRIX.md",
             "docs/DECISION_LOG.md"
         ],
-        "release": "NOT_READY; no production deploy; no new paid service"
+        "release": "NOT_READY; no production deploy; no new paid service",
+        "confidence_method": "confidence-v2 (OWNER_TEXT_ONLY_CAP at 59)"
     }
 }

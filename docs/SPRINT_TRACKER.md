@@ -127,7 +127,7 @@ start on 2026-11-16 and one implementation agent; the owner has not confirmed a 
 |---|---|---|---|---|---|
 | R0 Recovery delta | Verify branch/runtime/data, reconcile docs, brand conflict | 2026-11-16 to 11-19 | **DONE 2026-11-15** (this session) | none | Brand conflict resolved from recorded owner decisions (see UX_UI_SYSTEM) |
 | T1 Price trust | Trace every public price, evidence explorer, containment | 2026-11-20 to 12-03 | **IN PROGRESS** (audit + explorer done; owner threshold decision open) | OWNER: confidence policy for owner-text-only evidence | See criteria below |
-| U2 Unified public UX/CI | Adaptive results, card hierarchy, detail page, no one-point chart | 2026-12-04 to 12-17 | NOT_STARTED (trend chart rule already applied) | OWNER visual PASS | Public theme still hand-written (docs/UI_HANDWRITTEN_CODE_AUDIT.md) |
+| U2 Unified public UX/CI | Adaptive results, card hierarchy, detail page, no one-point chart | 2026-12-04 to 12-17 | IN_PROGRESS (first slice 2026-11-15: adaptive results, 4-col cards, compact detail, collapsed credits; see DL-033) | OWNER visual PASS | Public theme still hand-written (docs/UI_HANDWRITTEN_CODE_AUDIT.md) |
 | I3 Product intelligence | Release date/specs/benchmark POC on 10 products | 2026-12-18 to 2027-01-07 | NOT_STARTED (provider matrix drafted) | OWNER: provider/licence approval | `docs/PRODUCT_INTELLIGENCE_PROVIDER_MATRIX.md` |
 | D4 Deal Checker 2.0 + condition guide | Condition/warranty context, checklists | 2027-01-08 to 01-21 | PARTIAL (deal result now shows model facts, trend, nearby models) | OWNER task UAT | No arbitrary depreciation |
 | C5 Community loop | Moderated reports | 2027-01-22 to 02-04 | NOT_STARTED, deferrable | OWNER scope | Never writes snapshots |
@@ -144,11 +144,11 @@ Critical path: R0 -> T1 -> U2 -> D4 -> R6. I3 may run in parallel after T1 data 
 | T1-3 | Read-only evidence explorer on the product page (date, price, evidence grade, exclusion counts, source count; no seller/URL/raw text) | 3 | A | `components/evidence-explorer.php`, `tests/price_trust_test.php`, rendered on a DEV product page |
 | T1-4 | One-source limitation visible, one-point trend suppressed | 2 | A | Evidence block states "single source"; `trend-chart.php` draws only with 2+ months (`tests/trend_location_test.php`) |
 | T1-5 | Legacy snapshots (41, provenance unavailable) never public | 3 | A | Public join excludes `legacy_unavailable` (Product read model); audit counts only recorded snapshots |
-| T1-6 | Confidence policy for evidence that is 100% owner text from one source | 4 | - | **OWNER decision**: today 11 of 46 priced products are labelled "medium" (capped at 69) although every sample is owner text from one source |
+| T1-6 | Confidence policy for evidence that is 100% owner text from one source | 4 | A | DL-033: `OWNER_TEXT_ONLY_CAP` (confidence-v2); 46/46 public prices now low; `tests/price_trust_test.php`. OWNER accepted option A but gave no threshold: conservative cap applied, reversible |
 | T1-7 | Admin evidence explorer / audit links per snapshot | 2 | - | Not built; the public explorer covers the read-only need first |
 | T1-8 | Golden resolver set (RTX 3050, RX 5700 XT, 3060 Ti vs 3060, 4070 Ti/SUPER, Ryzen 5600 vs 5600G, 5700X3D) re-run | 3 | - | NOT_RUN in this session |
 
-Progress, T1 only: earned weight 14 of 23 = 60.9 % AUTO; OWNER 0 %. The project-level overall percentage is **NOT_BASELINED** after this rebaseline: the
+Progress, T1 only: earned weight 18 of 23 = 78.3 % AUTO (T1-6 now earned); OWNER 0 %. The project-level overall percentage is **NOT_BASELINED** after this rebaseline: the
 weights in the master prompt (data 30, UX 20, workflow 15, intelligence 10, deal 10, release 15) differ from the earlier epic weights and no
 full criteria audit has been done under them. Dimensions: DATA = REAL_PENDING (88 REAL pending, 0 REAL approved) plus 420 owner-text approved (grade C, one source);
 RELEASE = NOT_READY (no staging; production not authorised).

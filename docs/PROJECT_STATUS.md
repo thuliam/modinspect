@@ -888,3 +888,8 @@ CURRENT STATE (canonical; older sections above are history and some counts there
 - Delivered: `cli/price_trust_audit.php`, `components/evidence-explorer.php`, `Product::evidence()`, trend chart only with 2+ months, `tests/price_trust_test.php`, provider matrix (research only), PRD/roadmap/tracker rebaseline.
 - Verification: see SESSION_HANDOFF for exact commands. Browser: evidence explorer rendered on a DEV product page. OWNER acceptance: none recorded.
 - Open: T1-6 confidence policy decision, T1-7 admin explorer, T1-8 golden resolver rerun, U2 visual gate, I3 licensing, G-4/G-5/G-7.
+
+## [2026-11-15] [AGENT: Claude] - T1-6 policy + U2 first slice (DL-033)
+- confidence-v2 live: owner-text-only evidence capped at low; 11 DEV snapshots recalculated (medium -> low); public priced 46, all low; audit 0 P0/P1.
+- U2 first slice delivered (adaptive search results, 4-column cards, compact product detail, collapsed credits, honest home counter). Full suite exit 0; no horizontal overflow at 390/768/1024/1440 on a DEV-backed local server.
+- Not verified / open: owner visual acceptance, 708px, keyboard + contrast audit, CI on GitHub for these commits.

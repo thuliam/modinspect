@@ -13,10 +13,16 @@ $mi_pending = array_values(array_filter($products, static fn(array $p): bool => 
 ?>
 <?php if ($mi_ready): ?>
     <?php $miArtFor = static fn(string $n): string => match (strtolower(trim($n))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' }; ?>
+    <?php
+    // adaptive layout: one answer is a wide featured card; 2-4 share the row; 5+ become a grid of at most four columns
+    $mi_n = count($mi_ready);
+    $mi_col = match (true) { $mi_n === 1 => 'col-12', $mi_n === 2 => 'col-md-6', $mi_n === 3 => 'col-md-6 col-lg-4', default => 'col-sm-6 col-lg-4 col-xl-3' };
+    $mi_horizontal = $mi_n === 1;
+?>
     <div class="row mi-featured mi-ready-grid">
         <?php foreach ($mi_ready as $product): ?>
-            <div class="col-sm-6 col-lg-4 col-xl-5ths mb-4">
-                <?php $artType = $miArtFor((string) ($product['category_name'] ?? '')); require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
+            <div class="<?= $mi_col ?> mb-4">
+                <?php $artType = $miArtFor((string) ($product['category_name'] ?? '')); $cardHorizontal = $mi_horizontal; require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
             </div>
         <?php endforeach; ?>
     </div>

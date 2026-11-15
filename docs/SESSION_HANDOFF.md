@@ -8,9 +8,9 @@
 - **Owner rules (AGENTS.md "UI Rule"):** no hand-written CSS/JS when a library/template can do it; ask before substituting a supplied template; downloads need approval; zero cost; admin account is the owner's (email login; password reset only via `cli/reset_admin_password.php`, typed by the owner).
 - **Delivered this session:** `cli/price_trust_audit.php` (read-only, exit 1 on P0), `Product::evidence()`, `components/evidence-explorer.php` on the product page, trend chart only with 2+ months, `tests/price_trust_test.php`, `docs/PRODUCT_INTELLIGENCE_PROVIDER_MATRIX.md` (research only, nothing called), PRD/roadmap/tracker rebaseline, DL-032.
 - **Verified (auto):** full suite exit 0; audit on DEV: 46 public prices, 46 replay MATCH, 0 P0, 0 P1; evidence explorer rendered on a DEV product page. **Not verified:** CI on GitHub for the latest commits, owner visual acceptance (none), golden resolver rerun.
-- **Data truth:** 420 approved observations, all owner text (grade C, one source); 88 REAL (Priceza) still pending, 0 approved; 46 recorded snapshots (35 low / 11 medium confidence), 41 legacy snapshots never public.
+- **Data truth:** 420 approved observations, all owner text (grade C, one source); 88 REAL (Priceza) still pending, 0 approved; 46 recorded public snapshots, all low confidence after confidence-v2 (were 35 low / 11 medium), 41 legacy snapshots never public.
 - **Owner gates open:** T1-6 confidence policy for 100 % owner-text evidence; U2 visual acceptance of public pages and the new Admin; I3 provider/licence approval; G-4 review of REAL evidence; G-5 rotate credentials exposed in the raw LINE export; G-7 Font Awesome official download; PR #4 merge; any deploy.
-- **Next approved action:** none started. Awaiting the owner's choice among the three options in the last report.
+- **Update (later 2026-11-15):** owner chose option A. confidence-v2 (owner-text-only cap) is live, 11 DEV snapshots recalculated, U2 first slice delivered (DL-033). **Next:** owner visual review of public pages; then rest of U2 (708px, a11y/contrast, photos, home polish) or the options the owner picks.
 - **Safety:** no deploy, no spend, never print or commit the raw LINE export, no auto-approval of REAL observations.
 
 ## 0. READ THIS FIRST — current handoff (2026-11-14, Claude takeover)

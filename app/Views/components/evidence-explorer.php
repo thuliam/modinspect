@@ -20,7 +20,7 @@ $collapseId = 'evidence' . (int) $evidence['snapshot_id'];
         <p class="mi-trend-note">ที่ไม่นับ:
             <?php $parts = []; foreach ($evidence['excluded'] as $reason => $count) { $parts[] = ($reasonLabels[$reason] ?? htmlspecialchars((string) $reason)) . ' ' . (int) $count; } echo implode(' · ', $parts); ?></p>
     <?php endif; ?>
-    <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#<?= $collapseId ?>" aria-expanded="false" aria-controls="<?= $collapseId ?>">ดูตัวอย่างที่ใช้คำนวณ</button>
+    <button class="btn btn-sm btn-outline-secondary align-self-start" type="button" data-toggle="collapse" data-target="#<?= $collapseId ?>" aria-expanded="false" aria-controls="<?= $collapseId ?>">ดูตัวอย่างที่ใช้คำนวณ</button>
     <div class="collapse mt-3" id="<?= $collapseId ?>">
         <div class="table-responsive">
             <table class="table table-sm mb-0">

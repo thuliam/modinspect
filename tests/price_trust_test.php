@@ -36,4 +36,19 @@ $report = json_decode(implode("\n", $out), true);
 assert_pt(is_array($report) && isset($report['summary']), 'price_trust_audit --json must return a summary');
 assert_pt($report['summary']['p0'] === 0 && $code === 0, 'price_trust_audit found a P0 on the test database');
 
+// Policy confidence-v2 (DL-033): evidence that is entirely owner-collected text can never exceed the 'low' band
+$svc = new \App\Services\Pricing\SnapshotConfidenceService();
+$today = date('Y-m-d');
+$mk = static function (int $i, string $key) use ($today): array {
+    return ['observed_at' => $today . ' 12:00:00', 'source_key' => $key, 'source_name' => 'src-' . $key . $i, 'source_domain' => $key . $i . '.example', 'source_id' => $i, 'evidence_level' => 5, 'source_evidence_quality' => 'high'];
+};
+$ownerRows = [];
+for ($i = 1; $i <= 12; $i++) { $ownerRows[] = $mk($i, 'offline_owner_text_batch' . $i); }
+$ownerResult = $svc->calculate($ownerRows, 'asking', $today);
+assert_pt(in_array('OWNER_TEXT_ONLY_CAP', $ownerResult['policy_caps'], true) && $ownerResult['label'] === 'low' && $ownerResult['overall_score'] <= 59.0, 'Owner-text-only evidence must be capped to low even with many fresh diverse rows');
+$mixed = $ownerRows;
+$mixed[0] = $mk(99, 'offline_real_priceza');
+$mixedResult = $svc->calculate($mixed, 'asking', $today);
+assert_pt(!in_array('OWNER_TEXT_ONLY_CAP', $mixedResult['policy_caps'], true), 'A cohort with any non-owner-text source must not get the owner-text cap');
+assert_pt(\App\Services\Pricing\SnapshotConfidenceService::METHOD_VERSION === 'confidence-v2', 'Method version must be bumped when the policy changes');
 echo "price_trust_test: PASS\n";

@@ -18,7 +18,7 @@ if (!function_exists('mi_public_confidence_reason')) {
             'FRESH_OBSERVATIONS' => 'ข้อมูลใหม่', 'GOOD_SOURCE_DIVERSITY' => 'แหล่งข้อมูลหลากหลาย', 'HIGH_SOURCE_CONCENTRATION' => 'ข้อมูลกระจุกอยู่ในไม่กี่แหล่ง',
             'INSUFFICIENT_SAMPLE' => 'ตัวอย่างไม่พอ', 'LIMITED_FRESHNESS' => 'ข้อมูลเริ่มเก่า', 'LOW_SAMPLE_SIZE' => 'ตัวอย่างน้อย', 'MIXED_EVIDENCE_QUALITY' => 'คุณภาพหลักฐานปะปนกัน',
             'MIXED_FRESHNESS' => 'อายุข้อมูลปะปนกัน', 'MODERATE_SAMPLE_SIZE' => 'ตัวอย่างพอสมควร', 'MODERATE_SOURCE_DIVERSITY' => 'แหล่งข้อมูลพอสมควร', 'SINGLE_SOURCE' => 'มาจากแหล่งเดียว',
-            'SINGLE_SOURCE_CAP' => 'จำกัดเพราะมาจากแหล่งเดียว', 'SOURCE_CONCENTRATION_CAP' => 'จำกัดเพราะข้อมูลกระจุกตัว', 'STALE_COHORT_CAP' => 'จำกัดเพราะข้อมูลเก่า', 'STALE_DATA' => 'ข้อมูลเก่า',
+            'SINGLE_SOURCE_CAP' => 'จำกัดเพราะมาจากแหล่งเดียว', 'OWNER_TEXT_ONLY_CAP' => 'จำกัดเพราะเป็นข้อความที่ทีมงานรวบรวมทั้งหมด ไม่มีลิงก์ต้นทาง', 'SOURCE_CONCENTRATION_CAP' => 'จำกัดเพราะข้อมูลกระจุกตัว', 'STALE_COHORT_CAP' => 'จำกัดเพราะข้อมูลเก่า', 'STALE_DATA' => 'ข้อมูลเก่า',
             'STRONG_EVIDENCE' => 'หลักฐานแข็งแรง', 'STRONG_SAMPLE_SIZE' => 'ตัวอย่างมาก', 'SUFFICIENT_SAMPLE' => 'ตัวอย่างเพียงพอ', 'TINY_SAMPLE_CAP' => 'จำกัดเพราะตัวอย่างน้อยมาก',
             'WEAK_EVIDENCE' => 'หลักฐานอ่อน', 'WEAK_EVIDENCE_CAP' => 'จำกัดเพราะหลักฐานอ่อน',
         ];
@@ -117,17 +117,15 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             </aside>
         </div>
     <?php else: ?>
-        <div class="mi-detail-grid">
-            <article class="card mi-price-answer-card">
-                <h2>อ่านราคานี้อย่างไร</h2>
-                <p>ราคานี้มาจากราคาประกาศมือสองที่ผ่านการตรวจสอบ ไม่ใช่ราคาปิดดีลจริง และอาจต่างตามสภาพ ประกัน อุปกรณ์ และบริการของผู้ขาย</p>
-            </article>
+        <div class="mi-detail-grid mi-detail-single">
+
 
             <aside class="card mi-confidence-card">
                 <span class="confidence-badge confidence-<?= htmlspecialchars($confidenceClass) ?>">
                     <?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?>
                 </span>
                 <p><?= htmlspecialchars(mi_public_confidence_reason($confidence)) ?></p>
+                <p class="small text-muted">ราคานี้มาจากราคาประกาศมือสองที่ผ่านการตรวจสอบ ไม่ใช่ราคาปิดดีลจริง และอาจต่างตามสภาพ ประกัน อุปกรณ์ และบริการของผู้ขาย</p>
                 <dl class="mi-context-list">
                     <div><dt>จำนวนตัวอย่าง</dt><dd><?= (int) $product['valid_sample_size'] ?> รายการ</dd></div>
                     <div><dt>ข้อมูลล่าสุด</dt><dd><?= htmlspecialchars($product['last_calculated_at'] ?? '-') ?></dd></div>
@@ -182,11 +180,11 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <?php endif; ?>
     <?php endif; ?>
     <section class="mi-trust" aria-label="อ่านราคานี้อย่างไร">
-        <h2 class="mi-trust-title"><span class="mi-slash"></span>อ่านราคานี้อย่างไร</h2>
-        <div class="row">
+        <button class="btn btn-outline-secondary align-self-start" type="button" data-toggle="collapse" data-target="#howToRead" aria-expanded="false" aria-controls="howToRead"><i class="fas fa-book mr-2" aria-hidden="true"></i>อ่านราคานี้อย่างไร</button>
+        <div class="collapse mt-3" id="howToRead"><div class="row">
             <?php foreach ([['fa-tag', 'ราคาประกาศ', 'เป็นราคาที่ผู้ขายตั้งไว้ ไม่ใช่ราคาปิดดีล'], ['fa-microchip', 'แยกรุ่นชัดเจน', 'ไม่เฉลี่ยข้ามรุ่นหรือข้ามเจเนอเรชัน'], ['fa-file-alt', 'บอกที่มา', 'ดูจำนวนตัวอย่างและความสดของข้อมูลได้'], ['fa-search', 'ตรวจสภาพเอง', 'ต้องดูสภาพ ประกัน และอุปกรณ์ประกอบก่อนซื้อเสมอ']] as [$ic, $tt, $tx]): ?>
                 <div class="col-md-6 col-xl-3 mb-3"><div class="mi-why"><span class="mi-why-ico"><i class="fas <?= $ic ?>" aria-hidden="true"></i></span><div><h3><?= $tt ?></h3><p><?= $tx ?></p></div></div></div>
             <?php endforeach; ?>
-        </div>
+        </div></div>
     </section>
 </section>

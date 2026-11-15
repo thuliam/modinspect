@@ -608,3 +608,10 @@ body.mi .mi-deal-facts dd { margin: 0; font-weight: 600; }
 @media (max-width: 575px) { body.mi .mi-trend-table li { grid-template-columns: 64px 84px 1fr; gap: 8px; font-size: .84rem; } }
 
 body.mi .mi-deal-more { display: grid; gap: 24px; margin-top: 24px; }
+
+/* ---- U2: adaptive result card and compact detail block ---- */
+body.mi .mi-card-wide { flex-direction: row; align-items: center; gap: 24px; }
+body.mi .mi-card-wide .pc-art { flex: 0 0 220px; }
+body.mi .mi-detail-single { grid-template-columns: 1fr; }
+body.mi .mi-detail-single .mi-context-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px 24px; }
+@media (max-width: 767px) { body.mi .mi-card-wide { flex-direction: column; align-items: stretch; } body.mi .mi-card-wide .pc-art { flex-basis: auto; } }

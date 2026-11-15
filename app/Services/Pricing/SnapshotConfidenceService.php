@@ -5,7 +5,9 @@ namespace App\Services\Pricing;
 
 final class SnapshotConfidenceService
 {
-    public const METHOD_VERSION = 'confidence-v1';
+    public const METHOD_VERSION = 'confidence-v2';
+    /** v2 (DL-033): evidence that is entirely owner-collected text without a listing URL can never score above the top of the 'low' band. */
+    public const OWNER_TEXT_ONLY_CEILING = 59.0;
 
     public const WEIGHTS = [
         'sample' => 0.30,
@@ -52,6 +54,10 @@ final class SnapshotConfidenceService
         if ($freshness['median_age_days'] > 90) {
             $score = min($score, 64.0);
             $caps[] = 'STALE_COHORT_CAP';
+        }
+        if ($sampleSize > 0 && $this->allOwnerText($includedRows)) {
+            $score = min($score, self::OWNER_TEXT_ONLY_CEILING);
+            $caps[] = 'OWNER_TEXT_ONLY_CAP';
         }
         if ($evidence['weak_share'] >= 0.60) {
             $score = min($score, 69.0);
@@ -232,6 +238,14 @@ final class SnapshotConfidenceService
             'weak_share' => $weakShare,
             'reasons' => $reasons,
         ];
+    }
+
+    private function allOwnerText(array $rows): bool
+    {
+        foreach ($rows as $row) {
+            if (!str_starts_with(strtolower((string)($row['source_key'] ?? '')), 'offline_owner_text_')) { return false; }
+        }
+        return true;
     }
 
     private function label(float $score, int $sampleSize): string
