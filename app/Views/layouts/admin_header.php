@@ -56,6 +56,9 @@ $groups = [
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/datatables/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/css/admin.css">
+<link rel="icon" href="<?= $base ?>/favicon.ico?v=<?= (int) @filemtime(ROOT_PATH . "/public/favicon.ico") ?>" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="<?= $base ?>/assets/brand/favicon-32x32.png">
+<link rel="apple-touch-icon" href="<?= $base ?>/assets/brand/apple-touch-icon.png">
 </head>
 <body class="mi-admin-body">
 <div class="dashboard-main-wrapper mi-admin-shell">

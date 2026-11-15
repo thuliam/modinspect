@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row footer-grid">
             <div class="col-lg-4 mb-4">
-                <a class="brand" href="<?= $base ?>/" aria-label="modinpect home"><?= mi_logo() ?><span>modinpect</span></a>
+                <a class="brand" href="<?= $base ?>/" aria-label="modinpect home"><?= mi_logo($base) ?></a>
                 <p class="mt-3">เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง</p>
                 <p class="small">ข้อมูลเป็นราคาประกาศมือสองที่ผ่านการคัดกรอง ไม่ใช่ราคาปิดดีลหรือคำรับรองมูลค่าสุดท้าย</p>
             </div>

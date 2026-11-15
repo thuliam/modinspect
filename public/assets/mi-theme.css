@@ -28,7 +28,9 @@ body.mi .site-header { height: auto; min-height: 72px; background: rgba(13, 17, 
 body.mi .site-header.sc { height: auto; background: rgba(10, 13, 12, .96); box-shadow: 0 8px 24px rgba(0, 0, 0, .35); }
 body.mi .public-nav { height: auto; min-height: 72px; padding-top: 0; padding-bottom: 0; }
 body.mi .brand { display: inline-flex; align-items: center; gap: 10px; padding: 0; margin-right: 24px; font-family: var(--mb-mono); font-size: 24px; font-weight: 700; letter-spacing: -.01em; color: #fff; text-transform: lowercase; }
-body.mi .mi-logo-mark { width: 40px; height: 32px; }
+body.mi .mi-logo { display: block; width: auto; height: 40px; max-width: 100%; }
+body.mi .site-footer .mi-logo { height: 44px; }
+@media (max-width: 575.98px) { body.mi .mi-logo { height: 32px; } }
 body.mi .navbar-nav .nav-link { padding: 8px 16px; color: #e6eae7; font-weight: 600; border-bottom: 2px solid transparent; transition: color .25s, border-color .25s; }
 body.mi .navbar-nav .nav-link:hover, body.mi .navbar-nav .nav-link:focus { color: var(--mi-lime); }
 body.mi .navbar-nav .nav-link.active { color: var(--mi-lime); border-bottom-color: var(--mi-lime); }

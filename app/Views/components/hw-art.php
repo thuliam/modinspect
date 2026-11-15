@@ -83,9 +83,10 @@ if (!function_exists('mi_art')) {
     }
 }
 if (!function_exists('mi_logo')) {
-    /** Brand mark: lime circuit "M" with nodes and a check. Drawn here as SVG; not the raster from the brand kit. */
-    function mi_logo(): string
+    /** Approved brand lockup (owner kit, references/04, cropped with black made transparent; geometry untouched). Single source for header and footer. */
+    function mi_logo(string $base): string
     {
-        return '<svg class="mi-logo-mark" viewBox="0 0 40 32" aria-hidden="true" focusable="false"><path d="M4 28V6l8-2 8 12 8-12 8 2v22" fill="none" stroke="url(#miLime)" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 22l4 4 8-9" fill="none" stroke="#e8ece9" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="6" r="2.2" fill="#d4f139"/><circle cx="36" cy="6" r="2.2" fill="#d4f139"/><circle cx="20" cy="16" r="1.8" fill="#d4f139"/></svg>';
+        $file = ROOT_PATH . '/public/assets/brand/modinpect-lockup-dark.png';
+        return '<img class="mi-logo" src="' . $base . '/assets/brand/modinpect-lockup-dark.png?v=' . (int) @filemtime($file) . '" width="900" height="181" alt="modinpect">';
     }
 }
