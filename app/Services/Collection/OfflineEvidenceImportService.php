@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services\Collection;
 
 use App\Core\Database;
+use App\Data\ProductResolution;
 use App\Data\SearchCandidate;
 use App\Data\SearchRequest;
 use App\Models\CollectionPipeline;
@@ -153,7 +154,7 @@ final class OfflineEvidenceImportService
             $sourceId = (int)$item['source_id'];
             $jobId = $this->startImportJob($sourceId, $runId, $candidate);
             $extraction = $this->extractor->extract($candidate);
-            $resolution = $resolver->resolve($candidate->title);
+            $resolution = $this->specClassResolution($candidate) ?? $resolver->resolve($candidate->title);
             $validation = $this->validator->validate($extraction, $resolution);
             $created = $this->pipeline->persistCandidate($sourceId, $jobId, $candidate, $extraction, $resolution, $validation);
             $summary[$validation->lane]++;
@@ -173,6 +174,23 @@ final class OfflineEvidenceImportService
         (new CollectionRunRepository())->persist($this->collectionRunSummary($summary), $runSourceId, 'offline_file_import', 'offline_file_import', 'normal', $startedAt, date('Y-m-d H:i:s'));
         $this->audit('offline_import_completed', 'collection_run', null, null, $summary);
         return $summary;
+    }
+
+    /**
+     * RAM, storage and PSU posts name a spec (DDR4-3200 16GB, NVMe 1TB, 750W Gold), not one model, so the owner-intake file may carry
+     * `catalog_slug` of a spec-class product. Only owner_text rows, only an existing active product, and the method is recorded.
+     */
+    private function specClassResolution(SearchCandidate $candidate): ?ProductResolution
+    {
+        $slug = (string)($candidate->rawMetadata['catalog_slug'] ?? '');
+        if ($slug === '' || ($candidate->rawMetadata['dataset'] ?? '') !== 'OWNER_TEXT') {
+            return null;
+        }
+        $stmt = $this->db->prepare('SELECT id, full_name FROM products WHERE slug = :slug AND is_active = 1 LIMIT 1');
+        $stmt->execute(['slug' => $slug]);
+        $row = $stmt->fetch();
+        // a row that names a spec class never falls back to title matching: a wrong attachment is worse than an unmatched row
+        return $row ? new ProductResolution((int)$row['id'], (string)$row['full_name'], 0.97, 'owner_spec_class') : new ProductResolution(null, null, 0.0, 'owner_spec_class_missing');
     }
 
     private function safePath(string $file): ?string
@@ -323,6 +341,7 @@ final class OfflineEvidenceImportService
                 'import_run_id' => $runId,
                 'dataset' => strtoupper($dataset),
                 'provenance_grade' => $dataset === 'owner_text' ? 'OWNER_TEXT_NO_URL' : null,
+                'catalog_slug' => $dataset === 'owner_text' ? (trim((string)($record['catalog_slug'] ?? '')) ?: null) : null,
                 'row' => (int)$record['_row'],
                 'source_reference' => $reference ?: null,
                 'source' => $this->firstValue($record, ['source']) ?: null,

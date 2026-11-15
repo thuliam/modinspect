@@ -135,6 +135,7 @@ if (!function_exists('mi_brand_logo')) {
         $name = trim((string) $brand);
         if ($name === '') { return ''; }
         $key = strtolower(preg_replace('/[^a-z0-9]/i', '', $name));
+        if ($key === 'generic') { return '<span>ทุกยี่ห้อ</span>'; }   // spec-class products (RAM, SSD, PSU) are not tied to a brand
         $alias = ['westerndigital' => 'wd', 'coolermaster' => 'cooler-master', 'microstarinternational' => 'msi', 'gigabytetechnology' => 'gigabyte', 'kingstontechnology' => 'kingston', 'nvidiacorporation' => 'nvidia'];
         $file = $alias[$key] ?? $key;
         $path = ROOT_PATH . '/public/assets/brands/' . $file . '.png';
