@@ -1848,3 +1848,32 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+CREATE TABLE price_trend_points (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  period_start DATE NOT NULL,
+  period_type ENUM('month') NOT NULL DEFAULT 'month',
+  q1 DECIMAL(12,2) NOT NULL,
+  median DECIMAL(12,2) NOT NULL,
+  q3 DECIMAL(12,2) NOT NULL,
+  sample_size INT UNSIGNED NOT NULL,
+  built_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_trend (product_id, period_type, period_start),
+  CONSTRAINT fk_trend_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE listing_location_log (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  row_ref VARCHAR(40) NOT NULL,
+  province VARCHAR(60) NOT NULL,
+  region ENUM('central','east','north','northeast','south') NOT NULL,
+  note_date DATE NULL,
+  category VARCHAR(20) NULL,
+  model_key VARCHAR(80) NULL,
+  asking_price_thb INT UNSIGNED NULL,
+  source_label VARCHAR(80) NOT NULL DEFAULT 'owner_collected_facebook_text',
+  recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_location_row (row_ref),
+  INDEX idx_location_province (province)
+) ENGINE=InnoDB;
