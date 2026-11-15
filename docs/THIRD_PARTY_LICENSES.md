@@ -26,4 +26,4 @@ PHP dependencies: none (custom MVC, no Composer packages).
 
 ## Chart.js 4.4.4
 
-- Source: https://www.chartjs.org (npm `chart.js`, `dist/chart.umd.js`, 205 KB), MIT licence, `public/assets/vendor/chartjs/LICENSE.md`. Downloaded once on the owner's approval (2026-11-15), self-hosted, no CDN at runtime. SHA-256 `fed6a739f8d0f0687174de6cd14745fc0fc7809144ab113d22908a26bf0d7fea`.
+- Source: https://www.chartjs.org (npm `chart.js`, `dist/chart.umd.js`, 205 KB), MIT licence, `public/assets/vendor/chartjs/LICENSE.txt`. Downloaded once on the owner's approval (2026-11-15), self-hosted, no CDN at runtime. SHA-256 `fed6a739f8d0f0687174de6cd14745fc0fc7809144ab113d22908a26bf0d7fea`.
