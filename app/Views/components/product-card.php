@@ -35,7 +35,7 @@ $confidence = $manifest['confidence'] ?? [];
     <?php if (!empty($artType) || $photo): ?><div class="pc-art<?= $photo ? ' has-photo' : '' ?>"><?= $photo ?? mi_art_img($artType ?? 'ssd', $base) ?><span class="pc-badge <?= $hasMarketSnapshot ? 'on' : '' ?>"><?= $hasMarketSnapshot ? 'มีราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span></div><?php endif; ?>
     <div class="product-card-meta">
         <span><?= htmlspecialchars($product['category_name'] ?? 'Hardware') ?></span>
-        <span><?= htmlspecialchars($product['brand_name'] ?? '') ?></span>
+        <?= mi_brand_logo($product['brand_name'] ?? '', $base, 18) ?>
     </div>
     <h3><a href="<?= $base ?>/price/<?= rawurlencode($product['slug']) ?>"><?= htmlspecialchars($product['full_name']) ?></a></h3>
 

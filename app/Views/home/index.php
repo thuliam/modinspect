@@ -95,6 +95,18 @@ while (count($featured) < 5 && $byCat) {
     </div>
 </section>
 
+<section class="mi-block mi-brands-block" aria-label="ยี่ห้อในระบบ">
+    <div class="container">
+        <div class="mi-head"><h2><i class="mi-slash"></i>ยี่ห้อที่มีในระบบ</h2></div>
+        <div class="mi-brands">
+            <?php foreach (['AMD', 'Intel', 'NVIDIA', 'ASUS', 'MSI', 'Gigabyte', 'ASRock', 'Corsair', 'Kingston', 'Samsung', 'WD', 'Cooler Master'] as $b): ?>
+                <a class="mi-brand-tile" href="<?= $base ?>/price?q=<?= rawurlencode($b) ?>" aria-label="ดูรุ่นของ <?= $b ?>"><?= mi_brand_logo($b, $base, 28) ?></a>
+            <?php endforeach; ?>
+        </div>
+        <p class="mi-note">เครื่องหมายการค้าเป็นของเจ้าของแต่ละราย ใช้เพื่อระบุยี่ห้อของสินค้าเท่านั้น ไม่ได้หมายถึงการรับรองหรือความเกี่ยวข้อง</p>
+    </div>
+</section>
+
 <section class="mi-block" id="featured">
     <div class="container">
         <div class="mi-head">

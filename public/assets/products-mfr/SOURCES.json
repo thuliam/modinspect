@@ -1,6 +1,34 @@
 {
-  "_note": "STAGING ONLY, not wired into the site. Downloaded once from the manufacturers' own product pages (og:image / product gallery) with an honest bot User-Agent. Usage rights are NOT confirmed: manufacturer product photos are copyrighted; get written permission or use the manufacturer press kit before showing them publicly.",
-  "corsair-rm750x": { "source_page": "https://www.corsair.com/us/en/p/psu/cp-9020285-na/rmx-series-rm750x-fully-modular-power-supply-cp-9020285-na", "image_origin": "assets.corsair.com (Cloudinary, width set to 800)", "fetched": "2026-11-15" },
-  "samsung-970-evo-plus-1tb": { "source_page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/970-evo-plus-nvme-m-2-ssd-1tb-mz-v7s1t0bw/", "image_origin": "images.samsung.com (og:image thumbnail)", "fetched": "2026-11-15" },
-  "blocked": { "amd.com": "requests time out for automated clients (all 6 pages, 2 attempts); stopped, no workaround", "kingston.com": "HTTP 403 to automated clients; stopped, no workaround", "nvidia.com": "page loads but has no product photo of the card", "intel.com": "redirects to a different SKU page; not followed" }
+    "_note": "STAGING ONLY, not wired into the site. Downloaded once from the manufacturers' own product pages (og:image / product gallery) with an honest bot User-Agent. Usage rights are NOT confirmed: manufacturer product photos are copyrighted; get written permission or use the manufacturer press kit before showing them publicly.",
+    "corsair-rm750x": {
+        "source_page": "https://www.corsair.com/us/en/p/psu/cp-9020285-na/rmx-series-rm750x-fully-modular-power-supply-cp-9020285-na",
+        "image_origin": "assets.corsair.com (Cloudinary, width set to 800)",
+        "fetched": "2026-11-15"
+    },
+    "samsung-970-evo-plus-1tb": {
+        "source_page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/970-evo-plus-nvme-m-2-ssd-1tb-mz-v7s1t0bw/",
+        "image_origin": "images.samsung.com (og:image thumbnail)",
+        "fetched": "2026-11-15"
+    },
+    "blocked": {
+        "amd.com": "requests time out for automated clients (all 6 pages, 2 attempts); stopped, no workaround",
+        "kingston.com": "HTTP 403 to automated clients; stopped, no workaround",
+        "nvidia.com": "page loads but has no product photo of the card",
+        "intel.com": "redirects to a different SKU page; not followed",
+        "msi.com": "HTTP 403 to automated clients (3 pages); stopped, no workaround",
+        "asrock.com": "pages load but expose no og:image; not scraped further",
+        "coolermaster.com": "product URL returned 404; not retried"
+    },
+    "corsair-4000d-airflow": {
+        "source_page": "https://www.corsair.com/us/en/p/pc-cases/cc-9011201-ww/4000d-airflow-tempered-glass-mid-tower-atx-case-white-cc-9011201-ww",
+        "image_origin": "res.cloudinary.com/corsair-pwa (width 800)",
+        "note": "white variant of the 4000D Airflow",
+        "fetched": "2026-11-15"
+    },
+    "corsair-vengeance-lpx-32gb": {
+        "source_page": "https://www.corsair.com/us/en/p/memory/cmk32gx4m2d3600c18/vengeancea-lpx-32gb-2-x-16gb-ddr4-dram-3600mhz-c18-memory-kit-black-cmk32gx4m2d3600c18",
+        "image_origin": "res.cloudinary.com/corsair-pwa (width 800)",
+        "note": "2x16GB 3600 kit",
+        "fetched": "2026-11-15"
+    }
 }

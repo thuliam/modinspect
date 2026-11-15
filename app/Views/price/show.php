@@ -50,7 +50,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <div class="mi-gallery-art<?= ($photo = mi_product_photo($product, $base, 'mi-photo')) ? ' has-photo' : '' ?>"><?= $photo ?? mi_art_img($artType, $base) ?></div>
                 <div class="mi-gallery-meta">
                     <span><?= htmlspecialchars($product['category_name']) ?></span>
-                    <?php if (!empty($product['brand_name'])): ?><span><?= htmlspecialchars($product['brand_name']) ?></span><?php endif; ?>
+                    <?php if (!empty($product['brand_name'])): ?><?= mi_brand_logo($product['brand_name'], $base, 20) ?><?php endif; ?>
                     <?php if (!empty($product['generation'])): ?><span><?= htmlspecialchars($product['generation']) ?></span><?php endif; ?>
                 </div>
                 <small><?= !empty($photo) ? 'ภาพถ่ายตัวอย่างของรุ่นนี้ (ไม่ใช่ชิ้นที่ประกาศขาย) · ดูเครดิตในหน้าวิธีคำนวณ' : 'ภาพประกอบเป็นภาพวาดประเภทสินค้า ไม่ใช่ภาพถ่ายสินค้าจริง' ?></small>

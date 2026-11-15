@@ -457,8 +457,8 @@ body.mi .mi-featured-note { margin: -8px 0 16px; padding: 10px 14px; background:
 body.mi .mi-featured-note i { color: var(--ci-gold); margin-right: 6px; }
 /* photographs sit in a dark frame, never edge to edge against the theme */
 body.mi .pc-art.has-photo, body.mi .mi-gallery-art.has-photo { background: radial-gradient(ellipse 70% 80% at 50% 90%, var(--ci-primary-glow), transparent 72%), var(--ci-canvas); }
-body.mi .pc-art .mi-photo { width: calc(100% - 28px); height: calc(100% - 28px); margin: 14px; padding: 8px; border-radius: var(--ci-r-md); background: #fff; object-fit: contain; }
-body.mi .mi-gallery-art .mi-photo { width: calc(100% - 28px); margin: 14px; padding: 12px; border-radius: var(--ci-r-md); background: #fff; }
+body.mi .pc-art .mi-photo { width: calc(100% - 28px); height: calc(100% - 28px); margin: 14px; padding: 8px; border-radius: var(--ci-r-md); object-fit: contain; }
+body.mi .mi-gallery-art .mi-photo { width: calc(100% - 28px); margin: 14px; padding: 12px; border-radius: var(--ci-r-md); }
 body.mi .mi-hero::before { content: ""; position: absolute; top: -10%; right: 4%; width: 22%; height: 130%; transform: skewX(-24deg); background: linear-gradient(180deg, transparent, var(--ci-primary-glow) 55%, transparent); opacity: .35; pointer-events: none; display: block; }
 
 /* ---- Phase E: motion, tap targets, contrast ---- */
@@ -501,3 +501,14 @@ body.mi .mi-product-card h3 a { display: block; min-height: 44px; }
 body.mi .socket-hint, body.mi .component-nav span, body.mi .spec-summary span, body.mi .spec-controls span, body.mi .component-head span, body.mi .summary-money span, body.mi .build-item span, body.mi .summary-empty { color: var(--ci-text-2); }
 body.mi .component-nav a.available b, body.mi .component-nav a.available span b { color: var(--ci-text); }
 html.motion-calm body.mi .reveal { transition-duration: .35s, .4s; }
+
+/* ---- brand logos: shown on a light chip because several logos are black; never recoloured ---- */
+body.mi .mi-brand-logo { display: inline-flex; align-items: center; padding: 3px 8px; background: #f1f5f9; border-radius: var(--ci-r-md); }
+body.mi .mi-brand-logo img { display: block; width: auto; max-width: 96px; object-fit: contain; }
+body.mi .mi-brands { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+body.mi .mi-brand-tile { display: flex; align-items: center; justify-content: center; min-height: 64px; background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); transition: border-color .25s, translate .25s, box-shadow .25s; }
+body.mi .mi-brand-tile:hover { border-color: var(--ci-border-active); translate: 0 -2px; box-shadow: var(--ci-bloom); }
+body.mi .mi-brand-tile .mi-brand-logo { padding: 8px 14px; }
+body.mi .mi-brand-tile .mi-brand-logo img { max-width: 110px; }
+body.mi .mi-brands-block .mi-note { margin-top: 14px; }
+body.mi .mi-brand-logo.is-dark { background: #000; }

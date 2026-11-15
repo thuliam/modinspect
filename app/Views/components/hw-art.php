@@ -128,3 +128,17 @@ if (!function_exists('mi_fa')) {
         return $map[$name] ?? 'fa-circle';
     }
 }
+if (!function_exists('mi_brand_logo')) {
+    /** Manufacturer logo (public/assets/brands, credited on the methodology page) on a light chip, or the plain brand name when no file exists. */
+    function mi_brand_logo(?string $brand, string $base, int $h = 20): string
+    {
+        $name = trim((string) $brand);
+        if ($name === '') { return ''; }
+        $key = strtolower(preg_replace('/[^a-z0-9]/i', '', $name));
+        $alias = ['westerndigital' => 'wd', 'coolermaster' => 'cooler-master', 'microstarinternational' => 'msi', 'gigabytetechnology' => 'gigabyte', 'kingstontechnology' => 'kingston', 'nvidiacorporation' => 'nvidia'];
+        $file = $alias[$key] ?? $key;
+        $path = ROOT_PATH . '/public/assets/brands/' . $file . '.png';
+        if (!preg_match('/^[a-z0-9-]+$/', $file) || !is_file($path)) { return '<span>' . htmlspecialchars($name) . '</span>'; }
+        return '<span class="mi-brand-logo' . ($file === 'nvidia' ? ' is-dark' : '') . '"><img src="' . $base . '/assets/brands/' . $file . '.png?v=' . (int) @filemtime($path) . '" alt="' . htmlspecialchars($name) . '" style="height:' . $h . 'px"></span>';
+    }
+}

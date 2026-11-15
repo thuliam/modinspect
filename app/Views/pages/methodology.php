@@ -18,3 +18,19 @@ if ($mi_credits): ?>
     </div>
 </section>
 <?php endif; ?>
+<?php
+$mi_logo_file = ROOT_PATH . '/public/assets/brands/CREDITS.json';
+$mi_logos = is_file($mi_logo_file) ? (json_decode((string) file_get_contents($mi_logo_file), true) ?: []) : [];
+if ($mi_logos): ?>
+<section class="container page narrow" id="logo-credits">
+    <div class="card prose">
+        <h2>เครดิตโลโก้ยี่ห้อ</h2>
+        <p>โลโก้มาจาก Wikimedia Commons ตามสัญญาอนุญาตที่ระบุ เครื่องหมายการค้าเป็นของเจ้าของแต่ละราย ใช้เพื่อระบุยี่ห้อสินค้าเท่านั้น ไม่ได้หมายถึงการรับรอง</p>
+        <ul>
+            <?php foreach ($mi_logos as $slug => $c): ?>
+                <li><a href="<?= htmlspecialchars((string) $c['page']) ?>" rel="noopener" target="_blank"><?= htmlspecialchars(str_replace('File:', '', (string) $c['file'])) ?></a> · <?= htmlspecialchars((string) $c['license']) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</section>
+<?php endif; ?>
