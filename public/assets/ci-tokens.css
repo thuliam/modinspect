@@ -1,0 +1,21 @@
+/* ModInspect CI tokens ("Cybernetic Trust", design/ci/cybernetic_trust/DESIGN.md).
+   Phase A of docs/MASTER_PROMPT_UI_CI_ALIGNMENT.md: values only. Loaded before mi-theme.css, which aliases its own --mb-* names to these.
+   Fonts are self-hosted in Phase B; --ci-font already lists the CI faces first and falls back to system Thai fonts. */
+:root {
+    /* canvas & surface */
+    --ci-canvas: #0a0d14; --ci-surface: #111622; --ci-elevated: #171f2e; --ci-highlight: #1f2b3e;
+    --ci-border: #222d3d; --ci-border-active: #354761; --ci-border-glow: rgba(187, 242, 70, .4);
+    /* brand */
+    --ci-primary: #bbf246; --ci-on-primary: #0a0d14; --ci-primary-glow: rgba(187, 242, 70, .25);
+    --ci-verified: #22c55e; --ci-gold: #facc15; --ci-danger: #ef4444;
+    /* text */
+    --ci-text: #f1f5f9; --ci-text-2: #94a3b8; --ci-text-3: #64748b;
+    /* shape */
+    --ci-r-md: 8px; --ci-r-lg: 16px; --ci-r-pill: 9999px;
+    /* spacing (8pt) */
+    --ci-gutter: 1.25rem; --ci-margin: 2rem; --ci-gutter-m: .75rem; --ci-margin-m: 1rem;
+    /* effects */
+    --ci-bloom: 0 0 24px -4px rgba(187, 242, 70, .22); --ci-btn-glow: 0 0 16px rgba(187, 242, 70, .4);
+    /* type */
+    --ci-font: "Plus Jakarta Sans", "Prompt", "Noto Sans Thai", "Leelawadee UI", Tahoma, system-ui, sans-serif;
+}

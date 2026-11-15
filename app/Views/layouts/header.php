@@ -21,10 +21,11 @@ require_once ROOT_PATH . '/app/Views/components/hw-art.php';
 <link rel="icon" type="image/png" sizes="32x32" href="<?= $base ?>/assets/brand/favicon-32x32.png?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/brand/favicon-32x32.png') ?>">
 <link rel="icon" type="image/png" sizes="16x16" href="<?= $base ?>/assets/brand/favicon-16x16.png?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/brand/favicon-16x16.png') ?>">
 <link rel="apple-touch-icon" sizes="180x180" href="<?= $base ?>/assets/brand/apple-touch-icon.png?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/brand/apple-touch-icon.png') ?>">
-<meta name="theme-color" content="#0d1110">
+<meta name="theme-color" content="#0a0d14">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/app.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/app.css') ?>">
+<link rel="stylesheet" href="<?= $base ?>/assets/ci-tokens.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/ci-tokens.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-theme.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/mi-theme.css') ?>">
 <script>(function(){var d=document.documentElement,q=matchMedia("(prefers-reduced-motion: reduce)").matches?"calm":"full",m=q;try{var s=localStorage.getItem("mi-motion");if(s==="full"||s==="calm"){m=s}}catch(e){}d.classList.add("js","motion-"+m)})()</script>
 </head>
