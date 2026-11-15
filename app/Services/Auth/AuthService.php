@@ -146,6 +146,24 @@ final class AuthService
         return ['ok' => true, 'user_id' => $id];
     }
 
+    /** Sets a new password for an existing active user (CLI recovery path; the password never leaves the process). */
+    public function resetPassword(string $email, string $password, ?int $actorId = null): array
+    {
+        $email = $this->normalizeEmail($email);
+        if (strlen($password) < 12) {
+            return ['ok' => false, 'error' => 'PASSWORD_TOO_SHORT'];
+        }
+        $stmt = $this->db->prepare('SELECT id FROM users WHERE email=:email LIMIT 1');
+        $stmt->execute(['email' => $email]);
+        $id = (int)$stmt->fetchColumn();
+        if ($id <= 0) {
+            return ['ok' => false, 'error' => 'USER_NOT_FOUND'];
+        }
+        $this->db->prepare('UPDATE users SET password_hash=:hash, updated_at=NOW() WHERE id=:id')
+            ->execute(['hash' => password_hash($password, $this->passwordAlgorithm()), 'id' => $id]);
+        $this->audit($actorId ?? $id, 'auth_password_reset', 'user', $id, ['email' => $email, 'via' => 'cli']);
+        return ['ok' => true, 'user_id' => $id];
+    }
     public function passwordAlgorithm(): string|int|null
     {
         return defined('PASSWORD_ARGON2ID') ? PASSWORD_ARGON2ID : PASSWORD_DEFAULT;
