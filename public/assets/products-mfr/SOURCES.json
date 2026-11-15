@@ -1,0 +1,6 @@
+{
+  "_note": "STAGING ONLY, not wired into the site. Downloaded once from the manufacturers' own product pages (og:image / product gallery) with an honest bot User-Agent. Usage rights are NOT confirmed: manufacturer product photos are copyrighted; get written permission or use the manufacturer press kit before showing them publicly.",
+  "corsair-rm750x": { "source_page": "https://www.corsair.com/us/en/p/psu/cp-9020285-na/rmx-series-rm750x-fully-modular-power-supply-cp-9020285-na", "image_origin": "assets.corsair.com (Cloudinary, width set to 800)", "fetched": "2026-11-15" },
+  "samsung-970-evo-plus-1tb": { "source_page": "https://www.samsung.com/uk/memory-storage/nvme-ssd/970-evo-plus-nvme-m-2-ssd-1tb-mz-v7s1t0bw/", "image_origin": "images.samsung.com (og:image thumbnail)", "fetched": "2026-11-15" },
+  "blocked": { "amd.com": "requests time out for automated clients (all 6 pages, 2 attempts); stopped, no workaround", "kingston.com": "HTTP 403 to automated clients; stopped, no workaround", "nvidia.com": "page loads but has no product photo of the card", "intel.com": "redirects to a different SKU page; not followed" }
+}

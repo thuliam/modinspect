@@ -1,0 +1,98 @@
+{
+    "amd": {
+        "file": "File:AMD Logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:AMD_Logo.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Advanced Micro Devices, Inc.",
+        "size": "500x120"
+    },
+    "nvidia": {
+        "file": "File:NVIDIA logo white.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:NVIDIA_logo_white.svg",
+        "license": "Apache License 2.0",
+        "restrictions": "trademarked",
+        "author": "Nvidia",
+        "size": "500x92"
+    },
+    "intel": {
+        "file": "File:Intel logo 2023.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Intel_logo_2023.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Intel",
+        "size": "500x194"
+    },
+    "asus": {
+        "file": "File:Asus blue logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Asus_blue_logo.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "ASUSTeK Computer Inc.",
+        "size": "500x106"
+    },
+    "gigabyte": {
+        "file": "File:Gigabyte logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Gigabyte_Technology_logo_20080107.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Koman90 at English Wikipedia",
+        "size": "500x64"
+    },
+    "asrock": {
+        "file": "File:ASRock Logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:ASRock_Logo.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "ASRock",
+        "size": "500x87"
+    },
+    "corsair": {
+        "file": "File:Corsair Gaming logo.png",
+        "page": "https://commons.wikimedia.org/wiki/File:Corsair_Gaming_logo.png",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Corsair",
+        "size": "500x499"
+    },
+    "kingston": {
+        "file": "File:Kingston Technology Corporation logo.png",
+        "page": "https://commons.wikimedia.org/wiki/File:Kingston_Technology_Corporation_logo.png",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "2DEEPCOOL1",
+        "size": "500x102"
+    },
+    "samsung": {
+        "file": "File:Samsung Logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Samsung_old_logo_before_year_2015.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Samsung",
+        "size": "500x167"
+    },
+    "wd": {
+        "file": "File:Western Digital logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Western_Digital_logo.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Western Digital Corporation",
+        "size": "500x154"
+    },
+    "cooler-master": {
+        "file": "File:Cooler Master black logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Cooler_Master_black_logo.svg",
+        "license": "Public domain",
+        "restrictions": "trademarked",
+        "author": "Cooler Master",
+        "size": "500x395"
+    },
+    "msi": {
+        "file": "File:Micro-Star International logo.svg",
+        "page": "https://commons.wikimedia.org/wiki/File:Micro-Star_International_logo.svg",
+        "license": "Public domain",
+        "restrictions": "",
+        "author": "Micro-Star International (MSI)",
+        "size": "500x126"
+    }
+}
