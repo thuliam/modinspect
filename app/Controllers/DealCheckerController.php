@@ -30,7 +30,8 @@ final class DealCheckerController extends Controller {
     public function result(string $uuid): void {
         $deal=(new DealCheck())->findByUuid($uuid);
         if (!$deal) { http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบผลการประเมิน']); return; }
-        $this->view('deal/result',['title'=>'ผลการประเมินราคา','deal'=>$deal]);
+        $model=new Product(); $product=$model->find((int)$deal['product_id']);
+        $this->view('deal/result',['title'=>'ผลการประเมินราคา','deal'=>$deal,'product'=>$product,'trend'=>$product?$model->trend((int)$product['id']):[],'similar'=>$product?$model->similar($product,(float)$deal['user_price'],4):[],'evidence_grades'=>$product?$model->evidenceGrades((int)$product['id']):['total'=>0,'owner_text'=>0]]);
     }
 }
 

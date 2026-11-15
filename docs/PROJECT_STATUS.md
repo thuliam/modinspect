@@ -860,3 +860,10 @@ Do not assume previous chat context exists.
 - Safety: Cloud REAL import performed: zero; Cloud authoritative REAL records modified: zero; review decisions on REAL: zero; price snapshots modified: zero; Cloud destructive operations: zero; external paid/API calls: zero.
 - Status: PASS / IMPORTS OPERATIONALLY READY FOR OWNER UAT.
 - Next: Owner performs authenticated UAT of Admin Imports with a TEST/MOCK dry run first.
+
+## [2026-11-15] [AGENT: Claude] - Dev/QA/Doc: price trend, deal-checker context, location log (DL-029)
+- Migrations `015_price_trend_points.sql`, `016_listing_location_log.sql` (also in `database/schema.sql`); applied to shared DEV (47 monthly points, 36 products).
+- New: `cli/price_trend_build.php`, `cli/location_log_import.php`, `App\Services\Research\LocationHint`, `components/trend-chart.php`, `components/similar-products.php`; `Product::trend()/similar()`; extractor emits private `location_hints.csv`.
+- Product page: monthly trend chart + nearby models. Deal result: model facts, grade note, trend, nearby models.
+- Tests: `tests/trend_location_test.php` added; full `tests/run.php` passed locally.
+- Open: location log is empty until the owner supplies the raw export path; trend needs more months (data is mostly Sep-Nov 2026).

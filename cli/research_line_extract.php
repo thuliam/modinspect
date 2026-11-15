@@ -20,6 +20,7 @@ use App\Core\Database;
 use App\Services\ProductResolver\ProductResolver;
 use App\Services\Research\ListingEnricher;
 use App\Services\Validation\ModelMarker;
+use App\Services\Research\LocationHint;
 
 $options = getopt('', ['file:', 'out:']);
 $file = (string)($options['file'] ?? '');
@@ -256,6 +257,7 @@ foreach ($messages as $mi => $message) {
     if (preg_match(SENSITIVE, $text)) { $stats['dropped_sensitive']++; continue; }
     if (!preg_match(HW_WORDS, $text) || !preg_match('/ราคา|ขาย|บาท|฿|\d,\d{3}/u', $text)) { $stats['not_hardware']++; continue; }
     $stats['hardware_messages']++;
+    $messageLocation = LocationHint::detect($text); // coarse province only, read before scrub
     $text = scrub($text);
 
     // sequential numbered items: 1, 2, 3 ... (works for "1." lines and inline "1/ ... 2/ ...")
@@ -337,6 +339,7 @@ foreach ($messages as $mi => $message) {
                 'efficiency' => $enriched['efficiency'],
                 'enrichment_status' => $enriched['enrichment_status'],
                 'missing_fields' => $enriched['missing_fields'],
+                'location_province' => (LocationHint::detect($block) ?? $messageLocation)['province'] ?? '',
                 'asking_price_thb' => $e['price']['value'],
                 'price_evidence' => $e['price']['kind'],
                 'shipping_included' => preg_match('/รวมส่ง|ส่งฟรี/u', $block) ? 'yes' : null,
@@ -412,6 +415,18 @@ foreach ($rows as $r) {
     fputcsv($fh, array_merge($line, ['owner_collected_facebook_text', 'OWNER_TEXT_NO_URL', 'asking']), ',', '"', '');
 }
 fclose($fh);
+
+// private coarse-location log (province only): kept apart from the sanitized listings file; import with cli/location_log_import.php
+$fh = fopen($outDir . '/location_hints.csv', 'wb');
+fputcsv($fh, ['row_id', 'note_date', 'province', 'region', 'category', 'model_key', 'asking_price_thb'], ',', '"', '');
+$hinted = 0;
+foreach ($rows as $r) {
+    if (($r['location_province'] ?? '') === '') { continue; }
+    $hinted++;
+    fputcsv($fh, [$r['row_id'], $r['note_date'], $r['location_province'], LocationHint::regionOf($r['location_province']), $r['category'], $r['model_key'] ?? '', $r['asking_price_thb']], ',', '"', '');
+}
+fclose($fh);
+$stats['rows_with_province'] = $hinted;
 
 $usable = array_values(array_filter($rows, static fn(array $r): bool => $r['duplicate_of_row'] === null && $r['listing_type'] === 'single_item' && $r['bundle_total_line'] === 'no' && $r['wanted_or_trade'] === 'no' && $r['defective_hint'] === 'no' && $r['price_anomaly'] === '' && $r['condition_class'] !== 'new_sealed'));
 $by = static function (array $set, string $field): array {

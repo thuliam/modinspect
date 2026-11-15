@@ -160,26 +160,25 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             <div class="mi-section-head compact">
                 <div>
                     <span class="eyebrow">ประวัติราคา</span>
-                    <h2>ประวัติราคากลาง</h2>
+                    <h2>แนวโน้มราคากลางรายเดือน</h2>
                 </div>
-                <span class="muted">แสดงเมื่อมีข้อมูลย้อนหลัง</span>
+                <span class="muted">จากวันที่ของประกาศที่ผ่านการตรวจ</span>
             </div>
-            <?php if ($history): ?>
-                <div class="history mi-history-list">
-                    <?php foreach ($history as $point): ?>
-                        <div>
-                            <span><?= htmlspecialchars($point['snapshot_date'] ?? $point['created_at'] ?? '-') ?></span>
-                            <strong>฿<?= number_format((float) $point['median']) ?></strong>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+            <?php if ($trend): ?>
+                <?php require ROOT_PATH . '/app/Views/components/trend-chart.php'; ?>
             <?php else: ?>
                 <div class="mini-empty">
                     <strong>ยังไม่มีข้อมูลย้อนหลังเพียงพอ</strong>
-                    <span>หน้ารุ่นนี้จะแสดงประวัติเมื่อมีชุดข้อมูลราคาหลายช่วงเวลา</span>
+                    <span>แนวโน้มรายเดือนจะแสดงเมื่อมีเดือนที่มีตัวอย่างที่ผ่านการตรวจอย่างน้อย 3 รายการ</span>
                 </div>
             <?php endif; ?>
         </section>
+        <?php if (!empty($similar)): ?>
+        <section class="card mi-history-card">
+            <div class="mi-section-head compact"><div><span class="eyebrow">เทียบรุ่นใกล้เคียง</span><h2>รุ่นอื่นที่ราคาใกล้กัน</h2></div></div>
+            <?php $ref = (float)($product['median'] ?? 0); require ROOT_PATH . '/app/Views/components/similar-products.php'; ?>
+        </section>
+        <?php endif; ?>
     <?php endif; ?>
     <section class="mi-trust" aria-label="อ่านราคานี้อย่างไร">
         <h2 class="mi-trust-title"><span class="mi-slash"></span>อ่านราคานี้อย่างไร</h2>

@@ -584,3 +584,32 @@ body.mi .site-footer .footer-links a { justify-content: flex-start; text-align: 
 body.mi button.disabled-control, body.mi button.disabled-control:disabled, body.mi .button.disabled-control { background: var(--ci-elevated); border: 1px solid var(--ci-border); color: var(--ci-text-2); opacity: .8; cursor: not-allowed; }
 /* brand tile without a logo file: the name in plain type, same footprint as a logo tile */
 body.mi .mi-brand-tile > span:not(.mi-brand-logo) { color: var(--ci-text); font-size: 16px; font-weight: 800; letter-spacing: .02em; }
+
+/* ---- Trend chart + similar products (DL-029) ---- */
+body.mi .mi-trend svg { width: 100%; height: auto; max-height: 260px; display: block; }
+body.mi .mi-trend-grid { stroke: var(--ci-border); stroke-width: 1; }
+body.mi .mi-trend-axis { fill: var(--ci-text-3, #8b93a7); font-size: 11px; font-family: var(--ci-font); }
+body.mi .mi-trend-band { fill: var(--ci-primary); opacity: .14; }
+body.mi .mi-trend-line { fill: none; stroke: var(--ci-primary); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+body.mi .mi-trend-dot { fill: var(--ci-primary); stroke: var(--ci-surface); stroke-width: 2; }
+body.mi .mi-trend-table { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
+body.mi .mi-trend-table li { display: grid; grid-template-columns: 72px 96px 1fr; gap: 12px; align-items: baseline; padding: 6px 0; border-top: 1px solid var(--ci-border); font-size: .9rem; }
+body.mi .mi-trend-table b { font-variant-numeric: tabular-nums; color: var(--ci-text); }
+body.mi .mi-trend-table em { font-style: normal; color: var(--ci-text-3, #8b93a7); }
+body.mi .mi-trend-note { margin: 12px 0 0; color: var(--ci-text-2); font-size: .88rem; }
+body.mi .mi-similar { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+body.mi .mi-similar li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 14px; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); }
+body.mi .mi-similar a { display: grid; gap: 2px; color: var(--ci-text); text-decoration: none; min-width: 0; }
+body.mi .mi-similar a:hover .mi-similar-name { color: var(--ci-primary); }
+body.mi .mi-similar-name { font-weight: 600; overflow-wrap: anywhere; }
+body.mi .mi-similar-why { color: var(--ci-text-3, #8b93a7); font-size: .82rem; }
+body.mi .mi-similar-price { display: grid; text-align: right; font-variant-numeric: tabular-nums; }
+body.mi .mi-similar-price small.up { color: #ffb86b; }
+body.mi .mi-similar-price small.down { color: var(--ci-primary); }
+body.mi .mi-deal-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 0; }
+body.mi .mi-deal-facts div { display: grid; gap: 2px; }
+body.mi .mi-deal-facts dt { color: var(--ci-text-3, #8b93a7); font-weight: 400; font-size: .82rem; }
+body.mi .mi-deal-facts dd { margin: 0; font-weight: 600; }
+@media (max-width: 575px) { body.mi .mi-trend-table li { grid-template-columns: 64px 84px 1fr; gap: 8px; font-size: .84rem; } }
+
+body.mi .mi-deal-more { display: grid; gap: 24px; margin-top: 24px; }
