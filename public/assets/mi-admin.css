@@ -1,0 +1,107 @@
+/* Admin in the CI dark look (Sprint 2, S2-3). Loaded after admin/css/admin.css (which is not edited): it re-points the admin variables to the
+   CI tokens and overrides the Bootstrap 4 pieces that hard-code a light theme. Scoped to body.mi-admin-body; public pages do not load it. */
+:root {
+    --mi-sidebar: var(--ci-canvas);
+    --mi-sidebar-link: var(--ci-text-2);
+    --mi-sidebar-link-hover: var(--ci-text);
+    --mi-sidebar-muted: var(--ci-text-2);
+    --mi-sidebar-active: var(--ci-elevated);
+    --mi-bg: var(--ci-canvas);
+    --mi-card: var(--ci-surface);
+    --mi-border: var(--ci-border);
+    --mi-text: var(--ci-text);
+    --mi-muted: var(--ci-text-2);
+    --mi-blue: var(--ci-primary);
+    --mi-green: var(--ci-verified);
+    --mi-amber: var(--ci-gold);
+    --mi-red: var(--ci-danger);
+}
+body.mi-admin-body { background: var(--ci-canvas); color: var(--ci-text); font-family: var(--ci-font); }
+body.mi-admin-body h1, body.mi-admin-body h2, body.mi-admin-body h3, body.mi-admin-body h4, body.mi-admin-body h5, body.mi-admin-body h6 { color: var(--ci-text); font-family: var(--ci-font); font-weight: 700; }
+body.mi-admin-body a { color: var(--ci-primary); }
+body.mi-admin-body a:hover { color: var(--ci-primary); text-decoration: underline; text-underline-offset: 3px; }
+body.mi-admin-body .text-muted, body.mi-admin-body small, body.mi-admin-body .small { color: var(--ci-text-2) !important; }
+body.mi-admin-body :focus-visible { outline: 0; box-shadow: 0 0 0 2px var(--ci-canvas), 0 0 0 4px var(--ci-primary); }
+
+/* shell */
+body.mi-admin-body .mi-admin-topbar .navbar, body.mi-admin-body .navbar.bg-white, body.mi-admin-body .navbar-light { background: var(--ci-surface) !important; border-bottom: 1px solid var(--ci-border); }
+body.mi-admin-body .mi-admin-topbar .navbar-brand, body.mi-admin-body .mi-topbar-context, body.mi-admin-body .navbar-light .navbar-brand { color: var(--ci-text); }
+body.mi-admin-body .mi-admin-sidebar { background: var(--ci-canvas); border-right: 1px solid var(--ci-border); }
+body.mi-admin-body .mi-admin-sidebar .nav-link, body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-link { color: var(--ci-text-2); border-radius: var(--ci-r-md); }
+body.mi-admin-body .mi-admin-sidebar .nav-link:hover, body.mi-admin-body .mi-admin-sidebar .nav-link:focus { background: var(--ci-elevated); color: var(--ci-text); }
+body.mi-admin-body .mi-admin-sidebar .nav-link.active, body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-link.active { background: var(--ci-elevated); color: var(--ci-primary); box-shadow: inset 3px 0 0 var(--ci-primary); }
+body.mi-admin-body .mi-admin-sidebar .nav-link i, body.mi-admin-body .mi-admin-sidebar .navbar-light .navbar-nav .nav-link i { color: inherit; }
+body.mi-admin-body .mi-user-card, body.mi-admin-body .dropdown-menu { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text); }
+body.mi-admin-body .dropdown-item { color: var(--ci-text); }
+body.mi-admin-body .dropdown-item:hover, body.mi-admin-body .dropdown-item:focus { background: var(--ci-elevated); color: var(--ci-primary); }
+body.mi-admin-body .mi-user-avatar { background: var(--ci-elevated); color: var(--ci-primary); border: 1px solid var(--ci-border-active); }
+
+/* cards, metrics, headers */
+body.mi-admin-body .card, body.mi-admin-body .mi-admin-card, body.mi-admin-body .mi-metric-card, body.mi-admin-body .mi-table-card, body.mi-admin-body .mi-product-form-card, body.mi-admin-body .modal-content { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); box-shadow: none; color: var(--ci-text); }
+body.mi-admin-body .card-header, body.mi-admin-body .card-footer, body.mi-admin-body .modal-header, body.mi-admin-body .modal-footer, body.mi-admin-body .bg-white, body.mi-admin-body .bg-light { background: var(--ci-elevated) !important; border-color: var(--ci-border); color: var(--ci-text); }
+body.mi-admin-body .mi-page-header { color: var(--ci-text); border-color: var(--ci-border); }
+body.mi-admin-body .mi-metric-card strong, body.mi-admin-body .mi-metric-card b { color: var(--ci-primary); font-variant-numeric: tabular-nums; font-weight: 800; }
+body.mi-admin-body .mi-metric-warning { border-color: rgba(250, 204, 21, .5); }
+body.mi-admin-body .mi-backlog-callout, body.mi-admin-body .mi-status-list li, body.mi-admin-body .mi-definition-grid > * { background: var(--ci-elevated); border-color: var(--ci-border); color: var(--ci-text-2); }
+
+/* tables (Bootstrap + DataTables) */
+body.mi-admin-body .table, body.mi-admin-body table.dataTable, body.mi-admin-body .mi-admin-table { color: var(--ci-text); background: transparent; }
+body.mi-admin-body .table thead th, body.mi-admin-body table.dataTable thead th, body.mi-admin-body .mi-admin-table thead th { background: var(--ci-highlight); color: var(--ci-text-2); border-bottom: 1px solid var(--ci-border); border-top: 0; font-size: 12px; font-weight: 600; }
+body.mi-admin-body .table td, body.mi-admin-body .table th, body.mi-admin-body table.dataTable td, body.mi-admin-body .mi-admin-table td { border-top: 1px solid var(--ci-border); color: var(--ci-text); background: transparent; }
+body.mi-admin-body .table-hover tbody tr:hover td, body.mi-admin-body table.dataTable tbody tr:hover td, body.mi-admin-body .mi-admin-table tbody tr:hover td { background: var(--ci-elevated); }
+body.mi-admin-body .table-striped tbody tr:nth-of-type(odd) td, body.mi-admin-body table.dataTable.stripe tbody tr.odd td { background: rgba(255, 255, 255, .02); }
+body.mi-admin-body .mi-admin-table .mi-row-subtitle, body.mi-admin-body .mi-admin-table small { color: var(--ci-text-2); }
+body.mi-admin-body .dataTables_wrapper, body.mi-admin-body .dataTables_info, body.mi-admin-body .dataTables_length, body.mi-admin-body .dataTables_filter, body.mi-admin-body .dataTables_paginate { color: var(--ci-text-2); }
+body.mi-admin-body .page-link { background: var(--ci-elevated); border: 1px solid var(--ci-border); color: var(--ci-text-2); }
+body.mi-admin-body .page-link:hover { background: var(--ci-highlight); color: var(--ci-primary); }
+body.mi-admin-body .page-item.active .page-link { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi-admin-body .page-item.disabled .page-link { background: var(--ci-surface); color: var(--ci-text-2); opacity: .55; }
+
+/* forms and buttons */
+body.mi-admin-body .form-control, body.mi-admin-body .custom-select, body.mi-admin-body select, body.mi-admin-body textarea, body.mi-admin-body input[type=text], body.mi-admin-body input[type=search], body.mi-admin-body input[type=number], body.mi-admin-body input[type=email], body.mi-admin-body input[type=password], body.mi-admin-body input[type=date] { background: var(--ci-search, #131722); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text); }
+body.mi-admin-body .form-control:focus, body.mi-admin-body .custom-select:focus, body.mi-admin-body select:focus, body.mi-admin-body textarea:focus { background: var(--ci-search, #131722); border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); color: var(--ci-text); }
+body.mi-admin-body .form-control::placeholder { color: var(--ci-text-2); opacity: .8; }
+body.mi-admin-body .form-control:disabled, body.mi-admin-body .form-control[readonly] { background: var(--ci-elevated); color: var(--ci-text-2); }
+body.mi-admin-body .mi-field-label, body.mi-admin-body label { color: var(--ci-text-2); font-weight: 600; }
+body.mi-admin-body .btn { border-radius: var(--ci-r-md); font-weight: 700; }
+body.mi-admin-body .btn-primary { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi-admin-body .btn-primary:hover, body.mi-admin-body .btn-primary:focus { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); box-shadow: var(--ci-btn-glow); }
+body.mi-admin-body .btn-outline-primary, body.mi-admin-body .btn-secondary, body.mi-admin-body .btn-light, body.mi-admin-body .btn-outline-secondary { background: var(--ci-elevated); border: 1px solid var(--ci-btn-border, #273142); color: var(--ci-text); }
+body.mi-admin-body .btn-outline-primary:hover, body.mi-admin-body .btn-secondary:hover, body.mi-admin-body .btn-light:hover, body.mi-admin-body .btn-outline-secondary:hover { border-color: var(--ci-primary); color: var(--ci-primary); background: var(--ci-elevated); }
+body.mi-admin-body .btn-success { background: rgba(34, 197, 94, .15); border: 1px solid var(--ci-verified); color: var(--ci-verified); }
+body.mi-admin-body .btn-danger, body.mi-admin-body .btn-outline-danger { background: rgba(239, 68, 68, .12); border: 1px solid var(--ci-danger); color: var(--ci-danger); }
+body.mi-admin-body .btn-warning { background: rgba(250, 204, 21, .12); border: 1px solid var(--ci-gold); color: var(--ci-gold); }
+body.mi-admin-body .btn:disabled, body.mi-admin-body .btn.disabled { opacity: .45; }
+
+/* status chips and alerts */
+body.mi-admin-body .mi-status-approved { background: rgba(34, 197, 94, .15); color: var(--ci-verified); border: 1px solid var(--ci-verified); }
+body.mi-admin-body .mi-status-pending { background: rgba(250, 204, 21, .12); color: var(--ci-gold); border: 1px solid var(--ci-gold); }
+body.mi-admin-body .mi-status-rejected { background: rgba(239, 68, 68, .12); color: var(--ci-danger); border: 1px solid var(--ci-danger); }
+body.mi-admin-body .mi-status-excluded { background: var(--ci-elevated); color: var(--ci-text-2); border: 1px solid var(--ci-border-active); }
+body.mi-admin-body .badge { border-radius: var(--ci-r-pill); font-weight: 600; }
+body.mi-admin-body .badge-success { background: rgba(34, 197, 94, .15); color: var(--ci-verified); border: 1px solid var(--ci-verified); }
+body.mi-admin-body .badge-warning { background: rgba(250, 204, 21, .12); color: var(--ci-gold); border: 1px solid var(--ci-gold); }
+body.mi-admin-body .badge-danger { background: rgba(239, 68, 68, .12); color: var(--ci-danger); border: 1px solid var(--ci-danger); }
+body.mi-admin-body .badge-secondary, body.mi-admin-body .badge-light, body.mi-admin-body .badge-info { background: var(--ci-elevated); color: var(--ci-text-2); border: 1px solid var(--ci-border-active); }
+body.mi-admin-body .alert { border-radius: var(--ci-r-md); background: var(--ci-elevated); border: 1px solid var(--ci-border-active); color: var(--ci-text); }
+body.mi-admin-body .alert-success { background: rgba(34, 197, 94, .1); border-color: rgba(34, 197, 94, .5); }
+body.mi-admin-body .alert-warning { background: rgba(250, 204, 21, .08); border-color: rgba(250, 204, 21, .5); }
+body.mi-admin-body .alert-danger { background: rgba(239, 68, 68, .1); border-color: rgba(239, 68, 68, .5); }
+body.mi-admin-body .alert-info { background: rgba(187, 242, 70, .06); border-color: rgba(187, 242, 70, .35); }
+body.mi-admin-body hr, body.mi-admin-body .border, body.mi-admin-body .border-top, body.mi-admin-body .border-bottom { border-color: var(--ci-border) !important; }
+body.mi-admin-body pre, body.mi-admin-body code { background: var(--ci-elevated); color: var(--ci-text); border-radius: var(--ci-r-md); }
+
+/* ---- fixes from the visual sweep (11 admin pages x 2 widths) ---- */
+body.mi-admin-body .mi-row-title, body.mi-admin-body .mi-admin-table .mi-row-title { color: var(--ci-text); }
+body.mi-admin-body .mi-breadcrumb, body.mi-admin-body .mi-page-header .mi-breadcrumb { color: var(--ci-text-2); }
+body.mi-admin-body .review-filter-panel, body.mi-admin-body .mi-table-toolbar, body.mi-admin-body .mi-products-table-header { background: var(--ci-elevated); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text-2); }
+body.mi-admin-body .review-filter-panel label, body.mi-admin-body .mi-table-toolbar label { color: var(--ci-text-2); }
+body.mi-admin-body .notice { background: rgba(250, 204, 21, .08); border: 1px solid rgba(250, 204, 21, .45); border-radius: var(--ci-r-md); color: var(--ci-text); }
+body.mi-admin-body .lane-badge { border-radius: var(--ci-r-pill); font-weight: 700; border: 1px solid var(--ci-border-active); background: var(--ci-elevated); color: var(--ci-text-2); }
+body.mi-admin-body .lane-badge.lane-green { background: rgba(34, 197, 94, .15); border-color: var(--ci-verified); color: var(--ci-verified); }
+body.mi-admin-body .lane-badge.lane-amber { background: rgba(250, 204, 21, .12); border-color: var(--ci-gold); color: var(--ci-gold); }
+body.mi-admin-body .lane-badge.lane-red { background: rgba(239, 68, 68, .12); border-color: var(--ci-danger); color: var(--ci-danger); }
+body.mi-admin-body input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=submit]):not([type=button]):not([type=file]) { background: var(--ci-search, #131722); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); color: var(--ci-text); }
+body.mi-admin-body input[type=checkbox], body.mi-admin-body input[type=radio] { accent-color: var(--ci-primary); }
+body.mi-admin-body .mi-admin-main, body.mi-admin-body .mi-admin-content { min-width: 0; }
+body.mi-admin-body .mi-table-card, body.mi-admin-body .mi-admin-card { overflow-x: auto; }
