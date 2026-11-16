@@ -20,8 +20,11 @@ final class Product
         $sql = $this->select . " WHERE p.is_active=1";
         $params = [];
         if ($query !== '') {
-            $sql .= " AND (p.full_name LIKE :q_full OR p.model_name LIKE :q_model OR EXISTS(SELECT 1 FROM product_aliases pa WHERE pa.product_id=p.id AND pa.alias_text LIKE :q_alias))";
+            // the original substring match stays as it was; SearchQuery adds the compact and any-order-words matches (they only add results)
+            $extra = \App\Services\Search\SearchQuery::extraConditions($query);
+            $sql .= " AND (p.full_name LIKE :q_full OR p.model_name LIKE :q_model OR EXISTS(SELECT 1 FROM product_aliases pa WHERE pa.product_id=p.id AND pa.alias_text LIKE :q_alias)" . ($extra['sql'] !== '' ? ' OR ' . $extra['sql'] : '') . ")";
             $params['q_full'] = $params['q_model'] = $params['q_alias'] = "%$query%";
+            $params += $extra['params'];
         }
         if ($category) { $sql .= " AND c.slug=:category"; $params['category'] = $category; }
         $sql .= " ORDER BY p.is_popular DESC, p.full_name";

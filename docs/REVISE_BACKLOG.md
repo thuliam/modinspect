@@ -42,6 +42,7 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - J-2: no MFA, no forced sign-out of other sessions (sessions are PHP files not indexed by user; a server-side session table would allow it), no password-strength meter or breach check, no invitation/reset by email (zero-cost policy: no mail service), no per-user audit view in the UI.
 - J-4: the limiter is per address and fixed-window (a burst across a window boundary can pass twice the budget); a trusted-proxy setting for HostAtom and a sliding window are possible refinements. Admin login keeps its own throttle; admin POSTs have no limiter (authenticated).
 - J-3b (needs owner approval, it writes to DEV from the web): slice 2 = import the prepared rows from the screen, slice 3 = apply the approval plan from the screen with the acting admin recorded. Rules to keep: dry run first, show the plan, require a confirmation that names the counts, audit every step, never approve REAL (Priceza) rows.
+- J-5: typo tolerance is not done ("rtx 3079", "ryzn 5600" return nothing); a "did you mean" line from edit distance over product names is the cheapest next step. The golden set is 34 queries written by the agent: real visitor queries (search logs do not exist yet) would be a better set. No ranking by match quality beyond popularity then name.
 
 ## Owner-listed features (to be filled by the owner)
 

@@ -54,6 +54,7 @@ $commands = [
     ['label' => 'tests/rate_limit_http_test.php', 'args' => ['tests/rate_limit_http_test.php']],
     ['label' => 'tests/owner_intake_dryrun_test.php', 'args' => ['tests/owner_intake_dryrun_test.php']],
     ['label' => 'tests/intake_http_test.php', 'args' => ['tests/intake_http_test.php']],
+    ['label' => 'tests/search_query_test.php', 'args' => ['tests/search_query_test.php']],
     ['label' => 'tests/duplicate_post_report_test.php', 'args' => ['tests/duplicate_post_report_test.php']],
     ['label' => 'tests/snapshot_evidence_report_test.php', 'args' => ['tests/snapshot_evidence_report_test.php']],
     ['label' => 'tests/golden_resolver_test.php', 'args' => ['tests/golden_resolver_test.php']],
