@@ -58,7 +58,14 @@ final class DatabaseBackup
             $code = proc_close($p);
             $bytes = is_file($outFile) ? (int)filesize($outFile) : 0;
             if ($code === 0 && $bytes > 0) {
-                @chmod($outFile, 0600);   // password hashes and raw listing text inside: owner-only
+                // password hashes and raw listing text inside: owner-only. Fail closed: a dump that cannot be restricted is deleted, not kept readable.
+                $chmodOk = @chmod($outFile, 0600);
+                clearstatcache(true, $outFile);
+                $mode = (int)(@fileperms($outFile) ?: 0) & 0777;
+                if (PHP_OS_FAMILY !== 'Windows' && ($mode & 0077) !== 0) {
+                    @unlink($outFile);
+                    return ['ok' => false, 'bytes' => 0, 'error' => sprintf('BACKUP_PERMISSIONS_NOT_RESTRICTED:chmod=%s mode=%s owner=%s me=%s', $chmodOk ? 'true' : 'false', decoct($mode), (string)@fileowner($outFile), (string)getmyuid())];
+                }
                 return ['ok' => true, 'bytes' => $bytes, 'error' => null];
             }
             @unlink($outFile);
