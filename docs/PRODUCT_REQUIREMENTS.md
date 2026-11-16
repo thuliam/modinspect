@@ -31,7 +31,7 @@ Tags: `CONFIRMED` (owner direction, in MVP) Â· `HYPOTHESIS` (idea to validate) Â
 | R-08 | Free initial audience growth before monetisation | CONFIRMED | Owner | Product posture only |
 | R-09 | Brand CI (Corporate Identity) and design tokens as a single design system | CONFIRMED | Owner | Directions drafted; owner choice required |
 | R-10 | Reproducible, hash-pinned UI dependencies; clean checkout boots | CONFIRMED | Owner | Delivered this baseline (uncommitted) |
-| R-11 | Community reports of wrong/missing price or product; voluntary sold-price reports as moderated evidence | HYPOTHESIS | Messenger | Sprint 4 candidate; needs owner approval of scope and privacy copy |
+| R-11 | Community reports of wrong/missing price or product; voluntary sold-price reports as moderated evidence | HYPOTHESIS | Messenger | Sprint 4 candidate; needs owner approval of scope and privacy copy. Design record: `docs/decisions/ADR-006-community-feedback-v0-design.md` (2026-11-17, nothing built) |
 | R-12 | Seller listing tools / price advisor | DEFERRED | Messenger | Prototype views exist; not launch scope |
 | R-13 | Buy/sell matching, local matching | DEFERRED | Messenger | Prototype views only |
 | R-14 | Ads, subscriptions, premium tiers | DEFERRED | Messenger | After audience exists |
