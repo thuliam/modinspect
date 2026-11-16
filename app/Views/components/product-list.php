@@ -12,6 +12,7 @@ $mi_ready = array_values(array_filter($products, $mi_has_price));
 $mi_pending = array_values(array_filter($products, static fn(array $p): bool => !$mi_has_price($p)));
 ?>
 <?php if ($mi_ready): ?>
+    <?php if (!empty($mi_list_heading)): ?><h2 class="sr-only"><?= htmlspecialchars($mi_list_heading) ?></h2><?php endif; ?>
     <?php $miArtFor = static fn(string $n): string => match (strtolower(trim($n))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' }; ?>
     <?php
     // adaptive layout: one answer is a wide featured card; 2-4 share the row; 5+ become a grid of at most four columns

@@ -8,7 +8,7 @@
                 <p class="small">ข้อมูลเป็นราคาประกาศมือสองที่ผ่านการคัดกรอง ไม่ใช่ราคาปิดดีลหรือคำรับรองมูลค่าสุดท้าย</p>
             </div>
             <div class="col-6 col-lg-2 mb-4">
-                <h4>เมนูหลัก</h4>
+                <h4 aria-level="2">เมนูหลัก</h4>
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>/">หน้าแรก</a></li>
                     <li><a href="<?= $base ?>/price">เช็กราคา</a></li>
@@ -17,7 +17,7 @@
                 </ul>
             </div>
             <div class="col-6 col-lg-3 mb-4">
-                <h4>หมวดสินค้า</h4>
+                <h4 aria-level="2">หมวดสินค้า</h4>
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>/price?category=cpu">CPU</a></li>
                     <li><a href="<?= $base ?>/price?category=gpu">GPU</a></li>
@@ -26,7 +26,7 @@
                 </ul>
             </div>
             <div class="col-lg-3 mb-4">
-                <h4>ความโปร่งใส</h4>
+                <h4 aria-level="2">ความโปร่งใส</h4>
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>/methodology">ราคามาจากไหน</a></li>
                     <li><a href="<?= $base ?>/methodology">ข้อจำกัดของข้อมูล</a></li>

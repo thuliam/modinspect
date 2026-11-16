@@ -81,6 +81,7 @@ Dated, short, with consequences. Owner-level decisions are marked **OWNER**. ADR
 | DL-066 | Condition checklist is a buyer reminder, never a certification and never part of the verdict (LS-3 J-6, autonomous run) | General inspection practice in neutral words, no numbers or failure rates, prompts only from the visitor's own answers, fixed disclaimer, no call to the price engine. The owner reviews the Thai text. | Owner |
 | DL-067 | Snapshot chart stays admin-only; ladder flags cover CPU and RAM; beta readiness panel reads the checklist (LS-3 J-7..J-9, autonomous run) | A public chart of per-calculation medians would show evidence growth as market movement, so only the monthly-by-listing-date trend is public. CPU and RAM ladders are narrow on purpose. The readiness panel never keeps its own copy of the rules: the checklist file is the source and measured rows are overlaid. | Owner |
 | DL-068 | Community feedback v0 is a design record (ADR-006), recommended option A (LS-3 J-10, autonomous run) | Structured, anonymous, moderated, never able to change a price; build only after the owner approves scope and privacy wording. | Owner |
+| DL-069 | Heading order fixed with aria-level and a hidden h2, not by retagging (LS-3 J-11, autonomous run) | Retagging can change styles; an aria-level on an existing heading and a visually hidden heading cannot. Proven by a same-document before/after style hash and locked by a test over 9 public pages. | Owner |
 
 
 ## Reconcile plan for branches (OWNER decision)

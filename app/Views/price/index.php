@@ -30,7 +30,7 @@
     </div>
 
     <?php if ($products): ?>
-        <?php require ROOT_PATH . '/app/Views/components/product-list.php'; ?>
+        <?php $mi_list_heading = 'รุ่นที่มีราคาตลาดแล้ว'; require ROOT_PATH . '/app/Views/components/product-list.php'; ?>
     <?php else: ?>
         <div class="mi-empty-state">
             <h2>ไม่พบสินค้าที่ค้นหา</h2>
