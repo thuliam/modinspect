@@ -48,6 +48,8 @@ Dated, short, with consequences. Owner-level decisions are marked **OWNER**. ADR
 
 | DL-035 | Claude took over the Codex lane (owner, 2026-11-16); LS-1 data/backend/test tasks D-1..D-8 done | New: cross-batch duplicate filter for owner-intake files (row ids are per extraction, so id checks miss repeats), province repost marker + report (migration 017), per-snapshot evidence report and admin page, golden resolver test (19 cases), migration/dump drift guard, Thai spec summaries (migration 018, 81 rows), calibration report with fixture and live apart. Findings: the new extraction contributes 0 new CPU/GPU listings (nothing imported); repost rate 31.7% overall and 55.5% for Nonthaburi, so the province log is skewed by repeated posts; live green precision (99.72%) is not independent review evidence. DEV writes: migrations 017 and 018, repost marker on 682 log rows. | Owner |
 
+| DL-036 | Public CSS: shadowed-rule removal; dark Bootstrap theme evaluated and not adopted (owner: "จัดเลย", 2026-11-16) | 153 + 61 rules removed on browser evidence (zero computed-style change on 14 pages at 1440 and 390 px, transitions off); the method first gave a wrong result because CSS transitions hid differences, fixed and re-run. Bootswatch Darkly 4.6.2 (MIT) downloaded once on approval (external font @import stripped), measured (14 of 455 home elements differ) and deleted: the theme layer, not the base, holds the dark identity. Layout-only rules remain (39% / 18%): further reduction needs a public template (owner). | Owner |
+
 
 ## Reconcile plan for branches (OWNER decision)
 

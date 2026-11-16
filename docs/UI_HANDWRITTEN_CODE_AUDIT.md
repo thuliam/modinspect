@@ -32,3 +32,9 @@ This is the honest inventory of what agents wrote by hand, and what replaces it.
 
 - Layout-only rules (replaceable by Bootstrap utilities): `app.css` 210 of 541 (39%), `mi-theme.css` 88 of 480 (18%). The remainder is theme (colour, background, border, type) that Bootstrap 4 does not supply for a dark identity.
 - Not converted: ~15 views would need markup rewrites for a small CSS saving and regression risk. Owner options are recorded on `docs/SPRINT_BOARD.md` row C-7 (accept the theme layer, approve a dark Bootstrap 4 theme download, or supply a public template).
+
+## Update 2026-11-16 (shadowed-rule removal)
+
+- `app.css` 1207 -> about 1000 lines and 49,564 -> 41,160 bytes; `mi-theme.css` 605 -> about 545 lines and 62,279 -> 56,406 bytes, by removing rules proven redundant in a browser (no computed-style change on 14 pages x 2 widths, transitions off). Tool: `scripts/remove_shadowed_css.php`.
+- Lesson recorded: measure with CSS transitions disabled, otherwise computed styles lag and real differences look like none.
+- A dark Bootstrap theme as base was evaluated and rejected (only 14 of 455 home elements differ, little to delete).
