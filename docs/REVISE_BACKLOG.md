@@ -47,6 +47,7 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - J-7..J-9: the readiness panel measures 6 of 35 rows; more could be measured (CI status through the GitHub API needs a token: not done, secrets). The CPU ladder ignores cross-suffix comparisons (X vs non-X, F vs non-F) that a buyer would care about; a defensible rule needs real price data per pair. The admin chart shows medians only (no Q1-Q3 band).
 - J-10: the design needs the owner for three things before any build: option A/B/C, the visitor-facing privacy wording (and whether a legal review is wanted), and who moderates. Sold-price reports have little to attach to until a listing-level second source exists.
 - J-11: admin pages were not checked for heading order (the admin theme is a third-party template); the hidden h2 label text is Thai only. A proper outline pass (home sections, product page) would need design review, not just attributes.
+- J-12: the product page shows `spec_summary` text only; structured specs (VRAM, TDP, socket, release year) and a PSU recommendation in /build would be real features, but they need a display design and sourced values first (`docs/CATALOG_SPEC_AUDIT.md` option C). /build also has no check that the PSU or case fits the chosen parts.
 
 ## Owner-listed features (to be filled by the owner)
 

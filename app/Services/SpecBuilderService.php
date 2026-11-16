@@ -35,9 +35,13 @@ final class SpecBuilderService
         }
         $notes='ตรวจ socket เมนบอร์ด, กำลัง PSU และขนาดเคสก่อนซื้อ';
         $compatibilityError=null;
-        if($cpu&&$motherboard&&$cpu['socket']!==$motherboard['socket']) {$notes='ไม่รองรับ: CPU socket '.$cpu['socket'].' แต่เมนบอร์ดเป็น '.$motherboard['socket'];$compatibilityError=$notes;}
+        // an EMPTY value in the catalog means "unknown", never "different": only two known, different values are an incompatibility
+        $known=static fn($v): bool => trim((string)$v)!=='';
+        if($cpu&&$motherboard&&$known($cpu['socket'])&&$known($motherboard['socket'])&&$cpu['socket']!==$motherboard['socket']) {$notes='ไม่รองรับ: CPU socket '.$cpu['socket'].' แต่เมนบอร์ดเป็น '.$motherboard['socket'];$compatibilityError=$notes;}
+        elseif($cpu&&$motherboard&&(!$known($cpu['socket'])||!$known($motherboard['socket']))) $notes='ไม่ทราบ socket ของ CPU หรือเมนบอร์ด กรุณาตรวจ socket เองก่อนซื้อ';
         elseif($cpu&&$motherboard) $notes='CPU และเมนบอร์ดรองรับ socket '.$cpu['socket'];
-        if($ram&&$motherboard&&$ram['memory_type']!==$motherboard['memory_type']) {$memoryError='RAM '.$ram['memory_type'].' ไม่ตรงกับเมนบอร์ด '.$motherboard['memory_type'];$notes.='; '.$memoryError;$compatibilityError=$compatibilityError?($compatibilityError.'; '.$memoryError):$memoryError;}
+        if($ram&&$motherboard&&(!$known($ram['memory_type'])||!$known($motherboard['memory_type']))) $notes.='; ไม่ทราบชนิดหน่วยความจำของ RAM หรือเมนบอร์ด กรุณาตรวจเองว่าเป็นชนิดเดียวกัน';
+        elseif($ram&&$motherboard&&$ram['memory_type']!==$motherboard['memory_type']) {$memoryError='RAM '.$ram['memory_type'].' ไม่ตรงกับเมนบอร์ด '.$motherboard['memory_type'];$notes.='; '.$memoryError;$compatibilityError=$compatibilityError?($compatibilityError.'; '.$memoryError):$memoryError;}
         if($gpu && $resolution==='4k') $notes.='; RTX 3070 เหมาะกับ 1440p มากกว่า 4K และควรพิจารณา GPU ระดับสูงกว่า';
         if($mix==='new') $notes.='; ดัชนีนี้เป็นราคามือสอง จึงควรเทียบราคาของใหม่เพิ่มเติม';
         $selectedCategories=array_map(fn($p)=>strtolower((string)$p['category_name']),$selected);
