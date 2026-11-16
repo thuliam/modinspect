@@ -23,3 +23,6 @@ Thumbs.db
 .DS_Store
 storage/import_uploads/
 storage/research/
+
+# Database backups hold everything (password hashes, raw listing text): never commit them
+storage/backups/

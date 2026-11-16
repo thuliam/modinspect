@@ -6,6 +6,7 @@ use App\Controllers\DealCheckerController;
 use App\Controllers\HomeController;
 use App\Controllers\PriceController;
 use App\Controllers\SeoController;
+use App\Controllers\HealthController;
 use App\Controllers\ModuleController;
 use App\Controllers\AdminController;
 use App\Controllers\AuthController;
@@ -13,6 +14,7 @@ use App\Core\Router;
 
 $router=new Router();
 $router->get('/',[HomeController::class,'index']);
+$router->get('/health',[HealthController::class,'check']);
 $router->get('/robots.txt',[SeoController::class,'robots']);
 $router->get('/sitemap.xml',[SeoController::class,'sitemap']);
 $router->get('/price',[PriceController::class,'index']);
