@@ -1,7 +1,6 @@
-# Proposed PR #4 description (not applied)
+# PR #4 description (applied 2026-11-16 on the owner's request)
 
-The current PR #4 description stops at the Sprint 0/1 baseline and the public redesign (37 test steps). This is the proposed replacement. Apply with
-`gh pr edit 4 --body-file docs/PR4_BODY_PROPOSED.md` only after the owner agrees (the PR text is shared content).
+Source of the current PR #4 description (applied with `gh pr edit 4 --body-file`; the text below the line is the body).
 
 ---
 
@@ -14,7 +13,7 @@ The current PR #4 description stops at the Sprint 0/1 baseline and the public re
 **Public site redesign (DL-015..DL-020)**
 - Bootstrap 4.1 + jQuery 3.3 + Font Awesome 5.0.9 only (no new framework, no CDN), scoped `body.mi` theme, owner brand kit, self-hosted fonts, AA contrast, 44px tap targets.
 
-**Long Sprint LS-1 (DL-021..DL-040)**
+**Long Sprint LS-1 (DL-021..DL-043)**
 - Data: owner-text intake with cross-batch duplicate filter, province log with repost flag, golden resolver test, Thai spec summaries (migration 018), GPU rows with unstated VRAM recovered only for single-memory-size models (`GpuVramFacts`), approval planner with asking-only basis and a bimodal guard (`OwnerIntakePlanner`).
 - Trust: confidence-v2 (versioned, explainable, owner-text-only cap), admin snapshot evidence page with a "what is missing for medium" card, price trust audit with source and repost summaries, calibration report keeping fixture and live metrics apart.
 - UI: search UX (priced count, chips, popular suggestions), login restyle, skip link, admin AA contrast fixes, dead and shadowed CSS removed on browser evidence (zero computed-style change on 14 pages at 1440 and 390 px).
@@ -26,7 +25,8 @@ The current PR #4 description stops at the Sprint 0/1 baseline and the public re
 - [x] `php cli/secret_scan.php` passes; `php cli/admin_vendor_manifest.php --verify`
 - [x] CI green on the latest pushed commit (suite and offline package)
 - [x] Browser checks of public pages and product detail (Thai specs, empty state) on the DEV catalog
-- [ ] Owner visual review of public pages and Admin re-UAT (G-2, needs a signed-in Admin session)
+- [x] Admin UAT of the three LS-1 pages (snapshot evidence with the medium-gap card, market trends, price index) in a signed-in browser at 1048 and 375 px (DL-043)
+- [ ] Owner visual review of the public pages and the remaining Admin pages (G-2)
 
 ## Known limits (honest status)
 - All 49 public prices are owner-collected text without a listing URL: every confidence label is low by policy. Live-market quality is not proven; fixture and owner-text metrics are baselines only.
