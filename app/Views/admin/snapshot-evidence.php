@@ -25,6 +25,16 @@ ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/pric
     </div>
 </div>
 
+<?php if (!$report['gap']['reaches_medium']): ?>
+<div class="card mi-admin-card mb-3">
+    <div class="card-header">What is missing for medium confidence</div>
+    <div class="card-body">
+        <ul class="mb-0"><?php foreach ($report['gap']['blockers'] as $b): ?><li><?= htmlspecialchars($b) ?></li><?php endforeach; ?></ul>
+        <?php if ($report['gap']['notes']): ?><p class="mb-0 mt-2 text-muted"><?= htmlspecialchars(implode(' ', $report['gap']['notes'])) ?></p><?php endif; ?>
+    </div>
+</div>
+<?php endif; ?>
+
 <div class="card mi-admin-card mi-table-card">
     <div class="card-header">Members of this snapshot</div>
     <div class="table-responsive">

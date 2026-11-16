@@ -62,6 +62,16 @@ never "looks fine". Nothing is DONE without evidence.
 | D-7 | CI hygiene: confirm clean checkout builds the test DB from `modinspect.sql` with every migration reflected (script + test that fails if a migration table is missing from the dump) | DONE (Claude, 2026-11-16) | `tests/migration_dump_guard_test.php`: every table/column created by a migration must exist in modinspect.sql (all migrations) and schema.sql (015 onwards; migrations before 015 were never mirrored in schema.sql, recorded as a pre-guard gap). Demonstrated: renaming price_trend_points in a temporary change makes it fail with the exact message, restored it passes. |
 | D-8 | Re-run `cli/price_confidence_report.php` and `cli/review_calibration_report.php`; write the result into `docs/REAL_CALIBRATION_REPORT.md` as a dated section, fixture and live metrics kept separate | DONE (Claude, 2026-11-16) | `docs/REAL_CALIBRATION_REPORT.md` update: fixture and live metrics in separate columns; states that the 99.72% live green precision comes from bulk rule-based approvals (0 corrections) and is not independent review evidence. |
 
+### Continuation (Claude, 2026-11-16)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| E-1 | Investigate RTX 5090 low prices; price guard | DONE (no new rule) | No text signal separates the 3.5k-24k rows from the 170k-239k rows (checked as flags only); a rule I cannot justify from data would be invention. The bimodal guard (DL-038) already refuses to approve it; finding recorded in DL-039. |
+| E-2 | Rank owner-fill rows by unlock value | DONE | `cli/owner_fill_priority.php`: after dedupe against DEV only 12 of 133 fill rows are actionable and none reaches the 3-row minimum. Filling the CSV will not unlock the 22 pending products; new source data is needed. |
+| E-3 | Admin: what is missing for medium confidence | DONE | `ConfidenceGap` + card on `/admin/snapshots/{id}`; `tests/confidence_gap_test.php`; rendered on real snapshot #327: raw score is already above 60, the only blocker is owner-text-only evidence. |
+| E-4 | High-effort review of risky server code | DONE | 3 findings: 2 fixed (asking-only basis, flags), 1 skipped by decision (price sanity for inferred-VRAM rows, E-1). |
+| E-5 | CI check and close-out | DONE | CI green on a691bbd (suite and offline package, run 2026-11-16 05:04Z); PR #4 mergeable, still OPEN (owner decision). |
+
 ### Handoff requests (cross-lane, append only)
 
 | # | From | To | Request | Status |

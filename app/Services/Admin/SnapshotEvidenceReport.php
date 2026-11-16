@@ -49,6 +49,7 @@ final class SnapshotEvidenceReport
             'provenance_status' => (string)$s['provenance_status'], 'formula_version' => (string)$s['formula_version'], 'confidence_method_version' => (string)$s['confidence_method_version'],
             'confidence_label' => (string)$s['confidence_label'], 'confidence_score' => (float)$s['confidence_score'],
             'policy_caps' => array_values($manifest['confidence']['policy_caps'] ?? []),
+            'gap' => ConfidenceGap::explain((string)$s['confidence_label'], array_values($manifest['confidence']['policy_caps'] ?? []), (float)($manifest['confidence']['raw_score'] ?? $s['confidence_score']), $included),
             'quartiles' => ['q1' => (float)$s['q1'], 'median' => (float)$s['median'], 'q3' => (float)$s['q3']],
             'counts' => ['included' => $included, 'excluded_by_reason' => $excluded],
             'sources' => ['distinct' => count($perSource), 'dominant_share' => round($dominant, 4)],

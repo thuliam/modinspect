@@ -37,12 +37,12 @@ $rows = $db->query("SELECT o.id, o.product_id, p.full_name, COALESCE(o.price_val
     JOIN raw_price_observations r ON r.id=o.raw_observation_id
     JOIN data_sources s ON s.id=r.source_id
     JOIN products p ON p.id=o.product_id
-    WHERE s.source_key LIKE 'offline_owner_text_%' AND o.verified_status='pending' AND COALESCE(o.price_value,o.asking_price) > 0
+    WHERE s.source_key LIKE 'offline_owner_text_%' AND o.verified_status='pending' AND o.price_type='asking' AND COALESCE(o.price_value,o.asking_price) > 0
     ORDER BY o.product_id, o.id")->fetchAll();
 $by = [];
 foreach ($rows as $r) { $by[(int)$r['product_id']][] = $r; }
 $approvedBy = [];
-foreach ($db->query("SELECT product_id, COALESCE(price_value,asking_price) price FROM price_observations WHERE verified_status='approved' AND COALESCE(price_value,asking_price) > 0")->fetchAll() as $a) {
+foreach ($db->query("SELECT product_id, COALESCE(price_value,asking_price) price FROM price_observations WHERE verified_status='approved' AND price_type='asking' AND is_duplicate=0 AND is_defective=0 AND is_deposit=0 AND COALESCE(price_value,asking_price) > 0")->fetchAll() as $a) {
     $approvedBy[(int)$a['product_id']][] = (float)$a['price'];
 }
 

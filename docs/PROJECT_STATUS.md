@@ -387,6 +387,12 @@ Major artifacts:
 - `app/Services/Research/OwnerIntakePlanner.php` (+ `tests/owner_intake_planner_test.php`) now plans approvals for `cli/owner_intake_approve.php`: median over pending + approved prices, bimodal guard. DEV: 6 rows approved for 4 GPUs (snapshots #324-#327); 22 products remain pending (21 too few rows, RTX 5090 bimodal, needs a human).
 - Sprint board C-5 closed: Thai spec summaries verified on the product detail page.
 
+### 2026-11-16 - LS-1 continuation E-1..E-5 (DL-039)
+
+- `cli/owner_fill_priority.php` (ranked owner-fill CSV, no listing text), `app/Services/Admin/ConfidenceGap.php` + card on the admin snapshot evidence page, `tests/confidence_gap_test.php`.
+- Approval basis in `cli/owner_intake_approve.php` limited to asking, non-duplicate, non-defective, non-deposit rows. CI green on a691bbd; PR #4 open.
+- Open: 22 products pending (21 too few rows, RTX 5090 bimodal); more source data needed.
+
 ## 4. Current System Capabilities
 
 | Domain | Status | What works now |
