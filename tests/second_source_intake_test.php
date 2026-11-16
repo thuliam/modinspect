@@ -22,8 +22,9 @@ file_put_contents($tmp, implode("\n", $rows) . "\n");
 try {
     $r = (new OfflineEvidenceImportService())->import($tmp, 'real', true, 100);
     ok_ss($r['dry_run'] === true && $r['candidates_created'] === 0, 'A dry run writes nothing');
-    ok_ss($r['valid_rows'] === 2, 'Two listing-level rows from two different domains are valid (got ' . $r['valid_rows'] . ')');
-    ok_ss($r['invalid_rows'] === 2, 'A row without a listing reference and a mock-domain row are rejected (got ' . $r['invalid_rows'] . ')');
+    $why = json_encode(['scanned' => $r['records_scanned'], 'valid' => $r['valid_rows'], 'invalid' => $r['invalid_rows'], 'duplicates' => $r['duplicate_rows'], 'errors' => $r['row_errors']], JSON_UNESCAPED_UNICODE);
+    ok_ss($r['valid_rows'] === 2, 'Two listing-level rows from two different domains are valid: ' . $why);
+    ok_ss($r['invalid_rows'] === 2, 'A row without a listing reference and a mock-domain row are rejected: ' . $why);
 } finally { @unlink($tmp); }
 
 echo "second_source_intake_test: PASS\n";
