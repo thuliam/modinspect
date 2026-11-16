@@ -15,7 +15,21 @@ require_once ROOT_PATH . '/app/Views/components/hw-art.php';
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง">
+<?php
+$seoDescription = \App\Services\Seo\SeoService::description('เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง', $metaDescription ?? null);
+$seoTitle = ($title ?? $config['name']) . ' · ' . $config['name'];
+$seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], $relativePath);
+?>
+<meta name="description" content="<?= htmlspecialchars($seoDescription) ?>">
+<link rel="canonical" href="<?= htmlspecialchars($seoUrl) ?>">
+<?php foreach (\App\Services\Seo\SeoService::DISALLOW as $noindex) { if (str_starts_with($relativePath, $noindex)) { echo "<meta name=\"robots\" content=\"noindex,nofollow\">
+"; break; } } ?>
+<meta property="og:type" content="website">
+<meta property="og:locale" content="th_TH">
+<meta property="og:site_name" content="<?= htmlspecialchars($config['name']) ?>">
+<meta property="og:title" content="<?= htmlspecialchars($seoTitle) ?>">
+<meta property="og:description" content="<?= htmlspecialchars($seoDescription) ?>">
+<meta property="og:url" content="<?= htmlspecialchars($seoUrl) ?>">
 <title><?= htmlspecialchars($title ?? $config['name']) ?> · <?= htmlspecialchars($config['name']) ?></title>
 <link rel="icon" href="<?= $base ?>/favicon.ico?v=<?= (int) @filemtime(ROOT_PATH . '/public/favicon.ico') ?>" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= $base ?>/assets/brand/favicon-32x32.png?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/brand/favicon-32x32.png') ?>">

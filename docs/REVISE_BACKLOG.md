@@ -22,6 +22,8 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-6: history is capped at the last 8 snapshots and only shows the median; a per-product chart of snapshots and a way to see which observation ids were added are possible features (the second would show prices and dates only).
 - H-7: only two roles besides admin (reviewer, operator) exist and `audit.view` is admin-only; there is no role/permission management screen and no per-user audit export. Candidate feature: admin user management UI (create/disable users, change role) with its own audit trail.
 - H-7: the local dev server cannot serve routes that end in .csv/.json without Apache rewrites; a small router script for local tests would remove this harness exception.
+- H-8: structured data (schema.org Product/Offer) was not added: a price range without a seller or offer is not an Offer and could mislead search engines; needs a decision. No share image yet (rights). No English/Thai alternate pages.
+- H-8: sitemap has no lastmod (snapshots have calculated_at; could be added), and there is no Search Console/analytics hookup (needs an account and privacy copy).
 
 ## Owner-listed features (to be filled by the owner)
 
