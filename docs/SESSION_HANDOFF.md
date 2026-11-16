@@ -944,3 +944,8 @@ Next owner action:
 - All 15 tasks closed with evidence on the board; DL-044..DL-057; CI green on PHP 8.1/8.3/8.4 at `d0a3f02`. Nothing merged, deployed or sent; the PR #4 description was updated earlier on the owner's request.
 - Owner-only items remain (see `docs/BETA_READINESS_CHECKLIST.md`, verdict NO-GO today): second listing-level source and a human review of REAL rows, credentials rotation, hosting setup on HostAtom (TLS, backups, monitoring), privacy/terms copy, image rights, library upgrade decision, catalog additions (`docs/CATALOG_GAP_PROPOSAL.md`, recommendation: add none now).
 - The owner's revise session starts from `docs/REVISE_BACKLOG.md`.
+
+## 2026-11-17 - Revise sprint started
+
+- `docs/REVISE_LS3_PROPOSAL.md` is the working document. The owner needs to: list the features they think were missed (section 5), answer the 3 questions at the end, and approve or change decisions D-1..D-5. Until then J-1..J-12 on the board stay PROPOSED and no new build starts.
+- Docs corrected: three stale rows of `docs/IMPLEMENTATION_GAP_ANALYSIS.md`.

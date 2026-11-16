@@ -4,6 +4,8 @@ The owner said, at the start of LS-2 (2026-11-16): "there are still many feature
 This file collects candidates while LS-2 runs, so the revise session starts from evidence instead of memory. Nothing here is committed scope.
 Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint; AGENTS.md says a feature is not implemented just because a document mentions it.
 
+> 2026-11-17: the structured revise analysis is in `docs/REVISE_LS3_PROPOSAL.md` (missing features M-1..M-21, decisions D-1..D-5, proposed queue J-1..J-12). This file stays the raw list of findings from LS-2.
+
 ## How entries are added
 
 - Each LS-2 task appends what it found that is outside its own scope (one line: what, where seen, why it matters).

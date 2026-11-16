@@ -101,6 +101,26 @@ Run under `docs/LONG_RUN_BRIEF.md` (95% gate, 5-attempt cap, docs after every cl
 | H-14 | Thai operator guide (weekly routine) and README implemented-vs-planned refresh | DONE | `docs/OPERATOR_GUIDE_TH.md` (Thai weekly routine: login host, intake, approval, second source, health checks, backup drill, symptoms table, what not to do) and README: new public/admin routes, an Operations and Runbooks section, new implemented items and an explicit not-implemented line. Verified by script: all 13 `cli/` scripts named in the guide exist, every flag used (`--in --out --category --spec --file --dataset --dry-run --actor --apply --target-db --verify`) is accepted by its script, the 3 routes and 2 docs it names exist. One wording fix after review: backup permissions are set on Linux only (chmod does nothing useful on Windows). |
 | H-15 | Pre-beta readiness checklist and Go/No-Go template | DONE | `docs/BETA_READINESS_CHECKLIST.md`: 6 sections, 32 rows with MUST/SHOULD, how to verify, status and evidence, plus a Go/No-Go decision template. Honest verdict as of today: NO-GO, 12 MUST rows not met (A-4, A-5, B-1, C-2, C-3, C-4, D-2, D-3, D-4, D-5, E-1, E-3), all needing the owner, a real host or real listing-level evidence. |
 
+### Revise sprint and proposed LS-3 (Claude, 2026-11-17)
+
+The owner started the revise session. Rows J-1..J-12 are `PROPOSED`: the long run does not start them until the owner approves the queue in `docs/REVISE_LS3_PROPOSAL.md` (decisions D-1..D-5 carry a Recommended option) and adds the features they think were missed (section 5 of that file).
+
+| ID | Task | Status | Size / evidence |
+|---|---|---|---|
+| R-1 | Revise analysis: requirements, blueprint and gap analysis checked against the code | DONE | `docs/REVISE_LS3_PROPOSAL.md`: 21 missing items (M-1..M-21), 5 decisions with options, 12 proposed tasks; 3 stale rows of `IMPLEMENTATION_GAP_ANALYSIS.md` corrected (alias admin exists, every admin write is audited, user management is the real admin gap) |
+| J-1 | Unresolved listings queue with alias suggestions (M-8, D-5) | PROPOSED | M |
+| J-2 | User management screen with audit and tests, no MFA (M-13) | PROPOSED | M |
+| J-3 | Intake screen over the existing services, first slice dry run and plan only (M-14, D-3) | PROPOSED | L |
+| J-4 | Rate limiting for public POSTs and sitemap cache (M-15) | PROPOSED | S |
+| J-5 | Search quality: golden query set with typos and Thai/English forms, measured before any change (M-4) | PROPOSED | M |
+| J-6 | Deal Checker condition checklist, verdict label unchanged (M-1) | PROPOSED | M |
+| J-7 | Snapshot price history chart per product (M-5) | PROPOSED | S |
+| J-8 | CPU and RAM plausibility flags on Data health (M-11) | PROPOSED | S |
+| J-9 | Beta readiness panel in admin (M-16) | PROPOSED | S |
+| J-10 | Community feedback design record and schema proposal, no build (D-1 option 1) | PROPOSED | S |
+| J-11 | Footer and card heading levels with a visual diff (M-18) | PROPOSED | S |
+| J-12 | Public-fact specs and release dates for the catalog, no benchmarks (M-2, D-4 option 1) | PROPOSED | L |
+
 ### Handoff requests (cross-lane, append only)
 
 | # | From | To | Request | Status |
