@@ -929,5 +929,5 @@ Next owner action:
 ## 2026-11-16 - Long-run brief run finished (queue empty)
 
 - Done under `docs/LONG_RUN_BRIEF.md`: G-1 CI fix (test fixture path, DL-042). CI green on bf5daa3 (3 PHP versions + offline package). Nothing was merged or deployed.
-- Waiting on the owner: F-2 admin UAT (needs a signed-in pane), real second-source rows (`docs/SECOND_SOURCE_INTAKE.md`), PR #4 description (`docs/PR4_BODY_PROPOSED.md`) and merge/deploy, credential rotation (G-5), Font Awesome download (G-7), photo/logo rights.
+- F-2 admin UAT done (DL-043). Waiting on the owner: real second-source rows (`docs/SECOND_SOURCE_INTAKE.md`), PR #4 description (`docs/PR4_BODY_PROPOSED.md`) and merge/deploy, credential rotation (G-5), Font Awesome download (G-7), photo/logo rights.
 - Next step for any new session: read the board; if no row is open, ask the owner for the items above instead of inventing scope.

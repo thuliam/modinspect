@@ -402,6 +402,10 @@ Major artifacts:
 - `docs/LONG_RUN_BRIEF.md` is ACTIVE with three owner amendments: 95% self-verification gate, 5-attempt cap with a Human Gate (options with one Recommended), markdown updated after every closed task.
 - CI: `second_source_intake_test` fails on the runner only (board row G-1, attempt 2 of 5 pushed as `43d2473`).
 
+### 2026-11-16 - Admin UAT (F-2, DL-043)
+
+- Snapshot evidence (with the medium-gap card), market trends and price index checked in a signed-in browser pane at 1048 and 375 px: no overflow, replay MATCH, only the known Font Awesome 404 in the console. Admin sessions are per host (192.168.1.10 vs modinspect.test).
+
 ## 4. Current System Capabilities
 
 | Domain | Status | What works now |
