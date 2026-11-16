@@ -938,3 +938,9 @@ Next owner action:
 - Done: resolver precision fix, catalog gap proposal (nothing added to DEV), GPU ladder flags, admin Data health, snapshot history/diff, route guard test, SEO files, image dimensions + .htaccess perf, mobile checks.
 - Next: H-11 backup/restore + health endpoint, H-12 Windows/Linux parity scan, H-13 security review refresh, H-14 operator guide + README, H-15 beta checklist, then final verification and closing report.
 - Rules learned this run: check every scripted test edit really asserts something; never stop a process by image name (only my own PID); a public price is the latest non-legacy snapshot per product.
+
+## 2026-11-16 - LS-2 finished (H-1..H-15 done)
+
+- All 15 tasks closed with evidence on the board; DL-044..DL-057; CI green on PHP 8.1/8.3/8.4 at `d0a3f02`. Nothing merged, deployed or sent; the PR #4 description was updated earlier on the owner's request.
+- Owner-only items remain (see `docs/BETA_READINESS_CHECKLIST.md`, verdict NO-GO today): second listing-level source and a human review of REAL rows, credentials rotation, hosting setup on HostAtom (TLS, backups, monitoring), privacy/terms copy, image rights, library upgrade decision, catalog additions (`docs/CATALOG_GAP_PROPOSAL.md`, recommendation: add none now).
+- The owner's revise session starts from `docs/REVISE_BACKLOG.md`.

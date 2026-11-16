@@ -64,7 +64,7 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 
 | ID | Level | Requirement | How to verify | Status | Evidence / gap |
 |---|---|---|---|---|---|
-| F-1 | MUST | Full suite and CI green on PHP 8.1, 8.3, 8.4 | `php tests/run.php`; GitHub checks | MET | green on the last pushed commit I checked; re-check at the final commit |
+| F-1 | MUST | Full suite and CI green on PHP 8.1, 8.3, 8.4 | `php tests/run.php`; GitHub checks | MET | green on PHP 8.1, 8.3, 8.4 and the offline package at `d0a3f02` (a PHP 8.1 failure on the two commits before it was fixed, see board G-2); re-check at the final commit |
 | F-2 | MUST | Test database rebuilt from the tracked dump includes every migration | `tests/migration_dump_guard_test.php` | MET | in the suite |
 | F-3 | MUST | Windows/Linux parity scan clean | `tests/linux_parity_scan_test.php` | MET | in the suite |
 | F-4 | SHOULD | Open items recorded for the next revision | `docs/REVISE_BACKLOG.md` | MET | maintained after every LS-2 task |
