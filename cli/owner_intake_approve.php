@@ -6,7 +6,7 @@ declare(strict_types=1);
  *
  * It does NOT decide quality by itself: every row still goes through Dashboard::decideObservation (same gates as the Admin button,
  * same audit log, same review-decision record). The only judgement it applies is a transparent outlier rule per product:
- * a row priced below 60% or above 160% of that product's median in this batch is EXCLUDED (not approved) with a note, because one
+ * a row priced below 60% or above 160% of that product's median (pending rows plus rows already approved) is EXCLUDED (not approved) with a note, because one
  * bundle or new-in-box post can drag a small sample. Products with fewer than 3 usable rows are left pending (the snapshot needs 3).
  *
  * Usage: php cli/owner_intake_approve.php --actor=<admin user id> [--apply]
@@ -16,6 +16,7 @@ require dirname(__DIR__) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Models\Dashboard;
+use App\Services\Research\OwnerIntakePlanner;
 use App\Services\Pricing\PriceSnapshotService;
 
 $actor = null; $apply = false; $low = 0.6; $high = 1.6;
@@ -40,23 +41,22 @@ $rows = $db->query("SELECT o.id, o.product_id, p.full_name, COALESCE(o.price_val
     ORDER BY o.product_id, o.id")->fetchAll();
 $by = [];
 foreach ($rows as $r) { $by[(int)$r['product_id']][] = $r; }
+$approvedBy = [];
+foreach ($db->query("SELECT product_id, COALESCE(price_value,asking_price) price FROM price_observations WHERE verified_status='approved' AND COALESCE(price_value,asking_price) > 0")->fetchAll() as $a) {
+    $approvedBy[(int)$a['product_id']][] = (float)$a['price'];
+}
 
 $plan = []; $leftPending = [];
 foreach ($by as $pid => $list) {
-    $prices = array_map(static fn($r) => (float)$r['price'], $list); sort($prices);
-    $n = count($prices); $median = $n % 2 ? $prices[intdiv($n, 2)] : ($prices[$n / 2 - 1] + $prices[$n / 2]) / 2;
-    $keep = []; $drop = [];
-    foreach ($list as $r) {
-        ((float)$r['price'] >= $median * $low && (float)$r['price'] <= $median * $high) ? $keep[] = $r : $drop[] = $r;
-    }
-    if (count($keep) < 3) { $leftPending[] = [$list[0]['full_name'], count($keep)]; continue; }
-    $plan[$pid] = ['name' => $list[0]['full_name'], 'median' => $median, 'keep' => $keep, 'drop' => $drop];
+    $pending = array_map(static fn($r) => ['id' => (int)$r['id'], 'price' => (float)$r['price']], $list);
+    $res = OwnerIntakePlanner::plan($pending, $approvedBy[$pid] ?? []);
+    if ($res['status'] !== 'approve') { $leftPending[] = [$list[0]['full_name'], $res['usable'], $res['status']]; continue; }
+    $plan[$pid] = ['name' => $list[0]['full_name'], 'median' => $res['median'], 'keep' => $res['keep'], 'drop' => $res['drop'], 'already' => count($approvedBy[$pid] ?? [])];
 }
-
-printf("%-34s %6s %6s %8s\n", 'product', 'approve', 'excl.', 'median');
-foreach ($plan as $p) { printf("%-34s %6d %6d %8.0f\n", $p['name'], count($p['keep']), count($p['drop']), $p['median']); }
-echo "left pending (fewer than 3 usable rows): " . count($leftPending) . "\n";
-foreach ($leftPending as [$name, $k]) { echo "  - $name ($k usable)\n"; }
+printf("%-34s %6s %6s %8s %8s\n", 'product', 'approve', 'excl.', 'median', 'already');
+foreach ($plan as $p) { printf("%-34s %6d %6d %8.0f %8d\n", $p['name'], count($p['keep']), count($p['drop']), $p['median'], $p['already']); }
+echo "left pending (fewer than 3 usable rows, or bimodal): " . count($leftPending) . "\n";
+foreach ($leftPending as [$name, $k, $why]) { echo "  - $name ($k usable" . ($why === 'bimodal' ? ', BIMODAL: needs a human' : '') . ")\n"; }
 if (!$apply) { echo "\nDry run: nothing written. Add --apply to record the decisions.\n"; exit(0); }
 
 $dashboard = new Dashboard();

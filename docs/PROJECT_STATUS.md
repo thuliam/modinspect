@@ -382,6 +382,11 @@ Major artifacts:
 - `app/Services/Research/GpuVramFacts.php` (explicit single-memory-size map) lets `cli/owner_intake_prepare.php` accept GPU rows whose only gap is VRAM; ambiguous models stay skipped. `tests/gpu_vram_facts_test.php` registered in `tests/run.php`.
 - DEV: skipped `enrichment_missing` 110 -> 15; 97 new after cross-batch filter, 74 valid imported (OWNER_TEXT_NO_URL), 56 rows approved for 11 GPU products by actor 54 (existing 60%-160% outlier rule), snapshots #313-#323. All confidence labels remain low (owner-text-only). Not live-market proof.
 
+### 2026-11-16 - Owner intake: approval basis and C-5 close (DL-038)
+
+- `app/Services/Research/OwnerIntakePlanner.php` (+ `tests/owner_intake_planner_test.php`) now plans approvals for `cli/owner_intake_approve.php`: median over pending + approved prices, bimodal guard. DEV: 6 rows approved for 4 GPUs (snapshots #324-#327); 22 products remain pending (21 too few rows, RTX 5090 bimodal, needs a human).
+- Sprint board C-5 closed: Thai spec summaries verified on the product detail page.
+
 ## 4. Current System Capabilities
 
 | Domain | Status | What works now |
