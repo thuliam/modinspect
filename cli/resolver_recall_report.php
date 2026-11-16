@@ -29,6 +29,13 @@ $resolver = new ProductResolver((new CollectionPipeline())->catalog());
 
 $fh = fopen($csv, 'rb'); $h = fgetcsv($fh, 0, ',', '"', ''); $h[0] = ltrim((string)$h[0], "\xEF\xBB\xBF");
 $stats = []; $unresolved = []; $conflicts = [];
+$catalog = (new CollectionPipeline())->catalog();
+$hasProduct = static function (string $mk) use ($catalog, $squash): ?string {
+    $key = $squash($mk); $tail = preg_replace('/^(ryzen|rtx|gtx|rx|arc|i[3579])/', '', $key);
+    foreach ($catalog as $p) { $n = $squash((string)$p['full_name']); if (str_ends_with($n, $key) || ($tail !== '' && str_ends_with($n, $tail))) { return (string)$p['full_name']; } }
+    return null;
+};
+$aliasGap = []; $catalogGap = [];
 while (($c = fgetcsv($fh, 0, ',', '"', '')) !== false) {
     $c = array_pad($c, count($h), ''); $r = array_combine($h, array_slice($c, 0, count($h)));
     $cat = $r['category'];
@@ -38,7 +45,9 @@ while (($c = fgetcsv($fh, 0, ',', '"', '')) !== false) {
     $mk = trim((string)$r['model_key']);
     if ($mk === '') { $stats[$cat]['no_model']++; continue; }
     $res = $resolver->resolve((string)$r['title']);
-    if ($res->productId === null) { $stats[$cat]['unresolved']++; $unresolved[$cat . '|' . $mk] = ($unresolved[$cat . '|' . $mk] ?? 0) + 1; continue; }
+    if ($res->productId === null) { $stats[$cat]['unresolved']++; $unresolved[$cat . '|' . $mk] = ($unresolved[$cat . '|' . $mk] ?? 0) + 1;
+        if ($hasProduct($mk) !== null) { $aliasGap[$cat . '|' . $mk] = ($aliasGap[$cat . '|' . $mk] ?? 0) + 1; } else { $catalogGap[$cat . '|' . $mk] = ($catalogGap[$cat . '|' . $mk] ?? 0) + 1; }
+        continue; }
     // the model_key tokens must be the tail of the product name once spaces and the family word (e.g. "9" in "Ryzen 9 9800X3D") are ignored
     $name = $squash((string)$res->matchedName); $key = $squash($mk);
     $keyTail = preg_replace('/^(ryzen|rtx|gtx|rx|arc|i[3579])/', '', $key);
@@ -46,7 +55,9 @@ while (($c = fgetcsv($fh, 0, ',', '"', '')) !== false) {
     else { $stats[$cat]['conflict']++; $conflicts[$cat . '|' . $mk . ' => ' . $res->matchedName] = ($conflicts[$cat . '|' . $mk . ' => ' . $res->matchedName] ?? 0) + 1; }
 }
 fclose($fh);
-arsort($unresolved); arsort($conflicts);
-$out = ['categories' => $stats, 'top_unresolved_model_keys' => array_slice($unresolved, 0, 25, true), 'conflicts' => array_slice($conflicts, 0, 15, true)];
+arsort($unresolved); arsort($conflicts); arsort($aliasGap); arsort($catalogGap);
+$out = ['categories' => $stats, 'top_unresolved_model_keys' => array_slice($unresolved, 0, 25, true), 'conflicts' => array_slice($conflicts, 0, 15, true),
+    'unresolved_split' => ['alias_gap_rows' => array_sum($aliasGap), 'alias_gap_models' => $aliasGap, 'catalog_gap_rows' => array_sum($catalogGap), 'catalog_gap_models' => count($catalogGap)],
+    'catalog_gap_model_keys' => $catalogGap];
 foreach ($stats as $cat => $s) { $cmp = $s['agree'] + $s['unresolved'] + $s['conflict']; $out['categories'][$cat]['recall_pct'] = $cmp ? round(100 * $s['agree'] / $cmp, 1) : null; $out['categories'][$cat]['conflict_pct'] = $cmp ? round(100 * $s['conflict'] / $cmp, 1) : null; }
 echo json_encode($out, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), PHP_EOL;
