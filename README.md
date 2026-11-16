@@ -330,6 +330,17 @@ Tests load `.env.testing` through `tests/bootstrap.php` and fail closed with `UN
 
 ---
 
+## Operations and Runbooks
+
+- Weekly routine for the person running the data (Thai): `docs/OPERATOR_GUIDE_TH.md`.
+- How a price can reach "medium" confidence (a second, listing-level source): `docs/SECOND_SOURCE_INTAKE.md`.
+- Backup and restore drill: `php cli/db_backup.php` and `php cli/db_restore.php --file=... --target-db=<name>_restore --verify` (a restore can only target a scratch database ending in `_test` or `_restore`). Backup files hold password hashes and raw listing text: never commit them (`storage/backups/` is git-ignored).
+- Liveness probe: `GET /health` returns only `ok` or `unavailable` (200 or 503).
+- Guard tests that run in `php tests/run.php` and in CI: every admin route has a permission check and every POST verifies CSRF (`tests/admin_route_guard_test.php`); Windows/Linux file-name and path parity (`tests/linux_parity_scan_test.php`).
+- Security review: `docs/SECURITY_REVIEW_2026-11-14.md` and the refresh `docs/SECURITY_REVIEW_2026-11-16.md`. Pre-beta checklist and Go/No-Go template: `docs/BETA_READINESS_CHECKLIST.md`.
+- Admin session length can be lengthened in `.env` (`AUTH_IDLE_TIMEOUT_SECONDS`, `AUTH_ABSOLUTE_LIFETIME_SECONDS`) only when `APP_ENV` is `local` or `testing`.
+
+---
 ## Current Project Structure
 
 ```text
@@ -376,6 +387,12 @@ Current prototype functionality includes:
 - Output escaping
 - CSRF protection
 - Strict session-cookie defaults
+- Admin Data health page, snapshot evidence with a "what is missing for medium" card and a comparison with the previous snapshot (LS-2)
+- Deterministic GPU tier-order plausibility flags (flag only, never changes a price) and a resolver precision guard (suffix, family and DDR must agree)
+- robots.txt, sitemap.xml, canonical and Open Graph metadata without invented content
+- Database backup and guarded restore drill; `/health` endpoint
+
+Not implemented (do not assume from other documents): a second evidence source in production, scheduled/off-site backups, rate limiting of public POST routes, structured data (schema.org) and a share image, independent security testing, deployment.
 
 ### Audited Implementation Boundary
 
@@ -482,6 +499,9 @@ The current schema also contains groundwork for:
 /methodology
 /local-match
 /market-report
+/robots.txt
+/sitemap.xml
+/health
 ```
 
 ### Seller
@@ -509,6 +529,9 @@ The current schema also contains groundwork for:
 /admin/review-queue
 /admin/review-analytics
 /admin/price-indices
+/admin/snapshots/{id}
+/admin/market-trends
+/admin/data-health
 /admin/sources
 /admin/sources/action
 /admin/collector-jobs

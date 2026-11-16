@@ -29,10 +29,12 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-9: the owner's local Apache lacks mod_deflate/mod_expires; production hosting should be checked for them (runbook).
 - H-10: Deal Checker only compares against the Q1-Q3 range; it has no notion of condition, warranty or box in the verdict (they are stored but unused in the label). Candidate feature: a transparent adjustment note (never silently changing the label). The result page is private by URL (uuid) with no expiry or delete control.
 - H-10: /build lists 99 parts in one long list on mobile (no search/filter beyond brand); a sticky total and a part search would help.
-- H-11: no scheduled backup, no off-machine copy, no retention rule and no encryption of backup files; a backup routine on the real host (cron + off-site copy + a periodic restore drill) is part of beta readiness and needs the hosting decision. Point-in-time recovery needs binary logging on the host.
+- H-11: no scheduled backup, no off-machine copy, no retention rule and no encryption of backup files; a backup routine on the real host (cron + off-site copy + a periodic restore drill) is part of beta readiness and needs setup on HostAtom (DL-014). Point-in-time recovery needs binary logging on the host.
 - H-11: `/health` checks only the database; a deeper check (migrations applied, storage writable, last collection run) is possible but would reveal more, so it would need to sit behind admin auth.
 - H-12: the parity scan reads PHP only; asset file names referenced from CSS/JS/HTML (fonts, images) and the `.htaccess` rules are not scanned for case, and nothing tests file permissions or symlinks on Linux hosting.
 - H-13: library upgrade path (Bootstrap 4.3.1+/jQuery 3.4+ with a refreshed hash manifest) and rate limiting for public POSTs and the sitemap are the two open security items; both are decisions or downloads for the owner. An independent review (or a scripted scanner run by someone other than the author) is still missing.
+- H-14/H-15: the guide is Thai-only and assumes a technical operator at a command line; an Admin UI for the weekly routine (upload sanitized file, see the plan, approve) would remove the CLI dependency but must keep the dry-run-first rule and the audit trail. No English guide.
+- H-15: the checklist is a document, not a screen; a read-only "beta readiness" panel fed by the same commands is a possible feature.
 
 ## Owner-listed features (to be filled by the owner)
 
