@@ -80,6 +80,10 @@ final class AdminController extends Controller {
         if(!$report) { http_response_code(404); $this->view('errors/404',['title'=>'Snapshot not found']); return; }
         $this->view('admin/snapshot-evidence',['title'=>'Snapshot #'.(int)$id.' evidence','report'=>$report]);
     }
+    public function dataHealth(): void {
+        if(!$this->requirePermission('snapshots.view')) return;
+        $this->view('admin/data-health',['title'=>'Data health','report'=>(new \App\Services\Admin\DataHealthReport())->build()]);
+    }
     public function marketTrends(): void {
         if(!$this->requirePermission('snapshots.view')) return;
         $this->view('admin/market-trends',['title'=>'Market Trends & Locations','report'=>(new \App\Services\Admin\MarketTrendReport())->build(),'dup'=>(new \App\Services\Admin\DuplicatePostReport())->build()]);

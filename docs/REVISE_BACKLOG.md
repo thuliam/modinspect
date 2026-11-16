@@ -17,6 +17,8 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-3: the research rows are spread thin: 60 absent models, almost all with 1-2 rows. A coverage-driven product (which models to price first) needs a demand signal; none exists yet (no search logs reviewed).
 - H-4: the ladder check covers GPUs only; a CPU ladder (X3D, F/K variants) and a RAM speed/capacity ladder need their own rules. Candidate feature: show the flags on the admin Data health page (H-5).
 - H-4: `price_indices` accumulates a row per recalculation; there is no retention/archiving rule and no public price history chart beyond the monthly trend.
+- H-5: Data health shows 137 pending of which about 88 are REAL (Priceza) rows waiting since September; a REAL review session is the longest-lead item on the roadmap. Candidate feature: split the pending number by origin (owner text vs REAL) and by age on this page.
+- H-5: there is no per-source (not per-key) health view on this page; that needs a privacy decision on how much source identity admins may see.
 
 ## Owner-listed features (to be filled by the owner)
 
