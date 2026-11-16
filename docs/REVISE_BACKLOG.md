@@ -20,6 +20,8 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-5: Data health shows 137 pending of which about 88 are REAL (Priceza) rows waiting since September; a REAL review session is the longest-lead item on the roadmap. Candidate feature: split the pending number by origin (owner text vs REAL) and by age on this page.
 - H-5: there is no per-source (not per-key) health view on this page; that needs a privacy decision on how much source identity admins may see.
 - H-6: history is capped at the last 8 snapshots and only shows the median; a per-product chart of snapshots and a way to see which observation ids were added are possible features (the second would show prices and dates only).
+- H-7: only two roles besides admin (reviewer, operator) exist and `audit.view` is admin-only; there is no role/permission management screen and no per-user audit export. Candidate feature: admin user management UI (create/disable users, change role) with its own audit trail.
+- H-7: the local dev server cannot serve routes that end in .csv/.json without Apache rewrites; a small router script for local tests would remove this harness exception.
 
 ## Owner-listed features (to be filled by the owner)
 

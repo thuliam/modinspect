@@ -41,6 +41,7 @@ $commands = [
     ['label' => 'tests/price_ladder_check_test.php', 'args' => ['tests/price_ladder_check_test.php']],
     ['label' => 'tests/data_health_report_test.php', 'args' => ['tests/data_health_report_test.php']],
     ['label' => 'tests/snapshot_history_test.php', 'args' => ['tests/snapshot_history_test.php']],
+    ['label' => 'tests/admin_route_guard_test.php', 'args' => ['tests/admin_route_guard_test.php']],
     ['label' => 'tests/duplicate_post_report_test.php', 'args' => ['tests/duplicate_post_report_test.php']],
     ['label' => 'tests/snapshot_evidence_report_test.php', 'args' => ['tests/snapshot_evidence_report_test.php']],
     ['label' => 'tests/golden_resolver_test.php', 'args' => ['tests/golden_resolver_test.php']],
