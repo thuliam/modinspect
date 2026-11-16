@@ -20,3 +20,28 @@ RewriteRule ^ index.php [QSA,L]
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
 </IfModule>
+
+# Performance (LS-2 H-9). Every block is conditional, so a host without the module simply skips it.
+# Compression for text assets.
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/xml application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+# Static assets are cached by the browser; PHP pages are not (they send their own no-store headers).
+# Files requested with ?v=<number> (the app appends the file modification time) never change under that URL, so they may be cached for a year.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 hour"
+    ExpiresByType application/javascript "access plus 1 hour"
+    ExpiresByType text/javascript "access plus 1 hour"
+    ExpiresByType image/png "access plus 7 days"
+    ExpiresByType image/jpeg "access plus 7 days"
+    ExpiresByType image/svg+xml "access plus 7 days"
+    ExpiresByType image/x-icon "access plus 7 days"
+    ExpiresByType font/woff2 "access plus 30 days"
+    ExpiresByType application/font-woff "access plus 30 days"
+</IfModule>
+<IfModule mod_headers.c>
+    <If "%{QUERY_STRING} =~ /(^|&)v=[0-9]+/ && %{REQUEST_URI} =~ /\.(css|js|png|jpe?g|svg|ico|woff2?)$/">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </If>
+</IfModule>

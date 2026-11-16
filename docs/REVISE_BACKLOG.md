@@ -24,6 +24,9 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-7: the local dev server cannot serve routes that end in .csv/.json without Apache rewrites; a small router script for local tests would remove this harness exception.
 - H-8: structured data (schema.org Product/Offer) was not added: a price range without a seller or offer is not an Offer and could mislead search engines; needs a decision. No share image yet (rights). No English/Thai alternate pages.
 - H-8: sitemap has no lastmod (snapshots have calculated_at; could be added), and there is no Search Console/analytics hookup (needs an account and privacy copy).
+- H-9: hero image is a 199 KB PNG and product photos are up to 443 KB JPEG (7 photos only); WebP/AVIF conversion and responsive srcset need an image tool (owner approval for any download). bootstrap.bundle.js ships unminified (210 KB, 43 KB gzipped) because the pinned vendor manifest hashes that exact file; adding the .min file means updating the manifest.
+- H-9: heading levels skip on the footer and on product-card lists; a proper fix is a small template pass with a visual diff.
+- H-9: the owner's local Apache lacks mod_deflate/mod_expires; production hosting should be checked for them (runbook).
 
 ## Owner-listed features (to be filled by the owner)
 

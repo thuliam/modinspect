@@ -98,9 +98,21 @@ if (!function_exists('mi_logo')) {
     {
         $map = ['gpu' => 'cat-gpu.jpg', 'ram' => 'cat-ram.jpg'];
         if (isset($map[$type]) && is_file(ROOT_PATH . '/public/assets/brand/' . $map[$type])) {
-            return '<img class="mi-art-img mi-art-' . $type . '" src="' . $base . '/assets/brand/' . $map[$type] . '?v=' . (int) @filemtime(ROOT_PATH . '/public/assets/brand/' . $map[$type]) . '" alt="" loading="lazy">';
+            return '<img class="mi-art-img mi-art-' . $type . '" src="' . $base . '/assets/brand/' . $map[$type] . '?v=' . (int) @filemtime(ROOT_PATH . '/public/assets/brand/' . $map[$type]) . '"' . mi_img_dims(ROOT_PATH . '/public/assets/brand/' . $map[$type]) . ' alt="" loading="lazy" decoding="async">';
         }
         return mi_art($type);
+    }
+}
+if (!function_exists('mi_img_dims')) {
+    /** ' width="W" height="H"' of a local image (cached per file) so the browser reserves the space before the file loads; '' when unreadable. CSS keeps control of the rendered size. */
+    function mi_img_dims(string $file): string
+    {
+        static $cache = [];
+        if (!array_key_exists($file, $cache)) {
+            $size = is_file($file) ? @getimagesize($file) : false;
+            $cache[$file] = ($size && $size[0] > 0 && $size[1] > 0) ? ' width="' . (int) $size[0] . '" height="' . (int) $size[1] . '"' : '';
+        }
+        return $cache[$file];
     }
 }
 if (!function_exists('mi_product_photo')) {
@@ -115,7 +127,7 @@ if (!function_exists('mi_product_photo')) {
         if ($slug === '' || !preg_match('/^[a-z0-9-]+$/', $slug) || !is_file($file)) {
             return null;
         }
-        return '<img class="' . $class . '" src="' . $base . '/assets/products/' . $slug . '.jpg?v=' . (int) @filemtime($file) . '" alt="' . htmlspecialchars((string) ($product['full_name'] ?? '')) . ' (ภาพถ่ายประกอบ ดูเครดิตในหน้าวิธีคำนวณ)" loading="lazy">';
+        return '<img class="' . $class . '" src="' . $base . '/assets/products/' . $slug . '.jpg?v=' . (int) @filemtime($file) . '" alt="' . htmlspecialchars((string) ($product['full_name'] ?? '')) . ' (ภาพถ่ายประกอบ ดูเครดิตในหน้าวิธีคำนวณ)"' . mi_img_dims($file) . ' loading="lazy" decoding="async">';
     }
 }
 if (!function_exists('mi_fa')) {
@@ -142,6 +154,6 @@ if (!function_exists('mi_brand_logo')) {
         if (!preg_match('/^[a-z0-9-]+$/', $file) || !is_file($path)) { return '<span>' . htmlspecialchars($name) . '</span>'; }
         $size = @getimagesize($path);
         if ($size && $size[1] > 0 && $size[0] / $size[1] < 1.8) { $h = (int) round($h * 1.8); }   // stacked logos (mark above name) need more height to stay legible
-        return '<span class="mi-brand-logo' . ($file === 'nvidia' ? ' is-dark' : '') . '"><img src="' . $base . '/assets/brands/' . $file . '.png?v=' . (int) @filemtime($path) . '" alt="' . htmlspecialchars($name) . '" style="height:' . $h . 'px"></span>';
+        return '<span class="mi-brand-logo' . ($file === 'nvidia' ? ' is-dark' : '') . '"><img src="' . $base . '/assets/brands/' . $file . '.png?v=' . (int) @filemtime($path) . '"' . mi_img_dims($path) . ' alt="' . htmlspecialchars($name) . '" decoding="async" style="height:' . $h . 'px"></span>';
     }
 }
