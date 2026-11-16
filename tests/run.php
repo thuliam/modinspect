@@ -50,6 +50,8 @@ $commands = [
     ['label' => 'tests/rbac_master_data_write_test.php', 'args' => ['tests/rbac_master_data_write_test.php']],
     ['label' => 'tests/unresolved_queue_test.php', 'args' => ['tests/unresolved_queue_test.php']],
     ['label' => 'tests/user_administration_test.php', 'args' => ['tests/user_administration_test.php']],
+    ['label' => 'tests/rate_limit_cache_test.php', 'args' => ['tests/rate_limit_cache_test.php']],
+    ['label' => 'tests/rate_limit_http_test.php', 'args' => ['tests/rate_limit_http_test.php']],
     ['label' => 'tests/duplicate_post_report_test.php', 'args' => ['tests/duplicate_post_report_test.php']],
     ['label' => 'tests/snapshot_evidence_report_test.php', 'args' => ['tests/snapshot_evidence_report_test.php']],
     ['label' => 'tests/golden_resolver_test.php', 'args' => ['tests/golden_resolver_test.php']],

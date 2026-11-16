@@ -1,0 +1,1 @@
+<section class="container page narrow"><div class="empty"><h1>ส่งคำขอบ่อยเกินไป</h1><p>ตอนนี้มีการส่งแบบฟอร์มจากอุปกรณ์นี้หลายครั้งในช่วงสั้นๆ กรุณารอประมาณ <?= max(1, (int) ceil(((int) ($retryAfter ?? 60)) / 60)) ?> นาที แล้วลองใหม่</p><p><a class="button ghost" href="<?= $base ?>/">กลับหน้าแรก</a></p></div></section>

@@ -10,6 +10,9 @@ use App\Services\PriceEngine;
 final class DealCheckerController extends Controller {
     public function form(): void { $this->view('deal/form',['title'=>'Deal Checker','products'=>(new Product())->search(),'errors'=>[]]); }
     public function store(): void {
+        // public POST that writes a row: 20 per 10 minutes per client address (REMOTE_ADDR; behind a proxy every visitor shares the proxy address, see the runbook)
+        $limit = (new \App\Services\Http\RateLimiter(ROOT_PATH . '/storage/cache/ratelimit'))->attempt('deal-checker', (string)($_SERVER['REMOTE_ADDR'] ?? ''), 20, 600);
+        if (!$limit['allowed']) { http_response_code(429); header('Retry-After: ' . $limit['retry_after']); $this->view('errors/429', ['title' => 'ส่งคำขอบ่อยเกินไป', 'retryAfter' => $limit['retry_after']]); return; }
         if (!Csrf::verify($_POST['_token']??null)) { http_response_code(419); $this->view('errors/419',['title'=>'แบบฟอร์มหมดอายุ']); return; }
         $id=filter_input(INPUT_POST,'product_id',FILTER_VALIDATE_INT); $price=filter_input(INPUT_POST,'user_price',FILTER_VALIDATE_FLOAT);
         $product=$id ? (new Product())->find((int)$id) : null;

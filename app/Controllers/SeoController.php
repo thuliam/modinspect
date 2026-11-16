@@ -17,6 +17,13 @@ final class SeoController extends Controller
 
     public function sitemap(): void
     {
+        header('Content-Type: application/xml; charset=utf-8');
+        // the sitemap changes only when a snapshot changes: serve a 10-minute copy instead of querying on every request
+        echo (new \App\Services\Http\FileCache(ROOT_PATH . '/storage/cache/http'))->remember('sitemap.xml', 600, fn(): string => $this->buildSitemap());
+    }
+
+    private function buildSitemap(): string
+    {
         global $config;
         $db = Database::connection($config['db']);
         // only products that have a public price (same gate as the price pages) get a sitemap entry: empty pages are not worth indexing
@@ -25,7 +32,6 @@ final class SeoController extends Controller
               AND pi.valid_sample_size >= 3 AND pi.median > 0 AND p.is_active = 1 ORDER BY p.slug")->fetchAll(\PDO::FETCH_COLUMN);
         $paths = ['/', '/price', '/methodology', '/deal-checker', '/build', '/compare'];
         foreach ($slugs as $s) { $paths[] = '/price/' . rawurlencode((string)$s); }
-        header('Content-Type: application/xml; charset=utf-8');
-        echo SeoService::sitemapXml((string)$config['base_url'], $paths);
+        return SeoService::sitemapXml((string)$config['base_url'], $paths);
     }
 }

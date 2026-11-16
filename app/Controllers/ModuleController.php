@@ -19,6 +19,9 @@ final class ModuleController extends Controller {
         $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>(new Product())->search(),'result'=>$result,'errors'=>[],'old'=>[]]);
     }
     public function storeBuild(): void {
+        // public POST: 30 per 10 minutes per client address (REMOTE_ADDR; behind a proxy every visitor shares the proxy address, see the runbook)
+        $limit=(new \App\Services\Http\RateLimiter(ROOT_PATH.'/storage/cache/ratelimit'))->attempt('build',(string)($_SERVER['REMOTE_ADDR']??''),30,600);
+        if(!$limit['allowed']) { http_response_code(429); header('Retry-After: '.$limit['retry_after']); $this->view('errors/429',['title'=>'ส่งคำขอบ่อยเกินไป','retryAfter'=>$limit['retry_after']]); return; }
         $products=(new Product())->search();
         $budget=filter_input(INPUT_POST,'budget',FILTER_VALIDATE_FLOAT);
         $use=(string)($_POST['intended_use']??'');
