@@ -84,7 +84,7 @@ Run under `docs/LONG_RUN_BRIEF.md` (95% gate, 5-attempt cap, docs after every cl
 
 | ID | Task | Status | Evidence |
 |---|---|---|---|
-| H-1 | Measure resolver recall on all sanitized rows (resolved vs unresolved per category) | TODO | |
+| H-1 | Measure resolver recall on all sanitized rows (resolved vs unresolved per category) | DONE | `cli/resolver_recall_report.php` (read-only, counts and model keys only). Before: CPU recall 60.7 % / conflict 3.3 %, GPU recall 86.3 % / conflict 3.2 % (agree 74+246, unresolved 44+30, conflict 4+9 of 408 rows). The conflicts were precision bugs in the resolver's marker-only match: a plain 5060 resolved to the 5060 Ti, 6600 to the 6600 XT, 1660 Ti to the 1660 Super, and Ryzen 5600 / 3600 titles to RAM kits that share the number. Fixed in `ProductResolver::sameSuffixAndFamily` (suffix words, family words and DDR must agree), test-first: 8 new golden cases (27 total) failed on the old code and pass now. After: CPU recall 62.3 % / conflict 0.8 %, GPU recall 87.4 % / conflict 0.7 %. One old test expectation moved from WRONG_PRODUCT to UNRESOLVED_PRODUCT (the product is no longer assigned at all). Full suite green. Confidence 96 %: only the marker-only branch changed; alias matches are untouched. |
 | H-2 | Alias/variant additions for unresolved models (additive migration), re-import via planner | TODO | |
 | H-3 | Catalog gap list: models truly absent from Product Master, proposed additions (public specs, no prices) | TODO | |
 | H-4 | Cross-model price ladder plausibility flags (flag only, never changes a price) | TODO | |

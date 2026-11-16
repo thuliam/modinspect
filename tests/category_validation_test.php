@@ -107,7 +107,8 @@ try {
 
     foreach ([
         'RTX3060Ti 8G สวย' => 'rtx3060ti',
-        'RTX 3070 Ti 8GB มือสอง' => 'WRONG_PRODUCT',
+        // LS-2 H-2: the resolver now refuses a marker-only match whose suffix differs (Ti vs plain), so the safe outcome is no product at all
+        'RTX 3070 Ti 8GB มือสอง' => 'UNRESOLVED_PRODUCT',
         'RTX4070Ti ประกันร้าน' => 'rtx4070ti',
         'RTX 4070 SUPER 12GB' => 'UNRESOLVED_PRODUCT',
         'RX 6700 XT 12GB' => 'rx6700xt',

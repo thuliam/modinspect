@@ -49,6 +49,10 @@ final class ProductResolver
                 }
 
                 if ($sharedMarkers !== []) {
+                    // a number alone is weak evidence: the model suffix (Ti/Super/XT...) and the product family (Ryzen/RTX/...) must also agree
+                    if (!$this->sameSuffixAndFamily($title, (string)$product['full_name'])) {
+                        continue;
+                    }
                     $score = 0.96;
                     if (($titleMarkers[0] ?? null) !== null && in_array($titleMarkers[0], $sharedMarkers, true)) {
                         $score = 0.985;
@@ -68,6 +72,33 @@ final class ProductResolver
         }
 
         return new ProductResolution($best[0], $best[1], round($best[2], 4), $best[3]);
+    }
+
+    /** Suffix words and family words must match between a title and a product name for a marker-only (number) match. */
+    private function sameSuffixAndFamily(string $title, string $productName): bool
+    {
+        $suffix = static function (string $v): array {
+            preg_match_all('/(?<![a-z])(ti|super|xtx|xt|gre)(?![a-z])/', mb_strtolower($v, 'UTF-8'), $m);
+            $set = array_values(array_unique($m[1])); sort($set);
+            return $set;
+        };
+        if ($suffix($title) !== $suffix($productName)) {
+            return false;
+        }
+        // a memory kit (DDR3/4/5 in its name) is only matched by a title that talks about DDR memory
+        if (preg_match('/ddr\d/i', $productName) === 1 && preg_match('/ddr/i', $title) !== 1) {
+            return false;
+        }
+        $family = static function (string $v): array {
+            preg_match_all('/(?<![a-z])(ryzen|rtx|gtx|rx|radeon|geforce|arc|i[3579])(?![a-z])/', mb_strtolower($v, 'UTF-8'), $m);
+            return array_values(array_unique($m[1]));
+        };
+        $t = $family($title); $p = $family($productName);
+        // a title that names a family while the product names none of it (a Ryzen title against a RAM kit) is not a match
+        if ($t === []) {
+            return true;
+        }
+        return $p !== [] && array_intersect($t, $p) !== [];
     }
 
     private function normalize(string $value): string

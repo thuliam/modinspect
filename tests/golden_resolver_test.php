@@ -26,6 +26,13 @@ $catalog = [
     $p(12, 'AMD Ryzen 7 5700X3D', ['5700x3d', 'r7 5700 x3d', 'Ryzen 7 5700X3D', 'AMD 5700X3D', 'Ryzen5700X3D', '5700 X3D']),
     $p(13, 'Intel Core i5-12400', ['Core i5 12400', 'i5 12400', 'i5-12400', '12400 tray']),
     $p(14, 'Intel Core i5-12400F', ['12400f', 'Core i5 12400F', 'i5 12400F', 'Intel 12400F', 'i5-12400F', '12400F tray']),
+    // shapes taken from LS-2 H-1 (real conflicts of the resolver against the extractor); aliases as in the Product Master
+    $p(15, 'NVIDIA GeForce RTX 5060 Ti', ['RTX 5060 Ti', '5060 Ti', 'GeForce RTX 5060 Ti']),
+    $p(16, 'NVIDIA GeForce RTX 5060', ['RTX 5060', '5060', 'GeForce RTX 5060']),
+    $p(17, 'AMD Radeon RX 6600 XT', ['RX 6600 XT', '6600XT', 'Radeon 6600 XT', '6600 XT 8GB']),
+    $p(18, 'NVIDIA GeForce GTX 1660 Super', ['GTX 1660 Super', '1660 Super', 'GTX1660S', '1660S']),
+    $p(19, 'RAM DDR5-5600 32GB', []),
+    $p(20, 'RAM DDR4-3600 16GB', []),
 ];
 $resolver = new ProductResolver($catalog);
 
@@ -50,6 +57,15 @@ $cases = [
     'i5 12400F tray' => 14,
     'Ryzen 5 5500' => null,                // model not in catalog
     'RTX 3070' => null,                    // model not in catalog
+    // marker-only matches must keep the suffix (Ti/Super/XT) and the product family
+    'การ์ดจอ 5060 8GB สวยๆ' => 16,           // plain 5060, not the longer 5060 Ti
+    'RTX 5060 Ti 16GB' => 15,
+    'RX 6600 8GB มือสอง' => null,            // plain RX 6600 is not in the catalog and must not become the XT
+    'GTX 1660 Ti 6GB' => null,               // 1660 Ti is not the 1660 Super
+    'ซีพียู ryzen 5600 ราคาถูก' => 8,          // a Ryzen title must never land on a RAM product that shares the number 5600
+    '5600 6core 12thread ซีพียู' => 8,       // no family word and no DDR: the CPU, never the RAM kit that shares 5600
+    'RAM DDR5 5600 32GB kit' => 19,
+    'ryzen 3600 มือสอง' => null,              // Ryzen 5 3600 not in catalog; DDR4-3600 RAM must not match
 ];
 
 $failures = [];
