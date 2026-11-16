@@ -27,6 +27,8 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-9: hero image is a 199 KB PNG and product photos are up to 443 KB JPEG (7 photos only); WebP/AVIF conversion and responsive srcset need an image tool (owner approval for any download). bootstrap.bundle.js ships unminified (210 KB, 43 KB gzipped) because the pinned vendor manifest hashes that exact file; adding the .min file means updating the manifest.
 - H-9: heading levels skip on the footer and on product-card lists; a proper fix is a small template pass with a visual diff.
 - H-9: the owner's local Apache lacks mod_deflate/mod_expires; production hosting should be checked for them (runbook).
+- H-10: Deal Checker only compares against the Q1-Q3 range; it has no notion of condition, warranty or box in the verdict (they are stored but unused in the label). Candidate feature: a transparent adjustment note (never silently changing the label). The result page is private by URL (uuid) with no expiry or delete control.
+- H-10: /build lists 99 parts in one long list on mobile (no search/filter beyond brand); a sticky total and a part search would help.
 
 ## Owner-listed features (to be filled by the owner)
 
