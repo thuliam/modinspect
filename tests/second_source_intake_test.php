@@ -10,7 +10,10 @@ function ok_ss(bool $c, string $m): void { if (!$c) { throw new RuntimeException
 // The documented minimal second-source file (docs/SECOND_SOURCE_INTAKE.md) must validate under dataset=real in a DRY RUN (nothing is written).
 $header = trim((string)file_get_contents(__DIR__ . '/../examples/import/second_source_minimal.csv'));
 ok_ss($header === 'source_listing_url,source_item_id,listing_title,asking_price,observed_at,condition_hint', 'The minimal template header is the documented one');
-$tmp = sys_get_temp_dir() . '/mi_second_source_' . bin2hex(random_bytes(4)) . '.csv';
+// the importer only reads files inside the project root on Linux (safePath), so the fixture lives under the git-ignored storage/import/test
+$dir = ROOT_PATH . '/storage/import/test';
+if (!is_dir($dir)) { mkdir($dir, 0777, true); }
+$tmp = $dir . '/mi_second_source_' . bin2hex(random_bytes(4)) . '.csv';
 $rows = [
     $header,
     'https://www.facebook.com/marketplace/item/9000000000001,SS-FB-1,RTX 3070 8GB used,8200,2026-11-14 12:00:00,used',
