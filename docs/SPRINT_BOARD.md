@@ -103,23 +103,23 @@ Run under `docs/LONG_RUN_BRIEF.md` (95% gate, 5-attempt cap, docs after every cl
 
 ### Revise sprint and proposed LS-3 (Claude, 2026-11-17)
 
-The owner started the revise session. Rows J-1..J-12 are `PROPOSED`: the long run does not start them until the owner approves the queue in `docs/REVISE_LS3_PROPOSAL.md` (decisions D-1..D-5 carry a Recommended option) and adds the features they think were missed (section 5 of that file).
+The owner started the revise session and on 2026-11-17 approved all Recommended options (D-1..D-5) and the queue in `docs/REVISE_LS3_PROPOSAL.md`. Rows J-1..J-12 are now `TODO` and run under `docs/LONG_RUN_BRIEF.md`. Gates that remain: J-6 wording is reviewed by the owner at the end; J-12 shows the list to the owner before any DEV write; J-10 is design only (no build without a further approval). The owner will add the features they think were missed later (section 5 of that file); that is a new revise round, not part of this queue.
 
 | ID | Task | Status | Size / evidence |
 |---|---|---|---|
 | R-1 | Revise analysis: requirements, blueprint and gap analysis checked against the code | DONE | `docs/REVISE_LS3_PROPOSAL.md`: 21 missing items (M-1..M-21), 5 decisions with options, 12 proposed tasks; 3 stale rows of `IMPLEMENTATION_GAP_ANALYSIS.md` corrected (alias admin exists, every admin write is audited, user management is the real admin gap) |
-| J-1 | Unresolved listings queue with alias suggestions (M-8, D-5) | PROPOSED | M |
-| J-2 | User management screen with audit and tests, no MFA (M-13) | PROPOSED | M |
-| J-3 | Intake screen over the existing services, first slice dry run and plan only (M-14, D-3) | PROPOSED | L |
-| J-4 | Rate limiting for public POSTs and sitemap cache (M-15) | PROPOSED | S |
-| J-5 | Search quality: golden query set with typos and Thai/English forms, measured before any change (M-4) | PROPOSED | M |
-| J-6 | Deal Checker condition checklist, verdict label unchanged (M-1) | PROPOSED | M |
-| J-7 | Snapshot price history chart per product (M-5) | PROPOSED | S |
-| J-8 | CPU and RAM plausibility flags on Data health (M-11) | PROPOSED | S |
-| J-9 | Beta readiness panel in admin (M-16) | PROPOSED | S |
-| J-10 | Community feedback design record and schema proposal, no build (D-1 option 1) | PROPOSED | S |
-| J-11 | Footer and card heading levels with a visual diff (M-18) | PROPOSED | S |
-| J-12 | Public-fact specs and release dates for the catalog, no benchmarks (M-2, D-4 option 1) | PROPOSED | L |
+| J-1 | Unresolved listings queue with alias suggestions (M-8, D-5) | TODO | M |
+| J-2 | User management screen with audit and tests, no MFA (M-13) | TODO | M |
+| J-3 | Intake screen over the existing services, first slice dry run and plan only (M-14, D-3) | TODO | L |
+| J-4 | Rate limiting for public POSTs and sitemap cache (M-15) | TODO | S |
+| J-5 | Search quality: golden query set with typos and Thai/English forms, measured before any change (M-4) | TODO | M |
+| J-6 | Deal Checker condition checklist, verdict label unchanged (M-1) | TODO | M |
+| J-7 | Snapshot price history chart per product (M-5) | TODO | S |
+| J-8 | CPU and RAM plausibility flags on Data health (M-11) | TODO | S |
+| J-9 | Beta readiness panel in admin (M-16) | TODO | S |
+| J-10 | Community feedback design record and schema proposal, no build (D-1 option 1) | TODO | S |
+| J-11 | Footer and card heading levels with a visual diff (M-18) | TODO | S |
+| J-12 | Public-fact specs and release dates for the catalog, no benchmarks (M-2, D-4 option 1) | TODO | L |
 
 ### Handoff requests (cross-lane, append only)
 
