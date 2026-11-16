@@ -15,6 +15,8 @@ Human Gate format: situation in two lines, what was tried (numbered attempts), 2
 
 ## 1. Mission and queue
 
+2026-11-16 update: the active queue is the LS-2 section of the board (H-1..H-15). DEV writes named there are approved: additive migrations for aliases and (after the owner sees the list) new products, and import plus approval through `OwnerIntakePlanner` with actor 54.
+
 1. Work down `docs/SPRINT_BOARD.md`: every row that is `TODO`, `CLAIMED`, `IN_PROGRESS` or `BLOCKED` and that the agent can do alone.
 2. Standing first item: keep CI green on PR #4 (see section 6).
 3. If the queue is empty, stop and write the closing report (section 8). Do not invent new scope.

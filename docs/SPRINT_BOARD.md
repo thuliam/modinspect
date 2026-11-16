@@ -78,6 +78,28 @@ never "looks fine". Nothing is DONE without evidence.
 | F-5 | Refresh trust and calibration reports | DONE | Update section in `docs/REAL_CALIBRATION_REPORT.md`: live sample 621, approved 481, green clean 99.76 % (not independent), 49 priced, all low. |
 | G-1 | CI failure: `second_source_intake_test` returns 0 valid rows on the runner | DONE (attempt 3 of 5) | Root cause from the CI output of attempt 2: `FILE_NOT_READABLE`. The importer's `safePath()` only accepts absolute paths inside the project root on Linux (Windows drive paths bypass it), and the test wrote its fixture to the system temp dir. Test bug, not product code: the fixture now lives in git-ignored `storage/import/test`. Local fresh-DB, full-suite and no-intl runs could not reproduce it because of the Windows path rule. |
 
+### LS-2 (Claude, started 2026-11-16, owner approved all 15, no cuts)
+
+Run under `docs/LONG_RUN_BRIEF.md` (95% gate, 5-attempt cap, docs after every closed task). Named DEV writes approved by the owner: additive migrations for aliases (H-2) and new products (H-3, owner sees the list first), and import plus approval through `OwnerIntakePlanner` with actor 54, with before/after counts in the decision log. Features the owner thinks are still missing: `docs/REVISE_BACKLOG.md`.
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| H-1 | Measure resolver recall on all sanitized rows (resolved vs unresolved per category) | TODO | |
+| H-2 | Alias/variant additions for unresolved models (additive migration), re-import via planner | TODO | |
+| H-3 | Catalog gap list: models truly absent from Product Master, proposed additions (public specs, no prices) | TODO | |
+| H-4 | Cross-model price ladder plausibility flags (flag only, never changes a price) | TODO | |
+| H-5 | Admin Data health page | TODO | |
+| H-6 | Snapshot history and diff vs previous snapshot | TODO | |
+| H-7 | RBAC tests for every admin route and CSRF scan of every POST route | TODO | |
+| H-8 | SEO and share basics: titles, descriptions, canonical, Open Graph, sitemap.xml, robots.txt | TODO | |
+| H-9 | Public performance and accessibility audit in the browser, fixes with existing Bootstrap utilities | TODO | |
+| H-10 | Deal Checker and /build at 390 px plus edge-case tests | TODO | |
+| H-11 | DB backup/restore scripts with a restore drill on the test DB, health endpoint | TODO | |
+| H-12 | Windows vs Linux parity scan (paths, case-sensitive file names) with a guard test | TODO | |
+| H-13 | Security review refresh of routes and CLIs added since 2026-11-14 | TODO | |
+| H-14 | Thai operator guide (weekly routine) and README implemented-vs-planned refresh | TODO | |
+| H-15 | Pre-beta readiness checklist and Go/No-Go template | TODO | |
+
 ### Handoff requests (cross-lane, append only)
 
 | # | From | To | Request | Status |
