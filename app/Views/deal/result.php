@@ -65,6 +65,21 @@ $hasReferenceRange = (float) ($deal['suggested_price_min'] ?? 0) > 0
                     <li>เทียบกับประกาศอื่นของรุ่นเดียวกัน</li>
                 </ul>
             </div>
+            <?php if (!empty($product)): $check = \App\Services\ConditionChecklist::for($product['category_slug'] ?? null, $deal); ?>
+            <div class="card">
+                <h2>เช็กลิสต์ก่อนจ่าย<?= !empty($product['category_name']) ? ' · ' . htmlspecialchars((string) $product['category_name']) : '' ?></h2>
+                <ul>
+                    <?php foreach ($check['items'] as $it): ?><li><?= htmlspecialchars($it['text']) ?></li><?php endforeach; ?>
+                </ul>
+                <?php if ($check['prompts']): ?>
+                    <p class="mb-1"><strong>จากข้อมูลที่คุณกรอก</strong></p>
+                    <ul>
+                        <?php foreach ($check['prompts'] as $pr): ?><li><?= htmlspecialchars($pr['text']) ?></li><?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+                <p class="mi-hint"><?= htmlspecialchars($check['note']) ?></p>
+            </div>
+            <?php endif; ?>
             <div class="card">
                 <h2>อ่านผลนี้อย่างไร</h2>
                 <p>ผลนี้เทียบตำแหน่งราคาที่คุณพบกับราคาประกาศมือสองที่ผ่านการตรวจสอบเท่านั้น ไม่ใช่ราคาปิดดีล และไม่ได้ประเมินสภาพ ประกัน อุปกรณ์ หรือบริการของผู้ขาย</p>
