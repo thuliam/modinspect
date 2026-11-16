@@ -156,7 +156,7 @@ final class AdminController extends Controller {
     public function importCsvTemplate(): void { $this->downloadImportTemplate('csv'); }
     public function importJsonTemplate(): void { $this->downloadImportTemplate('json'); }
     public function productSave(): void {
-        if(!$this->requirePermission('products.view')) return;
+        if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/products'); }
         global $config;
         $db=Database::connection($config['db']);
@@ -188,7 +188,7 @@ final class AdminController extends Controller {
         $this->redirect('/admin/products');
     }
     public function productToggle(): void {
-        if(!$this->requirePermission('products.view')) return;
+        if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/products'); }
         $id=filter_input(INPUT_POST,'product_id',FILTER_VALIDATE_INT);
         if($id){
@@ -201,7 +201,7 @@ final class AdminController extends Controller {
         $this->redirect('/admin/products');
     }
     public function aliasSave(): void {
-        if(!$this->requirePermission('products.view')) return;
+        if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/product-aliases'); }
         global $config;
         $db=Database::connection($config['db']);
@@ -231,7 +231,7 @@ final class AdminController extends Controller {
         $this->redirect('/admin/product-aliases');
     }
     public function aliasDelete(): void {
-        if(!$this->requirePermission('products.view')) return;
+        if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/product-aliases'); }
         $id=filter_input(INPUT_POST,'alias_id',FILTER_VALIDATE_INT);
         if($id){
@@ -243,7 +243,7 @@ final class AdminController extends Controller {
         $this->redirect('/admin/product-aliases');
     }
     public function articleSave(): void {
-        if(!$this->requirePermission('products.view')) return;
+        if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/articles'); }
         global $config;
         $db=Database::connection($config['db']);
@@ -274,7 +274,7 @@ final class AdminController extends Controller {
         $this->redirect('/admin/articles');
     }
     public function articleArchive(): void {
-        if(!$this->requirePermission('products.view')) return;
+        if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/articles'); }
         $id=filter_input(INPUT_POST,'article_id',FILTER_VALIDATE_INT);
         if($id){
