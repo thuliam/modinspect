@@ -25,8 +25,8 @@ $report = [
         'strict_mode' => ini_get('session.use_strict_mode') === '1',
         'httponly' => (bool)ini_get('session.cookie_httponly'),
         'same_site' => session_get_cookie_params()['samesite'] ?? null,
-        'idle_timeout_seconds' => AuthService::IDLE_TIMEOUT_SECONDS,
-        'absolute_lifetime_seconds' => AuthService::ABSOLUTE_LIFETIME_SECONDS,
+        'idle_timeout_seconds' => AuthService::idleTimeout(),
+        'absolute_lifetime_seconds' => AuthService::absoluteLifetime(),
     ],
 ];
 

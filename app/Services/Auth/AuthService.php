@@ -13,6 +13,14 @@ final class AuthService
     public const SESSION_LAST_SEEN_AT = 'auth_last_seen_at';
     public const IDLE_TIMEOUT_SECONDS = 1800;
     public const ABSOLUTE_LIFETIME_SECONDS = 28800;
+    /** Secure defaults above; AUTH_IDLE_TIMEOUT_SECONDS / AUTH_ABSOLUTE_LIFETIME_SECONDS in .env may lengthen them (bounded: 5 minutes to 30 days). */
+    public static function idleTimeout(): int { return self::envSeconds('AUTH_IDLE_TIMEOUT_SECONDS', self::IDLE_TIMEOUT_SECONDS); }
+    public static function absoluteLifetime(): int { return max(self::idleTimeout(), self::envSeconds('AUTH_ABSOLUTE_LIFETIME_SECONDS', self::ABSOLUTE_LIFETIME_SECONDS)); }
+    private static function envSeconds(string $key, int $default): int
+    {
+        $v = $_ENV[$key] ?? getenv($key);
+        return (is_string($v) && ctype_digit($v)) ? max(300, min(2592000, (int)$v)) : $default;
+    }
     private const MAX_FAILED_ATTEMPTS = 5;
     private const ATTEMPT_WINDOW_MINUTES = 15;
 
@@ -36,7 +44,7 @@ final class AuthService
         $now = time();
         $loginAt = (int)($_SESSION[self::SESSION_LOGIN_AT] ?? 0);
         $lastSeen = (int)($_SESSION[self::SESSION_LAST_SEEN_AT] ?? 0);
-        if ($loginAt <= 0 || $lastSeen <= 0 || ($now - $lastSeen) > self::IDLE_TIMEOUT_SECONDS || ($now - $loginAt) > self::ABSOLUTE_LIFETIME_SECONDS) {
+        if ($loginAt <= 0 || $lastSeen <= 0 || ($now - $lastSeen) > self::idleTimeout() || ($now - $loginAt) > self::absoluteLifetime()) {
             $this->logout(false);
             return null;
         }
