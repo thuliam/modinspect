@@ -495,3 +495,24 @@ How to read this, honestly:
 - The 99.72 % live "green precision" is **not** independent evidence of extraction quality. The 420 approvals were applied in bulk by `cli/owner_intake_approve.php` under the owner's instruction with a fixed outlier rule, not by a reviewer reading each row; `corrected_reviews` is 0 because nobody corrected anything. It measures that the rule approved what the lane called green, not that the listings are right.
 - Fixture metrics establish an engineering baseline only and never prove live-market quality (project rule). No threshold was changed.
 - Real calibration needs a human review of a sampled set of the live rows (owner gate G-4).
+
+## Update 2026-11-16 (LS-1 continuation): after the single-VRAM GPU recovery and the extended approval basis
+
+Source: `php cli/price_confidence_report.php`, `php cli/review_calibration_report.php`, `php cli/price_trust_audit.php --json`, run read-only against shared DEV (`thuliam_modinspect`). The fixture (TEST database) figures in the section above are unchanged and were not re-run.
+
+| | LIVE shared DEV, 2026-11-15 (D-8) | LIVE shared DEV, 2026-11-16 |
+|---|---:|---:|
+| Review calibration sample | 560 | 621 (610 real-type, 11 mock/test) |
+| Pending / approved / excluded | 137 / 420 / 3 | 137 / 481 / 3 |
+| Decision rate | 75.54 % | 77.94 % |
+| Green-lane clean precision | 99.72 % (354 of 355) | 99.76 % (414 of 415) |
+| Public priced products | 46 | 49 |
+| Replay match | all | 49 of 49 |
+| Confidence labels | all low | all low (owner-text-only cap) |
+| Province log repost rate | 31.7 % | 31.7 % (216 of 682) |
+
+How to read this, honestly:
+- The rise in approvals (420 to 481) came from approvals applied under the same bulk, rule-based path (`OwnerIntakePlanner`: 60 %-160 % of the median, now including already-approved rows, with a bimodal guard). The 99.76 % is still **not** independent evidence of extraction quality.
+- All 49 public prices are owner text without a listing URL, so every confidence label stays low by policy. Live-market quality is unproven; the path to medium is a second, listing-level source (`docs/SECOND_SOURCE_INTAKE.md`).
+- 22 products stay pending: 21 have 1-2 usable rows, RTX 5090 is bimodal (3.5k-24k and 170k-239k) and needs a human.
+- No threshold was changed. Real calibration still needs a human review of a sampled set of live rows (owner gate G-4).

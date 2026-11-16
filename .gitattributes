@@ -1,3 +1,13 @@
 # Vendor assets are hash-pinned (MANIFEST.json): never convert line endings.
 public/assets/admin/vendor/** -text
 public/assets/fonts/*.woff2 binary
+
+# Text sources are stored with LF; this stops the per-commit "LF will be replaced by CRLF" warnings on Windows checkouts (the repository content is unchanged).
+*.php text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.sql text eol=lf
+*.yml text eol=lf
+*.txt text eol=lf

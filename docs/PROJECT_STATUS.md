@@ -393,6 +393,10 @@ Major artifacts:
 - Approval basis in `cli/owner_intake_approve.php` limited to asking, non-duplicate, non-defective, non-deposit rows. CI green on a691bbd; PR #4 open.
 - Open: 22 products pending (21 too few rows, RTX 5090 bimodal); more source data needed.
 
+### 2026-11-16 - LS-1 F-1..F-5 (DL-041)
+
+- `docs/SECOND_SOURCE_INTAKE.md`, `examples/import/second_source_minimal.csv`, `tests/second_source_intake_test.php`; `docs/PR4_BODY_PROPOSED.md`; `.gitattributes` LF rules; calibration report refreshed. Admin UAT waits for an owner sign-in.
+
 ## 4. Current System Capabilities
 
 | Domain | Status | What works now |

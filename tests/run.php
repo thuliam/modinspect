@@ -37,6 +37,7 @@ $commands = [
     ['label' => 'tests/owner_intake_planner_test.php', 'args' => ['tests/owner_intake_planner_test.php']],
     ['label' => 'tests/confidence_gap_test.php', 'args' => ['tests/confidence_gap_test.php']],
     ['label' => 'tests/auth_session_lifetime_test.php', 'args' => ['tests/auth_session_lifetime_test.php']],
+    ['label' => 'tests/second_source_intake_test.php', 'args' => ['tests/second_source_intake_test.php']],
     ['label' => 'tests/duplicate_post_report_test.php', 'args' => ['tests/duplicate_post_report_test.php']],
     ['label' => 'tests/snapshot_evidence_report_test.php', 'args' => ['tests/snapshot_evidence_report_test.php']],
     ['label' => 'tests/golden_resolver_test.php', 'args' => ['tests/golden_resolver_test.php']],

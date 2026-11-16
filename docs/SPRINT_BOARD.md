@@ -71,6 +71,11 @@ never "looks fine". Nothing is DONE without evidence.
 | E-3 | Admin: what is missing for medium confidence | DONE | `ConfidenceGap` + card on `/admin/snapshots/{id}`; `tests/confidence_gap_test.php`; rendered on real snapshot #327: raw score is already above 60, the only blocker is owner-text-only evidence. |
 | E-4 | High-effort review of risky server code | DONE | 3 findings: 2 fixed (asking-only basis, flags), 1 skipped by decision (price sanity for inferred-VRAM rows, E-1). |
 | E-5 | CI check and close-out | DONE | CI green on a691bbd (suite and offline package, run 2026-11-16 05:04Z); PR #4 mergeable, still OPEN (owner decision). |
+| F-1 | Second-source intake path | DONE | The existing `--dataset=real` importer already accepts listing-level rows and derives the source from the URL domain; added `docs/SECOND_SOURCE_INTAKE.md`, header-only `examples/import/second_source_minimal.csv`, `tests/second_source_intake_test.php` (dry run: 2 valid, no-reference and mock-domain rows rejected). Needs real rows from the owner. |
+| F-2 | Admin UAT in a browser | OWNER_WAIT | Pane redirects to the login page; the Admin password is not mine to enter. Pages to check once signed in: `/admin/snapshots/327` (medium card), `/admin/market-trends` (repost rate), `/admin/price-indices` at 1440 and 390 px. |
+| F-3 | Public page for unpriced products | DONE (no change) | RTX 5090 page checked in a browser: states plainly that there is no market price, offers Deal Checker, search and methodology. Nothing to fix. |
+| F-4 | PR #4 readiness | DONE | `docs/PR4_BODY_PROPOSED.md` (not applied to the PR), `.gitattributes` LF rules for text sources. |
+| F-5 | Refresh trust and calibration reports | DONE | Update section in `docs/REAL_CALIBRATION_REPORT.md`: live sample 621, approved 481, green clean 99.76 % (not independent), 49 priced, all low. |
 
 ### Handoff requests (cross-lane, append only)
 
