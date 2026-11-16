@@ -14,7 +14,9 @@ declare(strict_types=1);
  */
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH . '/app/Services/Research/SpecClassifier.php';
+require ROOT_PATH . '/app/Services/Research/GpuVramFacts.php';
 use App\Services\Research\SpecClassifier;
+use App\Services\Research\GpuVramFacts;
 
 $in = ROOT_PATH . '/storage/research/line_facebook_2026/research_listings_sanitized.csv';
 $out = ROOT_PATH . '/storage/research/line_facebook_2026/owner_intake_batch.json';
@@ -51,7 +53,12 @@ while (($cells = fgetcsv($fh, 0, ',', '"', '')) !== false) {
     if (($r['defective_hint'] ?? '') === 'yes') { $skip('defective'); continue; }
     if (($r['price_anomaly'] ?? '') !== '') { $skip('price_anomaly'); continue; }
     if (!is_numeric($r['asking_price_thb'] ?? '') || (float)$r['asking_price_thb'] <= 0) { $skip('no_price'); continue; }
-    if (!in_array(($r['enrichment_status'] ?? ''), ['complete', 'partial', 'not_applicable', ''], true)) { $skip('enrichment_' . $r['enrichment_status']); continue; }
+    $vramInferred = false;
+    if (!in_array(($r['enrichment_status'] ?? ''), ['complete', 'partial', 'not_applicable', ''], true)) {
+        // a GPU whose only gap is the VRAM is still unambiguous when that model was only ever sold with one memory size (public fact)
+        if (!GpuVramFacts::acceptsMissingVram($r)) { $skip('enrichment_' . $r['enrichment_status']); continue; }
+        $vramInferred = true;
+    }
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)($r['note_date'] ?? ''))) { $skip('no_date'); continue; }
     $classSlug = null;
     if ($spec) {
@@ -78,7 +85,7 @@ while (($cells = fgetcsv($fh, 0, ',', '"', '')) !== false) {
         'currency' => 'THB',
         'observed_at' => $r['note_date'] . ' 12:00:00',
         'catalog_slug' => $classSlug,
-        'ingestion_note' => 'category=' . $r['category'] . '; model_key=' . $r['model_key'] . '; variant=' . $r['variant_key'] . '; enrichment=' . $r['enrichment_status'],
+        'ingestion_note' => 'category=' . $r['category'] . '; model_key=' . $r['model_key'] . '; variant=' . $r['variant_key'] . '; enrichment=' . $r['enrichment_status'] . ($vramInferred ? '; vram_inferred=single_size_model' : ''),
     ];
     if (count($records) >= $limit) { break; }
 }

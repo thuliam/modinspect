@@ -33,6 +33,7 @@ $commands = [
     ['label' => 'tests/price_trust_test.php', 'args' => ['tests/price_trust_test.php']],
     ['label' => 'tests/ui_prune_css_test.php', 'args' => ['tests/ui_prune_css_test.php']],
     ['label' => 'tests/owner_intake_filter_test.php', 'args' => ['tests/owner_intake_filter_test.php']],
+    ['label' => 'tests/gpu_vram_facts_test.php', 'args' => ['tests/gpu_vram_facts_test.php']],
     ['label' => 'tests/duplicate_post_report_test.php', 'args' => ['tests/duplicate_post_report_test.php']],
     ['label' => 'tests/snapshot_evidence_report_test.php', 'args' => ['tests/snapshot_evidence_report_test.php']],
     ['label' => 'tests/golden_resolver_test.php', 'args' => ['tests/golden_resolver_test.php']],

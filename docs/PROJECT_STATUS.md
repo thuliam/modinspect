@@ -377,6 +377,11 @@ Major artifacts:
 - `app/Views/deal/result.php`
 - `public/assets/app.css`
 
+### 2026-11-16 - Owner intake: single-VRAM GPU rows recovered (DL-037)
+
+- `app/Services/Research/GpuVramFacts.php` (explicit single-memory-size map) lets `cli/owner_intake_prepare.php` accept GPU rows whose only gap is VRAM; ambiguous models stay skipped. `tests/gpu_vram_facts_test.php` registered in `tests/run.php`.
+- DEV: skipped `enrichment_missing` 110 -> 15; 97 new after cross-batch filter, 74 valid imported (OWNER_TEXT_NO_URL), 56 rows approved for 11 GPU products by actor 54 (existing 60%-160% outlier rule), snapshots #313-#323. All confidence labels remain low (owner-text-only). Not live-market proof.
+
 ## 4. Current System Capabilities
 
 | Domain | Status | What works now |
