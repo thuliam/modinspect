@@ -19,7 +19,7 @@ ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/pric
         <p class="mb-2"><span class="badge badge-light">Freshness</span>
             <?= (int) $f['fresh_majority'] ?> of <?= (int) $f['snapshots'] ?> public prices have mostly fresh samples (average <?= number_format($f['avg_fresh_pct'], 1) ?>% of samples within the freshness window).</p>
         <p class="mb-0"><span class="badge <?= $l['flags'] > 0 ? 'badge-danger' : 'badge-success' ?>">Tier order</span>
-            <?= (int) $l['checked'] ?> GPU prices checked, <?= (int) $l['flags'] ?> flagged where a higher tier is priced clearly below a lower tier.
+            <?= (int) $l['checked'] ?> prices checked (GPU, CPU, RAM), <?= (int) $l['flags'] ?> flagged where a higher tier (or a bigger RAM kit) is priced clearly below a lower one.
             <?php foreach ($l['items'] as $x): ?><br><span class="text-muted"><?= htmlspecialchars($x['higher']) ?> ฿<?= number_format($x['higher_median']) ?> is below <?= htmlspecialchars($x['lower']) ?> ฿<?= number_format($x['lower_median']) ?></span><?php endforeach; ?></p>
     </div>
 </div>

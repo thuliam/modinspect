@@ -37,7 +37,19 @@ ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/pric
                 · <?= (int) $hd['added'] ?> observations added, <?= (int) $hd['removed'] ?> removed, <?= (int) $hd['kept'] ?> kept.</p>
         <?php endif; ?>
     </div>
-    <?php if (count($history['history']) > 1): ?>
+    <?php if (count($history['history']) > 1): $chartId = 'snaphist' . bin2hex(random_bytes(3)); $series = array_reverse($history['history']); ?>
+    <div class="card-body pt-0">
+        <div style="position:relative;height:200px"><canvas id="<?= $chartId ?>" role="img" aria-label="Median at each calculation of this product's price, oldest to newest"></canvas></div>
+        <p class="text-muted mt-2 mb-0">Median as published at each calculation. It moves when evidence is added or removed, not only when the market moves: this chart is for admins and is not shown publicly (the public page draws the monthly trend by listing date).</p>
+        <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
+        <script>
+        (function () {
+            var rows = <?= json_encode(array_map(static fn($r) => ['t' => substr((string) $r['calculated_at'], 5, 11), 'm' => (float) $r['median'], 'n' => (int) $r['included']], $series), JSON_UNESCAPED_UNICODE) ?>;
+            new Chart(document.getElementById('<?= $chartId ?>'), { type: 'line', data: { labels: rows.map(function (r) { return r.t; }), datasets: [{ data: rows.map(function (r) { return r.m; }), borderColor: '#6366f1', backgroundColor: '#6366f1', borderWidth: 2, pointRadius: 4, tension: .2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (x) { return '฿' + Math.round(x.parsed.y).toLocaleString() + ' · ' + rows[x.dataIndex].n + ' samples'; } } } }, scales: { y: { ticks: { callback: function (v) { return '฿' + Number(v).toLocaleString(); } } } } } });
+        })();
+        </script>
+    </div>
     <div class="table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
             <thead><tr><th>Snapshot</th><th>Calculated</th><th class="text-right">Median</th><th class="text-right">Included</th><th>Confidence</th></tr></thead>

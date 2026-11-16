@@ -34,6 +34,7 @@ $groups = [
         ['label' => 'Review Queue', 'icon' => 'fa-clipboard-check', 'href' => '/admin/review-queue', 'permission' => 'review.view', 'paths' => ['/admin/review-queue', '/admin/review']],
         ['label' => 'Review Analytics', 'icon' => 'fa-chart-bar', 'href' => '/admin/review-analytics', 'permission' => 'review.analytics.view', 'paths' => ['/admin/review-analytics']],
         ['label' => 'Trends & Locations', 'icon' => 'fa-map-marker-alt', 'href' => '/admin/market-trends', 'permission' => 'snapshots.view', 'paths' => ['/admin/market-trends']],
+        ['label' => 'Beta readiness', 'icon' => 'fa-clipboard-list', 'href' => '/admin/beta-readiness', 'permission' => 'products.manage', 'paths' => ['/admin/beta-readiness']],
         ['label' => 'Data health', 'icon' => 'fa-heartbeat', 'href' => '/admin/data-health', 'permission' => 'snapshots.view', 'paths' => ['/admin/data-health']],
         ['label' => 'Price Index', 'icon' => 'fa-tags', 'href' => '/admin/price-indices', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-indices']],
     ],

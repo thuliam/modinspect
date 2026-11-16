@@ -44,6 +44,7 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - J-3b (needs owner approval, it writes to DEV from the web): slice 2 = import the prepared rows from the screen, slice 3 = apply the approval plan from the screen with the acting admin recorded. Rules to keep: dry run first, show the plan, require a confirmation that names the counts, audit every step, never approve REAL (Priceza) rows.
 - J-5: typo tolerance is not done ("rtx 3079", "ryzn 5600" return nothing); a "did you mean" line from edit distance over product names is the cheapest next step. The golden set is 34 queries written by the agent: real visitor queries (search logs do not exist yet) would be a better set. No ranking by match quality beyond popularity then name.
 - J-6: the checklist is static text per category; per-model advice (for example VRAM variants of one GPU, or CPU socket compatibility) and photos of what to look for would need verified content. It is not saved with the deal check and cannot be ticked off; a printable or shareable version is possible.
+- J-7..J-9: the readiness panel measures 6 of 35 rows; more could be measured (CI status through the GitHub API needs a token: not done, secrets). The CPU ladder ignores cross-suffix comparisons (X vs non-X, F vs non-F) that a buyer would care about; a defensible rule needs real price data per pair. The admin chart shows medians only (no Q1-Q3 band).
 
 ## Owner-listed features (to be filled by the owner)
 

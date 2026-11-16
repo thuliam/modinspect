@@ -56,6 +56,7 @@ $commands = [
     ['label' => 'tests/intake_http_test.php', 'args' => ['tests/intake_http_test.php']],
     ['label' => 'tests/search_query_test.php', 'args' => ['tests/search_query_test.php']],
     ['label' => 'tests/condition_checklist_test.php', 'args' => ['tests/condition_checklist_test.php']],
+    ['label' => 'tests/beta_readiness_test.php', 'args' => ['tests/beta_readiness_test.php']],
     ['label' => 'tests/duplicate_post_report_test.php', 'args' => ['tests/duplicate_post_report_test.php']],
     ['label' => 'tests/snapshot_evidence_report_test.php', 'args' => ['tests/snapshot_evidence_report_test.php']],
     ['label' => 'tests/golden_resolver_test.php', 'args' => ['tests/golden_resolver_test.php']],

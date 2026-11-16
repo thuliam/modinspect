@@ -107,6 +107,10 @@ final class AdminController extends Controller {
         } else { $this->flash('danger','Unknown action.'); }
         $this->redirect('/admin/unresolved-listings');
     }
+    public function betaReadiness(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        $this->render('beta-readiness','Beta readiness',['panel'=>(new \App\Services\Admin\BetaReadiness())->build()]);
+    }
     public function intake(?array $result=null,?string $error=null): void {
         if(!$this->requirePermission('products.manage')) return;
         global $config;
