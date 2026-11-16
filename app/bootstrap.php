@@ -29,7 +29,7 @@ $config = require ROOT_PATH . '/config/app.php';
 date_default_timezone_set('Asia/Bangkok');
 ini_set('session.use_strict_mode', '1');
 // the session cookie lives as long as the login may (AUTH_ABSOLUTE_LIFETIME_SECONDS); without that override it ends with the browser, as before
-$authLife = isset($_ENV['AUTH_ABSOLUTE_LIFETIME_SECONDS']) ? \App\Services\Auth\AuthService::absoluteLifetime() : 0;
+$authLife = (isset($_ENV['AUTH_ABSOLUTE_LIFETIME_SECONDS']) && \App\Services\Auth\AuthService::overridesAllowed()) ? \App\Services\Auth\AuthService::absoluteLifetime() : 0;
 if ($authLife > 0) { ini_set('session.gc_maxlifetime', (string)max((int)ini_get('session.gc_maxlifetime'), $authLife)); }
 session_set_cookie_params(['lifetime' => $authLife, 'httponly' => true, 'samesite' => 'Lax', 'secure' => !empty($_SERVER['HTTPS'])]);
 if (PHP_SAPI !== 'cli') {

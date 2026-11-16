@@ -44,7 +44,7 @@ final class DatabaseBackup
         $bin = self::binary('mysqldump');
         if ($bin === null) { return ['ok' => false, 'bytes' => 0, 'error' => 'MYSQLDUMP_NOT_FOUND']; }
         $dir = dirname($outFile);
-        if (!is_dir($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) { return ['ok' => false, 'bytes' => 0, 'error' => 'OUTPUT_DIR_NOT_WRITABLE']; }
+        if (!is_dir($dir) && !mkdir($dir, 0700, true) && !is_dir($dir)) { return ['ok' => false, 'bytes' => 0, 'error' => 'OUTPUT_DIR_NOT_WRITABLE']; }
         $base = [$bin, '--host=' . $db['host'], '--port=' . $db['port'], '--user=' . $db['username'], '--single-transaction', '--routines', '--triggers',
             '--default-character-set=utf8mb4', '--result-file=' . $outFile];
         // mysqldump 8 and MariaDB's mysqldump disagree about two options (--no-tablespaces, --column-statistics): try the variants in turn
@@ -57,7 +57,10 @@ final class DatabaseBackup
             $err = trim((string)stream_get_contents($pipes[2]));
             $code = proc_close($p);
             $bytes = is_file($outFile) ? (int)filesize($outFile) : 0;
-            if ($code === 0 && $bytes > 0) { return ['ok' => true, 'bytes' => $bytes, 'error' => null]; }
+            if ($code === 0 && $bytes > 0) {
+                @chmod($outFile, 0600);   // password hashes and raw listing text inside: owner-only
+                return ['ok' => true, 'bytes' => $bytes, 'error' => null];
+            }
             @unlink($outFile);
             $lastError = 'MYSQLDUMP_FAILED:' . substr(preg_replace('/\s+/', ' ', $err) ?? '', 0, 160);
         }

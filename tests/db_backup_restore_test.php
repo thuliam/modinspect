@@ -43,6 +43,7 @@ try {
     $b = DatabaseBackup::backup($db, $file);
     ok_bk($b['ok'] && $b['bytes'] > 1000, 'Backup must succeed and not be empty: ' . json_encode($b));
     ok_bk(!str_contains((string)file_get_contents($file, false, null, 0, 4096), (string)$db['password']) || $db['password'] === '', 'The password must not be written into the backup header');
+    if (PHP_OS_FAMILY !== 'Windows') { ok_bk((fileperms($file) & 0077) === 0, 'The backup file must be readable by its owner only, got ' . decoct(fileperms($file) & 0777)); }
     $r = DatabaseBackup::restore($db, $file, $target);
     ok_bk($r['ok'], 'Restore must succeed: ' . json_encode($r));
     $src = new PDO(sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $db['host'], $db['port'], $db['database']), $db['username'], $db['password']);

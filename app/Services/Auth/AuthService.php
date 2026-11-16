@@ -13,11 +13,20 @@ final class AuthService
     public const SESSION_LAST_SEEN_AT = 'auth_last_seen_at';
     public const IDLE_TIMEOUT_SECONDS = 1800;
     public const ABSOLUTE_LIFETIME_SECONDS = 28800;
-    /** Secure defaults above; AUTH_IDLE_TIMEOUT_SECONDS / AUTH_ABSOLUTE_LIFETIME_SECONDS in .env may lengthen them (bounded: 5 minutes to 30 days). */
+    /**
+     * Secure defaults above. AUTH_IDLE_TIMEOUT_SECONDS / AUTH_ABSOLUTE_LIFETIME_SECONDS in .env may lengthen them (bounded: 5 minutes to 30 days),
+     * but ONLY when APP_ENV is local or testing: on any other environment (a missing APP_ENV counts as production) the overrides are ignored,
+     * so a copied development .env can never give a production admin a 7-day session.
+     */
+    public static function overridesAllowed(): bool
+    {
+        return in_array(strtolower((string)($_ENV['APP_ENV'] ?? getenv('APP_ENV') ?: 'production')), ['local', 'testing'], true);
+    }
     public static function idleTimeout(): int { return self::envSeconds('AUTH_IDLE_TIMEOUT_SECONDS', self::IDLE_TIMEOUT_SECONDS); }
     public static function absoluteLifetime(): int { return max(self::idleTimeout(), self::envSeconds('AUTH_ABSOLUTE_LIFETIME_SECONDS', self::ABSOLUTE_LIFETIME_SECONDS)); }
     private static function envSeconds(string $key, int $default): int
     {
+        if (!self::overridesAllowed()) { return $default; }
         $v = $_ENV[$key] ?? getenv($key);
         return (is_string($v) && ctype_digit($v)) ? max(300, min(2592000, (int)$v)) : $default;
     }
