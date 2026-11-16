@@ -931,3 +931,10 @@ Next owner action:
 - Done under `docs/LONG_RUN_BRIEF.md`: G-1 CI fix (test fixture path, DL-042). CI green on bf5daa3 (3 PHP versions + offline package). Nothing was merged or deployed.
 - F-2 admin UAT done (DL-043). Waiting on the owner: real second-source rows (`docs/SECOND_SOURCE_INTAKE.md`), PR #4 description (`docs/PR4_BODY_PROPOSED.md`) and merge/deploy, credential rotation (G-5), Font Awesome download (G-7), photo/logo rights.
 - Next step for any new session: read the board; if no row is open, ask the owner for the items above instead of inventing scope.
+
+## 2026-11-16 - LS-2 checkpoint (H-1..H-10 done, H-11..H-15 open)
+
+- Running under `docs/LONG_RUN_BRIEF.md` (95% gate, 5-attempt cap, docs after each task). Board rows H-1..H-15 are in `docs/SPRINT_BOARD.md`; DL-044..DL-052 in the decision log; ideas for the owner's revise session in `docs/REVISE_BACKLOG.md`.
+- Done: resolver precision fix, catalog gap proposal (nothing added to DEV), GPU ladder flags, admin Data health, snapshot history/diff, route guard test, SEO files, image dimensions + .htaccess perf, mobile checks.
+- Next: H-11 backup/restore + health endpoint, H-12 Windows/Linux parity scan, H-13 security review refresh, H-14 operator guide + README, H-15 beta checklist, then final verification and closing report.
+- Rules learned this run: check every scripted test edit really asserts something; never stop a process by image name (only my own PID); a public price is the latest non-legacy snapshot per product.
