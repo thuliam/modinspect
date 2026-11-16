@@ -55,6 +55,8 @@ $router->get('/admin/review/{id}',[AdminController::class,'reviewDetail']);
 $router->get('/admin/review-analytics',[AdminController::class,'reviewAnalytics']);
 $router->get('/admin/market-trends',[AdminController::class,'marketTrends']);
 $router->get('/admin/unresolved-listings',[AdminController::class,'unresolved']);
+$router->get('/admin/users',[AdminController::class,'users']);
+$router->post('/admin/users/action',[AdminController::class,'userAction']);
 $router->post('/admin/unresolved-listings/action',[AdminController::class,'unresolvedAction']);
 $router->get('/admin/data-health',[AdminController::class,'dataHealth']);
 $router->post('/admin/review-queue/decision',[AdminController::class,'reviewDecision']);

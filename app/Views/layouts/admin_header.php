@@ -45,6 +45,7 @@ $groups = [
         ['label' => 'Articles', 'icon' => 'fa-newspaper', 'href' => '/admin/articles', 'permission' => 'products.view', 'paths' => ['/admin/articles']],
     ],
     'SYSTEM' => [
+        ['label' => 'Users', 'icon' => 'fa-users', 'href' => '/admin/users', 'permission' => 'users.manage', 'paths' => ['/admin/users']],
         ['label' => 'Audit', 'icon' => 'fa-history', 'href' => '/admin/audit-logs', 'permission' => 'audit.view', 'paths' => ['/admin/audit-logs']],
     ],
 ];
