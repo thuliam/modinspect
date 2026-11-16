@@ -20,6 +20,21 @@ final class OwnerIntakeDeduper
         return mb_substr($t, 0, self::PREFIX, 'UTF-8') . '|' . $price;
     }
 
+    /**
+     * Keys of every owner-text listing already stored (one per observation), for the cross-batch check. Read-only.
+     * @return array<string,true>
+     */
+    public static function existingKeys(\PDO $db): array
+    {
+        $rows = $db->query("SELECT r.raw_title, COALESCE(o.price_value, o.asking_price) price
+            FROM price_observations o
+            JOIN raw_price_observations r ON r.id = o.raw_observation_id
+            JOIN data_sources s ON s.id = r.source_id
+            WHERE s.source_key LIKE 'offline_owner_text_%'")->fetchAll();
+        $existing = [];
+        foreach ($rows as $r) { $existing[self::keyFor(self::undouble((string)$r['raw_title']), (int)$r['price'])] = true; }
+        return $existing;
+    }
     /** The importer stores title and text one after the other ("T T"); halve a doubled string back to T. */
     public static function undouble(string $stored): string
     {

@@ -16,7 +16,7 @@ require dirname(__DIR__) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Models\Dashboard;
-use App\Services\Research\OwnerIntakePlanner;
+use App\Services\Research\OwnerApprovalPlan;
 use App\Services\Pricing\PriceSnapshotService;
 
 $actor = null; $apply = false; $low = 0.6; $high = 1.6;
@@ -32,27 +32,8 @@ $exists = $db->prepare("SELECT role FROM users WHERE id=:id AND is_active=1");
 $exists->execute(['id' => $actor]);
 if (!in_array((string)$exists->fetchColumn(), ['admin', 'reviewer'], true)) { fwrite(STDERR, "Actor must be an active admin or reviewer\n"); exit(2); }
 
-$rows = $db->query("SELECT o.id, o.product_id, p.full_name, COALESCE(o.price_value,o.asking_price) price
-    FROM price_observations o
-    JOIN raw_price_observations r ON r.id=o.raw_observation_id
-    JOIN data_sources s ON s.id=r.source_id
-    JOIN products p ON p.id=o.product_id
-    WHERE s.source_key LIKE 'offline_owner_text_%' AND o.verified_status='pending' AND o.price_type='asking' AND COALESCE(o.price_value,o.asking_price) > 0
-    ORDER BY o.product_id, o.id")->fetchAll();
-$by = [];
-foreach ($rows as $r) { $by[(int)$r['product_id']][] = $r; }
-$approvedBy = [];
-foreach ($db->query("SELECT product_id, COALESCE(price_value,asking_price) price FROM price_observations WHERE verified_status='approved' AND price_type='asking' AND is_duplicate=0 AND is_defective=0 AND is_deposit=0 AND COALESCE(price_value,asking_price) > 0")->fetchAll() as $a) {
-    $approvedBy[(int)$a['product_id']][] = (float)$a['price'];
-}
-
-$plan = []; $leftPending = [];
-foreach ($by as $pid => $list) {
-    $pending = array_map(static fn($r) => ['id' => (int)$r['id'], 'price' => (float)$r['price']], $list);
-    $res = OwnerIntakePlanner::plan($pending, $approvedBy[$pid] ?? []);
-    if ($res['status'] !== 'approve') { $leftPending[] = [$list[0]['full_name'], $res['usable'], $res['status']]; continue; }
-    $plan[$pid] = ['name' => $list[0]['full_name'], 'median' => $res['median'], 'keep' => $res['keep'], 'drop' => $res['drop'], 'already' => count($approvedBy[$pid] ?? [])];
-}
+$built = OwnerApprovalPlan::build($db);   // shared with the admin intake screen
+$plan = $built['plan']; $leftPending = $built['left_pending'];
 printf("%-34s %6s %6s %8s %8s\n", 'product', 'approve', 'excl.', 'median', 'already');
 foreach ($plan as $p) { printf("%-34s %6d %6d %8.0f %8d\n", $p['name'], count($p['keep']), count($p['drop']), $p['median'], $p['already']); }
 echo "left pending (fewer than 3 usable rows, or bimodal): " . count($leftPending) . "\n";

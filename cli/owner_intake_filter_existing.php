@@ -25,13 +25,7 @@ if (!is_array($data) || !isset($data['records']) || !is_array($data['records']))
 
 global $config;
 $db = Database::connection($config['db']);
-$rows = $db->query("SELECT r.raw_title, COALESCE(o.price_value, o.asking_price) price
-    FROM price_observations o
-    JOIN raw_price_observations r ON r.id = o.raw_observation_id
-    JOIN data_sources s ON s.id = r.source_id
-    WHERE s.source_key LIKE 'offline_owner_text_%'")->fetchAll();
-$existing = [];
-foreach ($rows as $r) { $existing[OwnerIntakeDeduper::keyFor(OwnerIntakeDeduper::undouble((string)$r['raw_title']), (int)$r['price'])] = true; }
+$existing = OwnerIntakeDeduper::existingKeys($db);
 
 $res = OwnerIntakeDeduper::filter($data['records'], $existing);
 file_put_contents($out, json_encode(['records' => $res['kept']], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));

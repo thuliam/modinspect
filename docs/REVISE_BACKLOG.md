@@ -41,6 +41,7 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - J-1: after an alias is added the listing stays unresolved and no observation is created; a "re-resolve and re-import this listing" action (through the existing import path, with the review lane rules) would close the loop. The queue shows raw title text (private evidence) truncated at 140 characters; a stricter privacy view (hash only) is possible if reviewers should not see seller text.
 - J-2: no MFA, no forced sign-out of other sessions (sessions are PHP files not indexed by user; a server-side session table would allow it), no password-strength meter or breach check, no invitation/reset by email (zero-cost policy: no mail service), no per-user audit view in the UI.
 - J-4: the limiter is per address and fixed-window (a burst across a window boundary can pass twice the budget); a trusted-proxy setting for HostAtom and a sliding window are possible refinements. Admin login keeps its own throttle; admin POSTs have no limiter (authenticated).
+- J-3b (needs owner approval, it writes to DEV from the web): slice 2 = import the prepared rows from the screen, slice 3 = apply the approval plan from the screen with the acting admin recorded. Rules to keep: dry run first, show the plan, require a confirmation that names the counts, audit every step, never approve REAL (Priceza) rows.
 
 ## Owner-listed features (to be filled by the owner)
 

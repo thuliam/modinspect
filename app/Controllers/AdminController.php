@@ -107,6 +107,30 @@ final class AdminController extends Controller {
         } else { $this->flash('danger','Unknown action.'); }
         $this->redirect('/admin/unresolved-listings');
     }
+    public function intake(?array $result=null,?string $error=null): void {
+        if(!$this->requirePermission('products.manage')) return;
+        global $config;
+        $built=\App\Services\Research\OwnerApprovalPlan::build(Database::connection($config['db']));
+        $this->render('intake','Owner intake',['plan'=>$built['plan'],'leftPending'=>$built['left_pending'],'result'=>$result,'error'=>$error]);
+    }
+    public function intakeDryRun(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/intake'); }
+        $file=$_FILES['file']??null;
+        if(!is_array($file) || ($file['error']??UPLOAD_ERR_NO_FILE)!==UPLOAD_ERR_OK || !is_uploaded_file((string)$file['tmp_name'])) { $this->intake(null,'Choose a CSV file.'); return; }
+        if((int)$file['size']>\App\Services\Research\OwnerIntakeDryRun::MAX_BYTES) { $this->intake(null,'The file is larger than 5 MB.'); return; }
+        if(strtolower(pathinfo((string)$file['name'],PATHINFO_EXTENSION))!=='csv') { $this->intake(null,'Only .csv files are accepted.'); return; }
+        $dir=ROOT_PATH.'/storage/import_uploads';
+        if(!is_dir($dir)) @mkdir($dir,0775,true);
+        $tmp=$dir.'/intake-upload-'.bin2hex(random_bytes(6)).'.csv';
+        if(!move_uploaded_file((string)$file['tmp_name'],$tmp)) { $this->intake(null,'The upload could not be stored.'); return; }
+        try {
+            $category=strtolower((string)($_POST['category']??'gpu'));
+            $spec=$category==='spec';
+            $result=(new \App\Services\Research\OwnerIntakeDryRun())->run($tmp,$spec?null:(in_array($category,['gpu','cpu'],true)?$category:null),$spec);
+        } finally { @unlink($tmp); }
+        $this->intake($result['ok']?$result:null,$result['ok']?null:'The file cannot be used: '.str_replace('MISSING_COLUMNS:','missing columns: ',(string)$result['error']));
+    }
     public function users(): void {
         if(!$this->requirePermission('users.manage')) return;
         $this->render('users','Users',['users'=>(new \App\Services\Admin\UserAdministration())->list(),'me'=>(int)$this->user()['id'],'roles'=>\App\Services\Admin\UserAdministration::ROLES]);
