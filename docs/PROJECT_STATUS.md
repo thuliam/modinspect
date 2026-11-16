@@ -397,6 +397,11 @@ Major artifacts:
 
 - `docs/SECOND_SOURCE_INTAKE.md`, `examples/import/second_source_minimal.csv`, `tests/second_source_intake_test.php`; `docs/PR4_BODY_PROPOSED.md`; `.gitattributes` LF rules; calibration report refreshed. Admin UAT waits for an owner sign-in.
 
+### 2026-11-16 - Long-run brief active (owner approved)
+
+- `docs/LONG_RUN_BRIEF.md` is ACTIVE with three owner amendments: 95% self-verification gate, 5-attempt cap with a Human Gate (options with one Recommended), markdown updated after every closed task.
+- CI: `second_source_intake_test` fails on the runner only (board row G-1, attempt 2 of 5 pushed as `43d2473`).
+
 ## 4. Current System Capabilities
 
 | Domain | Status | What works now |
