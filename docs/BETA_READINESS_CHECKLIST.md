@@ -15,7 +15,7 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | A-5 | MUST | Calibration from reviewed live rows, not fixtures | `php cli/review_calibration_report.php`; `docs/REAL_CALIBRATION_REPORT.md` | **NOT MET / OWNER** | green-lane 99.76 % comes from rule-based bulk approvals and is not independent evidence; needs a sampled human review (gate G-4) |
 | A-6 | SHOULD | Coverage worth launching | `/admin/data-health` | NOT MET | 49 of 99 products priced; 22 pending for too few rows or a bimodal sample (RTX 5090) |
 | A-7 | SHOULD | Medium or higher confidence for the headline products | `/admin/snapshots/{id}` gap card | NOT MET | needs A-4 |
-| A-8 | SHOULD | Plausibility flags clean | `php cli/price_ladder_check.php` | MET | 0 flags on 19 GPU prices (GPUs only) |
+| A-8 | SHOULD | Plausibility flags clean | `php cli/price_ladder_check.php` | MET | 0 flags on 44 prices checked (GPU, CPU and RAM ladders, LS-3 J-8) |
 
 ## B. Product and experience
 
@@ -24,18 +24,18 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | B-1 | MUST | Owner visual acceptance of the public pages | owner review (G-2) | **OWNER** | pages exist and were checked at 375 and 1048 px; no owner sign-off recorded |
 | B-2 | MUST | Mobile pages without horizontal overflow | browser check at 375 px | MET | home, price, product, deal checker, build, compare, 3 admin pages (DL-043, H-9, H-10) |
 | B-3 | MUST | Thai-first copy, no invented claims, prices, ratings or users | page text review | MET | checked on the pages listed above; re-check after any copy change |
-| B-4 | SHOULD | Accessibility basics | script audit (alt, labels, ids, landmarks) | MET | 0 failures on home and price index; heading level skips remain (backlog) |
+| B-4 | SHOULD | Accessibility basics | script audit (alt, labels, ids, landmarks) | MET | 0 failures on home and price index; heading order fixed on the public pages and locked by `tests/heading_levels_test.php` (LS-3 J-11) |
 | B-5 | SHOULD | Search and share metadata | `/robots.txt`, `/sitemap.xml`, page head | MET | DL-050; no share image until rights are settled |
 
 ## C. Security
 
 | ID | Level | Requirement | How to verify | Status | Evidence / gap |
 |---|---|---|---|---|---|
-| C-1 | MUST | Every admin route guarded; every POST has CSRF | `tests/admin_route_guard_test.php` | MET | 38 routes |
+| C-1 | MUST | Every admin route guarded; every POST has CSRF | `tests/admin_route_guard_test.php` | MET | 45 routes; master-data and user writes need `products.manage` / `users.manage` (LS-3 J-0, J-2) |
 | C-2 | MUST | No secrets in the repository; exposed credentials rotated | `php cli/secret_scan.php`; owner action G-5 | **NOT MET / OWNER** | scan clean; credentials found in the raw LINE export are not yet rotated |
 | C-3 | MUST | TLS on every page and HSTS enabled on the real host | hosting | **NOT MET / OWNER** | the production host is HostAtom (DL-014); TLS and HSTS have not been checked on it, and local HTTPS is disabled by design |
 | C-4 | MUST | Production `.env` has `APP_ENV=production` and no `AUTH_*` overrides | host check | NOT MET | enforced in code (overrides ignored outside local/testing, DL-055); the host file still has to be checked |
-| C-5 | SHOULD | Rate limiting on public POSTs and the sitemap | review S-7, N-3 | NOT MET | open since 2026-11-14 |
+| C-5 | SHOULD | Rate limiting on public POSTs and the sitemap | review S-7, N-3 | MET | Deal Checker and Build POSTs rate-limited (429 + Retry-After), sitemap cached, proven over real HTTP (LS-3 J-4); behind a proxy the limiter needs the real client address configured first |
 | C-6 | SHOULD | Front-end library advisories decided | `docs/SECURITY_REVIEW_2026-11-16.md` N-4 | **OWNER** | Bootstrap 4.1.0 / jQuery 3.3.1 pinned; upgrade needs a download approval and a manifest update |
 | C-7 | SHOULD | An independent security check | external | NOT MET | the reviews so far are by the author of the code |
 

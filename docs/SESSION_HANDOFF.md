@@ -949,3 +949,10 @@ Next owner action:
 
 - `docs/REVISE_LS3_PROPOSAL.md` is the working document. The owner needs to: list the features they think were missed (section 5), answer the 3 questions at the end, and approve or change decisions D-1..D-5. Until then J-1..J-12 on the board stay PROPOSED and no new build starts.
 - Docs corrected: three stale rows of `docs/IMPLEMENTATION_GAP_ANALYSIS.md`.
+
+## 2026-11-17 - LS-3 finished (J-0..J-12 done)
+
+- Approved by the owner on 2026-11-17 (decisions D-1..D-5, queue J-1..J-12). Board rows with evidence, DL-059..DL-070, `docs/REVISE_BACKLOG.md` for what each task left open, `docs/REVISE_LS3_PROPOSAL.md` for the original plan.
+- Built: master-data writes need `products.manage` (J-0, a real RBAC hole), unresolved-listings queue (migration 019), user management, rate limiting + sitemap cache, read-only owner-intake screen (rules shared with the CLI, refactors proven output-identical), search that finds joined and reordered forms (65.6 % to 100 % on a golden set), condition checklist on the Deal Checker, admin snapshot chart, CPU and RAM ladders, beta readiness panel, community feedback design (ADR-006, nothing built), heading order, catalog spec audit and a /build false-mismatch fix.
+- Owner-only items now: (1) run `php cli/migrate.php` on shared DEV so the unresolved-listings actions work (migration 019); (2) review the Thai wording of the Deal Checker checklist (J-6); (3) ADR-006 options A/B/C and who moderates; (4) optional one-row data fix for `klevv-cras-x-rgb-ddr4` (see `docs/CATALOG_SPEC_AUDIT.md`); (5) catalog gap proposal (recommendation: add none); (6) whether to build import and approve from the admin screen (J-3b); (7) the earlier list in `docs/BETA_READINESS_CHECKLIST.md` (second source, HostAtom setup, privacy copy, image rights, library upgrade).
+- Rules learned this stretch: the PHP `+` operator keeps the LEFT value (use `array_merge` for overrides: it bit me three times); a test that passes on first try must be shown to fail on a planted fault; never create files by a command whose path may not exist (a test once made a stray `composer.json/` folder); stop only processes I started, by PID.

@@ -391,8 +391,10 @@ Current prototype functionality includes:
 - Deterministic GPU tier-order plausibility flags (flag only, never changes a price) and a resolver precision guard (suffix, family and DDR must agree)
 - robots.txt, sitemap.xml, canonical and Open Graph metadata without invented content
 - Database backup and guarded restore drill; `/health` endpoint
+- Admin user management (roles, disable, password set; last-admin and self-lockout protection), unresolved-listings queue with human-confirmed aliases, read-only owner-intake screen (dry run and approval plan), beta readiness panel fed by the checklist file (LS-3)
+- Rate limiting of the public Deal Checker and Build POSTs, search that finds joined and reordered forms (measured 65.6 % to 100 % on a golden set), a condition checklist on the Deal Checker result (reminders only, verdict untouched)
 
-Not implemented (do not assume from other documents): a second evidence source in production, scheduled/off-site backups, rate limiting of public POST routes, structured data (schema.org) and a share image, independent security testing, deployment.
+Not implemented (do not assume from other documents): a second evidence source in production, scheduled/off-site backups, community feedback (design only: `docs/decisions/ADR-006-community-feedback-v0-design.md`), importing and approving from the admin screen (command line only), MFA, typo-tolerant search, structured specs on product pages, structured data (schema.org) and a share image, independent security testing, deployment.
 
 ### Audited Implementation Boundary
 
@@ -532,6 +534,10 @@ The current schema also contains groundwork for:
 /admin/snapshots/{id}
 /admin/market-trends
 /admin/data-health
+/admin/beta-readiness
+/admin/intake
+/admin/unresolved-listings
+/admin/users
 /admin/sources
 /admin/sources/action
 /admin/collector-jobs
