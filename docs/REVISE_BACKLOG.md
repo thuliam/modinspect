@@ -31,6 +31,7 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-10: /build lists 99 parts in one long list on mobile (no search/filter beyond brand); a sticky total and a part search would help.
 - H-11: no scheduled backup, no off-machine copy, no retention rule and no encryption of backup files; a backup routine on the real host (cron + off-site copy + a periodic restore drill) is part of beta readiness and needs the hosting decision. Point-in-time recovery needs binary logging on the host.
 - H-11: `/health` checks only the database; a deeper check (migrations applied, storage writable, last collection run) is possible but would reveal more, so it would need to sit behind admin auth.
+- H-12: the parity scan reads PHP only; asset file names referenced from CSS/JS/HTML (fonts, images) and the `.htaccess` rules are not scanned for case, and nothing tests file permissions or symlinks on Linux hosting.
 
 ## Owner-listed features (to be filled by the owner)
 
