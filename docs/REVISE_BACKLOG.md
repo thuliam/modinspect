@@ -38,6 +38,7 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-14/H-15: the guide is Thai-only and assumes a technical operator at a command line; an Admin UI for the weekly routine (upload sanitized file, see the plan, approve) would remove the CLI dependency but must keep the dry-run-first rule and the audit trail. No English guide.
 - H-15: the checklist is a document, not a screen; a read-only "beta readiness" panel fed by the same commands is a possible feature.
 - J-0: admin product, alias and article pages still render the save/delete controls for reviewers and operators (they now get 403 on submit); hide them for roles without `products.manage`. Also review whether other write handlers are guarded by a view-level permission (the route guard test only proves a guard exists, not that it is the right one): a permission-to-action table for every POST would close this class.
+- J-1: after an alias is added the listing stays unresolved and no observation is created; a "re-resolve and re-import this listing" action (through the existing import path, with the review lane rules) would close the loop. The queue shows raw title text (private evidence) truncated at 140 characters; a stricter privacy view (hash only) is possible if reviewers should not see seller text.
 
 ## Owner-listed features (to be filled by the owner)
 

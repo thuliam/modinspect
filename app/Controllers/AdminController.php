@@ -80,6 +80,33 @@ final class AdminController extends Controller {
         if(!$report) { http_response_code(404); $this->view('errors/404',['title'=>'Snapshot not found']); return; }
         $this->view('admin/snapshot-evidence',['title'=>'Snapshot #'.(int)$id.' evidence','report'=>$report,'history'=>(new \App\Services\Admin\SnapshotHistory())->forSnapshot((int)$id)]);
     }
+    public function unresolved(): void {
+        if(!$this->requirePermission('products.view')) return;
+        $status=in_array($_GET['status']??'open',['open','decided','all'],true) ? (string)$_GET['status'] : 'open';
+        $page=max(1,(int)($_GET['page']??1)); $per=25;
+        $svc=new \App\Services\Admin\UnresolvedListingQueue();
+        $this->render('unresolved','Unresolved listings',['rows'=>$svc->page($per,($page-1)*$per,$status),'total'=>$svc->count($status),'status'=>$status,'page'=>$page,'per'=>$per,
+            'actionsAvailable'=>$svc->actionsAvailable(),'canManage'=>(new AuthorizationService())->can($this->user(),'products.manage')]);
+    }
+    public function unresolvedAction(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/unresolved-listings'); }
+        $svc=new \App\Services\Admin\UnresolvedListingQueue();
+        $rawId=(int)(filter_input(INPUT_POST,'raw_id',FILTER_VALIDATE_INT) ?: 0);
+        $actor=(int)$this->user()['id'];
+        $note=trim((string)($_POST['note'] ?? '')) ?: null;
+        $messages=['MIGRATION_019_NOT_APPLIED'=>'The decision table is not installed yet (migration 019).','ALIAS_TOO_SHORT'=>'The alias is too short.','ALIAS_ONLY_DIGITS'=>'A number alone is not an alias.','ALIAS_HAS_NO_MODEL_NUMBER'=>'The alias must contain a model number.','ALIAS_SUFFIX_DIFFERS_FROM_PRODUCT'=>'The alias and the product must agree on Ti / Super / XT: a Super alias cannot point at a plain model, and a plain alias cannot point at a Ti.','LISTING_NOT_IN_QUEUE'=>'That listing is not in the queue.','PRODUCT_NOT_FOUND'=>'Choose a product.','ALIAS_DOES_NOT_RESOLVE_THIS_LISTING'=>'With this alias the listing would still not resolve to the chosen product.','ALREADY_DECIDED'=>'This listing already has a decision.','ALIAS_OR_DECISION_ALREADY_EXISTS'=>'That alias or decision already exists.'];
+        if(!$rawId) { $this->flash('danger','Choose a listing.'); $this->redirect('/admin/unresolved-listings'); }
+        if(($_POST['action']??'')==='dismiss') {
+            $r=$svc->dismiss($rawId,$actor,$note);
+            $this->flash($r['ok']?'success':'danger',$r['ok']?'Listing dismissed.':($messages[$r['error']]??'Could not dismiss.'));
+        } elseif(($_POST['action']??'')==='alias') {
+            $r=$svc->addAlias($rawId,(int)(filter_input(INPUT_POST,'product_id',FILTER_VALIDATE_INT) ?: 0),trim((string)($_POST['alias_text']??'')),$actor,$note);
+            $err=(string)($r['error']??'');
+            $this->flash($r['ok']?'success':'danger',$r['ok']?'Alias added. It applies to future imports; no price was changed.':(str_starts_with($err,'ALIAS_WOULD_CHANGE_OTHER_LISTINGS')?'This alias would change how '.substr($err,strrpos($err,':')+1).' other known listing(s) resolve, so it was not saved.':($messages[$err]??'Could not save the alias.')));
+        } else { $this->flash('danger','Unknown action.'); }
+        $this->redirect('/admin/unresolved-listings');
+    }
     public function dataHealth(): void {
         if(!$this->requirePermission('snapshots.view')) return;
         $this->view('admin/data-health',['title'=>'Data health','report'=>(new \App\Services\Admin\DataHealthReport())->build()]);

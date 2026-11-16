@@ -48,6 +48,7 @@ $commands = [
     ['label' => 'tests/health_endpoint_test.php', 'args' => ['tests/health_endpoint_test.php']],
     ['label' => 'tests/linux_parity_scan_test.php', 'args' => ['tests/linux_parity_scan_test.php']],
     ['label' => 'tests/rbac_master_data_write_test.php', 'args' => ['tests/rbac_master_data_write_test.php']],
+    ['label' => 'tests/unresolved_queue_test.php', 'args' => ['tests/unresolved_queue_test.php']],
     ['label' => 'tests/duplicate_post_report_test.php', 'args' => ['tests/duplicate_post_report_test.php']],
     ['label' => 'tests/snapshot_evidence_report_test.php', 'args' => ['tests/snapshot_evidence_report_test.php']],
     ['label' => 'tests/golden_resolver_test.php', 'args' => ['tests/golden_resolver_test.php']],

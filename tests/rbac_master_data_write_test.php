@@ -67,6 +67,7 @@ try {
         'productSave' => '/admin/products/save', 'productToggle' => '/admin/products/toggle',
         'aliasSave' => '/admin/product-aliases/save', 'aliasDelete' => '/admin/product-aliases/delete',
         'articleSave' => '/admin/articles/save', 'articleArchive' => '/admin/articles/archive',
+        'unresolvedAction' => '/admin/unresolved-listings/action',
     ];
     $before = [
         'products' => (int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn(),
