@@ -19,6 +19,7 @@ Source of truth for scope stays `docs/PRODUCT_REQUIREMENTS.md` and the Blueprint
 - H-4: `price_indices` accumulates a row per recalculation; there is no retention/archiving rule and no public price history chart beyond the monthly trend.
 - H-5: Data health shows 137 pending of which about 88 are REAL (Priceza) rows waiting since September; a REAL review session is the longest-lead item on the roadmap. Candidate feature: split the pending number by origin (owner text vs REAL) and by age on this page.
 - H-5: there is no per-source (not per-key) health view on this page; that needs a privacy decision on how much source identity admins may see.
+- H-6: history is capped at the last 8 snapshots and only shows the median; a per-product chart of snapshots and a way to see which observation ids were added are possible features (the second would show prices and dates only).
 
 ## Owner-listed features (to be filled by the owner)
 

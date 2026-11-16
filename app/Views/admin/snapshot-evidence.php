@@ -25,6 +25,39 @@ ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/pric
     </div>
 </div>
 
+<?php if (!empty($history)): $hp = $history['previous']; $hd = $history['diff']; $hm = $history['median']; ?>
+<div class="card mi-admin-card mb-3">
+    <div class="card-header">Compared with the previous snapshot</div>
+    <div class="card-body">
+        <?php if ($hp === null): ?>
+            <p class="mb-0 text-muted">This is the first public snapshot of this product.</p>
+        <?php else: ?>
+            <p class="mb-2">Previous: <a href="<?= $base ?>/admin/snapshots/<?= (int) $hp['id'] ?>">#<?= (int) $hp['id'] ?></a>, calculated <?= htmlspecialchars(substr($hp['calculated_at'], 0, 16)) ?>, median ฿<?= number_format($hp['median']) ?>.</p>
+            <p class="mb-0">Median <?= $hm['delta'] >= 0 ? '+' : '−' ?>฿<?= number_format(abs($hm['delta'])) ?><?= $hm['change_pct'] === null ? '' : ' (' . ($hm['change_pct'] >= 0 ? '+' : '') . number_format($hm['change_pct'], 1) . '%)' ?>
+                · <?= (int) $hd['added'] ?> observations added, <?= (int) $hd['removed'] ?> removed, <?= (int) $hd['kept'] ?> kept.</p>
+        <?php endif; ?>
+    </div>
+    <?php if (count($history['history']) > 1): ?>
+    <div class="table-responsive">
+        <table class="table table-hover mi-admin-table mb-0">
+            <thead><tr><th>Snapshot</th><th>Calculated</th><th class="text-right">Median</th><th class="text-right">Included</th><th>Confidence</th></tr></thead>
+            <tbody>
+            <?php foreach ($history['history'] as $hr): ?>
+                <tr>
+                    <td><a href="<?= $base ?>/admin/snapshots/<?= (int) $hr['id'] ?>">#<?= (int) $hr['id'] ?></a></td>
+                    <td><?= htmlspecialchars(substr($hr['calculated_at'], 0, 16)) ?></td>
+                    <td class="text-right">฿<?= number_format($hr['median']) ?></td>
+                    <td class="text-right"><?= (int) $hr['included'] ?></td>
+                    <td><?= htmlspecialchars($hr['label']) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
 <?php if (!$report['gap']['reaches_medium']): ?>
 <div class="card mi-admin-card mb-3">
     <div class="card-header">What is missing for medium confidence</div>

@@ -78,7 +78,7 @@ final class AdminController extends Controller {
         if(!$this->requirePermission('snapshots.view')) return;
         $report=ctype_digit($id) ? (new \App\Services\Admin\SnapshotEvidenceReport())->forSnapshot((int)$id) : null;
         if(!$report) { http_response_code(404); $this->view('errors/404',['title'=>'Snapshot not found']); return; }
-        $this->view('admin/snapshot-evidence',['title'=>'Snapshot #'.(int)$id.' evidence','report'=>$report]);
+        $this->view('admin/snapshot-evidence',['title'=>'Snapshot #'.(int)$id.' evidence','report'=>$report,'history'=>(new \App\Services\Admin\SnapshotHistory())->forSnapshot((int)$id)]);
     }
     public function dataHealth(): void {
         if(!$this->requirePermission('snapshots.view')) return;
