@@ -969,3 +969,4 @@ Next owner action:
 - New: `cli/unresolved_proposals.php`, `cli/pending_gap_report.php`, `cli/ops_probe.php`, `cli/db_backup_prune.php`; tests `unresolved_proposal_report`, `public_a11y_scan`, `ops_kit`; `/build` landmark fixed.
 - K-1d: design for the re-resolve tool is in docs/RERESOLVE_STALE_DESIGN.md (DL-074); nothing built. Owner decides D-1..D-4.
 - K-1e: dry-run shows the re-resolve is worth only 1 row (DL-075); R-3/R-4 dropped. Pending products need a second source (K-3).
+- K-3: options in docs/K3_SECOND_SOURCE_OPTIONS.md (DL-076); waiting for the owner's answers on Priceza used-vs-new, reviewer, and B volume. Next possible: read-only Priceza review pack.
