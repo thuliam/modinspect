@@ -151,3 +151,4 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | K-2 | Pending products gap report | DONE | `cli/pending_gap_report.php`: 22 pending, 0 approvable, 34 rows needed, 9 products one row short |
 | K-6 | Accessibility and weight scan, public pages | DONE (static part) | `tests/public_a11y_scan_test.php`; real defect fixed: `/build` had two `main` landmarks. Contrast, keyboard and screen-reader checks NOT done |
 | K-4 | Ops kit for HostAtom | DONE (nothing run on the host) | `cli/ops_probe.php`, `cli/db_backup_prune.php`, `tests/ops_kit_test.php`, cron lines in `docs/LS4_REPORTS.md` |
+| K-1d | Design: re-resolve the 159 stale rows | DONE (design only; no code, no write) | `docs/RERESOLVE_STALE_DESIGN.md`: dry-run-first tool, one transaction per row, new decision row (old kept), audit with actor, idempotent, `--expect` guard, tests listed, R-1..R-4 plan. Owner decisions D-1..D-4 open (Recommended: build R-1/R-2 read-only first). |

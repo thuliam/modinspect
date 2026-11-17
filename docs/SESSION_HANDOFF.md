@@ -967,3 +967,4 @@ Next owner action:
 - Reports and tooling only, see `docs/LS4_REPORTS.md`. No DEV write. PHP for DB scripts: the 8.3 path above (8.1 here has no pdo_mysql).
 - K-1c done: stale rows moved to an "Already matched" tab (DEV open 210, stale 159). Key finding: 159 of 369 unresolved-queue rows are stale; a dry-run showed the importer will not re-process them (DL-073). Next: hide stale rows in the queue (code only) and decide on a re-resolve tool.
 - New: `cli/unresolved_proposals.php`, `cli/pending_gap_report.php`, `cli/ops_probe.php`, `cli/db_backup_prune.php`; tests `unresolved_proposal_report`, `public_a11y_scan`, `ops_kit`; `/build` landmark fixed.
+- K-1d: design for the re-resolve tool is in docs/RERESOLVE_STALE_DESIGN.md (DL-074); nothing built. Owner decides D-1..D-4.
