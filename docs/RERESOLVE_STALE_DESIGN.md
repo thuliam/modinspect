@@ -70,3 +70,22 @@ Upper bound 159 rows. The real number is unknown until the dry-run: reposts, bun
 ## 9. What this design does not claim
 
 It was not run. The column list comes from reading `persistCandidate`; the validator call and the exact unique keys will be confirmed against the code and schema at R-1, before any write path exists. The yield is an estimate.
+
+## 10. Result of R-1/R-2 (2026-11-17, read-only on DEV): the premise did not hold
+
+Built: `app/Services/Research/StaleReResolver.php` (decision), `cli/reresolve_stale_dry_run.php` (report), `tests/stale_reresolve_test.php` (one fixture per outcome; three mutations, each caught: repost check, already-has-observation check, owner-text source check). Nothing was written.
+
+DEV, 369 undecided unresolved rows:
+
+| Outcome | Rows |
+|---|---:|
+| REPOST_OF_EXISTING_LISTING (the listing already has an observation) | **138** |
+| STILL_UNRESOLVED | 199 |
+| BUNDLE_WANTED_OR_DEPOSIT | 29 |
+| RED_AFTER_REVALIDATION | 1 |
+| NOT_OWNER_TEXT_SOURCE | 1 |
+| **would_create** | **1** |
+
+The 159 "stale" rows are almost all (138) the same listings that already count as observations (same listing key: first 30 letters and digits of the title plus the price, the importer's own repost rule). Re-resolving them would add **1 row**, on a product that is not pending. **0 of the 22 pending products are helped.** The evidence was never lost; the queue only showed old duplicate rejections. (The 138 figure rests on the 30-character key, a heuristic that can in principle merge two different items with the same opening text and price; it is the same key the importer uses.)
+
+Decision (DL-075, Recommended, agent-closed because it removes work, no owner approval needed to stop): **do not build R-3/R-4.** D-1 is answered by the numbers; D-2, D-3, D-4 are moot. The only way to clear the pending products is new evidence (second source, K-3). The 1 would_create row is not worth a tool; it can come in with the next normal intake.

@@ -72,3 +72,7 @@ Options (Recommended first):
 ## K-1c Stale rows hidden from the Open tab (done, code only)
 
 `/admin/unresolved-listings`: **Open** now lists only undecided rows the current catalog still cannot match (DEV: 369 became **210**); a new tab **Already matched** holds the 159 stale ones (visible, not deleted, an alias can still be added there); Decided and All are unchanged. No data was written. `tests/unresolved_queue_test.php` has a stale fixture and a mutation check (swapping the split made it fail, restored). The split replays the resolver for every undecided row per page view (369 titles, fast); if the queue grows large it should be cached.
+
+## K-1e Dry-run of the re-resolve (done, read-only): not worth building
+
+Of the 369 undecided unresolved rows, 138 are reposts of listings that already count, 199 are still unmatched, 29 are bundle/wanted/deposit, and only **1** would become a new observation (none for a pending product). See `docs/RERESOLVE_STALE_DESIGN.md` section 10 and DL-075. The "Already matched" tab from K-1c is therefore mostly duplicates already counted.
