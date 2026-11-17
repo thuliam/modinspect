@@ -105,3 +105,9 @@ Potential statuses: `pending`, `needs_review`, `accepted`, `rejected`, `duplicat
 Potential feedback types: `PRICE_LOWER`, `PRICE_HIGHER`, `PRICE_SIMILAR`, `PRODUCT_INFO_WRONG`, `VARIANT_WRONG`, `SPEC_WRONG`, `MARKET_DATA_STALE`, `LISTING_INVALID`, `CONDITION_CONTEXT`, `WARRANTY_CONTEXT`, `SOLD_PRICE_REPORT`.
 
 Do not add this schema until the Phase 4.5 Community Data Feedback Loop milestone.
+
+## Official hardware reference (LS-12, migration 020)
+
+`product_reference_specs` holds manufacturer specifications per product (socket, memory type, form factor, capacity, power, PSU capacity, maximum GPU length, cooler height), one row per product and spec key. Each row keeps the official source URL, the date it was checked and a review status: `official_checked`, or `needs_variant_review` when the source warns that several revisions of the part exist and the catalog product is generic.
+
+It holds no prices and is not read by the price engine, the review queue or the snapshot services. Nothing reads it yet; it is the place future compatibility checks (GPU length against case, cooler height against case) will read from. Source rows live in `database/reference/official_hardware_sources.csv`; `cli/gen_hardware_reference_migration.php` turns them into the migration.

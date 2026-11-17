@@ -10,20 +10,23 @@ final class SpecBuilderService
         return !empty($product['median']) && (int)($product['valid_sample_size']??0)>0 && (int)($product['accepted_observation_count']??0)>0;
     }
 
+    /** LS-11 A: the parts recommended for the Build page (see SpecRecommender) */
+    public function recommend(array $products, float $budget, string $use, string $resolution, string $preset): array { return (new SpecRecommender())->recommend($products, $budget, $use, $resolution, $preset); }
+
     public function generate(array $products, float $budget, string $use, string $resolution, string $mix, array $selectedIds = []): array
     {
-        $bySlug=[];
         $products=array_values(array_filter($products,[self::class,'isPriced']));
-        foreach($products as $product) $bySlug[$product['slug']]=$product;
         $byId=[]; foreach($products as $product) $byId[(int)$product['id']]=$product;
         $selected=[];
         foreach(array_filter($selectedIds) as $selectedId) if(isset($byId[(int)$selectedId])) $selected[]=$byId[(int)$selectedId];
         $cpu = !empty($selectedIds['cpu']) ? ($byId[(int)$selectedIds['cpu']] ?? null) : null;
         $gpu = !empty($selectedIds['gpu']) ? ($byId[(int)$selectedIds['gpu']] ?? null) : null;
         if(!$selected){
-            $cpu=$budget<22000?($bySlug['intel-core-i5-12400f']??null):($bySlug['amd-ryzen-7-5700x3d']??null);
-            $gpu=in_array($use,['gaming','streaming','ai'],true)?($bySlug['nvidia-geforce-rtx-3070']??null):null;
-            $selected=array_values(array_filter([$cpu,$gpu]));
+            // nothing chosen (LS-13 S-6): the same balanced plan the recommend button gives, built from the priced catalog, instead of three hard-coded models
+            $rec=$this->recommend($products,$budget,$use,$resolution,'balanced')['selected'];
+            foreach($rec as $recId) if(isset($byId[(int)$recId])) $selected[]=$byId[(int)$recId];
+            $cpu=isset($rec['cpu'])?($byId[(int)$rec['cpu']]??null):null;
+            $gpu=isset($rec['gpu'])?($byId[(int)$rec['gpu']]??null):null;
         }
         if (!$selected) return ['items'=>[],'low'=>0,'expected'=>0,'high'=>0,'notes'=>'ไม่มีข้อมูลราคาที่เหมาะสมเพียงพอ'];
         $items=[];$low=$expected=$high=0;

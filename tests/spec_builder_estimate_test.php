@@ -41,12 +41,20 @@ $noAccepted = $part(9, 'case-no-accepted', 'Case', 600, 700, 800, ['accepted_obs
 $r = $gen(['cpu' => 1, 'storage' => 7, 'psu' => 8, 'case' => 9], 30000.0, 'gaming', '1080p', 'used', [$cpu, $noMedian, $noSample, $noAccepted]);
 ok_se(array_column($r['items'], 'component_role') === ['cpu'], 'A missing median, a zero sample size or zero accepted rows each keep a part out: ' . json_encode(array_column($r['items'], 'component_role')));
 
-// nothing chosen: the default pick follows the budget and the use
+// nothing chosen: the default pick is the recommender's balanced plan (LS-13 S-6), no longer three hard-coded models
 $r = $gen([], 20000.0, 'gaming');
-ok_se(array_column($r['items'], 'product_id') === [1, 3], 'Under 22,000 with gaming: i5-12400F and RTX 3070');
+ok_se(array_column($r['items'], 'product_id') === [1, 3, 5], 'Gaming at 20,000: the balanced plan takes the cpu, the gpu and the ram of the catalog: ' . json_encode(array_column($r['items'], 'product_id')));
+ok_se($r['expected'] === 13300.0, 'The default plan fits what is left after the unpriced categories (13,400): ' . $r['expected']);
+$r = $gen([], 20000.0, 'gaming', '1080p', 'used', [$cpu, $gpu3070, $gpu4090]);
+ok_se(!in_array(4, array_column($r['items'], 'product_id'), true), 'The default plan never takes a gpu far above its share (RTX 4090 at 60,000)');
+// the default is the BALANCED preset exactly: with cpus at 4,200, 9,000 and 9,500 and 40,000 to spend, balanced stops at 90% of its share (9,000) and full would take 9,500
+$cpuMid = $part(21, 'cpu-9000', 'CPU', 8500, 9000, 9500); $cpuTop = $part(22, 'cpu-9500', 'CPU', 9000, 9500, 10000);
+$r = $gen([], 40000.0, 'gaming', '1080p', 'used', [$cpu, $cpuMid, $cpuTop, $gpu3070]);
+ok_se(array_column($r['items'], 'product_id') === [21, 3], 'Nothing chosen gives the balanced plan, not the saving or the full one: ' . json_encode(array_column($r['items'], 'product_id')));
 $r = $gen([], 30000.0, 'office', '1080p', 'used', [$cpu, $cpuHigh, $gpu3070]);
 ok_se(array_column($r['items'], 'product_id') === [2], 'From 22,000 and no gaming use: the stronger CPU and no GPU');
-ok_se($gen([], 30000.0, 'gaming', '1080p', 'used', [$ram, $unpriced])['items'] === [], 'No default part is priced: an empty plan, not an invented one');
+ok_se($gen([], 30000.0, 'gaming', '1080p', 'used', [$unpriced])['items'] === [], 'No part is priced: an empty plan, not an invented one');
+ok_se(array_column($gen([], 30000.0, 'gaming', '1080p', 'used', [$ram, $unpriced])['items'], 'component_role') === ['ram'], 'Only the categories that have a priced part are filled');
 
 // reserve never goes negative, and an over-budget build says so
 $r = $gen(['cpu' => 2, 'gpu' => 4], 30000.0);

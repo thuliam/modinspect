@@ -15,5 +15,10 @@ foreach (array_slice($argv, 1) as $arg) {
     if (str_starts_with($arg, '--format=')) { $format = substr($arg, 9); }
 }
 global $config;
-$b = CollectionTargets::build(CollectionTargets::gapRows(Database::connection($config['db'])));
+$db = Database::connection($config['db']);
+$b = CollectionTargets::build(CollectionTargets::gapRows($db));
 echo $format === 'csv' ? CollectionTargets::renderCsv($b) : CollectionTargets::renderText($b);
+// LS-13 S-1 (text only; the CSV keeps its shape): the PC categories that have no priced part and what to collect for them first
+if ($format !== 'csv') {
+    echo CollectionTargets::renderCategoryNeeds(CollectionTargets::categoryNeeds((new \App\Models\Product())->search(), CollectionTargets::haveByName($db)));
+}

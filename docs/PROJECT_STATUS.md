@@ -33,6 +33,9 @@ LS-9 (2026-11-17): the admin card checked in a browser, `docs/PR4_MERGE_BRIEF.md
 jQuery 3.3.1 replaced by the official 3.7.1 after the owner's approval (DL-088, beta C-6 half done; Bootstrap 4.1.0 unchanged).
 Main menu: "ประกอบคอม" (the `/build` page) added to the header and footer menus at the owner's request (DL-089).
 LS-10 (2026-11-17): `/build` checked with DEV data (read-only); side menu label and three estimate wording defects fixed, estimate tests added; see docs/LS10_REPORTS.md, DL-090. A complete PC cannot be built yet: motherboard, PSU, case and cooling have no priced part.
+LS-11 (2026-11-17): `/build` gets "แนะนำสเปกให้" with presets (by price share, not speed), the form fields that did nothing are fixed, the saved build shows a four-axis radar (no speed axis), and a read-only checker exists for the performance CSV; first-source performance research and a handoff request are written. No tier is shown; see docs/LS11_REPORTS.md, DL-091 to DL-094.
+LS-12 (2026-11-17): catalog filled from the official hardware sources CSV: 7 candidate parts and 45 manufacturer spec rows with sources (`product_reference_specs`), applied to DEV after a backup. No prices were added, so motherboard, PSU, case and cooling stay locked on `/build`; see docs/LS12_REPORTS.md, DL-095.
+LS-13 (2026-11-17): the daily collection list now names the locked PC categories (motherboard, PSU, case, cooling) and what to collect first; saving a build with nothing chosen uses the recommender instead of three hard-coded models; radar labels enlarged; recommend button swept over 240 combinations; pilot scope proposed in docs/PILOT_SCOPE_TH.md. See docs/LS13_REPORTS.md, DL-096.
 
 Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
 G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.

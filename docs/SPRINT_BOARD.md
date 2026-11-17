@@ -214,3 +214,33 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | Q-1 | `/build` with real DEV data, read-only | DONE | side menu said "has price data" for 4 categories with no priced part: fixed; a full PC cannot be built yet (data gap) |
 | Q-2 | Tests for the estimate logic | DONE; 3 wording defects fixed | `tests/spec_builder_estimate_test.php` (10 mutations caught), `SpecBuilderService::isPriced` |
 | Q-3 | Close-out | suite, secret scan, push; CI via PR monitor | docs updated |
+
+## LS-11 (owner approved A, B, C, D, F on 2026-11-17; E deferred; report `docs/LS11_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| A | "แนะนำสเปกให้" with presets ประหยัด / สมดุล / ใช้งบเต็มที่ | DONE | `SpecRecommender`, form and controller branch, `tests/spec_recommend_test.php` (10 mutations tried, all caught except one equivalent); DEV browser check read-only; chooses by price share, not speed |
+| B | Fix the form fields that did nothing | DONE | the new/used field removed (used prices only), use and resolution now drive the recommendation, choices kept after a round trip |
+| C | Radar on the saved build | DONE | `SpecRadar`, `components/build-radar.php`, `tests/spec_radar_test.php`; Chart.js already approved; four measured axes, no speed axis; checked on the test DB at desktop and 375 px |
+| D | Checker for the performance CSV | DONE | `cli/validate_perf_scores.php`, `PerfScoreCsvValidator`, `tests/perf_score_csv_validator_test.php` (10 mutations caught); read-only |
+| E | Tier engine S+ to A | DEFERRED | needs reviewed performance data and the owner's decision on sources and terms; no tier is shown anywhere |
+| F | Documents | DONE | LS11_REPORTS, DL-091 to DL-094, PROJECT_STATUS, SESSION_HANDOFF, OWNER_DECISIONS_TH |
+
+## LS-12 (owner request 2026-11-17: fill the catalog from the official hardware sources before the pilot; report `docs/LS12_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| R-1 | Seven candidate parts added, official specs stored with sources | DONE on DEV (backup taken first) | migration 020, `HardwareReferenceMigration`, `tests/hardware_reference_migration_test.php`; DEV: 7 products, 17 aliases, 45 reference specs, 2 brands |
+| R-2 | Monitors | HELD | no monitor category exists; the 3 monitor rows stay in the CSV |
+| R-3 | Prices for motherboard, PSU, case, cooling | OPEN (owner collection) | this data has no prices, so `/build` still locks those categories |
+
+## LS-13 (owner approved S-1 to S-6 on 2026-11-17; report `docs/LS13_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| S-1 | Complete-PC categories in the daily collection list | DONE | `CollectionTargets::categoryNeeds`, `tests/collection_category_needs_test.php` (7 mutations caught); DEV: motherboard, PSU, case, cooling locked; one PSU needs review, not collection |
+| S-2 | Recommend button across presets and uses | DONE | 240-combination sweep on the DEV catalog (0 problems) and 3 combinations through the real form |
+| S-3 | Radar label size | DONE | Chart.js `pointLabels` 13 px, test first; checked at desktop width |
+| S-4 | Pilot scope document | DONE (proposal) | `docs/PILOT_SCOPE_TH.md`; needs the owner's word "pilot" |
+| S-5 | Commit, push, read CI | see SESSION_HANDOFF | |
+| S-6 | Default pick uses the recommender | DONE | `SpecBuilderService::generate`, `tests/spec_builder_estimate_test.php` changed first, mutations caught |

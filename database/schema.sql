@@ -524,3 +524,19 @@ CREATE TABLE unresolved_listing_reviews (
   CONSTRAINT fk_unresolved_alias FOREIGN KEY (alias_id) REFERENCES product_aliases(id) ON DELETE SET NULL,
   CONSTRAINT fk_unresolved_reviewer FOREIGN KEY (reviewer_id) REFERENCES users(id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE product_reference_specs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  spec_key VARCHAR(60) NOT NULL,
+  spec_value VARCHAR(120) NOT NULL,
+  unit VARCHAR(12) NULL,
+  source_url VARCHAR(500) NOT NULL,
+  date_checked DATE NOT NULL,
+  review_status ENUM('official_checked','needs_variant_review') NOT NULL,
+  review_note VARCHAR(500) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_ref_spec (product_id, spec_key),
+  INDEX idx_ref_spec_key (spec_key),
+  CONSTRAINT fk_ref_spec_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;

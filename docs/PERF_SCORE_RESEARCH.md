@@ -46,7 +46,9 @@ Read 2026-11-17. **Nothing here is in the database or on any page of the site.**
 
 The four missing cards are older. The page says its older suites are on other pages with a different test system, so those numbers would not be comparable without care.
 
-## CPUs (catalog 27, only partly covered)
+## CPUs (catalog 28, only partly covered)
+
+Correction 2026-11-17: the catalog holds 28 active CPUs, not 27. Core i7-12700F was missing from the first list and is not on the source page under that name either (only the 12700K is).
 
 Three tables, three different meanings. The gaming table is measured with an RTX 5090 at 1080p, so it shows CPU headroom, not what a buyer with a mid-range GPU would see. "proxy" means the page lists a close sibling, not the exact catalog SKU.
 
@@ -78,6 +80,20 @@ Gaming-table coverage is 7 of 27, so CPUs cannot be tiered from this one page. S
 3. **Mixing numbers from different tables is not allowed.** The three CPU columns use different baselines (9850X3D, 270K Plus, 9950X3D2). They can be shown side by side but never averaged without a stated formula.
 4. **A tier needs a pairing rule** (a CPU score and a GPU score from different tables). Proposal: GPU index and CPU gaming index are normalized to a 0 to 100 scale separately, then the lower of the two limits the "gaming" axis, so a strong GPU with a weak CPU does not read as top tier. This is a design idea to review, not a decision.
 5. Every displayed figure should carry source name, page date and the label "index from public test results, not a guarantee of performance".
+
+## Second pass: CSV from the research helper (2026-11-17, checked)
+
+The helper's file `modinspect_benchmark_research_2026-11-17_REBUILT.csv` (177 rows) was run through `cli/validate_perf_scores.php` against the DEV catalog. **The CSV itself is not stored in this repository** (every row is marked "restricted: internal verification only"); it stays with the owner.
+
+- The checker found no errors. 161 rows carry a figure; 16 are empty with a stated reason. Every figure row has a source URL, a read date and a terms link. Page dates are mostly empty because both sites show none (warning only).
+- Sources: PassMark (CPU Mark, G3D Mark) and Geekbench Browser (single/multi core, OpenCL, Vulkan). By the checker's count 52 of 57 models have two independent sources and 3 have one; 2 have none. **Both sources are restricted for commercial republication according to the helper's notes**, which I have not read on the sites' own terms pages.
+- An earlier, smaller file (8 rows, marked "recovered from supplied Markdown" and "NOT independently reconfirmed") was set aside; the rebuilt file replaces it.
+- **Spot check against the live pages, by me:** 8 PassMark figures (4 GPUs, 4 CPUs) matched the sites' own lists within 0.15% (for example RTX 3070 22,086 in the file vs 22,058 on the page, RTX 5090 38,976 vs 39,032, Ryzen 5 5600X 21,825 vs 21,820, GTX 1650 7,862 vs 7,862). The small drift is what PassMark says to expect. Geekbench figures were **not** opened.
+- **Agreement between sources** (rank correlation, for sanity only): PassMark G3D against the Tom's Hardware 1080p score 0.97 on 21 GPUs; Geekbench OpenCL against Tom's 0.97 on 20 GPUs; PassMark against Geekbench OpenCL 0.98 on 24 GPUs; PassMark CPU Mark against Geekbench multi-core 0.96 on 25 CPUs. Two GPUs sit far from the others in rank: RX 9070 XT (lower in G3D) and RTX 4070 (higher). Compute and G3D scores measure different things from game frame rates.
+- Not usable from this file: Ryzen 3 3400G (the helper says the SKU is a "Ryzen 5 3400G" in public sources, so the catalog name may be wrong; unconfirmed, not changed) and Ryzen 5 8500G (Geekbench page showed 0/0).
+- GPU variants with different memory (8GB/16GB) appear as separate metrics where PassMark splits them.
+
+**Not decided:** whether any figure from these sources may appear on the site (no raw figure and no tier until the owner decides, and for restricted sources until rights are cleared).
 
 ## Suggested next steps (all read-only until you approve)
 

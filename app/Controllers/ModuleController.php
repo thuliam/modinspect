@@ -34,6 +34,15 @@ final class ModuleController extends Controller {
         if(!in_array($resolution,['1080p','1440p','4k','none'],true)) $errors[]='กรุณาเลือกความละเอียด';
         if(!in_array($mix,['used','mixed','new'],true)) $errors[]='กรุณาเลือกประเภทอุปกรณ์';
         if($errors){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>$errors,'old'=>$_POST]);return;}
+        if(($_POST['action']??'')==='recommend'){
+            // LS-11 A: choose parts for the visitor, show them ticked in the same form (nothing is saved until the visitor presses save)
+            $preset=(string)($_POST['preset']??'balanced');
+            if(!in_array($preset,['saving','balanced','full'],true)){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>['กรุณาเลือกรูปแบบการแนะนำ'],'old'=>$_POST]);return;}
+            $rec=(new SpecBuilderService())->recommend($products,(float)$budget,$use,$resolution,$preset);
+            if(!$rec['selected']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>['ข้อมูลราคายังไม่เพียงพอสำหรับแนะนำสเปก'],'old'=>$_POST]);return;}
+            $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>[],'old'=>['budget'=>$_POST['budget'],'intended_use'=>$use,'resolution'=>$resolution,'preset'=>$preset,'parts'=>$rec['selected']],'recommendation'=>$rec]);
+            return;
+        }
         $componentKeys=['cpu','motherboard','gpu','ram','storage','psu','case','cooling'];
         $selected=[]; foreach($componentKeys as $key) $selected[$key]=(int)($_POST['parts'][$key]??0);
         $catalog=[];foreach($products as $product)$catalog[(int)$product['id']]=strtolower((string)$product['category_name']);
