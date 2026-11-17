@@ -76,6 +76,7 @@ $commands = [
     ['label' => 'tests/retention_purge_test.php', 'args' => ['tests/retention_purge_test.php']],
     ['label' => 'tests/jquery_version_guard_test.php', 'args' => ['tests/jquery_version_guard_test.php']],
     ['label' => 'tests/main_menu_test.php', 'args' => ['tests/main_menu_test.php']],
+    ['label' => 'tests/spec_builder_estimate_test.php', 'args' => ['tests/spec_builder_estimate_test.php']],
     ['label' => 'tests/second_source_snapshot_gate_test.php', 'args' => ['tests/second_source_snapshot_gate_test.php']],
     ['label' => 'tests/new_price_reference_test.php', 'args' => ['tests/new_price_reference_test.php']],
     ['label' => 'tests/stale_reresolve_test.php', 'args' => ['tests/stale_reresolve_test.php']],

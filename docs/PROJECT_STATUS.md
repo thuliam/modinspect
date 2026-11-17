@@ -32,6 +32,7 @@ LS-8 (2026-11-17): Thai collection target list `cli/collection_targets.php`, ret
 LS-9 (2026-11-17): the admin card checked in a browser, `docs/PR4_MERGE_BRIEF.md` and `docs/FRONTEND_LIBS_OPTIONS.md` written for owner decisions; no code change; see docs/LS9_REPORTS.md, DL-087.
 jQuery 3.3.1 replaced by the official 3.7.1 after the owner's approval (DL-088, beta C-6 half done; Bootstrap 4.1.0 unchanged).
 Main menu: "ประกอบคอม" (the `/build` page) added to the header and footer menus at the owner's request (DL-089).
+LS-10 (2026-11-17): `/build` checked with DEV data (read-only); side menu label and three estimate wording defects fixed, estimate tests added; see docs/LS10_REPORTS.md, DL-090. A complete PC cannot be built yet: motherboard, PSU, case and cooling have no priced part.
 
 Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
 G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.

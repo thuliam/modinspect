@@ -4,10 +4,16 @@ namespace App\Services;
 
 final class SpecBuilderService
 {
+    /** a part counts only with a market price from accepted rows (the same rule the Build page uses to enable a choice and to label a category) */
+    public static function isPriced(array $product): bool
+    {
+        return !empty($product['median']) && (int)($product['valid_sample_size']??0)>0 && (int)($product['accepted_observation_count']??0)>0;
+    }
+
     public function generate(array $products, float $budget, string $use, string $resolution, string $mix, array $selectedIds = []): array
     {
         $bySlug=[];
-        $products=array_values(array_filter($products,fn($product)=>!empty($product['median']) && (int)($product['valid_sample_size']??0)>0 && (int)($product['accepted_observation_count']??0)>0));
+        $products=array_values(array_filter($products,[self::class,'isPriced']));
         foreach($products as $product) $bySlug[$product['slug']]=$product;
         $byId=[]; foreach($products as $product) $byId[(int)$product['id']]=$product;
         $selected=[];
@@ -42,11 +48,14 @@ final class SpecBuilderService
         elseif($cpu&&$motherboard) $notes='CPU และเมนบอร์ดรองรับ socket '.$cpu['socket'];
         if($ram&&$motherboard&&(!$known($ram['memory_type'])||!$known($motherboard['memory_type']))) $notes.='; ไม่ทราบชนิดหน่วยความจำของ RAM หรือเมนบอร์ด กรุณาตรวจเองว่าเป็นชนิดเดียวกัน';
         elseif($ram&&$motherboard&&$ram['memory_type']!==$motherboard['memory_type']) {$memoryError='RAM '.$ram['memory_type'].' ไม่ตรงกับเมนบอร์ด '.$motherboard['memory_type'];$notes.='; '.$memoryError;$compatibilityError=$compatibilityError?($compatibilityError.'; '.$memoryError):$memoryError;}
-        if($gpu && $resolution==='4k') $notes.='; RTX 3070 เหมาะกับ 1440p มากกว่า 4K และควรพิจารณา GPU ระดับสูงกว่า';
+        if($gpu && $resolution==='4k' && ($gpu['slug']??'')==='nvidia-geforce-rtx-3070') $notes.='; RTX 3070 เหมาะกับ 1440p มากกว่า 4K และควรพิจารณา GPU ระดับสูงกว่า';
         if($mix==='new') $notes.='; ดัชนีนี้เป็นราคามือสอง จึงควรเทียบราคาของใหม่เพิ่มเติม';
         $selectedCategories=array_map(fn($p)=>strtolower((string)$p['category_name']),$selected);
         $missing=array_values(array_diff(['motherboard','ram','storage','psu','case','cooling'],$selectedCategories));
-        $notes.="; งบคงเหลือโดยประมาณ ฿".number_format($reserve).($missing?' สำหรับ '.implode(', ',$missing):' เป็นงบสำรอง');
+        // the page's own Thai names for the categories (never raw keys inside Thai text)
+        $labels=['motherboard'=>'เมนบอร์ด','ram'=>'RAM','storage'=>'ที่เก็บข้อมูล','psu'=>'พาวเวอร์ซัพพลาย','case'=>'เคส','cooling'=>'ชุดระบายความร้อน'];
+        $notes.="; งบคงเหลือโดยประมาณ ฿".number_format($reserve).($missing?' สำหรับ '.implode(', ',array_map(fn($m)=>$labels[$m]??$m,$missing)):' เป็นงบสำรอง');
+        if($expected>$budget) $notes.='; เกินงบประมาณ ฿'.number_format($expected-$budget);
         return compact('items','low','expected','high','notes','compatibilityError');
     }
 }

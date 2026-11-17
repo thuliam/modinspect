@@ -206,3 +206,11 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | P-3 | Front-end library options | DONE | `docs/FRONTEND_LIBS_OPTIONS.md` |
 | P-4 | jQuery 3.3.1 to 3.7.1 (owner approved) | DONE | official file verified against a second source, manifest regenerated, `tests/jquery_version_guard_test.php` (3 mutations caught), suite exit 0, browser checks of collapse, dropdown, DataTables and the home page script; DL-088 |
 | P-5 | "ประกอบคอม" in the main menu (owner request) | DONE | `app/Views/layouts/header.php`, `footer.php`, `tests/main_menu_test.php`; browser check at six widths; DL-089 |
+
+## LS-10 (owner approved the Recommended set on 2026-11-17: Q-1, Q-2, Q-3; report `docs/LS10_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| Q-1 | `/build` with real DEV data, read-only | DONE | side menu said "has price data" for 4 categories with no priced part: fixed; a full PC cannot be built yet (data gap) |
+| Q-2 | Tests for the estimate logic | DONE; 3 wording defects fixed | `tests/spec_builder_estimate_test.php` (10 mutations caught), `SpecBuilderService::isPriced` |
+| Q-3 | Close-out | suite, secret scan, push; CI via PR monitor | docs updated |
