@@ -1,6 +1,8 @@
 # Front-end library options: Bootstrap 4.1.0 and jQuery 3.3.1 (beta checklist C-6)
 
-For the owner's decision. **Nothing was downloaded or changed.** Any download needs your approval (AGENTS.md UI rule); this brief names what would be fetched so you can approve it or not.
+**Status 2026-11-17: option B is done.** The owner approved the jQuery download; jQuery is now 3.7.1 (DL-088, `docs/LS9_REPORTS.md`). Bootstrap 4.1.0 is unchanged and option C is still open. The text below is the brief as written before the approval.
+
+For the owner's decision. **Nothing was downloaded or changed when this was written.** Any download needs your approval (AGENTS.md UI rule); this brief names what would be fetched so you can approve it or not.
 
 ## What the project ships today
 

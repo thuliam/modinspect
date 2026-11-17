@@ -6,7 +6,7 @@ manifest changes.
 
 | Component | Version | Licence | Provenance | Notes |
 |---|---|---|---|---|
-| jQuery | 3.3.1 | MIT | copied from the Concept template; **not yet compared with the official npm tarball** | upgrade path: pin an official 3.7.x release in a deliberate change |
+| jQuery | 3.7.1 | MIT | official `jquery-3.7.1.min.js` from code.jquery.com, byte-identical to the jsDelivr npm copy (SHA-256 `fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a`); 87,533 bytes; downloaded 2026-11-17 with owner approval | replaced 3.3.1 (advisories CVE-2019-11358, CVE-2020-11022, CVE-2020-11023); see `docs/FRONTEND_LIBS_OPTIONS.md` |
 | Bootstrap (CSS + JS bundle) | 4.1.0 | MIT | copied from the Concept template; not yet compared with the official release | Bootstrap 4 major is intentional; never mix with 5 |
 | Font Awesome Free | 5.0.9 | Icons CC BY 4.0, fonts SIL OFL 1.1, code MIT | copied from the Concept template | keep the attribution header in `fontawesome-all.css`. Known gaps: CSS points at `*.html` font files (404, falls back to `.woff`) and newer icons (`fa-file-csv`, `fa-search-dollar`) do not exist in 5.0.9. A verified official 5.x download needs owner approval (gate G-7) |
 | DataTables core + Bootstrap 4 integration | 1.13.11 | MIT | official npm packages `datatables.net` and `datatables.net-bs4`, tarball SHA-512 verified at install | |

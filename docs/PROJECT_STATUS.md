@@ -30,6 +30,7 @@ LS-6 (2026-11-17): daily file helper `cli/prepare_owner_rows.php` and two import
 LS-7 (2026-11-17): approval-after-import fix, `--check-db` for the daily helper, `.env` preflight CLI, Thai privacy/terms draft (owner blanks, unpublished), `/build` 320 px overflow fixed and the LS-6 focus-order finding retracted; see docs/LS7_REPORTS.md, DL-083, DL-084. NO-GO unchanged.
 LS-8 (2026-11-17): Thai collection target list `cli/collection_targets.php`, retention tool `cli/retention_purge.php` (no default period, dry run first, never run on DEV), Capture Method card on the admin analytics page; see docs/LS8_REPORTS.md, DL-085, DL-086.
 LS-9 (2026-11-17): the admin card checked in a browser, `docs/PR4_MERGE_BRIEF.md` and `docs/FRONTEND_LIBS_OPTIONS.md` written for owner decisions; no code change; see docs/LS9_REPORTS.md, DL-087.
+jQuery 3.3.1 replaced by the official 3.7.1 after the owner's approval (DL-088, beta C-6 half done; Bootstrap 4.1.0 unchanged).
 
 Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
 G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.

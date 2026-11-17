@@ -19,9 +19,9 @@ $manifestPath = $vendorDir . '/MANIFEST.json';
 
 $components = [
     'jquery' => [
-        'dir' => 'jquery', 'version' => '3.3.1', 'license' => 'MIT',
-        'source' => 'Copied from the Concept Bootstrap 4 admin template (Colorlib, MIT).',
-        'provenance' => 'template-copy-unverified',
+        'dir' => 'jquery', 'version' => '3.7.1', 'license' => 'MIT',
+        'source' => 'Official jQuery 3.7.1 minified build from https://code.jquery.com/jquery-3.7.1.min.js, byte-identical to https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js (SHA-256 fc9a93dd241f6b045cbff0481cf4e1901becd0e12fb45166a8f17f95823f0b1a, SRI sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=). Downloaded 2026-11-17 with owner approval (LS-9, C-6).',
+        'provenance' => 'official-download-verified',
     ],
     'bootstrap' => [
         'dir' => 'bootstrap', 'version' => '4.1.0', 'license' => 'MIT',

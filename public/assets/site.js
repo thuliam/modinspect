@@ -1,4 +1,4 @@
-/* Public site behaviour (jQuery 3.3.1 + Bootstrap 4 bundle are loaded before this file; no network calls).
+/* Public site behaviour (jQuery 3.7.1 + Bootstrap 4 bundle are loaded before this file; no network calls).
    Bootstrap handles the navbar collapse and the category dropdown. This file adds:
    - scroll reveal (CSS draws it; this flips a class), count-up numbers, header state
    - featured-grid category tabs, motion toggle (full / calm). Calm = OS asks for reduced motion: fades only. */
