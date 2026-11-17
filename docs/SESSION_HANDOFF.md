@@ -974,3 +974,4 @@ Next owner action:
 - K-3c (DL-078): documented second-source template does not reach used prices; owner must choose P1/P2/P3 (Recommended P1) before the daily workflow is built.
 - K-3c done (DL-079): P1 built. Owner: fill examples/import/owner_listing_urls.csv, dry run, import, review (docs/OWNER_DAILY_COLLECTION_TH.md). Agent route: record contract + capture_method=machine_capture.
 - LS-5: L-3 (Thai labels/notes, wording to review) and L-6 (docs/SECURITY_REVIEW_2026-11-17.md, DB-password leak fixed) done; L-1 waits for the owner's first file, L-2 for L-1. Owner: rotate the DEV DB password.
+- 2026-11-17: owner will attach the first import file LATER ("remark ให้พี่แนบตอนหลัง"). L-1 stays WAITING and L-2 stays BLOCKED until then; do not ask again unprompted, remind once when closing a related task.

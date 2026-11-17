@@ -76,3 +76,18 @@ Options (Recommended first):
 ## K-1e Dry-run of the re-resolve (done, read-only): not worth building
 
 Of the 369 undecided unresolved rows, 138 are reposts of listings that already count, 199 are still unmatched, 29 are bundle/wanted/deposit, and only **1** would become a new observation (none for a pending product). See `docs/RERESOLVE_STALE_DESIGN.md` section 10 and DL-075. The "Already matched" tab from K-1c is therefore mostly duplicates already counted.
+
+## K-6b Browser pass: contrast and keyboard focus (2026-11-17, built-in browser, local site, read-only)
+
+Method: in the page, for every visible text element the colour contrast against its resolved background was computed (WCAG 4.5 for normal text, 3 for large text), and every focusable control was focused after a real Tab key press to see whether its focus produces a visible change. No library was downloaded; this is an inspection script, not an axe run.
+
+| Page | Text elements checked | Below contrast limit | Focusable controls | Without a focus indicator |
+|---|---:|---:|---:|---:|
+| Home | 125 | 0 | not run | not run |
+| Price index | 681 | 0 | not run | not run |
+| Product (RTX 3070) | 89 | 0 | 28 | 0 |
+| Deal Checker | 46 | 0 | not run | not run |
+| Build | 746 | 0 | 136 | 0 enabled (50 disabled radios are not focusable by design) |
+| Methodology | 37 | 0 | 17 | 0 |
+
+Also: no positive `tabindex` on the product page, a skip link exists. **Not covered:** text over images or gradients, placeholder and icon contrast, hover and active states, dark mode, phone width, tab order, and real screen-reader behaviour (the manual part of K-6 remains open). Contrast on solid backgrounds is clean on the six pages above.
