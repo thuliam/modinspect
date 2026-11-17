@@ -34,4 +34,4 @@ The axis labels are set to 13 px through Chart.js `pointLabels` (the default was
 
 ## Close-out
 
-See SESSION_HANDOFF for the suite, secret scan, commit, push and CI result.
+Full sequential suite exit 0 (all new tests registered and passing). Secret scan clean on tracked files; the new files were searched separately and only prose mentions turned up. Committed as 57460ad (LS-11 to LS-13 together, with the two earlier documentation commits) and pushed to the PR #4 branch. At the time of writing the PR monitor showed 4 checks passing and the PR mergeable, but that read was taken right after the push and may still describe the previous head; the monitor wakes the session on a failure.

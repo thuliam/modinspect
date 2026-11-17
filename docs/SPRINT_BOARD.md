@@ -242,5 +242,5 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | S-2 | Recommend button across presets and uses | DONE | 240-combination sweep on the DEV catalog (0 problems) and 3 combinations through the real form |
 | S-3 | Radar label size | DONE | Chart.js `pointLabels` 13 px, test first; checked at desktop width |
 | S-4 | Pilot scope document | DONE (proposal) | `docs/PILOT_SCOPE_TH.md`; needs the owner's word "pilot" |
-| S-5 | Commit, push, read CI | see SESSION_HANDOFF | |
+| S-5 | Commit, push, read CI | DONE | commit 57460ad pushed to PR #4; suite exit 0; CI read right after the push (4 passing), the monitor watches for failures |
 | S-6 | Default pick uses the recommender | DONE | `SpecBuilderService::generate`, `tests/spec_builder_estimate_test.php` changed first, mutations caught |
