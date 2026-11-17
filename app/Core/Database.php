@@ -24,7 +24,8 @@ final class Database
             // PHP-generated times agree even when the database server itself runs in UTC (CI, many hosts).
             self::$pdo->exec("SET time_zone = '" . date('P') . "'");
         } catch (PDOException $e) {
-            throw new RuntimeException('ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาตรวจสอบไฟล์ .env', 0, $e);
+            // Do NOT chain $e: PDO's trace carries the constructor arguments (DSN, user name, password) and PHP prints it on an uncaught exception.
+            throw new RuntimeException('ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาตรวจสอบไฟล์ .env (SQLSTATE ' . preg_replace('/[^A-Za-z0-9]/', '', (string)$e->getCode()) . ')');
         }
         return self::$pdo;
     }

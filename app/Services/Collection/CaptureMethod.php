@@ -28,6 +28,12 @@ final class CaptureMethod
         return false;
     }
 
+    /** a Thai mobile or landline number written in the usual ways (081-234-5678, 0812345678, +66 81 234 5678); prices and model numbers do not match */
+    public static function hasPhoneNumber(string $text): bool
+    {
+        return preg_match('/(?<!\d)(?:\+?66[\s.\-]?|0)[2-9]\d(?:[\s.\-]?\d){6,7}(?!\d)/', $text) === 1;
+    }
+
     /** @param array<string,mixed> $record @return array{snapshot:string,hash:string} */
     public static function freeze(array $record): array
     {
@@ -73,6 +79,7 @@ final class CaptureMethod
             if ($dataset !== 'real') { $e[] = 'OWNER_TRANSCRIPTION_REQUIRES_REAL_DATASET'; }
             if (trim((string)($record['source_item_id'] ?? '')) === '') { $e[] = 'OWNER_TRANSCRIPTION_REQUIRES_ITEM_ID'; }
             if (!self::domainAllowed($url)) { $e[] = 'OWNER_TRANSCRIPTION_DOMAIN_NOT_ALLOWED'; }
+            if (self::hasPhoneNumber((string)($record['listing_title'] ?? $record['title'] ?? ''))) { $e[] = 'OWNER_TRANSCRIPTION_TITLE_HAS_PHONE_NUMBER'; }   // minimise seller PII: remove the number and retry
             if (preg_match('#facebook\.com/(profile\.php|people/)#i', $url) === 1) { $e[] = 'OWNER_TRANSCRIPTION_PERSONAL_PROFILE_LINK'; }   // minimise seller PII (AGENTS.md)
         } else {
             $hash = strtolower(trim((string)($record['evidence_hash'] ?? '')));

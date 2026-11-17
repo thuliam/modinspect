@@ -20,7 +20,7 @@ if (!function_exists('mi_public_confidence_reason')) {
             'MIXED_FRESHNESS' => 'อายุข้อมูลปะปนกัน', 'MODERATE_SAMPLE_SIZE' => 'ตัวอย่างพอสมควร', 'MODERATE_SOURCE_DIVERSITY' => 'แหล่งข้อมูลพอสมควร', 'SINGLE_SOURCE' => 'มาจากแหล่งเดียว',
             'SINGLE_SOURCE_CAP' => 'จำกัดเพราะมาจากแหล่งเดียว', 'OWNER_TEXT_ONLY_CAP' => 'จำกัดเพราะเป็นข้อความที่ทีมงานรวบรวมทั้งหมด ไม่มีลิงก์ต้นทาง', 'SOURCE_CONCENTRATION_CAP' => 'จำกัดเพราะข้อมูลกระจุกตัว', 'STALE_COHORT_CAP' => 'จำกัดเพราะข้อมูลเก่า', 'STALE_DATA' => 'ข้อมูลเก่า',
             'STRONG_EVIDENCE' => 'หลักฐานแข็งแรง', 'STRONG_SAMPLE_SIZE' => 'ตัวอย่างมาก', 'SUFFICIENT_SAMPLE' => 'ตัวอย่างเพียงพอ', 'TINY_SAMPLE_CAP' => 'จำกัดเพราะตัวอย่างน้อยมาก',
-            'WEAK_EVIDENCE' => 'หลักฐานอ่อน', 'WEAK_EVIDENCE_CAP' => 'จำกัดเพราะหลักฐานอ่อน',
+            'WEAK_EVIDENCE' => 'หลักฐานอ่อน', 'WEAK_EVIDENCE_CAP' => 'จำกัดเพราะหลักฐานอ่อน', 'HUMAN_RECORDED_EVIDENCE_CAP' => 'จำกัดเพราะข้อมูลทั้งหมดเป็นข้อมูลที่ทีมงานบันทึกเอง ยังไม่มีการเก็บหน้าประกาศโดยระบบ',
         ];
         $reasons = array_map(static fn($c) => $th[$c] ?? (string) $c, array_values(array_filter($confidence['reasons'] ?? [])));
         if ($reasons) {
@@ -75,6 +75,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                     <?php $eg = $evidence_grades ?? ['total' => 0, 'owner_text' => 0]; ?>
                     <?php if (($eg['owner_text'] ?? 0) > 0): ?>
                         <p class="mi-grade-note" role="note"><i class="fas fa-info-circle" aria-hidden="true"></i> <?= (int) $eg['owner_text'] ?> จาก <?= (int) $eg['total'] ?> ตัวอย่างมาจากข้อความที่เจ้าของรวบรวมเอง ไม่มีลิงก์ประกาศต้นทางให้ตรวจ จึงเป็นหลักฐานเกรดต่ำกว่า ใช้ประกอบการตัดสินใจเท่านั้น</p>
+                    <?php endif; ?>
+                    <?php if (($eg['transcribed'] ?? 0) > 0): ?>
+                        <p class="mi-grade-note" role="note"><i class="fas fa-info-circle" aria-hidden="true"></i> <?= (int) $eg['transcribed'] ?> จาก <?= (int) $eg['total'] ?> ตัวอย่างทีมงานบันทึกจากประกาศที่มีลิงก์เอง ระบบยังไม่ได้เก็บหน้าประกาศไว้ และประกาศอาจถูกลบไปแล้ว จึงใช้ประกอบการตัดสินใจเท่านั้น</p>
                     <?php endif; ?>
                     <div class="mi-sum-meta">
                         <span class="confidence-badge confidence-<?= htmlspecialchars($confidenceClass) ?>"><?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?></span>

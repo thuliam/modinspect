@@ -17,10 +17,11 @@ final class ConfidenceGap
      */
     public static function explain(string $label, array $caps, float $rawScore, int $included): array
     {
+        $human = in_array('HUMAN_RECORDED_EVIDENCE_CAP', $caps, true) ? ['Every included observation was typed by a person (owner text and/or owner transcription), which caps the score at 79, below "high". One machine capture of a listing page lifts this cap.'] : [];
         if (in_array($label, ['medium', 'high'], true)) {
-            return ['reaches_medium' => true, 'blockers' => [], 'notes' => []];
+            return ['reaches_medium' => true, 'blockers' => [], 'notes' => $human];
         }
-        $blockers = []; $notes = [];
+        $blockers = []; $notes = $human;
         if ($included < 3 || in_array('INSUFFICIENT_SAMPLE', $caps, true)) {
             $blockers[] = 'Needs at least 3 included observations (has ' . $included . ').';
         }

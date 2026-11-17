@@ -19,4 +19,10 @@ ok_cg(!$g['reaches_medium'] && str_contains($g['blockers'][0], 'Raw score 48.5')
 
 ok_cg(ConfidenceGap::explain('medium', ['SINGLE_SOURCE_CAP'], 70.0, 9) === ['reaches_medium' => true, 'blockers' => [], 'notes' => []], 'Medium or high needs no explanation');
 
+// LS-5 L-3: the human-recorded cap is explained, for medium as well as for low
+$g = ConfidenceGap::explain('medium', ['HUMAN_RECORDED_EVIDENCE_CAP'], 75.0, 9);
+ok_cg($g['reaches_medium'] && $g['blockers'] === [] && count($g['notes']) === 1 && str_contains($g['notes'][0], '79') && str_contains($g['notes'][0], 'machine capture'), 'Medium with the human-recorded cap carries one explanatory note');
+$g = ConfidenceGap::explain('low', ['HUMAN_RECORDED_EVIDENCE_CAP', 'SINGLE_SOURCE_CAP'], 50.0, 9);
+ok_cg(count($g['notes']) === 2, 'Low keeps the human-recorded note next to the other notes');
+
 echo "confidence_gap_test: PASS\n";

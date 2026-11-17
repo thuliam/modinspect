@@ -156,3 +156,12 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | K-3 | Second evidence source: options | DONE (options and Human Gate; nothing collected or written) | `docs/K3_SECOND_SOURCE_OPTIONS.md`: 88 Priceza rows already pending in DEV (0 approved), cap rules read from `SnapshotConfidenceService`, options A-E with Recommended B (owner-collected URL rows), 3 owner questions (used vs new for Priceza, reviewer, B volume) |
 | K-3b | Priceza as separate new-price reference (owner decision) | DONE | `app/Services/Pricing/NewPriceReferenceSources.php`, exclusion `NEW_PRICE_REFERENCE_SOURCE`, `tests/new_price_reference_test.php` (mutation caught), `docs/PRICE_ENGINE.md`; DL-077. Open: reviewer and B volume |
 | K-3c | Second-source workflow for 10+ Facebook listings a day | DONE (P1 built, no DEV write) | `app/Services/Collection/CaptureMethod.php`, importer + provenance + confidence changes, `tests/owner_transcription_test.php` (5 mutations caught), template `examples/import/owner_listing_urls.csv`, `docs/OWNER_DAILY_COLLECTION_TH.md`, DL-079. Next for the owner: first real file, dry run, review |
+
+## LS-5 (owner approved the Recommended set on 2026-11-17: L-1, L-3, L-2, L-6; L-4, L-5, L-7, L-8 wait for owner input)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| L-3 | Public confidence explanation (Thai) | DONE in code, **wording awaits owner review** | `HUMAN_RECORDED_EVIDENCE_CAP` Thai label, note "N of M samples recorded by the team from linked posts", admin `ConfidenceGap` note; `tests/public_confidence_labels_test.php` (every cap code has a Thai label, failed first), `tests/confidence_gap_test.php` (+2, mutation caught). The `transcribed` count query ran on DEV (0 today); not exercised with real P1 rows until L-1 |
+| L-6 | Security and ops pass on new paths | DONE | `docs/SECURITY_REVIEW_2026-11-17.md` N-9..N-14; fixes: DB password leaking through a chained exception (`tests/db_error_no_secret_test.php`, failed first) and phone numbers in owner-transcribed titles (`OWNER_TRANSCRIPTION_TITLE_HAS_PHONE_NUMBER`); ops cron lines already in `docs/LS4_REPORTS.md`. Owner action: rotate the DEV DB password |
+| L-1 | First real file: dry run, import, review | WAITING for the owner's file | `docs/OWNER_DAILY_COLLECTION_TH.md` |
+| L-2 | Calibration from reviewed rows | BLOCKED by L-1 | needs reviewed live rows |

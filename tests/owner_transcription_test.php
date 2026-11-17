@@ -29,6 +29,10 @@ foreach (['https://www.facebook.com/marketplace/item/1', 'https://m.facebook.com
 foreach (['https://evilfacebook.com/x', 'https://facebook.com.evil.test/x', 'https://example.test/x', 'not a url', ''] as $u) { ok_ot(!CaptureMethod::domainAllowed($u), "$u is not an allowed domain"); }
 ok_ot(CaptureMethod::fromExcerpt("A=1\nCAPTURE_METHOD=owner_transcription\nB=2") === 'owner_transcription' && CaptureMethod::fromExcerpt('A=1') === null, 'The capture method is read back from the stored excerpt');
 
+// phone numbers are detected, prices and model numbers are not
+foreach (['โทร 081-234-5678', 'line 0812345678', 'call +66 81 234 5678', '089 123 4567'] as $p) { ok_ot(CaptureMethod::hasPhoneNumber("RTX 3070 $p"), "phone detected: $p"); }
+foreach (['RTX 3070 8GB 8200 บาท', 'Ryzen 5 5600X 2024', 'GTX 1650 4GB 3500', 'i5 12400F 6 core'] as $p) { ok_ot(!CaptureMethod::hasPhoneNumber($p), "not a phone: $p"); }
+
 // ---- importer validation (dry run, nothing written)
 $dir = ROOT_PATH . '/storage/import/test';
 if (!is_dir($dir)) { mkdir($dir, 0777, true); }
@@ -46,13 +50,15 @@ try {
         'owner_transcription,https://example.test/listing/1,EX-1,RTX 3070 other domain,8200,2026-11-14 12:00:00,used',
         'owner_transcription,https://www.facebook.com/marketplace/item/9000000000002,,RTX 3070 no item id,8200,2026-11-14 12:00:00,used',
         'owner_transcription,https://www.facebook.com/profile.php?id=100000000000001,FB-5,RTX 3070 personal profile link,8200,2026-11-14 12:00:00,used',
+        'owner_transcription,https://www.facebook.com/marketplace/item/9000000000006,FB-6,RTX 3070 โทร 081-234-5678 ด่วน,8200,2026-11-14 12:00:00,used',
+        'owner_transcription,https://www.facebook.com/marketplace/item/9000000000007,FB-7,RTX 3070 ติดต่อ 0812345678,8200,2026-11-14 12:00:00,used',
         'telepathy,https://www.facebook.com/marketplace/item/9000000000003,FB-3,RTX 3070 unknown method,8200,2026-11-14 12:00:00,used',
         'machine_capture,https://www.facebook.com/marketplace/item/9000000000004,FB-4,RTX 3070 machine without snapshot,8200,2026-11-14 12:00:00,used',
     ]);
     $r = $dry($f);
     $codes = []; foreach ($r['row_errors'] as $e) { foreach ($e['errors'] as $c) { $codes[$c] = ($codes[$c] ?? 0) + 1; } }
-    ok_ot($r['valid_rows'] === 1 && $r['invalid_rows'] === 5, 'Exactly one of six rows is valid: ' . json_encode([$r['valid_rows'], $r['invalid_rows'], $codes]));
-    foreach (['OWNER_TRANSCRIPTION_DOMAIN_NOT_ALLOWED', 'OWNER_TRANSCRIPTION_REQUIRES_ITEM_ID', 'OWNER_TRANSCRIPTION_PERSONAL_PROFILE_LINK', 'UNKNOWN_CAPTURE_METHOD', 'MACHINE_CAPTURE_REQUIRES_SNAPSHOT_AND_HASH'] as $code) { ok_ot(isset($codes[$code]), "$code is reported: " . json_encode($codes)); }
+    ok_ot($r['valid_rows'] === 1 && $r['invalid_rows'] === 7, 'Exactly one of eight rows is valid: ' . json_encode([$r['valid_rows'], $r['invalid_rows'], $codes]));
+    foreach (['OWNER_TRANSCRIPTION_DOMAIN_NOT_ALLOWED', 'OWNER_TRANSCRIPTION_REQUIRES_ITEM_ID', 'OWNER_TRANSCRIPTION_PERSONAL_PROFILE_LINK', 'OWNER_TRANSCRIPTION_TITLE_HAS_PHONE_NUMBER', 'UNKNOWN_CAPTURE_METHOD', 'MACHINE_CAPTURE_REQUIRES_SNAPSHOT_AND_HASH'] as $code) { ok_ot(isset($codes[$code]), "$code is reported: " . json_encode($codes)); }
 } finally { foreach ($files as $f) { @unlink($f); } }
 
 // ---- end to end on the isolated test database (rolled back): import, approve, provenance, snapshot rule, confidence
