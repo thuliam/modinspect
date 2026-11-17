@@ -173,6 +173,17 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | M-1 | Daily file helper | DONE | `cli/prepare_owner_rows.php`, `app/Services/Collection/OwnerRowPreparer.php`, `tests/owner_row_preparer_test.php` (6 mutations caught); importer fixes for the Excel BOM and the mock guard, `tests/import_real_file_hazards_test.php` (3 mutations caught), DL-081 |
 | M-2 | Dress rehearsal of the whole route | DONE | `tests/daily_flow_rehearsal_test.php`: raw Excel-style file to public evidence count and calibration, test database, rolled back; 2 mutations caught |
 | M-3 | Calibration split by capture method | DONE (CLI/report only, no new UI) | `capture_methods` in `ReviewCalibrationService`, `tests/calibration_capture_method_test.php` (3 mutations caught), DL-082 |
-| M-4 | Phone width, hover, tab order | DONE; 1 defect fixed, 3 findings OPEN (owner) | `tests/public_button_theme_test.php` (red first); open: `/build` focus order on phones, 5 px at 320 px, 8-10 px text |
+| M-4 | Phone width, hover, tab order | DONE; hover defect fixed; 5 px overflow fixed in LS-7 N-1; focus-order finding RETRACTED (sticky bar); 8-10 px text OPEN (owner) | `tests/public_button_theme_test.php` (red first); open: `/build` focus order on phones, 5 px at 320 px, 8-10 px text |
 | M-5 | Beta MUST rows: owner or host | DONE (document) | `docs/BETA_READINESS_CHECKLIST.md`: 12 rows, 6 owner-only, 6 owner and host; NO-GO unchanged |
 | M-6 | CI and close-out | CI green on `f3a54d7`; final commit checked after push | docs updated |
+
+## LS-7 (owner approved all six on 2026-11-17: N-1 to N-6; report `docs/LS7_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| N-2 | Approval right after import reports true | DONE | `ReviewCorrectionService::applyApprovedValues`; waits removed from two tests (red first); 2 mutations caught |
+| N-3 | `--check-db` for the daily helper (read-only) | DONE | `OwnerRowDbCheck`, `tests/owner_row_db_check_test.php` (3 mutations caught) |
+| N-4 | Production `.env` preflight | DONE (not run on the host) | `cli/env_preflight.php`, `EnvPreflight`, `tests/env_preflight_test.php` (5 mutations caught); beta C-4 |
+| N-5 | Thai privacy and terms draft | DONE (draft, owner blanks, not on any page) | `docs/PRIVACY_TERMS_DRAFT_TH.md`; beta E-1 |
+| N-1 | `/build` findings | 5 px overflow FIXED, focus-order finding RETRACTED, small text left to owner | `tests/build_reflow_css_test.php` (red first), browser check at 320/360/375 |
+| N-6 | Close-out | suite, secret scan, push; CI via PR monitor | docs updated |

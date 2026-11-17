@@ -81,6 +81,7 @@ final class OwnerRowPreparer
     public static function prepare(array $records, string $defaultDate = ''): array
     {
         $rows = [];
+        $rowNumbers = [];
         $issues = [];
         $seenItems = [];
         $seenReposts = [];
@@ -148,6 +149,7 @@ final class OwnerRowPreparer
             }
             if ($errors === []) {
                 $rows[] = $row;
+                $rowNumbers[] = $rowNo;
                 if ($warnings !== []) { $warned++; }
             }
             if ($errors !== [] || $warnings !== []) {
@@ -157,6 +159,7 @@ final class OwnerRowPreparer
         ksort($ignored);
         return [
             'rows' => $rows,
+            'row_numbers' => $rowNumbers,   // the input line of each output row, so later checks can name the row
             'issues' => $issues,
             'summary' => [
                 'read' => count($records), 'ready' => count($rows), 'rejected' => count($records) - count($rows), 'warnings' => $warned,

@@ -53,3 +53,7 @@ Open findings for the owner: `/build` focus order on phones, `/build` 5 px at 32
 ## M-6 CI
 
 CI is green for commit `f3a54d7` (tests and offline package, run 2026-11-17 07:43 UTC). The final commit of this sprint is checked after the push.
+
+## Correction (LS-7, 2026-11-17)
+
+Two statements above were revised later; see `docs/LS7_REPORTS.md`. The `/build` 5 px overflow at 320 px is fixed. The "focus order on phones" finding is **retracted**: the summary panel is a sticky bar pinned to the bottom of the screen and is also last in the page, so tab order matches reading order. The "approval in the import's own second reports false" note is fixed (N-2).

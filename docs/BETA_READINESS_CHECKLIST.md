@@ -22,9 +22,9 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | ID | Level | Requirement | How to verify | Status | Evidence / gap |
 |---|---|---|---|---|---|
 | B-1 | MUST | Owner visual acceptance of the public pages | owner review (G-2) | **OWNER** | pages exist and were checked at 375 and 1048 px; no owner sign-off recorded |
-| B-2 | MUST | Mobile pages without horizontal overflow | browser check at 375 px | MET | home, price, product, deal checker, build, compare, 3 admin pages (DL-043, H-9, H-10). At 320 px `/build` overflows by 5 px (LS-6 M-4); the other five public pages do not |
+| B-2 | MUST | Mobile pages without horizontal overflow | browser check at 375 px | MET | home, price, product, deal checker, build, compare, 3 admin pages (DL-043, H-9, H-10). At 320, 360 and 375 px no overflow on `/build` after the LS-7 N-1 fix (it overflowed by 5 px at 320 before); the other five public pages never did |
 | B-3 | MUST | Thai-first copy, no invented claims, prices, ratings or users | page text review | MET | checked on the pages listed above; re-check after any copy change |
-| B-4 | SHOULD | Accessibility basics | script audit (alt, labels, ids, landmarks) | MET | 0 failures on home and price index; heading order fixed on the public pages and locked by `tests/heading_levels_test.php` (LS-3 J-11). LS-4 K-6 and K-6b: static scan on 9 pages, contrast and keyboard focus on 6. LS-6 M-4: phone width, hover states and tab order on 6 pages; one hover contrast defect fixed (`tests/public_button_theme_test.php`), two findings open in `docs/LS4_REPORTS.md` |
+| B-4 | SHOULD | Accessibility basics | script audit (alt, labels, ids, landmarks) | MET | 0 failures on home and price index; heading order fixed on the public pages and locked by `tests/heading_levels_test.php` (LS-3 J-11). LS-4 K-6 and K-6b: static scan on 9 pages, contrast and keyboard focus on 6. LS-6 M-4: phone width, hover states and tab order on 6 pages; one hover contrast defect fixed (`tests/public_button_theme_test.php`), one note open in `docs/LS7_REPORTS.md` |
 | B-5 | SHOULD | Search and share metadata | `/robots.txt`, `/sitemap.xml`, page head | MET | DL-050; no share image until rights are settled |
 
 ## C. Security
@@ -34,7 +34,7 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | C-1 | MUST | Every admin route guarded; every POST has CSRF | `tests/admin_route_guard_test.php` | MET | 45 routes; master-data and user writes need `products.manage` / `users.manage` (LS-3 J-0, J-2) |
 | C-2 | MUST | No secrets in the repository; exposed credentials rotated | `php cli/secret_scan.php`; owner action G-5 | **NOT MET / OWNER** | scan clean; credentials found in the raw LINE export are not yet rotated |
 | C-3 | MUST | TLS on every page and HSTS enabled on the real host | hosting | **NOT MET / OWNER** | the production host is HostAtom (DL-014); TLS and HSTS have not been checked on it, and local HTTPS is disabled by design |
-| C-4 | MUST | Production `.env` has `APP_ENV=production` and no `AUTH_*` overrides | host check | NOT MET | enforced in code (overrides ignored outside local/testing, DL-055); the host file still has to be checked |
+| C-4 | MUST | Production `.env` has `APP_ENV=production` and no `AUTH_*` overrides | host check | NOT MET | enforced in code (overrides ignored outside local/testing, DL-055); the host file still has to be checked: run `php cli/env_preflight.php` there (LS-7 N-4; prints names and reasons, never values) |
 | C-5 | SHOULD | Rate limiting on public POSTs and the sitemap | review S-7, N-3 | MET | Deal Checker and Build POSTs rate-limited (429 + Retry-After), sitemap cached, proven over real HTTP (LS-3 J-4); behind a proxy the limiter needs the real client address configured first |
 | C-6 | SHOULD | Front-end library advisories decided | `docs/SECURITY_REVIEW_2026-11-16.md` N-4 | **OWNER** | Bootstrap 4.1.0 / jQuery 3.3.1 pinned; upgrade needs a download approval and a manifest update |
 | C-7 | SHOULD | An independent security check | external | NOT MET | the reviews so far are by the author of the code |
@@ -54,7 +54,7 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 
 | ID | Level | Requirement | How to verify | Status | Evidence / gap |
 |---|---|---|---|---|---|
-| E-1 | MUST | Privacy and terms copy approved by the owner (and legal review if the owner wants it) | owner | **OWNER** | no copy approved |
+| E-1 | MUST | Privacy and terms copy approved by the owner (and legal review if the owner wants it) | owner | **OWNER** | no copy approved; a Thai draft with blanks for the owner is in `docs/PRIVACY_TERMS_DRAFT_TH.md` (LS-7 N-5), not on any page |
 | E-2 | MUST | Seller PII minimised in data and in the UI | policy + tests | MET | provinces only; no names, phones, URLs or text on admin evidence pages (tests) |
 | E-3 | MUST | Rights for product photos and logos | owner | **OWNER** | 7 photos credited from freely licensed sources; logo/brand artwork rights not confirmed |
 | E-4 | SHOULD | Official Font Awesome files (removes the `fa-solid-900.html` 404) | owner approval to download (G-7) | **OWNER** | cosmetic console error only |
@@ -77,12 +77,12 @@ None of the twelve can be closed by code alone. Six need only the owner; six als
 |---|---|---|---|
 | A-4 | Owner | owner-transcription route, `cli/prepare_owner_rows.php`, rehearsal test | send the first real file (L-1), review the rows in the Review Queue |
 | A-5 | Owner | calibration report split by capture method (M-3) | reviewed live rows (100 for the CALIBRATING label) and a sampled human review of the green lane |
-| B-1 | Owner | pages checked at 375 and 1048 px; contrast, focus and hover checked on 6 pages | visual sign-off; decide on the two open M-4 findings (`/build` focus order on a phone, 5 px overflow at 320 px) |
+| B-1 | Owner | pages checked at 375 and 1048 px; contrast, focus and hover checked on 6 pages | visual sign-off; decide on the one open M-4 note (8 to 10 px text in two places) |
 | C-2 | Owner | secret scan clean; the DB-password leak path is closed (N-9) | rotate the credentials found in the LINE export and the DEV DB password |
-| E-1 | Owner | none; no copy is approved yet | approve privacy and terms copy |
+| E-1 | Owner | Thai draft `docs/PRIVACY_TERMS_DRAFT_TH.md` with blanks marked | fill the blanks, get it reviewed by a legal specialist, approve, then ask for the page work |
 | E-3 | Owner | 7 photos credited | confirm rights for logos and brand artwork |
 | C-3 | Owner and host | `cli/ops_probe.php` | check TLS and HSTS on HostAtom |
-| C-4 | Owner and host | code ignores `AUTH_*` overrides outside local and testing | check the host `.env` |
+| C-4 | Owner and host | code ignores `AUTH_*` overrides outside local and testing; `cli/env_preflight.php` | run the preflight on the host and fix what it reports |
 | D-2 | Owner and host | backup, restore verify, prune tool, cron lines | install the cron job, an off-machine copy and the retention rule |
 | D-3 | Owner and host | `/health`, `cli/ops_probe.php` | set up an uptime monitor |
 | D-4 | Owner and host | deployment package dry run | staging rehearsal, rollback test, deploy authorisation |

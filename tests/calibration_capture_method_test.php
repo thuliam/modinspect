@@ -49,7 +49,6 @@ try {
     ok_cc($get($mid, 'owner_transcription', 'candidates') - $get($before, 'owner_transcription', 'candidates') === 3, 'Before review: three owner-transcription candidates, none reviewed yet');
     ok_cc($get($mid, 'owner_transcription', 'reviewed') - $get($before, 'owner_transcription', 'reviewed') === 0, 'Pending rows are not counted as reviewed');
 
-    sleep(1);   // see tests/daily_flow_rehearsal_test.php: an approval inside the import's own second changes no column
     $ids = array_map('intval', $db->query("SELECT o.id FROM price_observations o JOIN raw_price_observations r ON r.id = o.raw_observation_id JOIN market_evidence e ON e.raw_observation_id = r.id
         WHERE e.excerpt LIKE '%CAPTURE_METHOD=owner_transcription%' AND e.excerpt LIKE '%/marketplace/item/93{$tag}%' ORDER BY o.id")->fetchAll(PDO::FETCH_COLUMN));
     ok_cc(count($ids) === 3, 'Three observations found');

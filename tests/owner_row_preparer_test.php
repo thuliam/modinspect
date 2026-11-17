@@ -79,6 +79,7 @@ ok_pr(in_array('TITLE_MISSING', $codes(13), true), 'An empty title is reported')
 ok_pr(in_array('PRICE_NOT_NUMERIC', $codes(14), true) || in_array('PRICE_OUT_OF_RANGE', $codes(14), true), 'A zero price is reported');
 $ready = array_column($r['rows'], 'source_item_id');
 ok_pr($ready === ['FB-9100000000001', 'FB-9100000000006', 'FB-9100000000007'], 'Only the usable rows are written: ' . json_encode($ready));
+ok_pr($r['row_numbers'] === [2, 11, 12], 'Each output row keeps its input line number: ' . json_encode($r['row_numbers']));
 ok_pr($r['rows'][1]['observed_at'] === '2026-11-14 09:30:00' && $r['rows'][1]['condition_hint'] === '', 'A full timestamp is kept as given; the dropped condition is blank');
 ok_pr($r['summary']['read'] === 13 && $r['summary']['ready'] === 3 && $r['summary']['rejected'] === 10 && $r['summary']['warnings'] === 2, 'Summary counts: ' . json_encode($r['summary']));
 

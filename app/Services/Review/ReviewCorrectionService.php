@@ -190,7 +190,8 @@ final class ReviewCorrectionService
             'id' => $observationId,
         ]);
 
-        return ['ok' => $stmt->rowCount() === 1, 'values' => $values, 'quality_flags' => $flags];
+        // MySQL reports changed rows, not matched rows: an approval in the very second of the import changes no column (updated_at included). A row that is still pending was matched, so it counts as applied (LS-7 N-2).
+        return ['ok' => $stmt->rowCount() === 1 || (int)$this->db->query("SELECT COUNT(*) FROM price_observations WHERE id=" . (int)$observationId . " AND verified_status='pending'")->fetchColumn() === 1, 'values' => $values, 'quality_flags' => $flags];
     }
 
     public function productOptions(): array

@@ -56,7 +56,6 @@ try {
     $again = $imp->import($prepared, 'real', true, 50);
     ok_dr($again['valid_rows'] === 0 && $again['duplicate_rows'] === 4, 'Importing the same prepared file twice creates nothing new: ' . json_encode([$again['valid_rows'], $again['duplicate_rows']]));
 
-    sleep(1);   // approval reports success only when a row column changed; an approval inside the very second of the import changes none (updated_at included) and returns false. A person never approves that fast (LS-6 finding)
     $obs = $db->query("SELECT o.id, o.product_id, o.verified_status FROM price_observations o JOIN raw_price_observations r ON r.id = o.raw_observation_id
         JOIN market_evidence e ON e.raw_observation_id = r.id WHERE e.excerpt LIKE '%CAPTURE_METHOD=owner_transcription%' AND e.excerpt LIKE '%/marketplace/item/92{$tag}%' ORDER BY o.id")->fetchAll();
     ok_dr(count($obs) === 4, 'Four owner-transcription observations are stored: ' . count($obs));
@@ -69,6 +68,9 @@ try {
         ok_dr($dashboard->decideObservation((int)$o['id'], 'approved', 'rehearsal') === true, 'Owner approval is allowed for a listing-level owner transcription');
         $ids[] = (int)$o['id'];
     }
+    // LS-7 N-2: approval straight after import works (no wait), and a row that is no longer pending is never reported as applied again
+    ok_dr((new \App\Services\Review\ReviewCorrectionService())->applyApprovedValues($ids[0])['ok'] === false, 'An already approved row is not applied a second time');
+    ok_dr($dashboard->decideObservation($ids[0], 'approved', 'again') === false, 'An already approved row cannot be approved again');
 
     $snap = (new PriceSnapshotService())->recalculateProduct($productId, 'asking');
     ok_dr($snap !== null, 'A snapshot is produced from the four approved rows');

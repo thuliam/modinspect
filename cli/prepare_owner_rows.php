@@ -8,11 +8,17 @@ declare(strict_types=1);
  *
  * Usage: php cli/prepare_owner_rows.php --in=storage/import/raw_today.csv [--out=storage/import/second_source.csv] [--default-date=YYYY-MM-DD] [--force]
  */
-define('ROOT_PATH', dirname(__DIR__));
-require ROOT_PATH . '/app/Services/Collection/CaptureMethod.php';
-require ROOT_PATH . '/app/Services/Research/OwnerIntakeDeduper.php';
-require ROOT_PATH . '/app/Services/Collection/OwnerRowPreparer.php';
+$checkDb = in_array('--check-db', $argv, true);   // read-only comparison with the rows already stored (LS-7 N-3); needs the database
+if ($checkDb) {
+    require dirname(__DIR__) . '/app/bootstrap.php';   // defines ROOT_PATH and the autoloader
+} else {
+    define('ROOT_PATH', dirname(__DIR__));
+    require ROOT_PATH . '/app/Services/Collection/CaptureMethod.php';
+    require ROOT_PATH . '/app/Services/Research/OwnerIntakeDeduper.php';
+    require ROOT_PATH . '/app/Services/Collection/OwnerRowPreparer.php';
+}
 
+use App\Services\Collection\OwnerRowDbCheck;
 use App\Services\Collection\OwnerRowPreparer;
 
 $in = null;
@@ -38,6 +44,21 @@ if (!str_starts_with($norm, $base) || str_contains($norm, '/../') || strtolower(
 if (is_file($out) && !$force) { fwrite(STDERR, "Output exists; use --force to replace it: " . basename($out) . "\n"); exit(2); }
 
 $result = OwnerRowPreparer::prepare(OwnerRowPreparer::readCsv($in), $default);
+if ($checkDb) {
+    // read-only: rows already stored are dropped (error), reposts of stored rows are kept with a warning; issues name the INPUT line
+    global $config;
+    $found = OwnerRowDbCheck::check(\App\Core\Database::connection($config['db']), $result['rows']);
+    $drop = [];
+    foreach ($found as $f) {
+        $result['issues'][] = ['row' => $result['row_numbers'][$f['index']], 'level' => $f['level'], 'codes' => $f['codes']];
+        if ($f['level'] === 'error') { $drop[$f['index']] = true; } else { $result['summary']['warnings']++; }
+    }
+    $result['rows'] = array_values(array_filter($result['rows'], static fn($k): bool => !isset($drop[$k]), ARRAY_FILTER_USE_KEY));
+    $result['summary']['ready'] = count($result['rows']);
+    $result['summary']['rejected'] = $result['summary']['read'] - $result['summary']['ready'];
+    $result['summary']['already_stored'] = count($drop);
+    usort($result['issues'], static fn(array $a, array $b): int => $a['row'] <=> $b['row']);
+}
 $written = false;
 if ($result['rows'] !== []) {
     if (!is_dir(dirname($out))) { mkdir(dirname($out), 0777, true); }
