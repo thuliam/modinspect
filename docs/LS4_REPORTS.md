@@ -9,14 +9,14 @@ Command: `php cli/unresolved_proposals.php` (about 2 minutes on DEV; it replays 
 | Count | Meaning |
 |---:|---|
 | 369 | open rows in the unresolved queue |
-| **159** | **already matched by today's catalog and resolver.** They were decided before the catalog grew (LS-2 catalog expansion, resolver fixes), so the queue is stale for them. They need to be re-run through the importer, not given an alias. (This is a reading of the data; the re-run itself was not tried, see the decision below.) |
+| **159** | **already matched by today's catalog and resolver.** They were decided before the catalog grew (LS-2 catalog expansion, resolver fixes), so the queue is stale for them. They do not need an alias. A re-import does NOT recover them, see K-1b below. |
 | 8 groups (14 rows) | a person must look: the closest catalog product differs in the full model token (14700K vs the catalog's 14700KF, 5800X3D vs 5800X, 2600 vs 2600X, 5600G vs 5600, 5500X3D vs 5500, 9700F is an Intel-style name on an AMD 9700X). Most are **catalog gaps**, not alias gaps: the exact product does not exist. |
 | 191 | no usable proposal (no CPU or GPU model number in the title, for example RAM, storage, bundles) |
 
 **Result: there is no alias the tool can call safe right now.** The earlier draft of this report called 29 groups "safe"; the cause was a check that compared only the number part of a model. Fixed in this sprint: an alias is "safe" only when family and the full model token equal the product's, and it passes the same save-time checks as the queue (suffix, resolves the listing, changes no other listing). `tests/unresolved_proposal_report_test.php` locks it (14 cases, including `i7 9700F` must never equal `Ryzen 7 9700X`).
 
 Options for the owner (Recommended first):
-1. **Re-run the 159 stale rows through the existing importer path (Recommended).** Needs a small dry-run first to prove it produces pending observations and no duplicates; the writes would be pending rows reviewed by the existing planner and `owner_intake_approve --actor=54`. Needs the owner's go-ahead because it writes to DEV.
+1. See K-1b: a re-import does not work; the options moved there.
 2. Do nothing; the queue keeps showing 159 rows that no longer need an alias.
 3. Hide stale rows in the admin queue (a small code change, no data written).
 
@@ -51,3 +51,20 @@ Test: `tests/public_a11y_scan_test.php` (real HTTP, isolated test DB; 9 pages). 
 
 - Backups hold password hashes and raw listing text: copy them off the server regularly (the host disk is not a backup). The restore drill is `php cli/db_restore.php` on a copy, never on live data first; the steps are in `docs/OPERATOR_GUIDE_TH.md` and the runbook section 4 and 9.
 - Still the owner's: staging host or subdomain, host-side TLS and HSTS, who receives alerts, the off-server copy location.
+
+## K-1b Dry-run of the re-import (2026-11-17, owner said yes to a dry run; nothing was written)
+
+Ran the intake dry-run (prepare, drop listings already stored, importer in dry-run mode) over the sanitized research CSV, for all categories, GPU only and CPU only.
+
+| Scope | prepared | already stored | new | importer valid | importer duplicate |
+|---|---:|---:|---:|---:|---:|
+| all | 375 | 288 | 87 | **6** | **81** |
+| GPU | 249 | 213 | 36 | 0 | 36 |
+| CPU | 120 | 75 | 45 | 0 | 45 |
+
+**The stale rows cannot be recovered through the importer.** The 87 listings that are not stored as observations are already stored as raw rows (the importer's own duplicate check rejects 81 of them), so re-importing does not re-run the resolver on them. Only 6 rows would become new pending observations. The earlier "needs a re-import" reading in K-1 was wrong about the mechanism and is corrected here.
+
+Options (Recommended first):
+1. **Hide the stale rows in the admin queue and show only rows the current resolver still cannot match (Recommended; code only, no data written).** Cuts the queue from 369 to 210 so the reviewer sees real gaps.
+2. Build a "re-resolve existing raw rows" tool: dry-run by default, creates pending observations from the 159 stale raw rows through the same validation as the importer, then the existing planner approves. Real gain (up to 159 more evidence rows, 34 are enough to clear every pending product) but it is new write code on the evidence path and needs a design check and the owner's go-ahead.
+3. Import only the 6 valid new rows by the normal path.

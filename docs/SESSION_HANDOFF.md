@@ -965,5 +965,5 @@ Next owner action:
 
 ## 2026-11-17 LS-4 (K-1, K-2, K-4, K-6)
 - Reports and tooling only, see `docs/LS4_REPORTS.md`. No DEV write. PHP for DB scripts: the 8.3 path above (8.1 here has no pdo_mysql).
-- Key finding: 159 of 369 unresolved-queue rows are stale; the next real step is a dry-run re-import of those rows (owner go-ahead needed).
+- Key finding: 159 of 369 unresolved-queue rows are stale; a dry-run showed the importer will not re-process them (DL-073). Next: hide stale rows in the queue (code only) and decide on a re-resolve tool.
 - New: `cli/unresolved_proposals.php`, `cli/pending_gap_report.php`, `cli/ops_probe.php`, `cli/db_backup_prune.php`; tests `unresolved_proposal_report`, `public_a11y_scan`, `ops_kit`; `/build` landmark fixed.
