@@ -12,12 +12,14 @@ final class SeoController extends Controller
     {
         global $config;
         header('Content-Type: text/plain; charset=utf-8');
-        echo SeoService::robotsTxt((string)$config['base_url']);
+        echo SeoService::robotsTxt((string)$config['base_url'], !empty($config['pilot']));
     }
 
     public function sitemap(): void
     {
+        global $config;
         header('Content-Type: application/xml; charset=utf-8');
+        if (!empty($config['pilot'])) { echo SeoService::pilotSitemapXml(); return; }
         // the sitemap changes only when a snapshot changes: serve a 10-minute copy instead of querying on every request
         echo (new \App\Services\Http\FileCache(ROOT_PATH . '/storage/cache/http'))->remember('sitemap.xml', 600, fn(): string => $this->buildSitemap());
     }

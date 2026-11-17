@@ -19,13 +19,25 @@ final class SeoService
         return rtrim($baseUrl, '/') . ($p === '/' ? '/' : $p);
     }
 
-    public static function robotsTxt(string $baseUrl): string
+    /** a closed pilot is not indexed: everything is disallowed and no sitemap is announced */
+    public static function robotsTxt(string $baseUrl, bool $pilot = false): string
     {
+        if ($pilot) { return "User-agent: *
+Disallow: /
+"; }
         $lines = ['User-agent: *', 'Allow: /'];
         foreach (self::DISALLOW as $d) { $lines[] = 'Disallow: ' . $d; }
         $lines[] = '';
         $lines[] = 'Sitemap: ' . rtrim($baseUrl, '/') . '/sitemap.xml';
         return implode("\n", $lines) . "\n";
+    }
+
+    /** the sitemap of a closed pilot: valid, and empty */
+    public static function pilotSitemapXml(): string
+    {
+        return '<?xml version="1.0" encoding="UTF-8"?>' . "
+" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>' . "
+";
     }
 
     /** @param list<string> $paths site-relative paths, each already public */

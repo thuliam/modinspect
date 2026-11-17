@@ -29,7 +29,7 @@ The axis labels are set to 13 px through Chart.js `pointLabels` (the default was
 ## Not verified, said plainly
 
 - The wording of the new report lines (in Thai) and of the pilot document is mine and has not been reviewed by the owner.
-- The "no search indexing" item in the pilot document is not implemented; it waits for the owner's go.
+- The "no search indexing" item was implemented after the owner said "pilot" (see DL-097): the `APP_PILOT` switch. It is off by default and was checked locally only, not on the host.
 - The radar label size was checked as a chart option and visually at desktop width only, not again at 375 px.
 
 ## Close-out

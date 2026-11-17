@@ -82,6 +82,7 @@ $commands = [
     ['label' => 'tests/perf_score_csv_validator_test.php', 'args' => ['tests/perf_score_csv_validator_test.php']],
     ['label' => 'tests/hardware_reference_migration_test.php', 'args' => ['tests/hardware_reference_migration_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
+    ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/second_source_snapshot_gate_test.php', 'args' => ['tests/second_source_snapshot_gate_test.php']],
     ['label' => 'tests/new_price_reference_test.php', 'args' => ['tests/new_price_reference_test.php']],
     ['label' => 'tests/stale_reresolve_test.php', 'args' => ['tests/stale_reresolve_test.php']],

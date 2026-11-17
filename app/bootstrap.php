@@ -55,6 +55,9 @@ if (PHP_SAPI !== 'cli') {
         header('X-Frame-Options: SAMEORIGIN');
         header('Referrer-Policy: strict-origin-when-cross-origin');
         header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+        if (!empty($config['pilot'])) {
+            header('X-Robots-Tag: noindex, nofollow, noarchive');   // closed pilot: nothing is indexed
+        }
         if (!empty($_SERVER['HTTPS'])) {
             header('Strict-Transport-Security: max-age=15552000');
         }

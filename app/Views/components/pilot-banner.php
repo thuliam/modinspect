@@ -1,0 +1,2 @@
+<?php /** shown on every public page while APP_PILOT is on (docs/PILOT_SCOPE_TH.md); the three statements are the ones the pilot document requires */ ?>
+<div class="container"><div class="notice" role="note"><b>ช่วงทดลองใช้ (pilot) · กลุ่มปิด</b> ราคามาจากประกาศมือสองที่เจ้าของรวบรวมและตรวจ ความมั่นใจยังต่ำทุกรุ่น · หน้าประกอบคอมประกอบครบชุดยังไม่ได้ เพราะเมนบอร์ด พาวเวอร์ซัพพลาย เคส และชุดระบายความร้อนยังไม่มีราคา · คำแนะนำสเปกเลือกตามราคาและส่วนแบ่งงบ ไม่ได้วัดความแรง</div></div>

@@ -22,8 +22,9 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 ?>
 <meta name="description" content="<?= htmlspecialchars($seoDescription) ?>">
 <link rel="canonical" href="<?= htmlspecialchars($seoUrl) ?>">
-<?php foreach (\App\Services\Seo\SeoService::DISALLOW as $noindex) { if (str_starts_with($relativePath, $noindex)) { echo "<meta name=\"robots\" content=\"noindex,nofollow\">
-"; break; } } ?>
+<?php if (!empty($config['pilot'])) { ?><meta name="robots" content="noindex,nofollow,noarchive">
+<?php } else { foreach (\App\Services\Seo\SeoService::DISALLOW as $noindex) { if (str_starts_with($relativePath, $noindex)) { echo "<meta name=\"robots\" content=\"noindex,nofollow\">
+"; break; } } } ?>
 <meta property="og:type" content="website">
 <meta property="og:locale" content="th_TH">
 <meta property="og:site_name" content="<?= htmlspecialchars($config['name']) ?>">
@@ -48,6 +49,7 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 </head>
 <body class="mb mi<?= $relativePath === '/' ? ' is-home' : '' ?>">
 <a class="sr-only sr-only-focusable mi-skip" href="#main">ข้ามไปยังเนื้อหา</a>
+<?php if (!empty($config['pilot'])) { require ROOT_PATH . '/app/Views/components/pilot-banner.php'; } ?>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
     <linearGradient id="miLime" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e6ff6a"/><stop offset="1" stop-color="#9dbd1a"/></linearGradient>
     <linearGradient id="miMetal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b4440"/><stop offset="1" stop-color="#171c1a"/></linearGradient>

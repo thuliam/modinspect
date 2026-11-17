@@ -4,6 +4,8 @@ declare(strict_types=1);
 return [
     'name' => 'ModInspect',
     'base_url' => rtrim($_ENV['APP_URL'] ?? 'http://localhost/modinspect/public', '/'),
+    // closed pilot (docs/PILOT_SCOPE_TH.md): off by default; when on, nothing is indexed and every page carries the pilot notice
+    'pilot' => filter_var($_ENV['APP_PILOT'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
     'db' => [
         'host' => $_ENV['DB_HOST'] ?? '127.0.0.1',
         'port' => $_ENV['DB_PORT'] ?? '3306',
