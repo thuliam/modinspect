@@ -84,3 +84,7 @@ Community Submission
 ```
 
 No community score, consensus count, or admin-entered correction may directly update the published price index.
+
+## New-price reference sources (DL-077, 2026-11-17)
+
+A row from a source listed in `App\Services\Pricing\NewPriceReferenceSources::KEYS` (today `offline_real_priceza_com`) is excluded from the used asking cohort with the reason `NEW_PRICE_REFERENCE_SOURCE`, even when approved, even when its provenance is listing level, even when its `price_type` is `asking`. It stays stored as evidence. It therefore cannot move a used price, enter the median or lift the owner-text-only confidence cap. The rule runs after the duplicate and mock checks and before the provenance check; no existing snapshot changes because no Priceza row is approved.

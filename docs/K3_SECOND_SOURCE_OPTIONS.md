@@ -48,3 +48,11 @@ The RTX 3060 Ti range (7,050 to 64,900) shows the rows are not clean: some are c
 ## What this document does not claim
 
 It does not say that approving the Priceza rows will make any price "medium": that depends on the cap rules above and on the rest of the sample. The condition, new-versus-used and bundle problems of the Priceza rows were seen only from their price ranges, not from a row-by-row read.
+
+## Update 2026-11-17: owner chose "separate reference" (DL-077)
+
+The owner answered question 1: Priceza rows are a **separate new-price reference** and never enter the used median.
+
+- Checking the code for this showed a gap: 46 of the 88 pending Priceza rows classify as LISTING LEVEL (42 as search-result level), all typed `asking` and `single_item`. The engine already excluded the 42 (insufficient provenance), but the 46 would have entered the used asking median once approved. Fixed: `NewPriceReferenceSources` plus the exclusion `NEW_PRICE_REFERENCE_SOURCE` in `PriceSnapshotService` (test `tests/new_price_reference_test.php`, mutation-checked; documented in `docs/PRICE_ENGINE.md`).
+- Consequence for the plan: Priceza rows cannot lift any used-price confidence, so **B (owner-collected URL rows) is the only path** for the second source. The earlier statement that one approved Priceza row removes the owner-text cap is no longer true for these rows; it stays true for any other non-owner-text source.
+- Still open: question 2 (reviewer) and question 3 (B sources and weekly volume). The 88 Priceza rows can stay pending; reviewing them is optional and only produces a new-price reference.

@@ -211,6 +211,9 @@ final class PriceSnapshotService
         if ($this->isMockSource($row)) {
             return 'MOCK_SOURCE';
         }
+        if (NewPriceReferenceSources::isReference((string)($row['source_key'] ?? ''))) {
+            return 'NEW_PRICE_REFERENCE_SOURCE';
+        }
         if ($this->isRealOfflineSource($row) && !(new ObservationProvenanceService())->isListingLevel($row)) {
             return 'INSUFFICIENT_PROVENANCE';
         }

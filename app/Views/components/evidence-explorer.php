@@ -5,7 +5,7 @@ $n = count($evidence['included']);
 $skipped = array_sum($evidence['excluded']);
 $reasonLabels = [
     'NOT_ACCEPTED' => 'ยังไม่ผ่านการตรวจ', 'OUTSIDE_COHORT' => 'ราคาอยู่นอกช่วงเปรียบเทียบ', 'DEFECTIVE' => 'สินค้าชำรุด/อะไหล่', 'DEPOSIT' => 'ราคามัดจำ',
-    'WRONG_PRICE_TYPE' => 'ไม่ใช่ราคาเสนอขาย', 'INVALID_PRICE' => 'ราคาไม่ถูกต้อง', 'OTHER_DETERMINISTIC_RULE' => 'ตามกฎการคัดกรอง',
+    'WRONG_PRICE_TYPE' => 'ไม่ใช่ราคาเสนอขาย', 'INVALID_PRICE' => 'ราคาไม่ถูกต้อง', 'OTHER_DETERMINISTIC_RULE' => 'ตามกฎการคัดกรอง', 'NEW_PRICE_REFERENCE_SOURCE' => 'ราคาอ้างอิงของใหม่ (ไม่นับรวมราคามือสอง)',
 ];
 $gradeLabels = ['owner_text' => 'ข้อความที่ทีมงานรวบรวม (ไม่มีลิงก์ต้นทาง)', 'other' => 'แหล่งข้อมูลอื่น'];
 $collapseId = 'evidence' . (int) $evidence['snapshot_id'];
