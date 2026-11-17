@@ -962,3 +962,8 @@ Next owner action:
 - ADR-006 option A accepted. No catalog additions, no bulk spec fill, Klevv row not changed.
 - Still open for the owner: checklist Thai wording, ADR-006 moderation owner and retention, J-3b, missed-feature list, beta MUST items.
 - Note: a failed first migrate attempt (PHP 8.1 build without pdo_mysql) printed a DB stack trace into the session log that included part of the DEV DB password; consider rotating it. Use the PHP 8.3 path above.
+
+## 2026-11-17 LS-4 (K-1, K-2, K-4, K-6)
+- Reports and tooling only, see `docs/LS4_REPORTS.md`. No DEV write. PHP for DB scripts: the 8.3 path above (8.1 here has no pdo_mysql).
+- Key finding: 159 of 369 unresolved-queue rows are stale; the next real step is a dry-run re-import of those rows (owner go-ahead needed).
+- New: `cli/unresolved_proposals.php`, `cli/pending_gap_report.php`, `cli/ops_probe.php`, `cli/db_backup_prune.php`; tests `unresolved_proposal_report`, `public_a11y_scan`, `ops_kit`; `/build` landmark fixed.
