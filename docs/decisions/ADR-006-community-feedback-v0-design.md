@@ -1,6 +1,6 @@
 # ADR-006: Community feedback v0: design and schema proposal (nothing built)
 
-**Status:** Proposed. Design record only: no table, route, form or code exists. It needs the owner's approval of scope and of the privacy wording before anything is built (LS-3 decision D-1: design first, a small form only after approval).
+**Status:** Option A accepted by the owner on 2026-11-17 (DL-071); moderation owner and retention still open. Design record only: no table, route, form or code exists. It needs the owner's approval of scope and of the privacy wording before anything is built (LS-3 decision D-1: design first, a small form only after approval).
 **Date:** 2026-11-17
 **Builds on:** ADR-005 (community feedback is evidence, not voting), Blueprint v1.1 section 3.6, `docs/PRODUCT_REQUIREMENTS.md` R-05 and R-11, `docs/SECURITY_REVIEW_2026-11-16.md`.
 
