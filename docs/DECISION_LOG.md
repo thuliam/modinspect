@@ -99,6 +99,7 @@ Dated, short, with consequences. Owner-level decisions are marked **OWNER**. ADR
 | DL-084 | LS-7 N-5: Thai privacy and terms draft written for owner review, not published | Draft with owner blanks (controller, retention, host, legal basis, liability, law); facts checked from code with sources. Not legal advice. Publishing needs UI approval and a legal review is advised. | Owner decides |
 | DL-085 | LS-8: Thai collection target list (read-only) and an admin Capture Method card | The list ranks pending products by rows still missing and leaves out the bimodal product (a review problem). The card reuses existing admin markup and marks fixtures "not live evidence". | Agent |
 | DL-086 | LS-8: retention tool with NO default period, dry run unless `--apply`, floors of 7 days and 1 hour, audit row with counts only | The owner has not set retention periods. The tool exists so a chosen period can be applied, but it never decides one and was never run on DEV. Back up first. | Owner sets the periods |
+| DL-087 | LS-9: Capture Method card checked in a browser; PR #4 merge brief and front-end library options written for the owner | No code changed. The brief recommends a merge commit (the docs cite commit SHAs) and updating jQuery only first (needs the owner's download approval); the owner decides both. | Owner decides |
 
 
 ## Reconcile plan for branches (OWNER decision)

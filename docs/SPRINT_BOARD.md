@@ -196,3 +196,11 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | O-2 | Retention tool, no default period, dry run first | DONE (only dry-run on the test DB; owner sets periods) | `cli/retention_purge.php`, `RetentionPurge`, `tests/retention_purge_test.php` (6 mutations caught) |
 | O-3 | Capture Method card on `/admin/review-analytics` | DONE (HTML checked, not seen in a browser) | `tests/review_calibration_test.php` assertion (red first), existing markup only |
 | O-4 | Close-out | suite, secret scan, push; CI via PR monitor | docs updated |
+
+## LS-9 (owner approved the Recommended set on 2026-11-17: P-1, P-2, P-3; report `docs/LS9_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| P-1 | See the Capture Method card in a browser | DONE | desktop and 375 px, no overflow; throwaway test admin deleted; two cosmetic notes inherited from the existing card |
+| P-2 | PR #4 merge brief | DONE (owner decides) | `docs/PR4_MERGE_BRIEF.md` |
+| P-3 | Front-end library options | DONE (owner decides; nothing downloaded) | `docs/FRONTEND_LIBS_OPTIONS.md` |

@@ -36,7 +36,7 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | C-3 | MUST | TLS on every page and HSTS enabled on the real host | hosting | **NOT MET / OWNER** | the production host is HostAtom (DL-014); TLS and HSTS have not been checked on it, and local HTTPS is disabled by design |
 | C-4 | MUST | Production `.env` has `APP_ENV=production` and no `AUTH_*` overrides | host check | NOT MET | enforced in code (overrides ignored outside local/testing, DL-055); the host file still has to be checked: run `php cli/env_preflight.php` there (LS-7 N-4; prints names and reasons, never values) |
 | C-5 | SHOULD | Rate limiting on public POSTs and the sitemap | review S-7, N-3 | MET | Deal Checker and Build POSTs rate-limited (429 + Retry-After), sitemap cached, proven over real HTTP (LS-3 J-4); behind a proxy the limiter needs the real client address configured first |
-| C-6 | SHOULD | Front-end library advisories decided | `docs/SECURITY_REVIEW_2026-11-16.md` N-4 | **OWNER** | Bootstrap 4.1.0 / jQuery 3.3.1 pinned; upgrade needs a download approval and a manifest update |
+| C-6 | SHOULD | Front-end library advisories decided | `docs/SECURITY_REVIEW_2026-11-16.md` N-4, `docs/FRONTEND_LIBS_OPTIONS.md` | **OWNER** | Bootstrap 4.1.0 / jQuery 3.3.1 pinned; upgrade needs a download approval and a manifest update |
 | C-7 | SHOULD | An independent security check | external | NOT MET | the reviews so far are by the author of the code |
 
 ## D. Operations
