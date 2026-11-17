@@ -121,7 +121,7 @@ final class CollectionPipeline
                 'raw_id' => $rawId,
                 'source_id' => $sourceId,
                 'level' => $this->normalizeEvidenceLevel($candidate->evidenceLevel),
-                'evidence_type' => !empty($candidate->rawMetadata['evidence_snapshot_json']) ? 'page_capture' : 'fixture',
+                'evidence_type' => ($candidate->rawMetadata['capture_method'] ?? null) === 'owner_transcription' ? 'snippet' : (!empty($candidate->rawMetadata['evidence_snapshot_json']) ? 'page_capture' : 'fixture'),
                 'url_hash' => $candidate->url ? hash('sha256', $candidate->url) : null,
                 'excerpt' => trim($candidate->title . ($candidate->snippet ? "\n" . $candidate->snippet : '')),
                 'content_hash' => $evidenceContentHash,

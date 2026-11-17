@@ -6,6 +6,7 @@ namespace App\Services\Collection;
 final class ImportFieldContract
 {
     public const CSV_HEADERS = [
+        'capture_method',
         'source',
         'source_search_url',
         'source_listing_url',
@@ -87,6 +88,7 @@ final class ImportFieldContract
         ];
 
         return [
+            'capture_method' => '',
             'source' => 'example_market',
             'source_search_url' => 'https://example.test/search?q=5700x3d',
             'source_listing_url' => 'https://example.test/listing/EXAMPLE-ITEM-001',

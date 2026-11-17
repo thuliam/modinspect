@@ -972,3 +972,4 @@ Next owner action:
 - K-3: options in docs/K3_SECOND_SOURCE_OPTIONS.md (DL-076); waiting for the owner's answers on Priceza used-vs-new, reviewer, and B volume. Next possible: read-only Priceza review pack.
 - K-3b (DL-077): Priceza = new-price reference, excluded from the used cohort in PriceSnapshotService. Open: reviewer (Q2), B sources and weekly volume (Q3).
 - K-3c (DL-078): documented second-source template does not reach used prices; owner must choose P1/P2/P3 (Recommended P1) before the daily workflow is built.
+- K-3c done (DL-079): P1 built. Owner: fill examples/import/owner_listing_urls.csv, dry run, import, review (docs/OWNER_DAILY_COLLECTION_TH.md). Agent route: record contract + capture_method=machine_capture.

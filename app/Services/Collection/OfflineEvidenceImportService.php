@@ -102,6 +102,7 @@ final class OfflineEvidenceImportService
 
         foreach ($records as $record) {
             $rowNumber = (int)$record['_row'];
+            $record = CaptureMethod::apply($record);   // P1: an owner transcription is frozen here (canonical JSON + SHA-256)
             $validation = $this->validateRecord($record, $dataset);
             if ($validation !== []) {
                 $summary['invalid_rows']++;
@@ -299,7 +300,7 @@ final class OfflineEvidenceImportService
         if ($dataset === 'real' && $this->looksMockOrTest($record)) $errors[] = 'REAL_DATASET_CANNOT_USE_MOCK_TEST_SOURCE';
         if (!in_array($currency, self::SUPPORTED_CURRENCIES, true)) $errors[] = 'UNSUPPORTED_CURRENCY';
         if ($price !== '') {
-            $normalized = str_replace([',', '฿', 'บาท', 'THB', 'thb'], '', $price);
+            $normalized = str_replace([',', 'Ã Â¸Â¿', 'Ã Â¸Å¡Ã Â¸Â²Ã Â¸â€”', 'THB', 'thb'], '', $price);
             if (!is_numeric(trim($normalized)) || (float)$normalized <= 0 || (float)$normalized > 10000000) {
                 $errors[] = 'INVALID_PRICE_HINT';
             }
@@ -309,6 +310,7 @@ final class OfflineEvidenceImportService
         } elseif (strtotime($observedAt) > time() + 86400) {
             $errors[] = 'FUTURE_OBSERVED_DATE';
         }
+        foreach (CaptureMethod::problems($record, $dataset) as $problem) $errors[] = $problem;
         return array_values(array_unique($errors));
     }
 
@@ -331,7 +333,7 @@ final class OfflineEvidenceImportService
             $this->firstValue($record, ['asking_price', 'displayed_price']) ?: null,
             $url ?: null,
             date('Y-m-d H:i:s', strtotime((string)$record['observed_at'])),
-            $dataset === 'real' ? 'B' : 'C',  // owner_text stays C: lower provenance than real
+            ($dataset === 'real' && strtolower(trim((string)($record['capture_method'] ?? ''))) !== CaptureMethod::OWNER_TRANSCRIPTION) ? 'B' : 'C',  // owner_text and owner transcriptions stay C: lower provenance than a machine capture
             $this->snippet($record, $dataset, $runId),
             'offline_file_import',
             null,
@@ -356,6 +358,7 @@ final class OfflineEvidenceImportService
                 'evidence_snapshot_json' => $this->firstValue($record, ['evidence_snapshot_json']) ?: null,
                 'evidence_hash' => $this->firstValue($record, ['evidence_hash']) ?: null,
                 'ingestion_note' => trim((string)($record['ingestion_note'] ?? '')) ?: null,
+                'capture_method' => strtolower(trim((string)($record['capture_method'] ?? ''))) ?: null,
             ]
         );
     }
@@ -366,6 +369,7 @@ final class OfflineEvidenceImportService
             'IMPORT_PROVIDER=offline_file_import',
             'IMPORT_RUN_ID=' . $runId,
             'DATASET=' . strtoupper($dataset),
+            trim((string)($record['capture_method'] ?? '')) !== '' ? 'CAPTURE_METHOD=' . strtolower(trim((string)$record['capture_method'])) : null,
             $dataset === 'owner_text' ? 'PROVENANCE_GRADE=OWNER_TEXT_NO_URL' : null,
             'ROW=' . (string)$record['_row'],
             $this->firstValue($record, ['source']) !== '' ? 'SOURCE=' . $this->firstValue($record, ['source']) : null,

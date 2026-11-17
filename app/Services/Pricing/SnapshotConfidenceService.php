@@ -8,6 +8,8 @@ final class SnapshotConfidenceService
     public const METHOD_VERSION = 'confidence-v2';
     /** v2 (DL-033): evidence that is entirely owner-collected text without a listing URL can never score above the top of the 'low' band. */
     public const OWNER_TEXT_ONLY_CEILING = 59.0;
+    /** additive rule (DL-079): evidence that is entirely human-recorded (owner text and/or owner transcription) stays below the 'high' band (80) */
+    public const HUMAN_RECORDED_CEILING = 79.0;
 
     public const WEIGHTS = [
         'sample' => 0.30,
@@ -58,6 +60,11 @@ final class SnapshotConfidenceService
         if ($sampleSize > 0 && $this->allOwnerText($includedRows)) {
             $score = min($score, self::OWNER_TEXT_ONLY_CEILING);
             $caps[] = 'OWNER_TEXT_ONLY_CAP';
+        }
+        if ($sampleSize > 0 && !$this->allOwnerText($includedRows) && $this->allHumanRecorded($includedRows)) {
+            // P1 (DL-079): everything in the sample was typed by a person (owner text or owner transcription), no machine capture: never "high"
+            $score = min($score, self::HUMAN_RECORDED_CEILING);
+            $caps[] = 'HUMAN_RECORDED_EVIDENCE_CAP';
         }
         if ($evidence['weak_share'] >= 0.60) {
             $score = min($score, 69.0);
@@ -238,6 +245,17 @@ final class SnapshotConfidenceService
             'weak_share' => $weakShare,
             'reasons' => $reasons,
         ];
+    }
+
+    /** every row is either owner text or an owner transcription (the capture method is stored in the evidence excerpt) */
+    private function allHumanRecorded(array $rows): bool
+    {
+        foreach ($rows as $row) {
+            $ownerText = str_starts_with(strtolower((string)($row['source_key'] ?? '')), 'offline_owner_text_');
+            $method = \App\Services\Collection\CaptureMethod::fromExcerpt((string)($row['excerpt'] ?? ''));
+            if (!$ownerText && $method !== \App\Services\Collection\CaptureMethod::OWNER_TRANSCRIPTION) { return false; }
+        }
+        return true;
     }
 
     private function allOwnerText(array $rows): bool

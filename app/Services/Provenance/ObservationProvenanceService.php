@@ -51,7 +51,10 @@ final class ObservationProvenanceService
             && $hasTitleAndPrice
             && $hasImmutableSnapshot;
 
-        $genericListingLevel = !$isPriceza && $hasTitleAndPrice && $hasExactItemReference && $hasImmutableSnapshot;
+        // P1 (DL-079): a human-recorded row only counts when it came from a marketplace on the owner allow-list, whatever snapshot it carries
+        $captureMethod = \App\Services\Collection\CaptureMethod::fromExcerpt($excerpt);
+        $captureAllowed = $captureMethod !== \App\Services\Collection\CaptureMethod::OWNER_TRANSCRIPTION || \App\Services\Collection\CaptureMethod::domainAllowed($itemUrl);
+        $genericListingLevel = !$isPriceza && $hasTitleAndPrice && $hasExactItemReference && $hasImmutableSnapshot && $captureAllowed;
 
         if ($pricezaListingLevel || $genericListingLevel) {
             return [
@@ -66,6 +69,7 @@ final class ObservationProvenanceService
                     'external_ref' => $externalRef ?: ($hash !== '' ? substr($hash, 0, 16) : null),
                     'merchant' => $merchant ?: null,
                     'merchant_target_url' => $merchantTargetUrl ?: null,
+                    'capture_method' => $captureMethod,
                     'evidence_hash' => $evidenceHash ?: null,
                 ],
             ];

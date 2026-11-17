@@ -1,48 +1,59 @@
 # Second-source intake (how a price can reach "medium" confidence)
 
-Every public price today comes from one kind of evidence: owner-collected text without a listing URL (`OWNER_TEXT_NO_URL`).
-Confidence-v2 caps such a sample below 60 ("low"), however large. A sample becomes "medium" only when at least one included observation comes
-from a different, listing-level source. This page is the shortest safe way to add one. It costs nothing: you collect the rows yourself,
-no crawler or paid service is involved.
+Every public price before LS-4 came from one kind of evidence: owner-collected text without a listing URL (`OWNER_TEXT_NO_URL`).
+Confidence-v2 caps such a sample below 60 ("low"), however large. A sample can only rise when at least one **included** observation
+comes from a different, listing-level source. It costs nothing: the owner collects rows by hand, no crawler or paid service is involved.
 
+> **History (DL-078, 2026-11-17):** the earlier version of this page told you to use `examples/import/second_source_minimal.csv`. Rows from that file are
+> a generic source and are excluded from used prices (`INSUFFICIENT_PROVENANCE`); `tests/second_source_snapshot_gate_test.php` pins that. **Use
+> `examples/import/owner_listing_urls.csv` below instead** (owner decision P1, DL-079).
 
-> **WARNING (found 2026-11-17, DL-078):** rows imported from this minimal template are accepted by the importer but are classified as a generic source and **excluded from the used price** (`INSUFFICIENT_PROVENANCE`), because the template carries no immutable evidence snapshot. Following the steps below today will NOT make any price "medium". `tests/second_source_snapshot_gate_test.php` pins this. The owner decision that fixes it is in `docs/K3_SECOND_SOURCE_OPTIONS.md` ("K-3c").
-## What counts
+## How it works (one pattern for people and agents)
 
-- One row per listing you can point to: a listing URL (Facebook Marketplace item, Pantip topic, shop product page, ...) **or** a stable listing reference.
-- The source is taken from the URL's domain, so rows from different domains are different sources and raise source diversity.
-- Asking prices only. Sold or final prices are a different price type and are never mixed in.
+Every route (owner CSV, agent collector, admin upload) ends in the same place: an import record carrying `evidence_snapshot_json` + `evidence_hash`,
+classified by `ObservationProvenanceService`, filtered by `PriceSnapshotService`, scored by `SnapshotConfidenceService`. The `capture_method` column says who made the evidence:
 
-## Minimal file
+| capture_method | Who | Snapshot | Counts as |
+|---|---|---|---|
+| `owner_transcription` | you typed the listing into the template | the importer **freezes your row** at import (canonical JSON + SHA-256), evidence typed "snippet", evidence level 3 | listing level, only for allow-listed marketplaces; confidence capped below "high" |
+| `machine_capture` | an agent saved the page itself | the record must bring its own snapshot and 64-hex hash, the importer never invents one | listing level, no human-recorded cap |
 
-Use `examples/import/second_source_minimal.csv` (header only, on purpose: a template with example rows could be imported by accident).
+A frozen snapshot proves what you recorded and when, **not** that the page said so; a Facebook post can disappear, so a later check may be impossible.
+The confidence page says this in its caps: `HUMAN_RECORDED_EVIDENCE_CAP` (evidence entirely typed by people, owner text and/or transcriptions, never above 79).
+Mixing in one machine capture removes that cap. The method version stays `confidence-v2`: the cap is additive and does not affect data without the marker.
+
+## The file
+
+Use `examples/import/owner_listing_urls.csv` (header only, on purpose: a template with example rows could be imported by accident).
 
 | column | meaning |
 |---|---|
-| `source_listing_url` | link to the listing (no personal profile links) |
-| `source_item_id` | a short stable reference, for example the item id in the URL |
+| `capture_method` | `owner_transcription` |
+| `source_listing_url` | link to the item or post. Allowed domains: facebook.com, pantip.com, kaidee.com (and their subdomains). **No personal profile links** (`profile.php`, `/people/`): rejected |
+| `source_item_id` | a short stable id taken from the URL, for example the number after `/marketplace/item/`; required |
 | `listing_title` | the visible title as posted |
 | `asking_price` | number, THB |
 | `observed_at` | `YYYY-MM-DD HH:MM:SS`, the day you saw it |
 | `condition_hint` | optional: `used`, `new`, `like new` |
 
-Do not put seller names, phone numbers, addresses, chat text or profile photos in the file (AGENTS.md: minimise seller PII).
+Do not put seller names, phone numbers, addresses, chat text or profile photos in the file (AGENTS.md: minimise seller PII). Asking prices only.
 
-## Steps
+## Daily routine (about 10+ rows a day)
 
-1. Save your file under `storage/import/` (git-ignored). Never commit real rows.
+1. Append the day's rows to a file under `storage/import/` (git-ignored). Never commit real rows. Short Thai steps: `docs/OWNER_DAILY_COLLECTION_TH.md`.
 2. Dry run, nothing is written:
    `php cli/import_market_evidence.php --file=storage/import/second_source.csv --dataset=real --dry-run`
-   Check `valid_rows`, `invalid_rows` and `row_errors`. A row without a listing reference, a non-URL, or a mock/test domain is rejected.
+   Check `valid_rows`, `invalid_rows`, `row_errors`. Typical codes: `OWNER_TRANSCRIPTION_DOMAIN_NOT_ALLOWED`, `OWNER_TRANSCRIPTION_REQUIRES_ITEM_ID`, `OWNER_TRANSCRIPTION_PERSONAL_PROFILE_LINK`, `UNKNOWN_CAPTURE_METHOD`.
 3. Import (writes candidates for human review, never straight into a price):
    `php cli/import_market_evidence.php --file=storage/import/second_source.csv --dataset=real`
-4. Review each row in the admin Review Queue and approve it as a person. Real rows are never auto-approved by `owner_intake_approve.php`.
-5. Recalculate the snapshot. The admin page `/admin/snapshots/{id}` then shows whether the "what is missing for medium" blocker is gone.
+   The same file can be uploaded on the admin Imports page.
+4. Review each row in the admin Review Queue and approve it as a person (the owner; the actor is recorded). Real rows are never auto-approved by `owner_intake_approve.php`.
+5. Recalculate the snapshot. `/admin/snapshots/{id}` shows which caps apply and what is still missing.
 
 ## What this does not change
 
 - Prices never come from community submissions or from this file directly: only approved observations enter a snapshot (deterministic PHP).
-- The 88 pending Priceza (REAL) observations are untouched and are reviewed separately.
+- The 88 pending Priceza (REAL) observations are untouched and are a separate new-price reference (DL-077); they never enter the used price.
 - Rows from a source that asks to stop or blocks access are paused and recorded as an incident; there is no bypass.
 - Fixture or owner-text figures say nothing about live-market quality; calibration keeps them apart from reviewed live data.
-
+- A future agent collector plugs in through `SearchProviderInterface` and the same record contract (`capture_method=machine_capture` with its own snapshot); live collection stays blocked until the owner approves a provider and its cost (zero-cost policy).

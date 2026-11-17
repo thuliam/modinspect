@@ -61,6 +61,7 @@ $commands = [
     ['label' => 'tests/spec_builder_compat_test.php', 'args' => ['tests/spec_builder_compat_test.php']],
     ['label' => 'tests/unresolved_proposal_report_test.php', 'args' => ['tests/unresolved_proposal_report_test.php']],
     ['label' => 'tests/public_a11y_scan_test.php', 'args' => ['tests/public_a11y_scan_test.php']],
+    ['label' => 'tests/owner_transcription_test.php', 'args' => ['tests/owner_transcription_test.php']],
     ['label' => 'tests/second_source_snapshot_gate_test.php', 'args' => ['tests/second_source_snapshot_gate_test.php']],
     ['label' => 'tests/new_price_reference_test.php', 'args' => ['tests/new_price_reference_test.php']],
     ['label' => 'tests/stale_reresolve_test.php', 'args' => ['tests/stale_reresolve_test.php']],

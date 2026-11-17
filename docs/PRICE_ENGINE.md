@@ -88,3 +88,7 @@ No community score, consensus count, or admin-entered correction may directly up
 ## New-price reference sources (DL-077, 2026-11-17)
 
 A row from a source listed in `App\Services\Pricing\NewPriceReferenceSources::KEYS` (today `offline_real_priceza_com`) is excluded from the used asking cohort with the reason `NEW_PRICE_REFERENCE_SOURCE`, even when approved, even when its provenance is listing level, even when its `price_type` is `asking`. It stays stored as evidence. It therefore cannot move a used price, enter the median or lift the owner-text-only confidence cap. The rule runs after the duplicate and mock checks and before the provenance check; no existing snapshot changes because no Priceza row is approved.
+
+## Human-recorded evidence and capture method (DL-079, 2026-11-17)
+
+`capture_method` on an import record says who made the evidence. `owner_transcription`: the importer freezes the owner's row (canonical JSON + SHA-256, evidence typed `snippet`, evidence level 3); provenance counts it as listing level only for allow-listed marketplaces (`CaptureMethod::OWNER_DOMAINS`) and never for a personal profile link. `machine_capture` (agent route) must bring its own snapshot and hash. `SnapshotConfidenceService` adds the cap `HUMAN_RECORDED_EVIDENCE_CAP` (79) when every included row is owner text or an owner transcription; one machine capture in the sample removes it. `OWNER_TEXT_ONLY_CAP` (59) is unchanged. The method version stays `confidence-v2` because the cap does not affect any data without the marker (no existing snapshot changes).
