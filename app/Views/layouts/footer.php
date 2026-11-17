@@ -13,6 +13,7 @@
                     <li><a href="<?= $base ?>/">หน้าแรก</a></li>
                     <li><a href="<?= $base ?>/price">เช็กราคา</a></li>
                     <li><a href="<?= $base ?>/deal-checker">Deal Checker</a></li>
+                    <li><a href="<?= $base ?>/build">ประกอบคอม</a></li>
                     <li><a href="<?= $base ?>/methodology">วิธีคำนวณ</a></li>
                 </ul>
             </div>

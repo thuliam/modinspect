@@ -63,6 +63,7 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/') ?>" href="<?= $base ?>/">หน้าแรก</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/price') ?>" href="<?= $base ?>/price">เช็กราคา</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/deal-checker') ?>" href="<?= $base ?>/deal-checker">Deal Checker</a></li>
+                <li class="nav-item"><a class="nav-link<?= $navCurrent('/build') ?>" href="<?= $base ?>/build">ประกอบคอม</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/methodology') ?>" href="<?= $base ?>/methodology">วิธีคำนวณ</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="cat-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">หมวดหมู่</a>

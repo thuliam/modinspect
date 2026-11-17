@@ -205,3 +205,4 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | P-2 | PR #4 merge brief | DONE (owner decides) | `docs/PR4_MERGE_BRIEF.md` |
 | P-3 | Front-end library options | DONE | `docs/FRONTEND_LIBS_OPTIONS.md` |
 | P-4 | jQuery 3.3.1 to 3.7.1 (owner approved) | DONE | official file verified against a second source, manifest regenerated, `tests/jquery_version_guard_test.php` (3 mutations caught), suite exit 0, browser checks of collapse, dropdown, DataTables and the home page script; DL-088 |
+| P-5 | "ประกอบคอม" in the main menu (owner request) | DONE | `app/Views/layouts/header.php`, `footer.php`, `tests/main_menu_test.php`; browser check at six widths; DL-089 |
