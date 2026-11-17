@@ -68,3 +68,7 @@ Options (Recommended first):
 1. **Hide the stale rows in the admin queue and show only rows the current resolver still cannot match (Recommended; code only, no data written).** Cuts the queue from 369 to 210 so the reviewer sees real gaps.
 2. Build a "re-resolve existing raw rows" tool: dry-run by default, creates pending observations from the 159 stale raw rows through the same validation as the importer, then the existing planner approves. Real gain (up to 159 more evidence rows, 34 are enough to clear every pending product) but it is new write code on the evidence path and needs a design check and the owner's go-ahead.
 3. Import only the 6 valid new rows by the normal path.
+
+## K-1c Stale rows hidden from the Open tab (done, code only)
+
+`/admin/unresolved-listings`: **Open** now lists only undecided rows the current catalog still cannot match (DEV: 369 became **210**); a new tab **Already matched** holds the 159 stale ones (visible, not deleted, an alias can still be added there); Decided and All are unchanged. No data was written. `tests/unresolved_queue_test.php` has a stale fixture and a mutation check (swapping the split made it fail, restored). The split replays the resolver for every undecided row per page view (369 titles, fast); if the queue grows large it should be cached.

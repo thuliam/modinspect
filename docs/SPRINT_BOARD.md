@@ -147,7 +147,7 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 
 | ID | Task | Status | Evidence |
 |---|---|---|---|
-| K-1 | Alias proposals for the unresolved listings | DONE (report; no write) | `docs/LS4_REPORTS.md`, `cli/unresolved_proposals.php`, `tests/unresolved_proposal_report_test.php`. Finding: 159 of 369 queue rows are already matched by today's catalog (stale), 8 groups are catalog gaps, no safe alias exists. First draft wrongly showed 29 safe groups; the checker was too loose, fixed and locked by test. Owner decision opened (re-run the stale rows). |
+| K-1 | Alias proposals for the unresolved listings | DONE (report; K-1c hides stale rows in the queue, no data write) | `docs/LS4_REPORTS.md`, `cli/unresolved_proposals.php`, `tests/unresolved_proposal_report_test.php`. Finding: 159 of 369 queue rows are already matched by today's catalog (stale), 8 groups are catalog gaps, no safe alias exists. First draft wrongly showed 29 safe groups; the checker was too loose, fixed and locked by test. Owner decision opened (re-run the stale rows). |
 | K-2 | Pending products gap report | DONE | `cli/pending_gap_report.php`: 22 pending, 0 approvable, 34 rows needed, 9 products one row short |
 | K-6 | Accessibility and weight scan, public pages | DONE (static part) | `tests/public_a11y_scan_test.php`; real defect fixed: `/build` had two `main` landmarks. Contrast, keyboard and screen-reader checks NOT done |
 | K-4 | Ops kit for HostAtom | DONE (nothing run on the host) | `cli/ops_probe.php`, `cli/db_backup_prune.php`, `tests/ops_kit_test.php`, cron lines in `docs/LS4_REPORTS.md` |

@@ -76,6 +76,16 @@ try {
     $row = null; foreach ($q->page(200, 0, 'open') as $r) { if ((int)$r['raw_id'] === $raw) { $row = $r; } }
     ok_uq($row !== null && $row['decided'] === null, 'The listing appears with no decision');
 
+    // LS-4 K-1b: a listing the CURRENT catalog already matches (decided before the catalog grew) is "stale", not open
+    $mkProduct("uq-stale-$suffix", 'NVIDIA GeForce RTX 9873 UQ');
+    $staleRaw = $mkRaw('NVIDIA GeForce RTX 9873 UQ', 'stale');
+    $inOpen = array_column($q->page(200, 0, 'open'), 'raw_id');
+    $inStale = array_column($q->page(200, 0, 'stale'), 'raw_id');
+    ok_uq(!in_array((string)$staleRaw, array_map('strval', $inOpen), true) && in_array((string)$staleRaw, array_map('strval', $inStale), true), 'A listing the catalog now matches is listed as stale, not open');
+    ok_uq(in_array((string)$raw, array_map('strval', $inOpen), true) && !in_array((string)$raw, array_map('strval', $inStale), true), 'A listing still unmatched stays open');
+    ok_uq($q->count('stale') === count($q->page(200, 0, 'stale')) && $q->count('open') === count($q->page(200, 0, 'open')), 'Counts equal the listed rows for open and stale');
+    $before = $q->count('open');
+
     // refusals
     ok_uq($q->addAlias($raw, $pid, 'GeForce 9871-UQ Super', $user)['error'] === 'ALIAS_SUFFIX_DIFFERS_FROM_PRODUCT', 'A Super alias cannot point at a plain product');
     ok_uq($q->addAlias($raw, $pid, '9871', $user)['error'] === 'ALIAS_TOO_SHORT', 'A too-short alias is refused before anything is written');

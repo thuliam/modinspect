@@ -1,5 +1,5 @@
 <?php
-$tabs = ['open' => 'Open', 'decided' => 'Decided', 'all' => 'All'];
+$tabs = ['open' => 'Open', 'stale' => 'Already matched', 'decided' => 'Decided', 'all' => 'All'];
 $pages = (int) max(1, ceil($total / $per));
 ?>
 <?= mi_page_header($base, ['Catalog', 'Unresolved listings'], 'Unresolved listings', 'Listings the resolver could not match to a product. A person confirms every alias: nothing is added automatically, and an alias only affects future imports (no price is created or changed). Raw listing text is private evidence: admin only.', '') ?>

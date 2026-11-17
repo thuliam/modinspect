@@ -82,7 +82,7 @@ final class UnresolvedListingQueue
 
     public static function normalize(string $alias): string
     {
-        return preg_replace('/[^a-z0-9ก-๙]+/iu', '', mb_strtolower($alias, 'UTF-8')) ?? '';
+        return preg_replace('/[^a-z0-9à¸-à¹™]+/iu', '', mb_strtolower($alias, 'UTF-8')) ?? '';
     }
 
     /** @return list<string> reasons the alias text itself is unacceptable (empty = acceptable) */
@@ -95,24 +95,20 @@ final class UnresolvedListingQueue
         return $p;
     }
 
-    /** @return list<array<string,mixed>> */
+    /**
+     * status: open = undecided AND the current catalog still cannot match it, stale = undecided but the current resolver already matches it
+     * (decided before the catalog grew; it needs no alias, LS-4 K-1b), decided, all.
+     * @return list<array<string,mixed>>
+     */
     public function page(int $limit = 50, int $offset = 0, string $status = 'open'): array
     {
-        $join = $this->actionsAvailable() ? 'LEFT JOIN unresolved_listing_reviews u ON u.raw_observation_id = r.id' : '';
-        $sel = $this->actionsAvailable() ? ', u.status decided, u.product_id decided_product' : ", NULL decided, NULL decided_product";
-        $where = $this->actionsAvailable() ? ($status === 'open' ? 'AND u.id IS NULL' : ($status === 'decided' ? 'AND u.id IS NOT NULL' : '')) : '';
-        $q = $this->db->prepare("SELECT r.id raw_id, r.raw_title title, r.raw_price_text price_text, r.captured_at,
-                CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' THEN 'owner_text' ELSE 'other' END grade $sel
-            FROM observation_review_decisions d
-            JOIN raw_price_observations r ON r.id = d.raw_observation_id
-            LEFT JOIN data_sources s ON s.id = r.source_id
-            $join
-            WHERE d.price_observation_id IS NULL AND d.reason_codes LIKE '%UNRESOLVED_PRODUCT%' $where
-            GROUP BY r.id ORDER BY r.id DESC LIMIT :l OFFSET :o");
-        $q->bindValue('l', max(1, min(200, $limit)), PDO::PARAM_INT);
-        $q->bindValue('o', max(0, $offset), PDO::PARAM_INT);
-        $q->execute();
-        $rows = $q->fetchAll(PDO::FETCH_ASSOC);
+        $limit = max(1, min(200, $limit)); $offset = max(0, $offset);
+        $filtered = in_array($status, ['open', 'stale'], true);
+        $rows = $this->fetch($filtered ? 'undecided' : $status, $filtered ? null : $limit, $filtered ? null : $offset);
+        if ($filtered) {
+            $rows = $this->splitStale($rows)[$status === 'stale' ? 'stale' : 'open'];
+            $rows = array_slice($rows, $offset, $limit);
+        }
         $catalog = (new CollectionPipeline())->catalog();
         foreach ($rows as &$r) {
             $r['suggestions'] = self::suggest((string)$r['title'], $catalog);
@@ -124,12 +120,40 @@ final class UnresolvedListingQueue
 
     public function count(string $status = 'open'): int
     {
+        if (in_array($status, ['open', 'stale'], true)) {
+            return count($this->splitStale($this->fetch('undecided', null, null))[$status === 'stale' ? 'stale' : 'open']);
+        }
         $join = $this->actionsAvailable() ? 'LEFT JOIN unresolved_listing_reviews u ON u.raw_observation_id = r.id' : '';
-        $where = $this->actionsAvailable() ? ($status === 'open' ? 'AND u.id IS NULL' : ($status === 'decided' ? 'AND u.id IS NOT NULL' : '')) : '';
+        $where = $this->actionsAvailable() ? ($status === 'decided' ? 'AND u.id IS NOT NULL' : '') : '';
         return (int)$this->db->query("SELECT COUNT(DISTINCT r.id) FROM observation_review_decisions d JOIN raw_price_observations r ON r.id = d.raw_observation_id $join
             WHERE d.price_observation_id IS NULL AND d.reason_codes LIKE '%UNRESOLVED_PRODUCT%' $where")->fetchColumn();
     }
 
+    /** @param list<array<string,mixed>> $rows @return array{open:list<array<string,mixed>>,stale:list<array<string,mixed>>} */
+    private function splitStale(array $rows): array
+    {
+        $resolver = new ProductResolver((new CollectionPipeline())->catalog());
+        $open = []; $stale = [];
+        foreach ($rows as $r) { ($resolver->resolve((string)$r['title'])->productId !== null) ? $stale[] = $r : $open[] = $r; }
+        return ['open' => $open, 'stale' => $stale];
+    }
+
+    /** @param 'undecided'|'decided'|'all' $which @return list<array<string,mixed>> */
+    private function fetch(string $which, ?int $limit, ?int $offset): array
+    {
+        $join = $this->actionsAvailable() ? 'LEFT JOIN unresolved_listing_reviews u ON u.raw_observation_id = r.id' : '';
+        $sel = $this->actionsAvailable() ? ', u.status decided, u.product_id decided_product' : ', NULL decided, NULL decided_product';
+        $where = $this->actionsAvailable() ? ($which === 'undecided' ? 'AND u.id IS NULL' : ($which === 'decided' ? 'AND u.id IS NOT NULL' : '')) : '';
+        $lim = $limit !== null ? 'LIMIT ' . (int)$limit . ' OFFSET ' . (int)$offset : '';
+        return $this->db->query("SELECT r.id raw_id, r.raw_title title, r.raw_price_text price_text, r.captured_at,
+                CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' THEN 'owner_text' ELSE 'other' END grade $sel
+            FROM observation_review_decisions d
+            JOIN raw_price_observations r ON r.id = d.raw_observation_id
+            LEFT JOIN data_sources s ON s.id = r.source_id
+            $join
+            WHERE d.price_observation_id IS NULL AND d.reason_codes LIKE '%UNRESOLVED_PRODUCT%' $where
+            GROUP BY r.id ORDER BY r.id DESC $lim")->fetchAll(PDO::FETCH_ASSOC);
+    }
     /**
      * Does adding $alias for $productId resolve $title to that product, and does it leave every title that ALREADY resolves where it was?
      * A title that resolved to product A and would now resolve to product B is "stolen" (refused); a title that was unresolved and becomes resolved is reported, not refused.

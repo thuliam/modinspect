@@ -82,7 +82,7 @@ final class AdminController extends Controller {
     }
     public function unresolved(): void {
         if(!$this->requirePermission('products.view')) return;
-        $status=in_array($_GET['status']??'open',['open','decided','all'],true) ? (string)$_GET['status'] : 'open';
+        $status=in_array($_GET['status']??'open',['open','stale','decided','all'],true) ? (string)$_GET['status'] : 'open';
         $page=max(1,(int)($_GET['page']??1)); $per=25;
         $svc=new \App\Services\Admin\UnresolvedListingQueue();
         $this->render('unresolved','Unresolved listings',['rows'=>$svc->page($per,($page-1)*$per,$status),'total'=>$svc->count($status),'status'=>$status,'page'=>$page,'per'=>$per,
