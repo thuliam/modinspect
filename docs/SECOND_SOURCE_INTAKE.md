@@ -5,6 +5,8 @@ Confidence-v2 caps such a sample below 60 ("low"), however large. A sample becom
 from a different, listing-level source. This page is the shortest safe way to add one. It costs nothing: you collect the rows yourself,
 no crawler or paid service is involved.
 
+
+> **WARNING (found 2026-11-17, DL-078):** rows imported from this minimal template are accepted by the importer but are classified as a generic source and **excluded from the used price** (`INSUFFICIENT_PROVENANCE`), because the template carries no immutable evidence snapshot. Following the steps below today will NOT make any price "medium". `tests/second_source_snapshot_gate_test.php` pins this. The owner decision that fixes it is in `docs/K3_SECOND_SOURCE_OPTIONS.md` ("K-3c").
 ## What counts
 
 - One row per listing you can point to: a listing URL (Facebook Marketplace item, Pantip topic, shop product page, ...) **or** a stable listing reference.

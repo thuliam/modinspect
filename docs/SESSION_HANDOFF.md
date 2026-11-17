@@ -971,3 +971,4 @@ Next owner action:
 - K-1e: dry-run shows the re-resolve is worth only 1 row (DL-075); R-3/R-4 dropped. Pending products need a second source (K-3).
 - K-3: options in docs/K3_SECOND_SOURCE_OPTIONS.md (DL-076); waiting for the owner's answers on Priceza used-vs-new, reviewer, and B volume. Next possible: read-only Priceza review pack.
 - K-3b (DL-077): Priceza = new-price reference, excluded from the used cohort in PriceSnapshotService. Open: reviewer (Q2), B sources and weekly volume (Q3).
+- K-3c (DL-078): documented second-source template does not reach used prices; owner must choose P1/P2/P3 (Recommended P1) before the daily workflow is built.
