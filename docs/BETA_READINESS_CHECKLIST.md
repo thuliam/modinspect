@@ -11,8 +11,8 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | A-1 | MUST | Every public price replays to the same snapshot | `php cli/price_trust_audit.php` shows MATCH for all | MET | 49 of 49 MATCH |
 | A-2 | MUST | No mock/test evidence reaches a public price | `tests/` suite, public price gate (DL-047) | MET | suite green, CI green |
 | A-3 | MUST | Public prices carry honest confidence and evidence grade | product page + `/admin/snapshots/{id}` | MET | all 49 show low; owner-text caveat on every page |
-| A-4 | MUST | At least one listing-level source reviewed by a person for the products offered in the beta | Review Queue; `docs/SECOND_SOURCE_INTAKE.md` | **NOT MET / OWNER** | 0 approved from listing-level sources; 88 REAL observations pending since September; all 481 approved rows are owner text |
-| A-5 | MUST | Calibration from reviewed live rows, not fixtures | `php cli/review_calibration_report.php`; `docs/REAL_CALIBRATION_REPORT.md` | **NOT MET / OWNER** | green-lane 99.76 % comes from rule-based bulk approvals and is not independent evidence; needs a sampled human review (gate G-4) |
+| A-4 | MUST | At least one listing-level source reviewed by a person for the products offered in the beta | Review Queue; `docs/SECOND_SOURCE_INTAKE.md` | **NOT MET / OWNER** | 0 approved from listing-level sources; 88 REAL observations pending since September; all 481 approved rows are owner text. Route ready (LS-6 M-1, M-2): `cli/prepare_owner_rows.php`, owner-transcription pattern, rehearsal `tests/daily_flow_rehearsal_test.php`; waits for the owner's first real file (L-1) |
+| A-5 | MUST | Calibration from reviewed live rows, not fixtures | `php cli/review_calibration_report.php`; `docs/REAL_CALIBRATION_REPORT.md` | **NOT MET / OWNER** | green-lane 99.76 % comes from rule-based bulk approvals and is not independent evidence; needs a sampled human review (gate G-4). The report now splits reviewed rows by capture method and keeps fixtures apart (LS-6 M-3), so it is ready for the first reviewed rows |
 | A-6 | SHOULD | Coverage worth launching | `/admin/data-health` | NOT MET | 49 of 99 products priced; 22 pending for too few rows or a bimodal sample (RTX 5090) |
 | A-7 | SHOULD | Medium or higher confidence for the headline products | `/admin/snapshots/{id}` gap card | NOT MET | needs A-4 |
 | A-8 | SHOULD | Plausibility flags clean | `php cli/price_ladder_check.php` | MET | 0 flags on 44 prices checked (GPU, CPU and RAM ladders, LS-3 J-8) |
@@ -22,9 +22,9 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | ID | Level | Requirement | How to verify | Status | Evidence / gap |
 |---|---|---|---|---|---|
 | B-1 | MUST | Owner visual acceptance of the public pages | owner review (G-2) | **OWNER** | pages exist and were checked at 375 and 1048 px; no owner sign-off recorded |
-| B-2 | MUST | Mobile pages without horizontal overflow | browser check at 375 px | MET | home, price, product, deal checker, build, compare, 3 admin pages (DL-043, H-9, H-10) |
+| B-2 | MUST | Mobile pages without horizontal overflow | browser check at 375 px | MET | home, price, product, deal checker, build, compare, 3 admin pages (DL-043, H-9, H-10). At 320 px `/build` overflows by 5 px (LS-6 M-4); the other five public pages do not |
 | B-3 | MUST | Thai-first copy, no invented claims, prices, ratings or users | page text review | MET | checked on the pages listed above; re-check after any copy change |
-| B-4 | SHOULD | Accessibility basics | script audit (alt, labels, ids, landmarks) | MET | 0 failures on home and price index; heading order fixed on the public pages and locked by `tests/heading_levels_test.php` (LS-3 J-11) |
+| B-4 | SHOULD | Accessibility basics | script audit (alt, labels, ids, landmarks) | MET | 0 failures on home and price index; heading order fixed on the public pages and locked by `tests/heading_levels_test.php` (LS-3 J-11). LS-4 K-6 and K-6b: static scan on 9 pages, contrast and keyboard focus on 6. LS-6 M-4: phone width, hover states and tab order on 6 pages; one hover contrast defect fixed (`tests/public_button_theme_test.php`), two findings open in `docs/LS4_REPORTS.md` |
 | B-5 | SHOULD | Search and share metadata | `/robots.txt`, `/sitemap.xml`, page head | MET | DL-050; no share image until rights are settled |
 
 ## C. Security
@@ -44,8 +44,8 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | ID | Level | Requirement | How to verify | Status | Evidence / gap |
 |---|---|---|---|---|---|
 | D-1 | MUST | Backup that has been restored at least once | `php cli/db_backup.php`, `php cli/db_restore.php ... --verify` | MET (tool) | drill passes locally and on the CI runner (32 tables, row counts match); no schedule and no off-site copy on a real host yet |
-| D-2 | MUST | Scheduled backup with an off-machine copy and a retention rule | host cron | **NOT MET / OWNER** | needs a cron job, an off-machine copy and a retention rule set up on HostAtom |
-| D-3 | MUST | Liveness monitoring | `GET /health` plus an uptime monitor | NOT MET | endpoint exists; no monitor configured |
+| D-2 | MUST | Scheduled backup with an off-machine copy and a retention rule | host cron | **NOT MET / OWNER** | needs a cron job, an off-machine copy and a retention rule set up on HostAtom. Tools and cron lines exist (`cli/db_backup_prune.php`, `docs/LS4_REPORTS.md`); nothing has been run on the host |
+| D-3 | MUST | Liveness monitoring | `GET /health` plus an uptime monitor | NOT MET | endpoint exists; no monitor configured. `cli/ops_probe.php` is ready to run from the host cron (not run there) |
 | D-4 | MUST | Deployment runbook rehearsed on an isolated staging database and a rollback tested | `docs/DEPLOYMENT_RUNBOOK_HOSTATOM.md`, `docs/DEPLOYMENT_PACKAGE_DRY_RUN.md` | **NOT MET / OWNER** | package dry run exists; no staging rehearsal; deploy not authorized |
 | D-5 | MUST | Compression and caching rules present on the host | response headers | NOT MET | `.htaccess` rules verified on a temporary Apache with the modules; the host's modules are unknown |
 | D-6 | SHOULD | Error pages and logs reviewed on the host | host | NOT MET | generic 500 page exists in code |
@@ -69,7 +69,26 @@ Rule: **GO needs every MUST row `MET`.** A SHOULD row that is not met must be li
 | F-3 | MUST | Windows/Linux parity scan clean | `tests/linux_parity_scan_test.php` | MET | in the suite |
 | F-4 | SHOULD | Open items recorded for the next revision | `docs/REVISE_BACKLOG.md` | MET | maintained after every LS-2 task |
 
-## Verdict as of 2026-11-16: NO-GO for a public beta
+## Who can close each open MUST row (LS-6 M-5, 2026-11-17)
+
+None of the twelve can be closed by code alone. Six need only the owner; six also need the real host.
+
+| Row | Who | Already prepared in code | What is left |
+|---|---|---|---|
+| A-4 | Owner | owner-transcription route, `cli/prepare_owner_rows.php`, rehearsal test | send the first real file (L-1), review the rows in the Review Queue |
+| A-5 | Owner | calibration report split by capture method (M-3) | reviewed live rows (100 for the CALIBRATING label) and a sampled human review of the green lane |
+| B-1 | Owner | pages checked at 375 and 1048 px; contrast, focus and hover checked on 6 pages | visual sign-off; decide on the two open M-4 findings (`/build` focus order on a phone, 5 px overflow at 320 px) |
+| C-2 | Owner | secret scan clean; the DB-password leak path is closed (N-9) | rotate the credentials found in the LINE export and the DEV DB password |
+| E-1 | Owner | none; no copy is approved yet | approve privacy and terms copy |
+| E-3 | Owner | 7 photos credited | confirm rights for logos and brand artwork |
+| C-3 | Owner and host | `cli/ops_probe.php` | check TLS and HSTS on HostAtom |
+| C-4 | Owner and host | code ignores `AUTH_*` overrides outside local and testing | check the host `.env` |
+| D-2 | Owner and host | backup, restore verify, prune tool, cron lines | install the cron job, an off-machine copy and the retention rule |
+| D-3 | Owner and host | `/health`, `cli/ops_probe.php` | set up an uptime monitor |
+| D-4 | Owner and host | deployment package dry run | staging rehearsal, rollback test, deploy authorisation |
+| D-5 | Host | `.htaccess` rules verified on a temporary Apache | check which modules the host has |
+
+## Verdict as of 2026-11-16: NO-GO for a public beta (re-checked 2026-11-17: unchanged, same twelve rows)
 
 Not met MUST rows: A-4, A-5, B-1, C-2, C-3, C-4, D-2, D-3, D-4, D-5, E-1, E-3. Most need an owner decision, a real host, or real listing-level evidence; none of them can be closed by code alone. The gated beta in `docs/ROADMAP.md` stays `BLOCKED_BY_REAL_EVIDENCE` until A-4 and A-5 are met.
 

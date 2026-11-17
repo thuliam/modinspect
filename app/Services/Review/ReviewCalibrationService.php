@@ -36,7 +36,10 @@ final class ReviewCalibrationService
                 od.id original_decision_id,od.lane original_lane,od.decision original_decision,od.reason_codes original_reasons,od.rule_result original_rule_result,od.created_at review_created_at,
                 hd.id human_decision_id,hd.decision human_decision,hd.created_at human_decision_at,
                 COALESCE(cc.correction_count,0) correction_count,
-                cc.corrected_fields
+                cc.corrected_fields,
+                CASE WHEN EXISTS (SELECT 1 FROM market_evidence me WHERE me.raw_observation_id=r.id AND me.excerpt LIKE '%CAPTURE_METHOD=owner_transcription%') THEN 'owner_transcription'
+                     WHEN EXISTS (SELECT 1 FROM market_evidence me WHERE me.raw_observation_id=r.id AND me.excerpt LIKE '%CAPTURE_METHOD=machine_capture%') THEN 'machine_capture'
+                     ELSE NULL END capture_method
             FROM price_observations o
             JOIN products p ON p.id=o.product_id
             JOIN product_categories c ON c.id=p.category_id
@@ -144,6 +147,9 @@ final class ReviewCalibrationService
         $fields = [];
         $sources = [];
         $ruleVersions = [];
+        // LS-6 M-3: reviewed evidence split by how it was captured; fixtures are their own bucket and never count as live
+        $empty = ['candidates' => 0, 'reviewed' => 0, 'approved' => 0, 'rejected' => 0, 'excluded' => 0, 'corrected' => 0];
+        $methods = ['owner_transcription' => $empty, 'machine_capture' => $empty, 'owner_text' => $empty, 'other_real' => $empty, 'fixture' => $empty];
 
         foreach ($rows as $row) {
             $lane = (string)($row['original_lane'] ?? 'amber');
@@ -154,6 +160,11 @@ final class ReviewCalibrationService
             $isReviewed = $status !== 'pending';
             $isCorrected = (int)$row['correction_count'] > 0;
             $datasetType = $this->datasetType($row);
+            $bucket = $this->captureBucket($row, $datasetType);
+            $methods[$bucket]['candidates']++;
+            if ($isReviewed) { $methods[$bucket]['reviewed']++; }
+            if (in_array($status, ['approved', 'rejected', 'excluded'], true)) { $methods[$bucket][$status]++; }
+            if ($isCorrected) { $methods[$bucket]['corrected']++; }
             if ($datasetType === 'mock_test') {
                 $mockRows++;
             } else {
@@ -314,6 +325,7 @@ final class ReviewCalibrationService
             'quality_flags' => array_slice($flags, 0, 20, true),
             'corrected_fields' => array_slice($fields, 0, 20, true),
             'source_quality' => array_values($sources),
+            'capture_methods' => $methods,
             'valid_observation_yield' => [
                 'definition' => 'real approved eligible observations divided by real reviewed acquisition candidates',
                 'real_reviewed_candidates' => $liveReviewed,
@@ -381,6 +393,15 @@ final class ReviewCalibrationService
             }
         }
         return 'real';
+    }
+
+    /** how the evidence behind a reviewed row was captured: fixture, owner_transcription, machine_capture, owner_text (no listing link) or other_real */
+    private function captureBucket(array $row, string $datasetType): string
+    {
+        if ($datasetType === 'mock_test') { return 'fixture'; }
+        $method = (string)($row['capture_method'] ?? '');
+        if ($method === 'owner_transcription' || $method === 'machine_capture') { return $method; }
+        return str_starts_with((string)($row['source_key'] ?? ''), 'offline_owner_text_') ? 'owner_text' : 'other_real';
     }
 
     private function eligibleApproved(array $row): bool

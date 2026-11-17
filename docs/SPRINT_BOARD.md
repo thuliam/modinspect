@@ -165,3 +165,14 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | L-6 | Security and ops pass on new paths | DONE | `docs/SECURITY_REVIEW_2026-11-17.md` N-9..N-14; fixes: DB password leaking through a chained exception (`tests/db_error_no_secret_test.php`, failed first) and phone numbers in owner-transcribed titles (`OWNER_TRANSCRIPTION_TITLE_HAS_PHONE_NUMBER`); ops cron lines already in `docs/LS4_REPORTS.md`. Owner action: rotate the DEV DB password |
 | L-1 | First real file: dry run, import, review | WAITING (owner will attach later, noted 2026-11-17) | `docs/OWNER_DAILY_COLLECTION_TH.md` |
 | L-2 | Calibration from reviewed rows | BLOCKED by L-1 | needs reviewed live rows |
+
+## LS-6 (owner approved all six on 2026-11-17: M-1 to M-6; report `docs/LS6_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| M-1 | Daily file helper | DONE | `cli/prepare_owner_rows.php`, `app/Services/Collection/OwnerRowPreparer.php`, `tests/owner_row_preparer_test.php` (6 mutations caught); importer fixes for the Excel BOM and the mock guard, `tests/import_real_file_hazards_test.php` (3 mutations caught), DL-081 |
+| M-2 | Dress rehearsal of the whole route | DONE | `tests/daily_flow_rehearsal_test.php`: raw Excel-style file to public evidence count and calibration, test database, rolled back; 2 mutations caught |
+| M-3 | Calibration split by capture method | DONE (CLI/report only, no new UI) | `capture_methods` in `ReviewCalibrationService`, `tests/calibration_capture_method_test.php` (3 mutations caught), DL-082 |
+| M-4 | Phone width, hover, tab order | DONE; 1 defect fixed, 3 findings OPEN (owner) | `tests/public_button_theme_test.php` (red first); open: `/build` focus order on phones, 5 px at 320 px, 8-10 px text |
+| M-5 | Beta MUST rows: owner or host | DONE (document) | `docs/BETA_READINESS_CHECKLIST.md`: 12 rows, 6 owner-only, 6 owner and host; NO-GO unchanged |
+| M-6 | CI and close-out | CI green on `f3a54d7`; final commit checked after push | docs updated |

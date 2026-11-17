@@ -9,7 +9,7 @@ if ($mi_credits): ?>
     <div class="card prose">
         <h2>เครดิตภาพสินค้า</h2>
         <p>ภาพถ่ายสินค้าบางรายการมาจาก Wikimedia Commons ภายใต้สัญญาอนุญาตแบบเปิดตามที่ระบุ ภาพเป็นตัวอย่างของรุ่นเดียวกันหรือการ์ดของผู้ผลิตพันธมิตร ไม่ใช่ภาพของชิ้นที่ประกาศขาย</p>
-        <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#photo-credit-list" aria-expanded="false" aria-controls="photo-credit-list">ดูรายการเครดิต</button>
+        <button class="btn btn-sm btn-ghost" type="button" data-toggle="collapse" data-target="#photo-credit-list" aria-expanded="false" aria-controls="photo-credit-list">ดูรายการเครดิต</button>
         <div class="collapse mt-3" id="photo-credit-list"><ul>
             <?php foreach ($mi_credits as $slug => $c): ?>
                 <li><a href="<?= htmlspecialchars((string) $c['page']) ?>" rel="noopener" target="_blank"><?= htmlspecialchars(str_replace('File:', '', (string) $c['file'])) ?></a>
@@ -27,7 +27,7 @@ if ($mi_logos): ?>
     <div class="card prose">
         <h2>เครดิตโลโก้ยี่ห้อ</h2>
         <p>โลโก้มาจาก Wikimedia Commons ตามสัญญาอนุญาตที่ระบุ เครื่องหมายการค้าเป็นของเจ้าของแต่ละราย ใช้เพื่อระบุยี่ห้อสินค้าเท่านั้น ไม่ได้หมายถึงการรับรอง</p>
-        <button class="btn btn-sm btn-outline-secondary" type="button" data-toggle="collapse" data-target="#logo-credit-list" aria-expanded="false" aria-controls="logo-credit-list">ดูรายการเครดิต</button>
+        <button class="btn btn-sm btn-ghost" type="button" data-toggle="collapse" data-target="#logo-credit-list" aria-expanded="false" aria-controls="logo-credit-list">ดูรายการเครดิต</button>
         <div class="collapse mt-3" id="logo-credit-list"><ul>
             <?php foreach ($mi_logos as $slug => $c): ?>
                 <li><a href="<?= htmlspecialchars((string) $c['page']) ?>" rel="noopener" target="_blank"><?= htmlspecialchars(str_replace('File:', '', (string) $c['file'])) ?></a> · <?= htmlspecialchars((string) $c['license']) ?></li>

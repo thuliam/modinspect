@@ -184,7 +184,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <?php endif; ?>
     <?php endif; ?>
     <section class="mi-trust" aria-label="อ่านราคานี้อย่างไร">
-        <button class="btn btn-outline-secondary align-self-start" type="button" data-toggle="collapse" data-target="#howToRead" aria-expanded="false" aria-controls="howToRead"><i class="fas fa-book mr-2" aria-hidden="true"></i>อ่านราคานี้อย่างไร</button>
+        <button class="btn btn-ghost align-self-start" type="button" data-toggle="collapse" data-target="#howToRead" aria-expanded="false" aria-controls="howToRead"><i class="fas fa-book mr-2" aria-hidden="true"></i>อ่านราคานี้อย่างไร</button>
         <div class="collapse mt-3" id="howToRead"><div class="row">
             <?php foreach ([['fa-tag', 'ราคาประกาศ', 'เป็นราคาที่ผู้ขายตั้งไว้ ไม่ใช่ราคาปิดดีล'], ['fa-microchip', 'แยกรุ่นชัดเจน', 'ไม่เฉลี่ยข้ามรุ่นหรือข้ามเจเนอเรชัน'], ['fa-file-alt', 'บอกที่มา', 'ดูจำนวนตัวอย่างและความสดของข้อมูลได้'], ['fa-search', 'ตรวจสภาพเอง', 'ต้องดูสภาพ ประกัน และอุปกรณ์ประกอบก่อนซื้อเสมอ']] as [$ic, $tt, $tx]): ?>
                 <div class="col-md-6 col-xl-3 mb-3"><div class="mi-why"><span class="mi-why-ico"><i class="fas <?= $ic ?>" aria-hidden="true"></i></span><div><h3><?= $tt ?></h3><p><?= $tx ?></p></div></div></div>

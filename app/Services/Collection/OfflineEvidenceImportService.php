@@ -217,7 +217,7 @@ final class OfflineEvidenceImportService
     {
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         if ($extension === 'json') {
-            $rows = json_decode((string)file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+            $rows = json_decode(ltrim((string)file_get_contents($path), "\xEF\xBB\xBF"), true, 512, JSON_THROW_ON_ERROR);
             if (isset($rows['records']) && is_array($rows['records'])) {
                 $rows = $rows['records'];
             }
@@ -244,6 +244,7 @@ final class OfflineEvidenceImportService
                 throw new \RuntimeException('CSV_EMPTY');
             }
             $header = array_map(static fn(string $value): string => trim($value), $header);
+            $header[0] = ltrim($header[0], "\xEF\xBB\xBF");   // Excel's "CSV UTF-8" starts with a byte-order mark; left in, the first column (capture_method) would not match
             $required = ['observed_at'];
             foreach ($required as $field) {
                 if (!in_array($field, $header, true)) {
@@ -533,12 +534,18 @@ final class OfflineEvidenceImportService
         $text = strtolower(implode(' ', [
             (string)($record['source_type'] ?? ''),
             (string)($record['source_domain'] ?? ''),
-            (string)($record['source_url'] ?? ''),
-            (string)($record['source_listing_url'] ?? ''),
-            (string)($record['source_search_url'] ?? ''),
             (string)($record['source_reference'] ?? ''),
             (string)($record['external_ref'] ?? ''),
         ]));
+        // A listing URL is checked by host (any occurrence) and by whole words in its path and query. A page called "contestshop" or a post slug
+        // with "latest" is a real page; "test", "shop-mock" or "?mock=1" are markers (LS-6 M-1, tests/import_real_file_hazards_test.php).
+        foreach (['source_url', 'source_listing_url', 'source_search_url'] as $field) {
+            $url = trim((string)($record[$field] ?? ''));
+            if ($url === '') { continue; }
+            $parts = parse_url($url);
+            $text .= ' ' . strtolower((string)($parts['host'] ?? ''));
+            if (preg_match('/(?<![a-z0-9])(mock|fixture|test)(?![a-z0-9])/i', (string)($parts['path'] ?? '') . '?' . (string)($parts['query'] ?? '')) === 1) { return true; }
+        }
         return str_contains($text, 'mock') || str_contains($text, 'fixture') || str_contains($text, 'test');
     }
 
