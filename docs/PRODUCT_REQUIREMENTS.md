@@ -72,3 +72,11 @@ Sources: project blueprint, LINE/Messenger owner discussion, owner UI reviews, m
 | 12 | Marketplace, 5 % fee, escrow, public seller blacklist | DEFERRED | Needs legal/trust design and owner GO |
 | 13 | Public visual direction | DECIDED | See UX_UI_SYSTEM (DL-019/DL-021); coral reference superseded |
 | 14 | Confidence policy for 100 % owner-text evidence | NEEDS_OWNER_DECISION | T1-6 |
+
+## Owner scope decision 2026-11-18
+
+| # | Decision | Status | Note |
+|---|---|---|---|
+| 15 | "Ready" = price check + product information (release year, model age, specifications) + condition check; the approved homepage concept (marketplace look) is visual direction only | DECIDED (owner, 2026-11-18) | Marketplace, listings, seller tools, cart, inspection ordering, escrow and fees remain DEFERRED |
+| 6 | Release date, model age, specs, benchmark, rank, Compare | PARTIAL | Release year, model age and specifications with manufacturer sources shown on the product page (first slice 2026-11-18). Benchmarks, ranks and price-to-performance BLOCKED by data licences. Compare still to do on specs and price |
+| 7 | Used-hardware condition checklist | PARTIAL | Reminders for 6 categories in the deal result; the per-category guide content is not written |

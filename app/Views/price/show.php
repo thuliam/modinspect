@@ -95,6 +95,8 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         </div>
     </header>
 
+    <?php $facts = $facts ?? []; require ROOT_PATH . '/app/Views/components/product-facts.php'; ?>
+
     <?php if (!$hasMarketSnapshot): ?>
         <div class="mi-detail-grid no-data-detail">
             <article class="card mi-product-summary-card">

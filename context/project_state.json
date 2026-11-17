@@ -1,6 +1,6 @@
 {
     "project": "ModInspect",
-    "phase": "R0 recovery delta done; T1 price trust in progress (audit + evidence explorer delivered; owner confidence-policy decision open); admin on DropX layout; trend, location log, deal-checker context delivered",
+    "phase": "Owner scope decision 2026-11-18: ready = price check + product information + condition check. T1 mostly done, U2 partial, I3 first slice (product facts), D4 partial, R6 partial. R0 recovery delta done; T1 price trust in progress (audit + evidence explorer delivered; owner confidence-policy decision open); admin on DropX layout; trend, location log, deal-checker context delivered",
     "rebaseline": {
         "date": "2026-11-14",
         "overall_status": "PARTIAL",
@@ -336,5 +336,40 @@
         ],
         "release": "NOT_READY; no production deploy; no new paid service",
         "confidence_method": "confidence-v2 (OWNER_TEXT_ONLY_CAP at 59)"
+    },
+    "rebaseline_2026_11_18": {
+        "owner_definition_of_ready": "Requirements functions complete, UX/UI not poor, code and database with migrations ready on the hosting",
+        "scope": "price check + product information + condition check; marketplace, listings, seller tools, cart, inspection ordering, escrow and fees deferred; approved homepage concept is visual direction only",
+        "dev_read_only_counts": {
+            "as_of": "2026-11-18",
+            "active_products": 106,
+            "approved_asking_observations": 481,
+            "evidence_grade_c_owner_text": 481,
+            "pending_observations": 137,
+            "sold_price_observations": 0,
+            "publicly_priced_products": 49,
+            "priced_by_category": {
+                "cpu": "12/28",
+                "gpu": "19/29",
+                "ram": "14/19",
+                "storage": "4/7",
+                "motherboard": "0/13",
+                "psu": "0/5",
+                "case": "0/3",
+                "cooling": "0/2"
+            },
+            "average_public_confidence": "50 to 57"
+        },
+        "sprint_status": {
+            "T1": "mostly done",
+            "U2": "partial",
+            "I3": "in progress (product facts card)",
+            "D4": "partial",
+            "C5": "not started",
+            "R6": "partial"
+        },
+        "blocked_by_licence": "benchmarks, ranks, price-to-performance (PassMark, Geekbench, TechPowerUp restrict commercial display)",
+        "next_tasks": "docs/SPRINT_BOARD.md F-2 to F-9",
+        "overall_percent": "NOT_BASELINED"
     }
 }

@@ -157,3 +157,24 @@ RELEASE = NOT_READY (no staging; production not authorised).
 
 The long sprint LS-1 is split between Claude (UI, browser verification) and Codex (data, backend, tests). Who does what, the file-ownership lock,
 status and evidence live in `docs/SPRINT_BOARD.md`; the copy-ready Codex prompt is `docs/CODEX_LS1_PROMPT.txt`. This tracker keeps the sprint-level scorecard only.
+
+## Rebaseline 2026-11-18: the owner's definition of "ready" and the scope decision
+
+**Owner's definition (2026-11-18):** the functions and features of the Requirements are complete, the UX/UI is not poor, and the source code, database and migrations are ready to go up on the hosting. The owner is the first user. Nothing short of that counts as ready.
+
+**Scope decision (owner, 2026-11-18):** "ready" means **price check + product information + condition check** (Requirements v2 CONFIRMED and PROPOSED rows 6 and 7). The approved homepage concept shows a marketplace (cart, buy now, sellers, request inspection); it is the **visual direction only**. Marketplace, listings, seller tools, cart, inspection ordering, escrow and fees stay DEFERRED (`docs/PRODUCT_REQUIREMENTS.md`). A page of the approved designs that depends on a marketplace function is adapted to the data that exists, never faked.
+
+Status of the program against that definition (verified 2026-11-18 on the shared DEV database, read-only, and in the code):
+
+| Sprint | Engineering status | What is true |
+|---|---|---|
+| T1 Price trust | mostly done | 481 approved asking rows, all owner text (evidence grade C, one source); 49 of 106 active products have a public price (CPU 12/28, GPU 19/29, RAM 14/19, storage 4/7; motherboard, PSU, case and cooling 0); average confidence 50 to 57; 0 sold prices; 137 rows pending review |
+| U2 Public UX/CI | partial | the homepage follows the approved concept; the product page now has a facts card; search, compare, deal checker and the unfinished modules (local match, seller dashboard, shop, market report) are not at the approved level |
+| I3 Product information | IN_PROGRESS (first slice 2026-11-18) | product page shows release year, model age and specifications with manufacturer sources where they exist (`ProductFacts`, `product_reference_specs`, 19 parts); no benchmark, rank or price-to-performance because no licensed source exists (PassMark, Geekbench, TechPowerUp restrict commercial display); Compare is still four price cards, not a comparison |
+| D4 Deal Checker 2.0 + condition guide | partial | condition reminders exist for 6 categories inside the deal result; no per-category guide content (articles 0) |
+| C5 Community loop | NOT_STARTED, deferrable | design only |
+| R6 Hosting readiness | partial | package dry run and runbooks exist; no staging, no off-machine backup, no monitor, privacy copy is a draft, exposed credentials not rotated |
+
+Remaining work to the owner's definition, in dependency order (tasks F-1 to F-9 are on `docs/SPRINT_BOARD.md`): structured CPU/GPU specifications from official pages for all 57 CPU/GPU; real Compare on specs and price; category condition guides (content drafted by the agent, reviewed by the owner); product page, search results and deal checker to the approved visual level; hide unfinished modules from public navigation; staging, deploy and rollback rehearsal on HostAtom. Owner-only: collecting listings for the locked categories and the thin ones, benchmark-licence decision, visual acceptance, legal copy, credential rotation, hosting access.
+
+The overall percentage stays **NOT_BASELINED**; the 2026-11-14 scorecard above is historical.

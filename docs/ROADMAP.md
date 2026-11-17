@@ -44,3 +44,7 @@ The earlier roadmap above is kept as history. The forward plan is the R0/T1/U2/I
 (provisional windows from 2026-11-16, earliest illustrative beta gate after 2027-02-18 **only if** acceptance, real-data and production gates pass;
 not a delivery promise and not deployment permission). Why it changed: the data foundation grew (99 products, 420 approved owner-text observations,
 46 recorded public snapshots), so trust and honest disclosure (T1) now precede visual and intelligence work.
+
+## Revision 2026-11-18
+
+The owner defined "ready": Requirements features complete, UX/UI not poor, code and database with migrations ready on the hosting; scope = price check + product information + condition check (marketplace deferred). The R0/T1/U2/I3/D4/C5/R6 program stays; the next work follows its critical path (specifications and Compare, condition guides, UX/UI to the approved level, staging and deploy rehearsal). Dates are not re-promised until the owner confirms the weekly review time. Benchmarks stay out until a licence exists. See `docs/SPRINT_TRACKER.md` "Rebaseline 2026-11-18".

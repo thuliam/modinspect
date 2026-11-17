@@ -244,3 +244,17 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | S-4 | Pilot scope document | DONE (proposal) | `docs/PILOT_SCOPE_TH.md`; needs the owner's word "pilot" |
 | S-5 | Commit, push, read CI | DONE | commit 57460ad pushed to PR #4; suite exit 0; CI read right after the push (4 passing), the monitor watches for failures |
 | S-6 | Default pick uses the recommender | DONE | `SpecBuilderService::generate`, `tests/spec_builder_estimate_test.php` changed first, mutations caught |
+
+## Release path after the owner's definition of "ready" (2026-11-18, DL-098; replaces further LS items)
+
+| ID | Task | Status | Evidence / dependency |
+|---|---|---|---|
+| F-1 | Product page facts card: release year, model age, specifications with manufacturer source and check date, honest "no benchmark" note | DONE | `ProductFacts`, `components/product-facts.php`, `tests/product_facts_test.php` (9 mutations caught, fail-soft proved on the test database); checked on DEV (read-only) |
+| F-2 | Structured CPU/GPU specifications from official pages for all 57 (cores, threads, clocks, cache, VRAM, bus, power connectors) with source and date | PLANNED | research task; manufacturer pages only; no licence needed for facts, source recorded; the table `product_reference_specs` is ready |
+| F-3 | Real Compare: same specs and price side by side, honest empty states, no benchmark | PLANNED | needs F-2 |
+| F-4 | Condition guide per category (CPU, GPU, RAM, storage, PSU, motherboard): content drafted by the agent, reviewed by the owner | PLANNED | owner reviews wording |
+| F-5 | Product page, search results (0/1/many) and deal checker to the approved visual level | PLANNED | owner visual acceptance |
+| F-6 | Hide unfinished modules (local match, seller dashboard, shop, market report) from public navigation | PLANNED | small |
+| F-7 | Typo-tolerant search and autocomplete | PLANNED | |
+| F-8 | Staging, deploy and rollback rehearsal on HostAtom, backup with off-machine copy, monitor | PLANNED | needs host access (owner) |
+| F-9 | Owner collection for locked and thin categories (`php cli/collection_targets.php`) | OWNER | the only way to open motherboard, PSU, case and cooling on /build |

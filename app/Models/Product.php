@@ -100,6 +100,16 @@ final class Product
         }
         return ['snapshot_id' => $sid, 'included' => $included, 'excluded' => $excluded, 'sources' => count($sources)];
     }
+    /** Manufacturer specs with their source (product_reference_specs). Fails soft: a missing table or a database hiccup must never break the product page. */
+    public function referenceSpecs(int $productId): array {
+        try {
+            $stmt = $this->db->prepare("SELECT spec_key, spec_value, unit, source_url, date_checked, review_status FROM product_reference_specs WHERE product_id=:id ORDER BY id");
+            $stmt->execute(['id' => $productId]);
+            return $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            return [];
+        }
+    }
     public function history(int $id): array {
         $stmt=$this->db->prepare("SELECT * FROM price_histories WHERE product_id=:id ORDER BY snapshot_date");
         $stmt->execute(['id'=>$id]); return $stmt->fetchAll();
