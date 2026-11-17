@@ -187,3 +187,12 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | N-5 | Thai privacy and terms draft | DONE (draft, owner blanks, not on any page) | `docs/PRIVACY_TERMS_DRAFT_TH.md`; beta E-1 |
 | N-1 | `/build` findings | 5 px overflow FIXED, focus-order finding RETRACTED, small text left to owner | `tests/build_reflow_css_test.php` (red first), browser check at 320/360/375 |
 | N-6 | Close-out | suite, secret scan, push; CI via PR monitor | docs updated |
+
+## LS-8 (owner approved all four on 2026-11-17: O-1 to O-4; report `docs/LS8_REPORTS.md`)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| O-1 | Thai collection target list | DONE (read-only) | `cli/collection_targets.php`, `CollectionTargets`, `tests/collection_targets_test.php` (4 mutations caught); DEV: 22 products, 33 rows needed, 9 one row short |
+| O-2 | Retention tool, no default period, dry run first | DONE (only dry-run on the test DB; owner sets periods) | `cli/retention_purge.php`, `RetentionPurge`, `tests/retention_purge_test.php` (6 mutations caught) |
+| O-3 | Capture Method card on `/admin/review-analytics` | DONE (HTML checked, not seen in a browser) | `tests/review_calibration_test.php` assertion (red first), existing markup only |
+| O-4 | Close-out | suite, secret scan, push; CI via PR monitor | docs updated |

@@ -28,6 +28,7 @@ Owner decisions 2026-11-14: Facebook data usable as REAL at a lower grade, appro
 LS-4 (2026-11-17): read-only reports K-1/K-2, accessibility scan K-6 (one real fix on /build) and ops kit K-4 are done; see docs/LS4_REPORTS.md and DL-072.
 LS-6 (2026-11-17): daily file helper `cli/prepare_owner_rows.php` and two importer fixes (Excel BOM, mock guard words), a full-route rehearsal test, calibration split by capture method, phone/hover/tab-order checks (one hover defect fixed, three findings open) and the beta MUST owner/host split are done; see docs/LS6_REPORTS.md, DL-081, DL-082. The beta verdict stays NO-GO. No DEV write, no spend.
 LS-7 (2026-11-17): approval-after-import fix, `--check-db` for the daily helper, `.env` preflight CLI, Thai privacy/terms draft (owner blanks, unpublished), `/build` 320 px overflow fixed and the LS-6 focus-order finding retracted; see docs/LS7_REPORTS.md, DL-083, DL-084. NO-GO unchanged.
+LS-8 (2026-11-17): Thai collection target list `cli/collection_targets.php`, retention tool `cli/retention_purge.php` (no default period, dry run first, never run on DEV), Capture Method card on the admin analytics page; see docs/LS8_REPORTS.md, DL-085, DL-086.
 
 Owner gates: G-1 push/PR/move studio, G-2 Admin re-UAT, G-3 visual direction, G-4 REAL evidence review, G-5 rotate LINE-export credentials,
 G-6 legal direction for blacklist/fee/escrow, G-7 Font Awesome download. Details in `docs/DECISION_LOG.md`.

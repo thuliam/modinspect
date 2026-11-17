@@ -39,3 +39,11 @@
         </div></div>
     </div>
 </div>
+<div class="row">
+    <div class="col-xl-6">
+        <?php $captureLabels=['owner_transcription'=>'Owner transcription','machine_capture'=>'Machine capture','owner_text'=>'Owner text (no link)','other_real'=>'Other real','fixture'=>'Fixture']; ?>
+        <div class="card mi-admin-card mb-3"><div class="card-header"><h2>Capture Method</h2></div><div class="card-body mi-status-list">
+            <?php foreach(($report['capture_methods'] ?? []) as $method=>$row): ?><div><span><?= htmlspecialchars($captureLabels[$method] ?? $method) ?><?php if($method==='fixture'): ?><small>not live evidence</small><?php endif; ?></span><strong><?= (int)$row['candidates'] ?></strong><small>Reviewed <?= (int)$row['reviewed'] ?> / A <?= (int)$row['approved'] ?> / R <?= (int)$row['rejected'] ?> / X <?= (int)$row['excluded'] ?> / C <?= (int)$row['corrected'] ?></small></div><?php endforeach; ?>
+        </div></div>
+    </div>
+</div>

@@ -72,6 +72,8 @@ $commands = [
     ['label' => 'tests/owner_row_db_check_test.php', 'args' => ['tests/owner_row_db_check_test.php']],
     ['label' => 'tests/env_preflight_test.php', 'args' => ['tests/env_preflight_test.php']],
     ['label' => 'tests/build_reflow_css_test.php', 'args' => ['tests/build_reflow_css_test.php']],
+    ['label' => 'tests/collection_targets_test.php', 'args' => ['tests/collection_targets_test.php']],
+    ['label' => 'tests/retention_purge_test.php', 'args' => ['tests/retention_purge_test.php']],
     ['label' => 'tests/second_source_snapshot_gate_test.php', 'args' => ['tests/second_source_snapshot_gate_test.php']],
     ['label' => 'tests/new_price_reference_test.php', 'args' => ['tests/new_price_reference_test.php']],
     ['label' => 'tests/stale_reresolve_test.php', 'args' => ['tests/stale_reresolve_test.php']],
