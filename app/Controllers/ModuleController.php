@@ -81,7 +81,7 @@ final class ModuleController extends Controller {
         }
         if(!$plan['items']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>['ข้อมูลราคายังไม่เพียงพอสำหรับสร้างสเปก'],'old'=>$_POST]);return;}
         if($plan['compatibilityError']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>[$plan['compatibilityError']],'old'=>$_POST]);return;}
-        $uuid=(new SpecBuild())->create(['budget_min'=>(float)$budget*.9,'budget_max'=>(float)$budget,'intended_use'=>$use,'target_resolution'=>$resolution,'mix_preference'=>$mix,'estimated_low'=>$plan['low'],'estimated_expected'=>$plan['expected'],'estimated_high'=>$plan['high'],'compatibility_notes'=>$plan['notes']],$plan['items']);
+        $uuid=(new SpecBuild())->create(['budget_min'=>(float)$budget*.9,'budget_max'=>(float)$budget,'intended_use'=>$use,'target_resolution'=>$resolution,'mix_preference'=>$mix,'member_id'=>!empty($_SESSION[\App\Services\Member\MemberAuth::SESSION_MEMBER_ID])?(int)$_SESSION[\App\Services\Member\MemberAuth::SESSION_MEMBER_ID]:null,'estimated_low'=>$plan['low'],'estimated_expected'=>$plan['expected'],'estimated_high'=>$plan['high'],'compatibility_notes'=>$plan['notes']],$plan['items']);
         $this->redirect('/build/'.$uuid);
     }
     public function sellerAdvisor(): void {

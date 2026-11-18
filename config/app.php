@@ -13,6 +13,14 @@ return [
         'username' => $_ENV['DB_USERNAME'] ?? 'root',
         'password' => $_ENV['DB_PASSWORD'] ?? '',
     ],
+    // LS-14 Module 7 (OD-4): visitor sign-in. A provider is offered only when both values are set (the owner creates the apps, HG-13).
+    // Redirect URI to register at each provider: {APP_URL}/account/callback/{google|microsoft|facebook}. Apple is not offered (paid, HG-15).
+    'members' => [
+        'google' => ['client_id' => $_ENV['MEMBER_GOOGLE_CLIENT_ID'] ?? '', 'client_secret' => $_ENV['MEMBER_GOOGLE_CLIENT_SECRET'] ?? ''],
+        'microsoft' => ['client_id' => $_ENV['MEMBER_MICROSOFT_CLIENT_ID'] ?? '', 'client_secret' => $_ENV['MEMBER_MICROSOFT_CLIENT_SECRET'] ?? ''],
+        'facebook' => ['client_id' => $_ENV['MEMBER_FACEBOOK_APP_ID'] ?? '', 'client_secret' => $_ENV['MEMBER_FACEBOOK_APP_SECRET'] ?? ''],
+        'facebook_graph_version' => $_ENV['MEMBER_FACEBOOK_GRAPH_VERSION'] ?? 'v19.0',
+    ],
     'collection' => [
         'live_collection_enabled' => filter_var($_ENV['MODINSPECT_LIVE_COLLECTION_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
         'paid_provider_calls_enabled' => filter_var($_ENV['MODINSPECT_PAID_PROVIDER_CALLS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),

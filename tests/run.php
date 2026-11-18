@@ -90,6 +90,8 @@ $commands = [
     ['label' => 'tests/public_reachability_test.php', 'args' => ['tests/public_reachability_test.php']],
     ['label' => 'tests/build_services_test.php', 'args' => ['tests/build_services_test.php']],
     ['label' => 'tests/new_price_reference_admin_test.php', 'args' => ['tests/new_price_reference_admin_test.php']],
+    ['label' => 'tests/member_auth_test.php', 'args' => ['tests/member_auth_test.php']],
+    ['label' => 'tests/member_http_test.php', 'args' => ['tests/member_http_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
     ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/product_facts_test.php', 'args' => ['tests/product_facts_test.php']],

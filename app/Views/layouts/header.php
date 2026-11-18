@@ -83,6 +83,8 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
             <div class="nav-tools">
                 <a class="nav-icon" href="<?= $base ?>/price" aria-label="ค้นหารุ่นสินค้า"><i class="fas fa-search" aria-hidden="true"></i></a>
                 <?php if ($authUser): ?><a class="login-button" href="<?= $base ?>/admin">หลังบ้าน</a><?php endif; ?>
+                <?php $memberOffered = array_filter($config['members'] ?? [], static fn($p) => is_array($p) && trim((string) ($p['client_id'] ?? '')) !== '' && trim((string) ($p['client_secret'] ?? '')) !== ''); $memberNow = !empty($_SESSION[\App\Services\Member\MemberAuth::SESSION_MEMBER_ID]); ?>
+                <?php if ($memberNow): ?><a class="login-button" href="<?= $base ?>/account">บัญชีของฉัน</a><?php elseif ($memberOffered): ?><a class="login-button" href="<?= $base ?>/account/login">เข้าสู่ระบบ</a><?php endif; ?>
             </div>
         </div>
     </nav>

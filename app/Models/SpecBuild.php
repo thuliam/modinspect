@@ -16,7 +16,10 @@ final class SpecBuild
         $uuid = sprintf('%04x%04x-%04x-4%03x-%04x-%04x%04x%04x', random_int(0,65535),random_int(0,65535),random_int(0,65535),random_int(0,4095),random_int(0,16383)|0x8000,random_int(0,65535),random_int(0,65535),random_int(0,65535));
         $this->db->beginTransaction();
         try {
-            $stmt = $this->db->prepare("INSERT INTO spec_builds (uuid,budget_min,budget_max,intended_use,target_resolution,mix_preference,estimated_low,estimated_expected,estimated_high,compatibility_notes) VALUES (:uuid,:budget_min,:budget_max,:intended_use,:target_resolution,:mix_preference,:estimated_low,:estimated_expected,:estimated_high,:compatibility_notes)");
+            // LS-14: member_id only when a member is signed in (a host without migration 023 never gets the column in the statement)
+            $memberId = $build['member_id'] ?? null; unset($build['member_id']);
+            $stmt = $this->db->prepare("INSERT INTO spec_builds (uuid,budget_min,budget_max,intended_use,target_resolution,mix_preference,estimated_low,estimated_expected,estimated_high,compatibility_notes" . ($memberId ? ",member_id" : "") . ") VALUES (:uuid,:budget_min,:budget_max,:intended_use,:target_resolution,:mix_preference,:estimated_low,:estimated_expected,:estimated_high,:compatibility_notes" . ($memberId ? ",:member_id" : "") . ")");
+            if ($memberId) { $build['member_id'] = (int)$memberId; }
             $stmt->execute(['uuid'=>$uuid] + $build);
             $buildId = (int)$this->db->lastInsertId();
             $itemStmt = $this->db->prepare("INSERT INTO spec_build_items (spec_build_id,product_id,component_role,quantity,price_low,price_expected,price_high,confidence_score,is_alternative,notes) VALUES (:spec_build_id,:product_id,:component_role,1,:price_low,:price_expected,:price_high,:confidence_score,:is_alternative,:notes)");

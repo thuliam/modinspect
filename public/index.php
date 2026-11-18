@@ -58,6 +58,13 @@ $router->get('/admin/review-analytics',[AdminController::class,'reviewAnalytics'
 $router->get('/admin/market-trends',[AdminController::class,'marketTrends']);
 $router->get('/admin/unresolved-listings',[AdminController::class,'unresolved']);
 $router->get('/admin/users',[AdminController::class,'users']);
+// LS-14 Module 7: visitor accounts (Google, Microsoft, Facebook)
+$router->get('/account/login',[\App\Controllers\AccountController::class,'login']);
+$router->post('/account/login',[\App\Controllers\AccountController::class,'start']);
+$router->get('/account/callback/{provider}',[\App\Controllers\AccountController::class,'callback']);
+$router->get('/account',[\App\Controllers\AccountController::class,'account']);
+$router->post('/account/logout',[\App\Controllers\AccountController::class,'logout']);
+$router->post('/account/delete',[\App\Controllers\AccountController::class,'delete']);
 $router->get('/admin/new-prices',[AdminController::class,'newPrices']);
 $router->post('/admin/new-prices/action',[AdminController::class,'newPriceAction']);
 $router->get('/admin/intake',[AdminController::class,'intake']);

@@ -323,6 +323,7 @@ CREATE TABLE deal_checks (
 
 CREATE TABLE spec_builds (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  member_id BIGINT UNSIGNED NULL,
   uuid CHAR(36) NOT NULL UNIQUE,
   user_id BIGINT UNSIGNED NULL,
   budget_min DECIMAL(12,2) NOT NULL,
@@ -554,3 +555,26 @@ CREATE TABLE new_price_references (
   CONSTRAINT fk_new_price_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
   CONSTRAINT fk_new_price_user FOREIGN KEY (created_by) REFERENCES users(id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE members (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  display_name VARCHAR(120) NULL,
+  email VARCHAR(190) NULL,
+  status ENUM('active','disabled') NOT NULL DEFAULT 'active',
+  terms_accepted_at DATETIME NOT NULL,
+  last_login_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_members_email (email)
+) ENGINE=InnoDB;
+
+CREATE TABLE member_identities (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  member_id BIGINT UNSIGNED NOT NULL,
+  provider VARCHAR(20) NOT NULL,
+  subject VARCHAR(191) NOT NULL,
+  email VARCHAR(190) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_member_identity (provider, subject),
+  CONSTRAINT fk_identity_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+

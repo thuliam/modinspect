@@ -1164,7 +1164,8 @@ CREATE TABLE `spec_builds` (
   `estimated_high` decimal(12,2) DEFAULT NULL,
   `compatibility_notes` text DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `member_id` bigint(20) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1927,3 +1928,26 @@ CREATE TABLE new_price_references (
   CONSTRAINT fk_new_price_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
   CONSTRAINT fk_new_price_user FOREIGN KEY (created_by) REFERENCES users(id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE members (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  display_name VARCHAR(120) NULL,
+  email VARCHAR(190) NULL,
+  status ENUM('active','disabled') NOT NULL DEFAULT 'active',
+  terms_accepted_at DATETIME NOT NULL,
+  last_login_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_members_email (email)
+) ENGINE=InnoDB;
+
+CREATE TABLE member_identities (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  member_id BIGINT UNSIGNED NOT NULL,
+  provider VARCHAR(20) NOT NULL,
+  subject VARCHAR(191) NOT NULL,
+  email VARCHAR(190) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_member_identity (provider, subject),
+  CONSTRAINT fk_identity_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
