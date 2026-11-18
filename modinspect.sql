@@ -1913,3 +1913,17 @@ CREATE TABLE product_reference_specs (
   INDEX idx_ref_spec_key (spec_key),
   CONSTRAINT fk_ref_spec_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE new_price_references (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  price DECIMAL(12,2) NOT NULL,
+  source_url VARCHAR(500) NOT NULL,
+  checked_on DATE NOT NULL,
+  note VARCHAR(255) NULL,
+  created_by BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_new_price_product (product_id, checked_on),
+  CONSTRAINT fk_new_price_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+  CONSTRAINT fk_new_price_user FOREIGN KEY (created_by) REFERENCES users(id)
+) ENGINE=InnoDB;

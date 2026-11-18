@@ -135,6 +135,27 @@ final class AdminController extends Controller {
         } finally { @unlink($tmp); }
         $this->intake($result['ok']?$result:null,$result['ok']?null:'The file cannot be used: '.str_replace('MISSING_COLUMNS:','missing columns: ',(string)$result['error']));
     }
+    /** LS-14 Module 6.5 (OD-2): new retail prices for the Build page, entered by an admin with the shop link and check date */
+    public function newPrices(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        global $config; $db=Database::connection($config['db']);
+        try { $rows=(new \App\Services\Admin\NewPriceReferences($db))->list(); $ready=true; } catch(\PDOException) { $rows=[]; $ready=false; }
+        $products=(new \App\Models\Product())->search();
+        $this->render('new-prices','ราคาของใหม่อ้างอิง',['rows'=>$rows,'ready'=>$ready,'products'=>$products]);
+    }
+    public function newPriceAction(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/new-prices'); }
+        global $config; $svc=new \App\Services\Admin\NewPriceReferences(Database::connection($config['db']));
+        $actor=(int)$this->user()['id'];
+        $messages=['PRODUCT_NOT_FOUND'=>'ไม่พบสินค้านี้','INVALID_PRICE'=>'ราคาต้องมากกว่า 0 และไม่เกิน 10,000,000 บาท','INVALID_URL'=>'ลิงก์ร้านต้องขึ้นต้นด้วย http:// หรือ https://','INVALID_DATE'=>'วันที่ตรวจต้องเป็นวันที่จริง ไม่เกินวันนี้','NOT_FOUND'=>'ไม่พบรายการนี้'];
+        $action=(string)($_POST['action']??'');
+        if($action==='add') { $r=$svc->add($actor,(int)($_POST['product_id']??0),(string)($_POST['price']??''),(string)($_POST['source_url']??''),(string)($_POST['checked_on']??''),(string)($_POST['note']??'')); $ok='บันทึกราคาของใหม่อ้างอิงแล้ว'; }
+        elseif($action==='delete') { $r=$svc->delete($actor,(int)($_POST['id']??0)); $ok='ลบรายการแล้ว'; }
+        else { $r=['ok'=>false,'error'=>'NOT_FOUND']; $ok=''; }
+        $this->flash($r['ok']?'success':'danger',$r['ok']?$ok:($messages[$r['error']]??'บันทึกไม่สำเร็จ'));
+        $this->redirect('/admin/new-prices');
+    }
     public function users(): void {
         if(!$this->requirePermission('users.manage')) return;
         $this->render('users','Users',['users'=>(new \App\Services\Admin\UserAdministration())->list(),'me'=>(int)$this->user()['id'],'roles'=>\App\Services\Admin\UserAdministration::ROLES]);

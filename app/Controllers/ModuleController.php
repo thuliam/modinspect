@@ -26,13 +26,24 @@ final class ModuleController extends Controller {
     public function build(string $slug=''): void {
         $result=$slug!=='' ? (new SpecBuild())->find($slug) : null;
         if($slug!=='' && !$result){ http_response_code(404);$this->view('errors/404',['title'=>'ไม่พบสเปก']);return; }
-        $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>(new Product())->search(),'result'=>$result,'errors'=>[],'old'=>[]]);
+        $products=(new Product())->search(); $catalog=$this->buildCatalog(); $newRefs=$catalog->newPriceRefs();
+        $buildStats=[]; $buildChecks=[];
+        if($result){
+            // LS-14 OD-1: the six spec-based stats and the compatibility checks of the saved parts, recomputed from today's catalog (nothing stored)
+            $byId=[]; foreach($products as $p) $byId[(int)$p['id']]=$p;
+            $byRole=[]; foreach($result['items'] as $it) if(isset($byId[(int)$it['product_id']])) $byRole[strtolower((string)$it['component_role'])]=$byId[(int)$it['product_id']];
+            $parts=$catalog->parts($byRole,$newRefs);
+            $buildStats=\App\Services\Build\BuildStats::axes($parts,$catalog->statsReference($products,$newRefs));
+            $buildChecks=\App\Services\Build\BuildCompatibility::check($parts);
+        }
+        $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>$result,'errors'=>[],'old'=>[],'newRefs'=>$newRefs,'buildStats'=>$buildStats,'buildChecks'=>$buildChecks]);
     }
+    private function buildCatalog(): \App\Services\Build\BuildCatalog { global $config; return new \App\Services\Build\BuildCatalog(\App\Core\Database::connection($config['db'])); }
     public function storeBuild(): void {
         // public POST: 30 per 10 minutes per client address (REMOTE_ADDR; behind a proxy every visitor shares the proxy address, see the runbook)
         $limit=(new \App\Services\Http\RateLimiter(ROOT_PATH.'/storage/cache/ratelimit'))->attempt('build',(string)($_SERVER['REMOTE_ADDR']??''),30,600);
         if(!$limit['allowed']) { http_response_code(429); header('Retry-After: '.$limit['retry_after']); $this->view('errors/429',['title'=>'ส่งคำขอบ่อยเกินไป','retryAfter'=>$limit['retry_after']]); return; }
-        $products=(new Product())->search();
+        $products=(new Product())->search(); $buildCatalog=$this->buildCatalog(); $newRefs=$buildCatalog->newPriceRefs();
         $budget=filter_input(INPUT_POST,'budget',FILTER_VALIDATE_FLOAT);
         $use=(string)($_POST['intended_use']??'');
         $resolution=(string)($_POST['resolution']??'');
@@ -43,14 +54,14 @@ final class ModuleController extends Controller {
         if(!in_array($use,['gaming','work','streaming','office','ai'],true)) $errors[]='กรุณาเลือกการใช้งาน';
         if(!in_array($resolution,['1080p','1440p','4k','none'],true)) $errors[]='กรุณาเลือกความละเอียด';
         if(!in_array($mix,['used','mixed','new'],true)) $errors[]='กรุณาเลือกประเภทอุปกรณ์';
-        if($errors){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>$errors,'old'=>$_POST]);return;}
+        if($errors){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>$errors,'old'=>$_POST]);return;}
         if(($_POST['action']??'')==='recommend'){
             // LS-11 A: choose parts for the visitor, show them ticked in the same form (nothing is saved until the visitor presses save)
             $preset=(string)($_POST['preset']??'balanced');
-            if(!in_array($preset,['saving','balanced','full'],true)){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>['กรุณาเลือกรูปแบบการแนะนำ'],'old'=>$_POST]);return;}
+            if(!in_array($preset,['saving','balanced','full'],true)){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>['กรุณาเลือกรูปแบบการแนะนำ'],'old'=>$_POST]);return;}
             $rec=(new SpecBuilderService())->recommend($products,(float)$budget,$use,$resolution,$preset);
-            if(!$rec['selected']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>['ข้อมูลราคายังไม่เพียงพอสำหรับแนะนำสเปก'],'old'=>$_POST]);return;}
-            $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>[],'old'=>['budget'=>$_POST['budget'],'intended_use'=>$use,'resolution'=>$resolution,'preset'=>$preset,'parts'=>$rec['selected']],'recommendation'=>$rec]);
+            if(!$rec['selected']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>['ข้อมูลราคายังไม่เพียงพอสำหรับแนะนำสเปก'],'old'=>$_POST]);return;}
+            $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>[],'old'=>['budget'=>$_POST['budget'],'intended_use'=>$use,'resolution'=>$resolution,'preset'=>$preset,'parts'=>$rec['selected']],'recommendation'=>$rec]);
             return;
         }
         $componentKeys=['cpu','motherboard','gpu','ram','storage','psu','case','cooling'];
@@ -60,10 +71,16 @@ final class ModuleController extends Controller {
             if(!isset($catalog[$selectedId])){$errors[]='ชิ้นส่วนที่เลือกไม่อยู่ในฐานข้อมูล';break;}
             if($catalog[$selectedId]!==$key){$errors[]='ชิ้นส่วนที่เลือกไม่ตรงกับหมวด '.strtoupper($key);break;}
         }
-        if($errors){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>$errors,'old'=>$_POST]);return;}
-        $plan=(new SpecBuilderService())->generate($products,(float)$budget,$use,$resolution,$mix,$selected);
-        if(!$plan['items']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>['ข้อมูลราคายังไม่เพียงพอสำหรับสร้างสเปก'],'old'=>$_POST]);return;}
-        if($plan['compatibilityError']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>null,'errors'=>[$plan['compatibilityError']],'old'=>$_POST]);return;}
+        if($errors){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>$errors,'old'=>$_POST]);return;}
+        $plan=(new SpecBuilderService())->generate($products,(float)$budget,$use,$resolution,$mix,$selected,$newRefs);
+        if(!$plan['compatibilityError']){
+            $byId=[]; foreach($products as $p) $byId[(int)$p['id']]=$p;
+            $byRole=[]; foreach(array_filter($selected) as $role=>$id) if(isset($byId[$id])) $byRole[$role]=$byId[$id];
+            $checks=\App\Services\Build\BuildCompatibility::check($buildCatalog->parts($byRole,$newRefs));
+            if(\App\Services\Build\BuildCompatibility::blocked($checks)) $plan['compatibilityError']=implode('; ',array_column(array_filter($checks,static fn($c)=>$c['status']==='fail'&&$c['blocking']),'text'));
+        }
+        if(!$plan['items']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>['ข้อมูลราคายังไม่เพียงพอสำหรับสร้างสเปก'],'old'=>$_POST]);return;}
+        if($plan['compatibilityError']){$this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'newRefs'=>$newRefs??[],'result'=>null,'errors'=>[$plan['compatibilityError']],'old'=>$_POST]);return;}
         $uuid=(new SpecBuild())->create(['budget_min'=>(float)$budget*.9,'budget_max'=>(float)$budget,'intended_use'=>$use,'target_resolution'=>$resolution,'mix_preference'=>$mix,'estimated_low'=>$plan['low'],'estimated_expected'=>$plan['expected'],'estimated_high'=>$plan['high'],'compatibility_notes'=>$plan['notes']],$plan['items']);
         $this->redirect('/build/'.$uuid);
     }

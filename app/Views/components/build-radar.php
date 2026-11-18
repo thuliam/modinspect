@@ -4,7 +4,7 @@ $axes = \App\Services\SpecRadar::axes($result['items'], (float)$result['budget_m
 $chartId = 'radar' . bin2hex(random_bytes(4));
 ?>
 <div class="build-radar">
-    <h3>ภาพรวมของสเปกนี้</h3>
+    <h3>ความน่าเชื่อถือของข้อมูลราคา</h3>
     <div class="build-radar-canvas"><canvas id="<?= $chartId ?>" role="img" aria-label="เรดาร์ <?= htmlspecialchars(implode(', ', array_map(static fn($a) => $a['label'] . ' ' . $a['value'], $axes))) ?>"></canvas></div>
     <?php if (empty($GLOBALS['mi_chartjs_loaded'])): $GLOBALS['mi_chartjs_loaded'] = true; ?>
         <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
@@ -25,5 +25,5 @@ $chartId = 'radar' . bin2hex(random_bytes(4));
             <li><span><?= htmlspecialchars($a['label']) ?></span><b><?= number_format($a['value']) ?></b><em><?= htmlspecialchars($a['note']) ?></em></li>
         <?php endforeach; ?>
     </ul>
-    <p class="meta">ยังไม่มีแกนความแรง เพราะยังไม่มีข้อมูลทดสอบประสิทธิภาพที่ตรวจแล้ว แกนทั้งสี่วัดจากข้อมูลราคาของสเปกนี้เท่านั้น</p>
+    <p class="meta">กราฟนี้วัดเฉพาะข้อมูลราคาของสเปกนี้ ไม่ใช่ความแรงของเครื่อง ค่าพลังอยู่ในกราฟด้านบน ซึ่งคำนวณจากสเปกของผู้ผลิต ไม่มีผลทดสอบจริง</p>
 </div>

@@ -24,22 +24,28 @@ $gpu4090 = $part(4, 'nvidia-geforce-rtx-4090', 'GPU', 55000, 60000, 65000);
 $ram = $part(5, 'ram-ddr4-16', 'RAM', 600, 700, 800);
 $unpriced = $part(6, 'ssd-unpriced', 'Storage', 0, 0, 0, ['median' => null, 'valid_sample_size' => 0, 'accepted_observation_count' => 0]);
 $all = [$cpu, $cpuHigh, $gpu3070, $gpu4090, $ram, $unpriced];
-$gen = static fn(array $ids, float $budget = 30000.0, string $use = 'gaming', string $res = '1080p', string $mix = 'used', ?array $catalog = null): array => (new SpecBuilderService())->generate($catalog ?? $all, $budget, $use, $res, $mix, $ids);
+$gen = static fn(array $ids, float $budget = 30000.0, string $use = 'gaming', string $res = '1080p', string $mix = 'used', ?array $catalog = null, array $refs = []): array => (new SpecBuilderService())->generate($catalog ?? $all, $budget, $use, $res, $mix, $ids, $refs);
 
 // totals are the sums of the chosen parts' low, median and high
 $r = $gen(['cpu' => 1, 'gpu' => 3, 'ram' => 5]);
 ok_se(count($r['items']) === 3 && $r['low'] === 12200.0 && $r['expected'] === 13300.0 && $r['high'] === 14400.0, 'Totals are the sums of the chosen parts: ' . json_encode([$r['low'], $r['expected'], $r['high']]));
 ok_se(str_contains($r['notes'], '฿16,700'), 'The reserve is budget minus the expected total (30,000 - 13,300): ' . $r['notes']);
 
-// a part without a market price never counts, even if its id is sent
+// LS-14 OD-2 (owner, 2026-11-18): a chosen part without a market price is KEPT in the build so the visitor can finish a whole PC, but it adds
+// nothing to the used-price totals and says "ยังไม่มีราคา" (before LS-14 it was dropped silently)
 $r = $gen(['cpu' => 1, 'storage' => 6]);
-ok_se(count($r['items']) === 1 && $r['items'][0]['component_role'] === 'cpu', 'An unpriced part is ignored even when chosen: ' . json_encode(array_column($r['items'], 'component_role')));
-// each of the three conditions on its own is enough to keep a part out (a median alone, a sample size alone, an accepted-row count alone)
+ok_se(array_column($r['items'], 'component_role') === ['cpu', 'storage'] && $r['expected'] === 4200.0, 'A chosen unpriced part stays in the build: ' . json_encode(array_column($r['items'], 'component_role')));
+ok_se((float)$r['items'][1]['price_expected'] === 0.0 && str_contains((string)$r['items'][1]['notes'], 'ยังไม่มีราคา') && str_contains($r['notes'], 'ไม่ได้รวมในยอด'), 'It adds 0 and is labelled; the total says a part was left out: ' . $r['notes']);
+// with an admin's new-price reference it uses that price, labelled, and never as a used price
+$r = $gen(['cpu' => 1, 'storage' => 6], 30000.0, 'gaming', '1080p', 'used', null, [6 => ['price' => 1990, 'source_url' => 'https://shop.example/ssd', 'checked_on' => '2026-11-18']]);
+ok_se((float)$r['items'][1]['price_expected'] === 1990.0 && str_contains((string)$r['items'][1]['notes'], 'ราคาของใหม่อ้างอิง') && (float)$r['items'][1]['confidence_score'] === 0.0, 'A new-price reference fills the price, labelled, with no confidence');
+ok_se(str_contains($r['notes'], 'ราคาของใหม่อ้างอิง'), 'The notes say the total includes a new price');
+// each of the three conditions on its own is enough to keep a part from counting as a used price (a median alone, a sample size alone, an accepted-row count alone)
 $noMedian = $part(7, 'ssd-no-median', 'Storage', 500, 0, 700, ['median' => null]);
 $noSample = $part(8, 'psu-no-sample', 'PSU', 800, 900, 1000, ['valid_sample_size' => 0]);
 $noAccepted = $part(9, 'case-no-accepted', 'Case', 600, 700, 800, ['accepted_observation_count' => 0]);
 $r = $gen(['cpu' => 1, 'storage' => 7, 'psu' => 8, 'case' => 9], 30000.0, 'gaming', '1080p', 'used', [$cpu, $noMedian, $noSample, $noAccepted]);
-ok_se(array_column($r['items'], 'component_role') === ['cpu'], 'A missing median, a zero sample size or zero accepted rows each keep a part out: ' . json_encode(array_column($r['items'], 'component_role')));
+ok_se(array_column($r['items'], 'price_expected') == [$cpu['median'], 0, 0, 0], 'A missing median, a zero sample size or zero accepted rows each keep a part from adding a price: ' . json_encode(array_column($r['items'], 'price_expected')));
 
 // nothing chosen: the default pick is the recommender's balanced plan (LS-13 S-6), no longer three hard-coded models
 $r = $gen([], 20000.0, 'gaming');
@@ -82,6 +88,7 @@ ok_se(str_contains($gen(['cpu' => 1], 30000.0, 'gaming', '1080p', 'new')['notes'
 ok_se(SpecBuilderService::isPriced($cpu) && !SpecBuilderService::isPriced($unpriced) && !SpecBuilderService::isPriced($noMedian) && !SpecBuilderService::isPriced($noSample) && !SpecBuilderService::isPriced($noAccepted), 'isPriced follows the three conditions');
 $view = (string)file_get_contents(dirname(__DIR__) . '/app/Views/modules/build.php');
 preg_match('/^<aside class="component-nav.*$/m', $view, $m);
-ok_se(isset($m[0]) && substr_count($m[0], '($slot[2]&&$pricedIn[$slot[2]]>0)?') === 3, 'The side menu decides class, label and icon by priced parts, not by the category existing');
+// LS-14 OD-2: no category is locked any more, but the "has a used price" label still comes only from isPriced (via $pricedIn); a new-price reference has its own label
+ok_se(isset($m[0]) && str_contains($m[0], '$navState($slot[2])') && str_contains($view, '$pricedIn[$k]>0?[') && str_contains($view, '[SpecBuilderService::class,') === false && str_contains($view, '\App\Services\SpecBuilderService::class,'."'isPriced'") && str_contains($view, 'มีราคาของใหม่อ้างอิง'), 'The side menu labels used prices by isPriced and new-price references separately');
 ok_se(str_contains($view, "[\\App\\Services\\SpecBuilderService::class,'isPriced']"), 'The view counts priced parts with SpecBuilderService::isPriced');
 echo "spec_builder_estimate_test: PASS\n";
