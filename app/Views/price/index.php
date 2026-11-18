@@ -1,3 +1,5 @@
+<?php // every category the catalog lists, one list for the dropdown and the chips
+$categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', 'ram' => 'RAM', 'storage' => 'Storage', 'psu' => 'PSU', 'case' => 'Case', 'cooling' => 'Cooling']; ?>
 <section class="container page mi-price-index">
     <div class="mi-page-heading">
         <span class="eyebrow">ดัชนีราคา</span>
@@ -11,15 +13,16 @@
             <input id="price-search" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="เช่น Ryzen 7 5700X3D, RTX 3070">
             <select name="category" aria-label="หมวดหมู่สินค้า">
                 <option value="">ทุกหมวด</option>
-                <?php foreach (['cpu' => 'CPU', 'gpu' => 'GPU', 'ram' => 'RAM', 'storage' => 'Storage'] as $value => $label): ?>
+                <?php foreach ($categories as $value => $label): ?>
                     <option value="<?= $value ?>" <?= $category === $value ? 'selected' : '' ?>><?= $label ?></option>
                 <?php endforeach; ?>
             </select>
             <button type="submit">ค้นหา</button>
         </div>
         <div class="mi-category-chips" aria-label="Quick category filters">
-            <a href="<?= $base ?>/price?<?= http_build_query(array_filter(['q' => $q, 'category' => 'cpu'])) ?>" class="<?= $category === 'cpu' ? 'active' : '' ?>">CPU</a>
-            <a href="<?= $base ?>/price?<?= http_build_query(array_filter(['q' => $q, 'category' => 'gpu'])) ?>" class="<?= $category === 'gpu' ? 'active' : '' ?>">GPU</a>
+            <?php foreach ($categories as $value => $label): ?>
+                <a href="<?= $base ?>/price?<?= http_build_query(array_filter(['q' => $q, 'category' => $value])) ?>" class="<?= $category === $value ? 'active' : '' ?>"><?= $label ?></a>
+            <?php endforeach; ?>
             <a href="<?= $base ?>/price<?= $q !== '' ? '?' . http_build_query(['q' => $q]) : '' ?>" class="<?= $category === null && $q === '' ? 'active' : '' ?>">ทั้งหมด</a>
         </div>
     </form>
