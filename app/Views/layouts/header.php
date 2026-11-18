@@ -57,23 +57,26 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
     <radialGradient id="miGlow" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#d4f139" stop-opacity=".35"/><stop offset="1" stop-color="#d4f139" stop-opacity="0"/></radialGradient>
 </defs></svg>
 <header class="site-header">
-    <nav class="navbar navbar-expand-lg navbar-dark container public-nav" aria-label="Primary navigation">
+    <nav class="navbar navbar-expand-xl navbar-dark container public-nav" aria-label="Primary navigation">
         <a class="navbar-brand brand" href="<?= $base ?>/" aria-label="modinpect home"><?= mi_logo($base) ?></a>
         <button class="navbar-toggler burger" type="button" data-toggle="collapse" data-target="#site-menu" aria-controls="site-menu" aria-expanded="false" aria-label="เมนู"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="site-menu">
-            <ul class="navbar-nav mx-lg-auto">
+            <ul class="navbar-nav mx-xl-auto text-nowrap">
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/') ?>" href="<?= $base ?>/">หน้าแรก</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/price') ?>" href="<?= $base ?>/price">เช็กราคา</a></li>
+                <li class="nav-item"><a class="nav-link<?= $navCurrent('/compare') ?>" href="<?= $base ?>/compare">เทียบรุ่น</a></li>
+                <li class="nav-item"><a class="nav-link<?= $navCurrent('/condition-guide') ?>" href="<?= $base ?>/condition-guide">เช็กสภาพ</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/deal-checker') ?>" href="<?= $base ?>/deal-checker">Deal Checker</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/build') ?>" href="<?= $base ?>/build">ประกอบคอม</a></li>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/methodology') ?>" href="<?= $base ?>/methodology">วิธีคำนวณ</a></li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="cat-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">หมวดหมู่</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="cat-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">เพิ่มเติม</a>
                     <div class="dropdown-menu" aria-labelledby="cat-menu">
-                        <a class="dropdown-item" href="<?= $base ?>/price?category=cpu">CPU</a>
-                        <a class="dropdown-item" href="<?= $base ?>/price?category=gpu">GPU</a>
-                        <a class="dropdown-item" href="<?= $base ?>/price?category=ram">RAM</a>
-                        <a class="dropdown-item" href="<?= $base ?>/price?category=storage">Storage</a>
+                        <a class="dropdown-item" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">หมวดหมู่</h6>
+                        <?php foreach (['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', 'ram' => 'RAM', 'storage' => 'Storage', 'psu' => 'PSU', 'case' => 'Case', 'cooling' => 'Cooling'] as $navCat => $navLabel): ?>
+                        <a class="dropdown-item" href="<?= $base ?>/price?category=<?= $navCat ?>"><?= $navLabel ?></a>
+                        <?php endforeach; ?>
                     </div>
                 </li>
             </ul>

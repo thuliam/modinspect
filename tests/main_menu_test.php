@@ -24,4 +24,12 @@ preg_match('#<h4[^>]*>เมนูหลัก</h4>\s*<ul class="footer-links">(
 ok_mm(isset($f[1]), 'The footer main-menu list is found');
 ok_mm(str_contains($f[1], 'href="<?= $base ?>/build">ประกอบคอม</a>'), 'The footer main-menu list links to /build with the same label');
 ok_mm(strpos($f[1], '/deal-checker') < strpos($f[1], '/build') && strpos($f[1], '/build') < strpos($f[1], '/methodology'), 'Footer order matches the header');
+
+// LS-14 Module 1: Compare and the condition guide are main-menu tools (they were linked from nowhere / one place); the menu collapses below 1200 px so Thai labels never break
+ok_mm(str_contains($nav, 'href="<?= $base ?>/compare">เทียบรุ่น</a>') && str_contains($nav, 'href="<?= $base ?>/condition-guide">เช็กสภาพ</a>'), 'The header menu links to Compare and the condition guide');
+ok_mm(str_contains($f[1], 'href="<?= $base ?>/compare">เทียบรุ่น</a>') && str_contains($f[1], 'href="<?= $base ?>/condition-guide">เช็กสภาพ</a>'), 'The footer main menu links to Compare and the condition guide');
+ok_mm(str_contains($nav, 'navbar-expand-xl') && str_contains($nav, 'text-nowrap'), 'The header menu expands only from 1200 px and never wraps a label');
+foreach (['cpu', 'gpu', 'motherboard', 'ram', 'storage', 'psu', 'case', 'cooling'] as $cat) {
+    ok_mm(str_contains($footer, '/price?category=' . $cat . '"'), "The footer lists the $cat category");
+}
 echo "main_menu_test: PASS\n";

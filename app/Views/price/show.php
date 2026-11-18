@@ -88,6 +88,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <?php endif; ?>
                 <div class="mi-actions">
                     <a class="btn btn-lime" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>"><i class="fas fa-balance-scale" aria-hidden="true"></i> เช็กดีลรุ่นนี้</a>
+                    <a class="btn btn-ghost" href="<?= $base ?>/compare/<?= rawurlencode((string) $product['slug']) ?>">เทียบกับรุ่นอื่น</a>
                     <a class="btn btn-ghost" href="<?= $base ?>/price">ค้นหารุ่นอื่น</a>
                     <a class="btn btn-ghost" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
                 </div>
@@ -120,6 +121,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <p>คุณยังสามารถใช้ Deal Checker เพื่อบันทึกราคาที่เจอได้ แต่ผลลัพธ์จะแจ้งอย่างตรงไปตรงมาว่ายังเทียบตลาดไม่ได้</p>
                 <div class="mi-actions">
                     <a class="button" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>">ใช้ Deal Checker</a>
+                    <a class="button ghost" href="<?= $base ?>/compare/<?= rawurlencode((string) $product['slug']) ?>">เทียบกับรุ่นอื่น</a>
                     <a class="button ghost" href="<?= $base ?>/price">ค้นหารุ่นอื่น</a>
                     <a class="button ghost" href="<?= $base ?>/methodology">อ่านวิธีคำนวณ</a>
                 </div>

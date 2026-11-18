@@ -52,6 +52,12 @@ $hasReferenceRange = (float) ($deal['suggested_price_min'] ?? 0) > 0
             <div class="mi-actions">
                 <a class="button" href="<?= $base ?>/price/<?= rawurlencode($deal['slug']) ?>">ดูหน้ารุ่นนี้</a>
                 <a class="button ghost" href="<?= $base ?>/deal-checker">เช็กดีลอื่น</a>
+                <a class="button ghost" href="<?= $base ?>/compare/<?= rawurlencode($deal['slug']) ?>">เทียบกับรุ่นอื่น</a>
+                <?php $dealGuideCat = strtolower((string) ($product['category_slug'] ?? '')); if (\App\Services\Catalog\ConditionGuide::for($dealGuideCat) !== null): ?><a class="button ghost" href="<?= $base ?>/condition-guide/<?= rawurlencode($dealGuideCat) ?>">คู่มือเช็กสภาพ</a><?php endif; ?>
+            </div>
+            <div class="mi-field mt-3">
+                <label for="deal-share">ลิงก์ผลนี้ (คัดลอกไปส่งต่อได้)</label>
+                <input id="deal-share" type="url" readonly value="<?= htmlspecialchars(rtrim((string) $base, '/') . '/deal-checker/result/' . rawurlencode((string) ($deal['uuid'] ?? ''))) ?>">
             </div>
         </article>
 

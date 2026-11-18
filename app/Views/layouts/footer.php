@@ -12,6 +12,8 @@
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>/">หน้าแรก</a></li>
                     <li><a href="<?= $base ?>/price">เช็กราคา</a></li>
+                    <li><a href="<?= $base ?>/compare">เทียบรุ่น</a></li>
+                    <li><a href="<?= $base ?>/condition-guide">เช็กสภาพ</a></li>
                     <li><a href="<?= $base ?>/deal-checker">Deal Checker</a></li>
                     <li><a href="<?= $base ?>/build">ประกอบคอม</a></li>
                     <li><a href="<?= $base ?>/methodology">วิธีคำนวณ</a></li>
@@ -22,8 +24,12 @@
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>/price?category=cpu">CPU</a></li>
                     <li><a href="<?= $base ?>/price?category=gpu">GPU</a></li>
+                    <li><a href="<?= $base ?>/price?category=motherboard">Motherboard</a></li>
                     <li><a href="<?= $base ?>/price?category=ram">RAM</a></li>
                     <li><a href="<?= $base ?>/price?category=storage">Storage</a></li>
+                    <li><a href="<?= $base ?>/price?category=psu">PSU</a></li>
+                    <li><a href="<?= $base ?>/price?category=case">Case</a></li>
+                    <li><a href="<?= $base ?>/price?category=cooling">Cooling</a></li>
                 </ul>
             </div>
             <div class="col-lg-3 mb-4">

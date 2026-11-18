@@ -39,7 +39,7 @@ body.mi .nav-icon { display: grid; place-items: center; width: 40px; height: 40p
 body.mi .nav-icon:hover { background: rgba(187, 242, 70, .14); color: var(--mi-lime); }
 body.mi .navbar-toggler { padding: 8px 10px; border: 1px solid var(--mb-line); border-radius: var(--mb-radius-sm); background: transparent; }
 body.mi .login-button { padding: 8px 14px; border: 1px solid var(--mb-line); border-radius: var(--mb-radius-sm); color: #fff; font-size: 13px; }
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
     body.mi #site-menu { padding: 12px 0 20px; }
     body.mi .nav-tools { margin-top: 12px; }}
 
@@ -413,7 +413,7 @@ body.mi .mi-go { width: 44px; height: 44px; right: 8px; bottom: 8px; background:
 body.mi .mi-go i { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--ci-border-active); border-radius: 50%; background: rgba(187, 242, 70, .08); }
 body.mi .breadcrumbs a { padding: 0 4px; }
 body.mi .breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 0 4px; }
-@media (min-width: 992px) { body.mi .navbar-expand-lg .navbar-toggler { display: none; } }
+@media (min-width: 1200px) { body.mi .navbar-expand-xl .navbar-toggler { display: none; } }
 
 /* ---- Phase F fixes: tap targets and the last contrast gaps found by the sweep ---- */
 body.mi .mi-product-card h3 a::after { content: ""; position: absolute; inset: 0; z-index: 1; }

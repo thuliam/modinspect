@@ -128,7 +128,8 @@ try {
     assert_stability(!str_contains($reviewHtml, $xss), 'Review UI must escape raw listing titles');
 
     // The review queue is a server-side DataTable: listing titles are rendered by the data endpoint, not the page shell.
-    $_GET = ['draw' => 1, 'start' => 0, 'length' => 100, 'dataset' => 'ALL', 'status' => 'pending'];
+    // filtered to this test's own source: the queue pages at 50, so with other pending rows in the test database the fixture row could fall on page 2
+    $_GET = ['draw' => 1, 'start' => 0, 'length' => 100, 'dataset' => 'ALL', 'status' => 'pending', 'source_id' => (string)$sourceId];
     ob_start();
     (new App\Controllers\AdminController())->reviewData();
     $reviewPayload = json_decode((string)ob_get_clean(), true);
