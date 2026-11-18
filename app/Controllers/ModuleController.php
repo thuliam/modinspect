@@ -10,8 +10,18 @@ use App\Services\SpecBuilderService;
 
 final class ModuleController extends Controller {
     public function compare(string $slug=''): void {
-        $model=new Product(); $primary=$model->findBySlug($slug) ?? $model->popular(1)[0] ?? null;
-        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','primary'=>$primary,'products'=>$model->search()]);
+        $model=new Product();
+        // the model in the path comes first, then the picker's m[] (a visitor may also type the query by hand); only known active slugs survive, at most four
+        $wanted=array_merge($slug!=='' ? [$slug] : [], array_values(array_filter((array)($_GET['m']??[]),'is_string')));
+        $items=[]; $chosen=[];
+        foreach($wanted as $s){
+            $s=trim($s); if($s===''||isset($chosen[$s])||count($chosen)>=\App\Services\Catalog\CompareTable::MAX_MODELS){ continue; }
+            $p=$model->findBySlug($s); if(!$p){ continue; }
+            $chosen[$s]=true;
+            $items[]=['product'=>$p,'facts'=>\App\Services\Catalog\ProductFacts::rows($p,$model->referenceSpecs((int)$p['id']),(int)date('Y'))];
+        }
+        $options=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'name'=>$p['full_name'],'category'=>$p['category_name']],$model->search());
+        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen)]);
     }
     public function build(string $slug=''): void {
         $result=$slug!=='' ? (new SpecBuild())->find($slug) : null;
