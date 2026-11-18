@@ -1,0 +1,177 @@
+name: ModInspect FTPS Deploy (manual)
+
+# Manual release of the allowlisted package (app/, config/, public/, never .env, never products-mfr) to modinspect.thuliamdev.com over explicit FTPS.
+# Default mode is "plan": builds and verifies the package and lists what WOULD be uploaded; nothing is written to the host.
+# mode "deploy" needs confirm = DEPLOY and runs only from main. It never deletes remote files, never touches .env or storage, and never touches the database.
+# Rollback: run it again with `ref` set to the previous release tag (the code is overwritten file by file; the database is not involved).
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git tag or commit to release (default main)"
+        type: string
+        required: true
+        default: main
+      mode:
+        description: "plan = list only (no writes), deploy = upload"
+        type: choice
+        required: true
+        default: plan
+        options:
+          - plan
+          - deploy
+      confirm:
+        description: "Type DEPLOY to allow mode=deploy"
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: modinspect-ftps-deploy
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Build and verify the package
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout the release ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Set up PHP 8.3 for syntax-only checks
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: none
+
+      - name: Validate PHP syntax and build the verified package
+        shell: bash
+        run: |
+          set -euo pipefail
+          php tests/syntax_check.php
+          python3 scripts/build_deployment_package.py
+          mkdir -p dist/site && unzip -q dist/modinspect-preview.zip -d dist/site
+          test -f dist/site/public/index.php
+          if find dist/site -name '.env*' | grep -q .; then echo 'package contains an .env file' >&2; exit 1; fi
+          if find dist/site -path '*products-mfr*' | grep -q .; then echo 'package contains products-mfr' >&2; exit 1; fi
+
+      - name: Keep the package for the upload job
+        uses: actions/upload-artifact@v4
+        with:
+          name: modinspect-site
+          path: dist/site
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 3
+
+  upload:
+    name: FTPS upload (plan lists only)
+    needs: package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Refuse deploy without confirmation
+        if: inputs.mode == 'deploy' && inputs.confirm != 'DEPLOY'
+        run: |
+          echo "mode=deploy needs confirm = DEPLOY" >&2
+          exit 1
+
+      - name: Download the package
+        uses: actions/download-artifact@v4
+        with:
+          name: modinspect-site
+          path: site
+
+      - name: Upload over explicit FTPS (or list only in plan mode)
+        shell: bash
+        env:
+          FTPS_USERNAME: ${{ secrets.MODINSPECT_FTPS_USERNAME }}
+          FTPS_PASSWORD: ${{ secrets.MODINSPECT_FTPS_PASSWORD }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os, ssl, sys
+          from ftplib import FTP_TLS, error_perm
+
+          host = "thuliamdev.com"
+          user = os.environ.get("FTPS_USERNAME", "")
+          password = os.environ.get("FTPS_PASSWORD", "")
+          deploy = os.environ.get("MODE") == "deploy"
+          if not user or not password:
+              sys.exit("FTPS credentials missing (repository secrets MODINSPECT_FTPS_USERNAME and MODINSPECT_FTPS_PASSWORD).")
+          if user != "modinspect@thuliamdev.com":
+              sys.exit("Unexpected FTPS account. Refusing to connect.")
+
+          files = []
+          for root, _dirs, names in os.walk("site"):
+              for n in names:
+                  full = os.path.join(root, n)
+                  files.append((full, os.path.relpath(full, "site").replace(os.sep, "/")))
+          files.sort(key=lambda f: (f[1].startswith("public/"), f[1]))   # code first, public last
+          bad = [r for _f, r in files if r.startswith(".env") or "/.env" in r or "products-mfr" in r or ".." in r.split("/")]
+          if bad:
+              sys.exit("Package contains forbidden paths: %s" % bad[:5])
+
+          s = FTP_TLS(context=ssl.create_default_context())   # certificate and hostname are verified
+          try:
+              s.connect(host=host, port=21, timeout=30)
+              s.login(user=user, passwd=password)
+              s.prot_p()
+              s.cwd("/")
+              made = set()
+              def ensure(d):
+                  parts = d.split("/")
+                  for i in range(1, len(parts) + 1):
+                      p = "/".join(parts[:i])
+                      if p and p not in made:
+                          try: s.mkd(p)
+                          except error_perm: pass   # already exists
+                          made.add(p)
+              total = 0
+              for full, rel in files:
+                  total += os.path.getsize(full)
+                  if not deploy:
+                      continue
+                  ensure(os.path.dirname(rel))
+                  with open(full, "rb") as fh:
+                      s.storbinary("STOR /" + rel, fh)
+              verb = "uploaded" if deploy else "would upload"
+              line = "%s %d files, %d bytes (no remote deletes, .env and storage untouched)" % (verb, len(files), total)
+              print(line)
+              summary = os.environ.get("GITHUB_STEP_SUMMARY")
+              if summary:
+                  with open(summary, "a", encoding="utf-8") as f:
+                      f.write("## ModInspect FTPS %s\n- %s\n" % ("deploy" if deploy else "plan", line))
+          finally:
+              s.close()
+          PY
+
+  smoke:
+    name: Smoke checks on the live host
+    needs: upload
+    if: inputs.mode == 'deploy'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check the pages (GET, the router answers HEAD with 404)
+        shell: bash
+        run: |
+          B=https://modinspect.thuliamdev.com
+          fail=0
+          for p in / /price /deal-checker /methodology /login /favicon.ico; do
+            c=$(curl -s -o /dev/null -w '%{http_code}' "$B$p"); echo "$p $c"; [ "$c" = "200" ] || fail=1
+          done
+          a=$(curl -s -o /dev/null -w '%{http_code}' "$B/admin"); echo "/admin $a"; [ "$a" = "302" ] || fail=1
+          e=$(curl -s -o /dev/null -w '%{http_code}' "$B/.env"); echo "/.env $e"; case "$e" in 403|404) ;; *) fail=1 ;; esac
+          w=$(curl -s "$B/" | grep -c 'PHP Warning\|Fatal error' || true); echo "warnings $w"; [ "$w" = "0" ] || fail=1
+          exit $fail
