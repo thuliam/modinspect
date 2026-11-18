@@ -10,7 +10,8 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
     <form class="mi-filter-card" action="<?= $base ?>/price" method="get">
         <label for="price-search">ค้นหารุ่นสินค้า</label>
         <div class="mi-filter-row">
-            <input id="price-search" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="เช่น Ryzen 7 5700X3D, RTX 3070">
+            <input id="price-search" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="เช่น Ryzen 7 5700X3D, RTX 3070" list="price-names" autocomplete="off">
+            <datalist id="price-names"><?php foreach ($names ?? [] as $n): ?><option value="<?= htmlspecialchars($n['full_name']) ?>"><?php endforeach; ?></datalist>
             <select name="category" aria-label="หมวดหมู่สินค้า">
                 <option value="">ทุกหมวด</option>
                 <?php foreach ($categories as $value => $label): ?>
@@ -38,6 +39,12 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
         <div class="mi-empty-state">
             <h2>ไม่พบสินค้าที่ค้นหา</h2>
             <p>ลองใช้ชื่อรุ่นแบบสั้น เช่น “3070”, “5700X3D” หรือเลือกหมวด CPU/GPU ก่อนค้นหาอีกครั้ง</p>
+            <?php if (!empty($didYouMean)): ?>
+            <p class="mi-trend-note">คุณหมายถึงรุ่นเหล่านี้หรือไม่:</p>
+            <div class="mi-category-chips" aria-label="คุณหมายถึง">
+                <?php foreach ($didYouMean as $dm): ?><a href="<?= $base ?>/price/<?= rawurlencode($dm['slug']) ?>"><?= htmlspecialchars($dm['full_name']) ?></a><?php endforeach; ?>
+            </div>
+            <?php endif; ?>
             <?php if (!empty($suggestions)): ?>
             <p class="mi-trend-note">รุ่นที่คนดูบ่อย:</p>
             <div class="mi-category-chips" aria-label="รุ่นแนะนำ">

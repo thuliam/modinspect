@@ -8,7 +8,10 @@ final class PriceController extends Controller {
     public function index(): void {
         $q=trim((string)($_GET['q']??'')); $category=trim((string)($_GET['category']??'')) ?: null;
         $model=new Product(); $products=$model->search($q,$category);
-        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'suggestions'=>$products ? [] : $model->popular(6)]);
+        // F-7: the names feed the browser's own autocomplete; when nothing was found, a typo-tolerant "did you mean" (suggestion only, results are never changed)
+        $names=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'full_name'=>$p['full_name']],$model->search());
+        $didYouMean=!$products && $q!=='' ? \App\Services\Search\DidYouMean::suggest($q,$names) : [];
+        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'suggestions'=>$products ? [] : $model->popular(6),'names'=>$names,'didYouMean'=>$didYouMean]);
     }
     public function show(string $slug): void {
         $model=new Product(); $product=$model->findBySlug($slug);

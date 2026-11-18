@@ -990,4 +990,5 @@ Next owner action:
 - F-4 done (2026-11-18): `App\Services\Catalog\ConditionGuide` holds the six guides, `/condition-guide[/{category}]`, link on the product page. Owner must review the Thai wording. Next: F-5 UI to the approved visual level, F-6 hide unfinished modules.
 - F-5 partial (2026-11-18): only the category-filter gap on `/price` fixed. Visual level needs an owner decision (keep the dark concept, or supply a template). Next: F-6 hide unfinished modules, F-7 typo-tolerant search.
 - F-5 closed (dark theme kept, DL-099) and F-6 done: five unfinished modules answer 404 via `ModuleController::notPublic()`. Next: F-7 typo-tolerant search and autocomplete; F-8 needs host access (owner).
+- F-7 done (2026-11-18): `App\Services\Search\DidYouMean` + datalist on `/price`. Remaining on the board: F-8 (needs HostAtom access, owner) and F-9 (owner collection).
 - 2026-11-17: owner will attach the first import file LATER ("remark ให้พี่แนบตอนหลัง"). L-1 stays WAITING and L-2 stays BLOCKED until then; do not ask again unprompted, remind once when closing a related task.
