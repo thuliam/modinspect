@@ -81,6 +81,7 @@ $commands = [
     ['label' => 'tests/spec_radar_test.php', 'args' => ['tests/spec_radar_test.php']],
     ['label' => 'tests/perf_score_csv_validator_test.php', 'args' => ['tests/perf_score_csv_validator_test.php']],
     ['label' => 'tests/hardware_reference_migration_test.php', 'args' => ['tests/hardware_reference_migration_test.php']],
+    ['label' => 'tests/cpu_gpu_spec_migration_test.php', 'args' => ['tests/cpu_gpu_spec_migration_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
     ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/product_facts_test.php', 'args' => ['tests/product_facts_test.php']],

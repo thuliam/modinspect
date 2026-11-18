@@ -55,6 +55,43 @@ $bad = [['spec_key' => 'socket', 'spec_value' => 'AM4', 'unit' => null, 'source_
 $r = array_column(F::rows($prod, $bad, 2026), null, 'label');
 ok_pf(($r['Socket']['value'] ?? '') === 'AM4' && array_key_exists('source', $r['Socket']) && $r['Socket']['source'] === null, 'A source that is not an http(s) link is not offered as a link');
 
+// F-2: CPU/GPU manufacturer figures (cores, clocks, cache, VRAM, bus) and the manufacturer launch date
+$cpuRef = static fn(string $k, string $v): array => ['spec_key' => $k, 'spec_value' => $v, 'unit' => null, 'source_url' => 'https://www.amd.com/x', 'date_checked' => '2026-11-18', 'review_status' => 'official_checked'];
+$cpuProd = ['release_year' => 2022, 'generation' => 'Zen3', 'socket' => 'AM4', 'memory_type' => null, 'tdp_watt' => null, 'form_factor' => null, 'capacity_gb' => null];
+$full = F::rows($cpuProd, [
+    $cpuRef('release_date', '2020-11-05'), $cpuRef('architecture', 'Zen 3'), $cpuRef('cores', '6'), $cpuRef('threads', '12'), $cpuRef('p_cores', '6'), $cpuRef('e_cores', '0'),
+    $cpuRef('base_ghz', '3.7'), $cpuRef('boost_ghz', '4.6'), $cpuRef('l2_mb', '3'), $cpuRef('l3_mb', '32'), $cpuRef('memory_support', 'DDR4, up to 3200 MT/s'),
+    $cpuRef('gpu_cores', '3072'), $cpuRef('boost_mhz', '2460'), $cpuRef('vram_gb', '8'), $cpuRef('bus_width_bit', '128'), $cpuRef('power_connector', '1x8-Pin'), $cpuRef('interface', 'PCIe Gen 4'),
+], 2026);
+$by3 = array_column($full, null, 'label');
+ok_pf(($by3['จำนวนคอร์']['value'] ?? '') === '6' && ($by3['จำนวนเธรด']['value'] ?? '') === '12', 'Cores and threads are shown: ' . json_encode(array_keys($by3), JSON_UNESCAPED_UNICODE));
+ok_pf(($by3['ความเร็วพื้นฐาน']['value'] ?? '') === '3.7 GHz' && ($by3['ความเร็วบูสต์สูงสุด']['value'] ?? '') === '4.6 GHz', 'Clocks carry their unit');
+ok_pf(($by3['L2 cache']['value'] ?? '') === '3 MB' && ($by3['L3 cache']['value'] ?? '') === '32 MB', 'Cache carries its unit');
+ok_pf(($by3['หน่วยความจำที่รองรับ']['value'] ?? '') === 'DDR4, up to 3200 MT/s', 'CPU memory support is shown as the manufacturer states it');
+ok_pf(($by3['VRAM']['value'] ?? '') === '8 GB' && ($by3['บัสหน่วยความจำ']['value'] ?? '') === '128 bit' && ($by3['ความเร็วบูสต์ (การ์ดจอ)']['value'] ?? '') === '2460 MHz', 'GPU VRAM, bus and boost clock carry their unit');
+ok_pf(($by3['ขั้วต่อไฟเสริม']['value'] ?? '') === '1x8-Pin' && ($by3['ช่องต่อ']['value'] ?? '') === 'PCIe Gen 4', 'Power connector and interface are shown');
+ok_pf(count(array_filter($full, static fn(array $r): bool => $r['label'] === 'สถาปัตยกรรม / เจเนอเรชัน')) === 1 && ($by3['สถาปัตยกรรม / เจเนอเรชัน']['value'] ?? '') === 'Zen 3' && ($by3['สถาปัตยกรรม / เจเนอเรชัน']['source'] ?? '') === 'https://www.amd.com/x', 'The manufacturer architecture replaces the catalog generation: one row, with its source');
+// the manufacturer launch date wins over the catalog year and the age follows it
+ok_pf(isset($by3['เปิดตัว']) && str_contains($by3['เปิดตัว']['value'], '2020-11-05') && str_contains($by3['เปิดตัว']['value'], 'อายุรุ่นประมาณ 6 ปี') && ($by3['เปิดตัว']['source'] ?? '') === 'https://www.amd.com/x' && ($by3['เปิดตัว']['checked'] ?? '') === '2026-11-18', 'The manufacturer date replaces the catalog year (2020, not 2022), the age follows it, and the source travels: ' . json_encode($by3['เปิดตัว'] ?? null, JSON_UNESCAPED_UNICODE));
+ok_pf(str_contains((string)($by3['เปิดตัว']['note'] ?? ''), 'ไม่ใช่อายุการใช้งาน'), 'The release row still says this is the model age');
+// a launch quarter works too; a date wins over a quarter
+$q = array_column(F::rows($cpuProd, [$cpuRef('release_quarter', '2023-Q1')], 2026), null, 'label');
+ok_pf(str_contains($q['เปิดตัว']['value'] ?? '', '2023') && str_contains($q['เปิดตัว']['value'], 'Q1') && str_contains($q['เปิดตัว']['value'], 'อายุรุ่นประมาณ 3 ปี'), 'A launch quarter is shown with the model age: ' . json_encode($q['เปิดตัว'] ?? null, JSON_UNESCAPED_UNICODE));
+$both = array_column(F::rows($cpuProd, [$cpuRef('release_quarter', '2023-Q1'), $cpuRef('release_date', '2021-01-02')], 2026), null, 'label');
+ok_pf(str_contains($both['เปิดตัว']['value'] ?? '', '2021-01-02') && !str_contains($both['เปิดตัว']['value'], 'Q1'), 'An exact date wins over a quarter');
+// no manufacturer date: the catalog year stays; a nonsense reference date is ignored
+$none = array_column(F::rows($cpuProd, [$cpuRef('release_date', 'soon'), $cpuRef('release_quarter', '')], 2026), null, 'label');
+ok_pf(str_contains($none['เปิดตัว']['value'] ?? '', 'เปิดตัวปี 2022') && ($none['เปิดตัว']['source'] ?? null) === null, 'A reference date that is not a date is ignored and the catalog year stays');
+$badDate = array_column(F::rows($cpuProd, [$cpuRef('release_date', '2024-13-45')], 2026), null, 'label');
+ok_pf(str_contains($badDate['เปิดตัว']['value'] ?? '', 'เปิดตัวปี 2022') && ($badDate['เปิดตัว']['source'] ?? null) === null, 'An impossible calendar date is ignored');
+$future = array_column(F::rows($cpuProd, [$cpuRef('release_date', '2031-01-01')], 2026), null, 'label');
+ok_pf(str_contains($future['เปิดตัว']['value'] ?? '', 'เปิดตัวปี 2022'), 'A manufacturer date after the current year is ignored');
+$noCatalogYear = array_column(F::rows(array_merge($cpuProd, ['release_year' => null]), [$cpuRef('release_date', '2024-01-08')], 2026), null, 'label');
+ok_pf(str_contains($noCatalogYear['เปิดตัว']['value'] ?? '', '2024-01-08') && str_contains($noCatalogYear['เปิดตัว']['value'], 'อายุรุ่นประมาณ 2 ปี'), 'The manufacturer date works when the catalog has no year');
+// a variant warning on the launch date row
+$varDate = array_column(F::rows($cpuProd, [['spec_key' => 'release_date', 'spec_value' => '2021-01-02', 'unit' => null, 'source_url' => 'https://www.nvidia.com/x', 'date_checked' => '2026-11-18', 'review_status' => 'needs_variant_review']], 2026), null, 'label');
+ok_pf(str_contains((string)($varDate['เปิดตัว']['note'] ?? ''), 'ไม่ใช่อายุการใช้งาน') && str_contains((string)($varDate['เปิดตัว']['note'] ?? ''), 'ตรวจรุ่นย่อย'), 'A variant warning is added to the release note without losing the model-age note');
+
 // page wiring
 $root = dirname(__DIR__);
 $ctl = (string)file_get_contents($root . '/app/Controllers/PriceController.php');
