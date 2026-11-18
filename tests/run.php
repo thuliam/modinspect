@@ -85,6 +85,7 @@ $commands = [
     ['label' => 'tests/compare_table_test.php', 'args' => ['tests/compare_table_test.php']],
     ['label' => 'tests/condition_guide_test.php', 'args' => ['tests/condition_guide_test.php']],
     ['label' => 'tests/price_index_categories_test.php', 'args' => ['tests/price_index_categories_test.php']],
+    ['label' => 'tests/hidden_modules_test.php', 'args' => ['tests/hidden_modules_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
     ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/product_facts_test.php', 'args' => ['tests/product_facts_test.php']],

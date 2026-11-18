@@ -82,9 +82,11 @@ final class ModuleController extends Controller {
         $this->view('modules/condition-guide',['title'=>$guide ? 'คู่มือเช็กสภาพ '.$guide['name'] : 'คู่มือเช็กสภาพก่อนซื้อ','guide'=>$guide,'categories'=>\App\Services\Catalog\ConditionGuide::categories()]);
     }
     public function guide(string $slug): void { $this->view('modules/guide',['title'=>'คู่มือซื้อคอมมือสอง','slug'=>$slug]); }
-    public function sellerDashboard(): void { $this->view('modules/seller-dashboard',['title'=>'แดชบอร์ดผู้ขาย','products'=>(new Product())->popular()]); }
-    public function localMatch(): void { $this->view('modules/local-match',['title'=>'จับคู่ตลาดใกล้คุณ','products'=>(new Product())->popular()]); }
-    public function marketReport(): void { $this->view('modules/market-report',['title'=>'รายงานตลาด','products'=>(new Product())->search()]); }
-    public function shop(): void { $d=new Dashboard();$this->view('modules/shop-dashboard',['title'=>'ภาพรวมร้านค้า (B2B)','items'=>$d->inventory()]); }
-    public function inventory(): void { $d=new Dashboard();$this->view('modules/inventory',['title'=>'จัดการสต็อก','items'=>$d->inventory()]); }
+    /** F-6: unfinished modules are not public; the views stay for later (earlier bodies are in git history), the address answers 404 like an unknown page */
+    private function notPublic(): void { http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบหน้า']); }
+    public function sellerDashboard(): void { $this->notPublic(); }
+    public function localMatch(): void { $this->notPublic(); }
+    public function marketReport(): void { $this->notPublic(); }
+    public function shop(): void { $this->notPublic(); }
+    public function inventory(): void { $this->notPublic(); }
 }

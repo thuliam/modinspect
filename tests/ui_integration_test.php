@@ -91,11 +91,6 @@ try {
         '/build' => fn() => (new ModuleController())->build(),
         '/seller-price-advisor' => fn() => (new ModuleController())->sellerAdvisor(),
         '/methodology' => fn() => (new HomeController())->methodology(),
-        '/local-match' => fn() => (new ModuleController())->localMatch(),
-        '/market-report' => fn() => (new ModuleController())->marketReport(),
-        '/seller' => fn() => (new ModuleController())->sellerDashboard(),
-        '/shop' => fn() => (new ModuleController())->shop(),
-        '/shop/inventory' => fn() => (new ModuleController())->inventory(),
         '/admin' => fn() => (new AdminController())->index(),
         '/admin/products' => fn() => (new AdminController())->products(),
         '/admin/product-aliases' => fn() => (new AdminController())->aliases(),
@@ -117,6 +112,22 @@ try {
         assert_ui($html !== '' && str_contains($html, '<main'), "Route {$path} did not render layout");
         assert_ui(!str_contains($html, 'disabled-control" href="#"'), "Route {$path} contains dead action link");
     }
+
+    // F-6: unfinished modules answer 404 like an unknown page
+    $hiddenRoutes = [
+        '/local-match' => fn() => (new ModuleController())->localMatch(),
+        '/market-report' => fn() => (new ModuleController())->marketReport(),
+        '/seller' => fn() => (new ModuleController())->sellerDashboard(),
+        '/shop' => fn() => (new ModuleController())->shop(),
+        '/shop/inventory' => fn() => (new ModuleController())->inventory(),
+    ];
+    foreach ($hiddenRoutes as $path => $handler) {
+        $_GET = [];
+        $_POST = [];
+        render_ui($handler);
+        assert_ui(http_response_code() === 404, "Hidden module {$path} must answer 404");
+    }
+    http_response_code(200);
 
     $adminController = new AdminController();
     assert_datatable(fn() => $adminController->productsData(), 'Products DataTable');
