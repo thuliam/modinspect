@@ -96,6 +96,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
     </header>
 
     <?php $facts = $facts ?? []; require ROOT_PATH . '/app/Views/components/product-facts.php'; ?>
+    <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): ?>
+        <p class="mi-trend-note"><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>">ดูคู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></a></p>
+    <?php endif; ?>
 
     <?php if (!$hasMarketSnapshot): ?>
         <div class="mi-detail-grid no-data-detail">

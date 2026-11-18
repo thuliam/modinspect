@@ -30,6 +30,8 @@ $router->post('/build',[ModuleController::class,'storeBuild']);
 $router->get('/build/{slug}',[ModuleController::class,'build']);
 $router->get('/seller-price-advisor',[ModuleController::class,'sellerAdvisor']);
 $router->get('/guide/{slug}',[ModuleController::class,'guide']);
+$router->get('/condition-guide',[ModuleController::class,'conditionGuide']);
+$router->get('/condition-guide/{category}',[ModuleController::class,'conditionGuide']);
 $router->get('/seller',[ModuleController::class,'sellerDashboard']);
 $router->get('/local-match',[ModuleController::class,'localMatch']);
 $router->get('/market-report',[ModuleController::class,'marketReport']);

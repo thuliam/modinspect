@@ -76,6 +76,11 @@ final class ModuleController extends Controller {
         }
         $this->view('modules/seller-advisor',['title'=>'ผู้ช่วยตั้งราคาขาย','products'=>$products,'result'=>$result]);
     }
+    public function conditionGuide(string $category=''): void {
+        $guide=$category!=='' ? \App\Services\Catalog\ConditionGuide::for($category) : null;
+        if($category!=='' && !$guide){ http_response_code(404);$this->view('errors/404',['title'=>'ไม่พบคู่มือ']);return; }
+        $this->view('modules/condition-guide',['title'=>$guide ? 'คู่มือเช็กสภาพ '.$guide['name'] : 'คู่มือเช็กสภาพก่อนซื้อ','guide'=>$guide,'categories'=>\App\Services\Catalog\ConditionGuide::categories()]);
+    }
     public function guide(string $slug): void { $this->view('modules/guide',['title'=>'คู่มือซื้อคอมมือสอง','slug'=>$slug]); }
     public function sellerDashboard(): void { $this->view('modules/seller-dashboard',['title'=>'แดชบอร์ดผู้ขาย','products'=>(new Product())->popular()]); }
     public function localMatch(): void { $this->view('modules/local-match',['title'=>'จับคู่ตลาดใกล้คุณ','products'=>(new Product())->popular()]); }
