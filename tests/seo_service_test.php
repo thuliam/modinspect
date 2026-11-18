@@ -21,6 +21,12 @@ $locs = array_map('strval', iterator_to_array($doc->url->loc ?? [], false));
 $all = []; foreach ($doc->url as $u) { $all[] = (string)$u->loc; }
 ok_seo($all === ['https://example.org/', 'https://example.org/price', 'https://example.org/price/a&b'], 'Private paths and duplicates are left out, ampersands survive escaping: ' . json_encode($all));
 
+// LS-14: an entry may carry its last change (snapshot time); it is written as a W3C date, a bad value is dropped, never invented
+$xml2 = S::sitemapXml('https://example.org', ['/', ['path' => '/price/x', 'lastmod' => '2026-11-17 14:05:00'], ['path' => '/price/y', 'lastmod' => 'not a date'], ['path' => '/admin', 'lastmod' => '2026-01-01']]);
+$d2 = simplexml_load_string($xml2);
+$mods = []; foreach ($d2->url as $u) { $mods[(string)$u->loc] = isset($u->lastmod) ? (string)$u->lastmod : null; }
+ok_seo($mods === ['https://example.org/' => null, 'https://example.org/price/x' => '2026-11-17', 'https://example.org/price/y' => null], 'lastmod is a date when known and absent otherwise: ' . json_encode($mods));
+
 ok_seo(S::description('default', null) === 'default' && S::description('default', '  ') === 'default', 'Blank custom text falls back to the default');
 ok_seo(S::description('d', "a   b\n<c>x</c>") === 'a b x', 'Whitespace is collapsed and tags are stripped');
 $long = S::description('d', str_repeat('ก', 400));
