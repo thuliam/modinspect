@@ -35,6 +35,17 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
 
 <?php if (count($cols) < 2): ?>
     <p class="mi-note"><i class="fas fa-info-circle" aria-hidden="true"></i> เลือกอย่างน้อย 2 รุ่นเพื่อเริ่มเปรียบเทียบ</p>
+    <?php if (!empty($pairs)): ?>
+        <div class="mi-empty-state">
+            <h2 class="h5">ลองเทียบคู่นี้</h2>
+            <p class="mi-trend-note">คู่รุ่นหมวดเดียวกันที่มีช่วงราคาแล้ว กดแล้วเห็นตารางทันที</p>
+            <div class="mi-category-chips" aria-label="คู่รุ่นแนะนำให้เปรียบเทียบ">
+                <?php foreach ($pairs as $pair): ?>
+                    <a href="<?= $base ?>/compare?<?= htmlspecialchars(http_build_query(['m' => [$pair['a']['slug'], $pair['b']['slug']]])) ?>"><i class="fas fa-exchange-alt mr-2" aria-hidden="true"></i><?= htmlspecialchars($pair['a']['name']) ?> กับ <?= htmlspecialchars($pair['b']['name']) ?></a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 <?php else: ?>
     <?php if ($table['mixed_category']): ?>
         <p class="mi-note"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> รุ่นที่เลือกอยู่คนละหมวด สเปกบางแถวจึงเทียบกันไม่ได้ ช่องที่ไม่มีข้อมูลจะเว้นว่างไว้</p>

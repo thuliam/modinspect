@@ -4,7 +4,7 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
     <div class="mi-page-heading">
         <span class="eyebrow">ดัชนีราคา</span>
         <h1>เช็กราคาคอมมือสอง</h1>
-        <p class="lead">ค้นหา CPU/GPU แล้วดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และข้อมูลล่าสุดเมื่อมีข้อมูลที่ผ่านการตรวจสอบพอ</p>
+        <p class="lead">ค้นหาชิ้นส่วนคอมทั้ง 8 หมวด แล้วดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และข้อมูลล่าสุดเมื่อมีข้อมูลที่ผ่านการตรวจสอบพอ</p>
     </div>
 
     <form class="mi-filter-card" action="<?= $base ?>/price" method="get">
@@ -20,11 +20,24 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
             </select>
             <button type="submit">ค้นหา</button>
         </div>
+        <?php $keep = array_filter(['sort' => $sort ?? '', 'priced' => !empty($pricedOnly) ? '1' : '']); ?>
         <div class="mi-category-chips" aria-label="Quick category filters">
             <?php foreach ($categories as $value => $label): ?>
-                <a href="<?= $base ?>/price?<?= http_build_query(array_filter(['q' => $q, 'category' => $value])) ?>" class="<?= $category === $value ? 'active' : '' ?>"><?= $label ?></a>
+                <a href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $value]) + $keep)) ?>" class="<?= $category === $value ? 'active' : '' ?>"><?= $label ?></a>
             <?php endforeach; ?>
-            <a href="<?= $base ?>/price<?= $q !== '' ? '?' . http_build_query(['q' => $q]) : '' ?>" class="<?= $category === null && $q === '' ? 'active' : '' ?>">ทั้งหมด</a>
+            <a href="<?= $base ?>/price<?= ($q !== '' || $keep) ? '?' . htmlspecialchars(http_build_query(array_filter(['q' => $q]) + $keep)) : '' ?>" class="<?= $category === null && $q === '' ? 'active' : '' ?>">ทั้งหมด</a>
+        </div>
+        <div class="form-inline mt-3">
+            <label class="mr-2 mb-0" for="price-sort">เรียงตาม</label>
+            <select id="price-sort" name="sort" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit>
+                <?php foreach (\App\Services\Catalog\PriceList::SORTS as $value => $label): ?>
+                    <option value="<?= htmlspecialchars($value) ?>"<?= ($sort ?? '') === $value ? ' selected' : '' ?>><?= htmlspecialchars($label) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="price-priced" name="priced" value="1"<?= !empty($pricedOnly) ? ' checked' : '' ?> data-autosubmit>
+                <label class="custom-control-label" for="price-priced">เฉพาะรุ่นที่มีช่วงราคาแล้ว</label>
+            </div>
         </div>
     </form>
 

@@ -8,10 +8,14 @@ final class PriceController extends Controller {
     public function index(): void {
         $q=trim((string)($_GET['q']??'')); $category=trim((string)($_GET['category']??'')) ?: null;
         $model=new Product(); $products=$model->search($q,$category);
+        // LS-16 U-1: order and "priced only" are display choices on the same rows (no new query); an unknown key falls back to the catalog order
+        $sort=(string)($_GET['sort']??''); if(!isset(\App\Services\Catalog\PriceList::SORTS[$sort])){ $sort=''; }
+        $pricedOnly=($_GET['priced']??'')==='1';
+        $products=\App\Services\Catalog\PriceList::apply($products,$sort,$pricedOnly);
         // F-7: the names feed the browser's own autocomplete; when nothing was found, a typo-tolerant "did you mean" (suggestion only, results are never changed)
         $names=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'full_name'=>$p['full_name']],$model->search());
         $didYouMean=!$products && $q!=='' ? \App\Services\Search\DidYouMean::suggest($q,$names) : [];
-        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'suggestions'=>$products ? [] : $model->popular(6),'names'=>$names,'didYouMean'=>$didYouMean]);
+        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'sort'=>$sort,'pricedOnly'=>$pricedOnly,'suggestions'=>$products ? [] : $model->popular(6),'names'=>$names,'didYouMean'=>$didYouMean]);
     }
     public function show(string $slug): void {
         $model=new Product(); $product=$model->findBySlug($slug);

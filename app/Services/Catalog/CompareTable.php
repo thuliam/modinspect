@@ -13,6 +13,30 @@ final class CompareTable
     public const MAX_MODELS = 4;
 
     /**
+     * LS-16 U-2: ready-made pairs for the empty Compare page, so a first visit shows a table in one tap. Two priced models of the SAME category
+     * (a cross-category table is mostly gaps), taken in the catalog's own order (popular first), at most one pair per category. Pure.
+     * @param list<array> $products Product::search rows
+     * @return list<array{category:string,a:array{slug:string,name:string},b:array{slug:string,name:string}}>
+     */
+    public static function suggestPairs(array $products, int $max = 4): array
+    {
+        $byCat = [];
+        foreach ($products as $p) {
+            if (!PriceList::isPriced($p)) { continue; }
+            $cat = (string)($p['category_name'] ?? '');
+            if ($cat === '' || count($byCat[$cat] ?? []) >= 2) { continue; }
+            $byCat[$cat][] = ['slug' => (string)$p['slug'], 'name' => (string)($p['full_name'] ?? $p['slug'])];
+        }
+        $out = [];
+        foreach ($byCat as $cat => $two) {
+            if (count($two) < 2) { continue; }
+            $out[] = ['category' => $cat, 'a' => $two[0], 'b' => $two[1]];
+            if (count($out) >= $max) { break; }
+        }
+        return $out;
+    }
+
+    /**
      * @param list<array{product:array<string,mixed>,facts:list<array<string,mixed>>}> $items
      * @return array{columns:list<array<string,mixed>>,rows:list<array<string,mixed>>,mixed_category:bool,any_priced:bool}
      */

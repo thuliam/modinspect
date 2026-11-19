@@ -80,4 +80,7 @@ jQuery(function ($) {
         $(this).addClass('active').siblings().removeClass('active');
         $('.mi-featured > [data-cat]').each(function () { $(this).toggle(f === 'all' || $(this).data('cat') === f); });
     });
+
+    /* LS-16: a sort or filter control marked data-autosubmit applies at once (the form still has a submit button when scripts are off) */
+    $('[data-autosubmit]').on('change', function () { this.form.submit(); });
 });

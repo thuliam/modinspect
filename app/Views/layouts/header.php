@@ -31,6 +31,11 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 <meta property="og:title" content="<?= htmlspecialchars($seoTitle) ?>">
 <meta property="og:description" content="<?= htmlspecialchars($seoDescription) ?>">
 <meta property="og:url" content="<?= htmlspecialchars($seoUrl) ?>">
+<?php // LS-16 U-4: link previews in chat apps get the brand hero picture (an absolute URL, as Open Graph requires) ?>
+<meta property="og:image" content="<?= htmlspecialchars(rtrim((string) $config['base_url'], '/') . '/assets/brand/hero-hardware.png') ?>">
+<meta property="og:image:width" content="1026">
+<meta property="og:image:height" content="436">
+<meta name="twitter:card" content="summary_large_image">
 <title><?= htmlspecialchars($title ?? $config['name']) ?> · <?= htmlspecialchars($config['name']) ?></title>
 <link rel="icon" href="<?= $base ?>/favicon.ico?v=<?= (int) @filemtime(ROOT_PATH . '/public/favicon.ico') ?>" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="<?= $base ?>/assets/brand/favicon-32x32.png?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/brand/favicon-32x32.png') ?>">

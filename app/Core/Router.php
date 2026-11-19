@@ -12,6 +12,8 @@ final class Router
         $this->routes[] = compact('method', 'handler') + ['pattern' => '#^' . $pattern . '/?$#'];
     }
     public function dispatch(string $method, string $uri): void {
+        // LS-16: HEAD is answered like GET (PHP's SAPI drops the body), so uptime monitors and link checkers do not see every page as missing
+        if ($method === 'HEAD') { $method = 'GET'; }
         foreach ($this->routes as $route) {
             if ($route['method'] !== $method || !preg_match($route['pattern'], $uri, $matches)) continue;
             $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);

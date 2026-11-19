@@ -105,6 +105,7 @@ $commands = [
     ['label' => 'tests/build_preview_test.php', 'args' => ['tests/build_preview_test.php']],
     ['label' => 'tests/build_preview_http_test.php', 'args' => ['tests/build_preview_http_test.php']],
     ['label' => 'tests/build_page_wiring_test.php', 'args' => ['tests/build_page_wiring_test.php']],
+    ['label' => 'tests/ls16_review_fixes_test.php', 'args' => ['tests/ls16_review_fixes_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
     ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/product_facts_test.php', 'args' => ['tests/product_facts_test.php']],

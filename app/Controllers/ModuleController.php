@@ -20,8 +20,9 @@ final class ModuleController extends Controller {
             $chosen[$s]=true;
             $items[]=['product'=>$p,'facts'=>\App\Services\Catalog\ProductFacts::rows($p,$model->referenceSpecs((int)$p['id']),(int)date('Y'))];
         }
-        $options=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'name'=>$p['full_name'],'category'=>$p['category_name']],$model->search());
-        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen)]);
+        $all=$model->search();
+        $options=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'name'=>$p['full_name'],'category'=>$p['category_name']],$all);
+        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen),'pairs'=>\App\Services\Catalog\CompareTable::suggestPairs($all)]);
     }
     public function build(string $slug=''): void {
         $result=$slug!=='' ? (new SpecBuild())->find($slug) : null;
