@@ -92,3 +92,21 @@ A row from a source listed in `App\Services\Pricing\NewPriceReferenceSources::KE
 ## Human-recorded evidence and capture method (DL-079, 2026-11-17)
 
 `capture_method` on an import record says who made the evidence. `owner_transcription`: the importer freezes the owner's row (canonical JSON + SHA-256, evidence typed `snippet`, evidence level 3); provenance counts it as listing level only for allow-listed marketplaces (`CaptureMethod::OWNER_DOMAINS`) and never for a personal profile link. `machine_capture` (agent route) must bring its own snapshot and hash. `SnapshotConfidenceService` adds the cap `HUMAN_RECORDED_EVIDENCE_CAP` (79) when every included row is owner text or an owner transcription; one machine capture in the sample removes it. `OWNER_TEXT_ONLY_CAP` (59) is unchanged. The method version stays `confidence-v2` because the cap does not affect any data without the marker (no existing snapshot changes).
+
+## Deal Checker verdict tiers and the "why" (DL-111, 2026-11-19)
+
+The stored result stays one of `insufficient`, `below_range`, `in_range`, `above_range` (a database ENUM, so no migration). Until LS-20 every price above the top of the range was one bucket and the page always called it "slightly above" (ราคา ฿9,200 against a ฿1,970 to ฿2,240 range included). `App\Services\PriceEngine::tier()` now adds a severity tier for the two outside cases: how far the price is outside the edge it crossed, as a share of that edge.
+
+| Tier | Distance outside the range | Wording (above / below) |
+|---|---|---|
+| slight | up to 15 % | สูงกว่า / ต่ำกว่าช่วงที่พบเล็กน้อย |
+| clear | over 15 % up to 50 % | สูงกว่า / ต่ำกว่าช่วงที่พบ |
+| far | over 50 % | สูงกว่า / ต่ำกว่าช่วงที่พบมาก |
+
+The thresholds are presentation thresholds (constants `PriceEngine::SLIGHT` and `FAR`), not a valuation. `App\Services\DealExplanation` builds the "ที่มาของผลนี้" block from the saved deal row, so old saved results get it too:
+
+- the gap from the median and from the crossed edge, in baht and percent (for example +฿7,010 (+320%) and +฿6,960 (+311%));
+- the factors the visitor entered (receipt, warranty months, condition, box, test result), split into what exists and what is missing, worded for the direction: above the range they are "factors that may support a price above the market" and what is missing is "ask for this evidence"; below the range the missing items are "may be the reason the price is low";
+- a statement that the factors are not turned into money. The system has no data that values a receipt, a warranty or a condition, so for a far gap it does not say the difference is reasonable; it points at the two usual checks (is it the right model and size, what does the seller say).
+
+It never changes the verdict label, never reads or writes a price snapshot, and uses neutral wording only (`tests/deal_explanation_test.php` also checks the earlier banned words).

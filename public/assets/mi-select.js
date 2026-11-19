@@ -1,15 +1,20 @@
 /* LS-18 (owner request): every dropdown on the public site and in Admin uses Select2 4.0.13 (self-hosted, admin/vendor/select2).
    Glue only: one place for both layouts. A select keeps working without scripts (Select2 enhances the real <select>, the form posts it as before).
    Opt out with data-native (or a .js-select2-manual select that a page initialises itself, e.g. Compare); DataTables' own "show N rows" stays native.
-   Long lists get a search box, short ones (8 options or fewer) do not. data-width="auto" keeps an inline control narrow. */
+   Long lists get a search box, short ones (8 options or fewer) do not. data-width="auto" keeps an inline control narrow.
+   data-combo makes it a combo box (suggestions + any typed text, search box always shown); data-placeholder and data-allow-clear need an empty first <option>. */
 jQuery(function ($) {
     if (!$.fn.select2) { return; }
     window.miSelect2Options = function ($s, extra) {
         var $modal = $s.closest('.modal');
+        var tags = $s.is('[data-combo]');   // suggestions plus any typed text (search boxes, free values); the typed text is submitted as the value
         return $.extend({
             language: 'th',
             width: $s.data('width') || '100%',
-            minimumResultsForSearch: $s.find('option').length > 8 ? 0 : Infinity,
+            minimumResultsForSearch: (tags || $s.find('option').length > 8) ? 0 : Infinity,
+            tags: tags,
+            placeholder: $s.data('placeholder') || undefined,
+            allowClear: $s.is('[data-allow-clear]'),
             dropdownParent: $modal.length ? $modal : $(document.body)
         }, extra || {});
     };

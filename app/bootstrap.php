@@ -46,7 +46,10 @@ if (PHP_SAPI !== 'cli') {
                 http_response_code(500);
                 header('Content-Type: text/html; charset=utf-8');
             }
-            echo '<!doctype html><meta charset="utf-8"><title>ระบบขัดข้อง</title><p>ระบบขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง</p>';
+            // LS-20 C3: standalone on purpose (the database or a view may be what failed): static text, brand colours, a way on. No variable reaches the page.
+            echo '<!doctype html><html lang="th"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>ระบบขัดข้อง</title>'
+                . '<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0a0d14;color:#f1f5f9;font:16px/1.6 system-ui,"Segoe UI",Tahoma,sans-serif;padding:24px;box-sizing:border-box}main{max-width:440px}h1{font-size:24px;margin:0 0 8px}p{color:#94a3b8;margin:0 0 20px}a{display:inline-block;min-height:44px;line-height:44px;padding:0 20px;border-radius:10px;background:#bbf246;color:#0a0d14;font-weight:600;text-decoration:none}a:focus{outline:3px solid #f1f5f9;outline-offset:2px}</style>'
+                . '<main><h1>ระบบขัดข้อง</h1><p>ระบบขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้งในอีกสักครู่ ข้อมูลที่คุณกรอกไว้ไม่ได้ถูกบันทึก</p><a href="./">กลับหน้าแรก</a></main>';
         });
     }
     if (!headers_sent()) {

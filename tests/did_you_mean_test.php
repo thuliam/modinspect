@@ -47,11 +47,12 @@ ok_dm(count(D::suggest('ryzn chip', $many, 5)) === 5, 'At most the requested num
 $o = D::suggest('ryzn', [['slug' => 'far', 'full_name' => 'Ryzen Extra Long Name'], ['slug' => 'near', 'full_name' => 'Ryzen']]);
 ok_dm($slugs($o) === ['near', 'far'], 'Closer and shorter names come first: ' . json_encode($slugs($o)));
 
-// wiring: only when nothing was found, suggestion list and native datalist (no script)
+// wiring: only when nothing was found, suggestion list and the Select2 combo box (no script of its own)
 $root = dirname(__DIR__);
 $ctl = (string)file_get_contents($root . '/app/Controllers/PriceController.php');
 ok_dm(str_contains($ctl, 'DidYouMean::suggest') && preg_match('/!\$products\s*&&\s*\$q\s*!==\s*\'\'/', $ctl) === 1, 'The controller suggests only when the search is empty');
 $view = (string)file_get_contents($root . '/app/Views/price/index.php');
-ok_dm(str_contains($view, '<datalist') && str_contains($view, 'list="price-names"') && str_contains($view, 'htmlspecialchars'), 'Autocomplete is a native datalist and values are escaped');
+// LS-20 (owner: every dropdown is Select2): the suggestions are the options of a Select2 combo box (any text allowed), values escaped, no script of its own
+ok_dm(str_contains($view, '<select id="price-search" name="q"') && str_contains($view, 'data-combo') && !str_contains($view, '<datalist') && str_contains($view, 'htmlspecialchars($n[\'full_name\'])'), 'Autocomplete is a Select2 combo box and values are escaped');
 ok_dm(!str_contains($view, '<script'), 'No script was added for autocomplete');
 echo "did_you_mean_test: PASS\n";

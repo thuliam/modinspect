@@ -28,7 +28,7 @@ $check = static function (string $label, bool $ok, string $detail = '') use (&$f
     if ($ok) { $pass++; echo "  ok    $label\n"; } else { $fail++; echo "  FAIL  $label" . ($detail !== '' ? " ($detail)" : '') . "\n"; }
 };
 
-foreach (['/', '/price', '/compare', '/condition-guide', '/deal-checker', '/build', '/methodology', '/login', '/robots.txt', '/sitemap.xml', '/favicon.ico'] as $p) {
+foreach (['/', '/price', '/compare', '/condition-guide', '/deal-checker', '/build', '/methodology', '/login', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon.ico'] as $p) {
     $r = smoke_get($base . $p);
     $check("GET $p is 200", $r['code'] === 200, 'got ' . $r['code']);
     if (str_contains((string)$r['body'], '<html') || str_contains((string)$r['body'], '<!doctype')) {
@@ -52,7 +52,8 @@ $check('the sitemap is XML and lists no private path', str_starts_with(trim($sit
 if ($links) {
     // same-origin links only, from the key pages and the sitemap; private areas, sign-in and POST-only paths are skipped, at most 400 URLs
     $basePath = (string)parse_url($base, PHP_URL_PATH); $origin = substr($base, 0, strlen($base) - strlen($basePath));
-    $todo = []; $skip = '#/(admin|account|login|logout|seller)(/|$|\?)|\.(png|jpe?g|webp|svg|ico|css|js|woff2?|pdf)(\?|$)#i';
+    // non-page files (manifest, sitemap, robots) are checked by name in the page list above; the crawler follows pages only
+    $todo = []; $skip = '#/(admin|account|login|logout|seller)(/|$|\?)|\.(png|jpe?g|webp|svg|ico|css|js|woff2?|pdf|webmanifest|xml|txt)(\?|$)#i';
     $add = static function (string $href) use (&$todo, $base, $basePath, $origin, $skip): void {
         $href = html_entity_decode(trim($href)); if ($href === '' || $href[0] === '#' || preg_match('#^(mailto|tel|javascript):#i', $href)) { return; }
         if (str_starts_with($href, '/')) { $href = $origin . $href; }

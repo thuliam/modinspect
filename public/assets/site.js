@@ -84,6 +84,9 @@ jQuery(function ($) {
     /* LS-16: a sort or filter control marked data-autosubmit applies at once (the form still has a submit button when scripts are off) */
     $('[data-autosubmit]').on('change', function () { this.form.submit(); });
 
+    /* LS-20 B1: a read-only field marked data-select-on-focus selects its text when focused (was an inline onfocus handler) */
+    $(document).on('focus', '[data-select-on-focus]', function () { this.select(); });
+
     /* LS-19 B3: "/" jumps to the search box (or opens the price index, which has one); never while typing in a field or with a modifier key */
     $(document).on('keydown', function (e) {
         if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || $(e.target).is('input, textarea, select, [contenteditable], .select2-search__field')) { return; }

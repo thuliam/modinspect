@@ -38,7 +38,7 @@ $thumb = static function (array $p, string $role) use ($base, $roleIcon): string
                     </div>
                     <div class="form-group">
                         <label for="build-share">ลิงก์สเปกนี้ (คัดลอกไปส่งต่อได้)</label>
-                        <input id="build-share" class="form-control h-auto" type="url" readonly value="<?= htmlspecialchars(rtrim((string) $base, '/') . '/build/' . rawurlencode((string) $result['uuid'])) ?>" onfocus="this.select()">
+                        <input id="build-share" class="form-control h-auto" type="url" readonly data-select-on-focus value="<?= htmlspecialchars(rtrim((string) $base, '/') . '/build/' . rawurlencode((string) $result['uuid'])) ?>">
                     </div>
                     <div class="row mi-saved-grid">
                         <?php foreach ($preview['items'] as $it): if (!$it['chosen']) { continue; } ?>

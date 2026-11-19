@@ -26,6 +26,10 @@
                     ] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (x) { return x.dataset.label + ': ฿' + Math.round(x.parsed.y).toLocaleString('th-TH') + (x.datasetIndex === 2 ? ' (' + rows[x.dataIndex].n + ' ตัวอย่าง)' : ''); } } } }, scales: { y: { ticks: { callback: function (v) { return '฿' + v.toLocaleString('th-TH'); } } } } }
                 });
+            } else if (cv.getAttribute('data-chart') === 'history') {
+                var hc = cv.getAttribute('data-color') || c;   // Admin snapshot history: median at each calculation
+                new Chart(cv, { type: 'line', data: { labels: rows.map(function (r) { return r.t; }), datasets: [{ data: rows.map(function (r) { return r.m; }), borderColor: hc, backgroundColor: hc, borderWidth: 2, pointRadius: 4, tension: .2 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (x) { return '฿' + Math.round(x.parsed.y).toLocaleString() + ' · ' + rows[x.dataIndex].n + ' samples'; } } } }, scales: { y: { ticks: { callback: function (v) { return '฿' + Number(v).toLocaleString(); } } } } } });
             }
         });
     }

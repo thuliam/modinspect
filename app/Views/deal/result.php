@@ -1,14 +1,12 @@
 <?php
-$labels = [
-    'below_range' => 'ต่ำกว่าช่วงราคาที่พบ',
-    'in_range' => 'อยู่ในช่วงตลาด',
-    'above_range' => 'สูงกว่าช่วงที่พบเล็กน้อย',
-    'premium' => 'ตั้งราคาสูงกว่าช่วงตลาดมาก',
-    'insufficient' => 'ข้อมูลยังไม่เพียงพอ',
-];
-$tones = ['below_range' => 'warn', 'in_range' => 'ok', 'above_range' => 'warn', 'premium' => 'bad', 'insufficient' => 'neutral'];
-$resultLabel = $labels[$deal['result_label']] ?? $deal['result_label'];
-$tone = $tones[$deal['result_label']] ?? 'neutral';
+// LS-20: the stored label is only the direction (below / in / above / insufficient); the wording and tone come from the severity tier and the saved row,
+// so a price far above the range is no longer called "slightly above" (old saved results get the right wording too)
+$labels = ['below_range' => 'ต่ำกว่าช่วงราคาที่พบ', 'in_range' => 'อยู่ในช่วงตลาด', 'above_range' => 'สูงกว่าช่วงที่พบ', 'insufficient' => 'ข้อมูลยังไม่เพียงพอ'];
+$tones = ['below_range' => 'warn', 'in_range' => 'ok', 'above_range' => 'warn', 'insufficient' => 'neutral'];
+$explain = \App\Services\DealExplanation::build($deal);
+$resultLabel = ($explain['label'] ?? null) ?: ($labels[$deal['result_label']] ?? $deal['result_label']);
+$tone = $explain['tone'] ?? ($tones[$deal['result_label']] ?? 'neutral');
+$headline = ($explain['headline'] ?? null) ?: $deal['recommendation'];
 $hasReferenceRange = (float) ($deal['suggested_price_min'] ?? 0) > 0
     && (float) ($deal['suggested_price_max'] ?? 0) > 0;
 ?>
@@ -28,7 +26,7 @@ $hasReferenceRange = (float) ($deal['suggested_price_min'] ?? 0) > 0
                 <span class="mi-verdict mi-verdict-<?= $tone ?>"><?= htmlspecialchars($resultLabel) ?></span>
             </div>
 
-            <p class="mi-result-text"><?= htmlspecialchars($deal['recommendation']) ?></p>
+            <p class="mi-result-text"><?= htmlspecialchars($headline) ?></p>
 
             <?php if ($hasReferenceRange): ?>
                 <div class="mi-compare">
@@ -42,6 +40,26 @@ $hasReferenceRange = (float) ($deal['suggested_price_min'] ?? 0) > 0
                         <strong>ยังไม่มีช่วงราคาตลาดของรุ่นนี้</strong>
                         <span>ระบบจะไม่สร้างช่วงราคาจากข้อมูลที่ยังไม่ผ่านการตรวจสอบ เมื่อมีข้อมูลที่ผ่านการตรวจสอบแล้ว ผลเช็กดีลจะแสดงตำแหน่งราคาของคุณที่นี่</span>
                     </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($explain): ?>
+                <div class="mi-deal-why mt-3" id="deal-why">
+                    <h2 class="h5">ที่มาของผลนี้</h2>
+                    <?php if ($explain['numbers']): ?>
+                        <ul class="list-unstyled mb-3">
+                            <?php foreach ($explain['numbers'] as $row): ?><li class="mb-1"><span class="text-muted"><?= htmlspecialchars($row['label']) ?></span> <b><?= htmlspecialchars($row['value']) ?></b></li><?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                    <?php if ($explain['have'] && $explain['have_heading']): ?>
+                        <h3 class="h6 mb-2"><?= htmlspecialchars($explain['have_heading']) ?></h3>
+                        <ul class="list-unstyled mb-3"><?php foreach ($explain['have'] as $t): ?><li class="mb-1"><i class="fas fa-check-circle text-success mr-2" aria-hidden="true"></i><?= htmlspecialchars($t) ?></li><?php endforeach; ?></ul>
+                    <?php endif; ?>
+                    <?php if ($explain['lack'] && $explain['lack_heading']): ?>
+                        <h3 class="h6 mb-2"><?= htmlspecialchars($explain['lack_heading']) ?></h3>
+                        <ul class="list-unstyled mb-3"><?php foreach ($explain['lack'] as $t): ?><li class="mb-1"><i class="fas fa-minus-circle text-warning mr-2" aria-hidden="true"></i><?= htmlspecialchars($t) ?></li><?php endforeach; ?></ul>
+                    <?php endif; ?>
+                    <?php foreach ($explain['notes'] as $t): ?><p class="mi-trend-note mb-2"><?= htmlspecialchars($t) ?></p><?php endforeach; ?>
                 </div>
             <?php endif; ?>
 

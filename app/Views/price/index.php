@@ -10,8 +10,13 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
     <form class="mi-filter-card" action="<?= $base ?>/price" method="get">
         <label for="price-search">ค้นหารุ่นสินค้า</label>
         <div class="mi-filter-row">
-            <input id="price-search" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="เช่น Ryzen 7 5700X3D, RTX 3070" list="price-names" autocomplete="off">
-            <datalist id="price-names"><?php foreach ($names ?? [] as $n): ?><option value="<?= htmlspecialchars($n['full_name']) ?>"><?php endforeach; ?></datalist>
+            <?php // LS-20: Select2 in tags mode (model names as suggestions, any text allowed); choosing or typing applies the search at once (data-autosubmit)
+            $qKnown = false; foreach ($names ?? [] as $n) { if ((string) $n['full_name'] === $q) { $qKnown = true; break; } } ?>
+            <select id="price-search" name="q" class="form-control h-auto" data-combo data-allow-clear="true" data-autosubmit data-placeholder="เช่น Ryzen 7 5700X3D, RTX 3070">
+                <option value=""></option>
+                <?php if ($q !== '' && !$qKnown): ?><option value="<?= htmlspecialchars($q) ?>" selected><?= htmlspecialchars($q) ?></option><?php endif; ?>
+                <?php foreach ($names ?? [] as $n): ?><option value="<?= htmlspecialchars($n['full_name']) ?>"<?= (string) $n['full_name'] === $q ? ' selected' : '' ?>><?= htmlspecialchars($n['full_name']) ?></option><?php endforeach; ?>
+            </select>
             <select name="category" aria-label="หมวดหมู่สินค้า">
                 <option value="">ทุกหมวด</option>
                 <?php foreach ($categories as $value => $label): ?>

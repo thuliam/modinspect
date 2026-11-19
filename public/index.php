@@ -17,6 +17,7 @@ $router->get('/',[HomeController::class,'index']);
 $router->get('/health',[HealthController::class,'check']);
 $router->get('/robots.txt',[SeoController::class,'robots']);
 $router->get('/sitemap.xml',[SeoController::class,'sitemap']);
+$router->get('/manifest.webmanifest',[SeoController::class,'manifest']);
 $router->get('/price',[PriceController::class,'index']);
 $router->get('/price/{slug}',[PriceController::class,'show']);
 $router->get('/deal-checker',[DealCheckerController::class,'form']);

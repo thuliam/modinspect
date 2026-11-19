@@ -47,6 +47,7 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 <link rel="icon" type="image/png" sizes="16x16" href="<?= $base ?>/assets/brand/favicon-16x16.png?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/brand/favicon-16x16.png') ?>">
 <link rel="apple-touch-icon" sizes="180x180" href="<?= $base ?>/assets/brand/apple-touch-icon.png?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/brand/apple-touch-icon.png') ?>">
 <meta name="theme-color" content="#0a0d14">
+<link rel="manifest" href="<?= $base ?>/manifest.webmanifest">
 <link rel="preload" href="<?= $base ?>/assets/fonts/PlusJakartaSans-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="<?= $base ?>/assets/fonts/PlusJakartaSans-800.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="<?= $base ?>/assets/fonts/Prompt-Thai-600.woff2" as="font" type="font/woff2" crossorigin>

@@ -90,7 +90,8 @@ final class AdminController extends Controller {
     }
     public function unresolved(): void {
         if(!$this->requirePermission('products.view')) return;
-        $status=in_array($_GET['status']??'open',['open','stale','decided','all'],true) ? (string)$_GET['status'] : 'open';
+        // LS-20 C4: read the value once; the old form read $_GET['status'] again after testing its default, so a missing parameter gave '' and a PHP warning instead of 'open'
+        $status=(string)($_GET['status'] ?? 'open'); if(!in_array($status,['open','stale','decided','all'],true)){ $status='open'; }
         $page=max(1,(int)($_GET['page']??1)); $per=25;
         $svc=new \App\Services\Admin\UnresolvedListingQueue();
         $this->render('unresolved','Unresolved listings',['rows'=>$svc->page($per,($page-1)*$per,$status),'total'=>$svc->count($status),'status'=>$status,'page'=>$page,'per'=>$per,
@@ -402,7 +403,7 @@ final class AdminController extends Controller {
         $id=filter_input(INPUT_POST,'article_id',FILTER_VALIDATE_INT) ?: null;
         $title=trim((string)($_POST['title'] ?? ''));
         $slug=$this->slug(trim((string)($_POST['slug'] ?? $title)));
-        $status=in_array((string)($_POST['status'] ?? 'draft'),['draft','published','archived'],true) ? (string)$_POST['status'] : 'draft';
+        $status=(string)($_POST['status'] ?? 'draft'); if(!in_array($status,['draft','published','archived'],true)){ $status='draft'; }   // LS-20 C4: same fix, a missing status used to be saved as ''
         $body=trim((string)($_POST['body'] ?? ''));
         if($title==='' || $slug==='' || $body===''){
             $this->flash('danger','Article requires title, slug, and body.');

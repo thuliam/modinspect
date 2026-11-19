@@ -323,24 +323,12 @@ $evidenceFields = $evidenceMetadata((string)($o['excerpt'] ?? ''));
                             </select>
                         </label>
                         <label>Corrected value
-                            <input name="corrected_value" list="review-correction-values" required>
+                            <select name="corrected_value" required data-combo data-placeholder="Pick a value or type one">
+                                <option value=""></option>
+                                <?php foreach ($products as $product): ?><option value="<?= (int)$product['id'] ?>"><?= htmlspecialchars((string)$product['full_name']) ?> (#<?= (int)$product['id'] ?>)</option><?php endforeach; ?>
+                                <?php foreach (['asking', 'sold', 'trade_in', 'new', 'single_item', 'bundle', 'whole_pc', 'wanted', 'unknown', 'like_new', 'good', 'fair', 'poor'] as $v): ?><option value="<?= $v ?>"><?= $v ?></option><?php endforeach; ?>
+                            </select>
                         </label>
-                        <datalist id="review-correction-values">
-                            <?php foreach ($products as $product): ?><option value="<?= (int)$product['id'] ?>"><?= htmlspecialchars((string)$product['full_name']) ?></option><?php endforeach; ?>
-                            <option value="asking"></option>
-                            <option value="sold"></option>
-                            <option value="trade_in"></option>
-                            <option value="new"></option>
-                            <option value="single_item"></option>
-                            <option value="bundle"></option>
-                            <option value="whole_pc"></option>
-                            <option value="wanted"></option>
-                            <option value="unknown"></option>
-                            <option value="like_new"></option>
-                            <option value="good"></option>
-                            <option value="fair"></option>
-                            <option value="poor"></option>
-                        </datalist>
                         <label>Reason
                             <textarea name="reason" required placeholder="Reason for audit trail"></textarea>
                         </label>

@@ -148,8 +148,9 @@ means moving those into files first (tracked as follow-up), then a report-only t
 ## 9. Rollback
 
 1. Re-point the document root to the previous release folder (seconds).
-2. If a migration ran: restore the dump taken in section 4 (only with the owner's approval, because it discards data written since).
-3. Re-run the smoke checks; write the incident in `docs/DECISION_LOG.md`.
+2. **A database restore is normally NOT needed (LS-20 C2).** Every migration is additive (new tables, new nullable columns, new indexes, data rows), so the previous release keeps working on the newer schema. Checked on 2026-11-19: `origin/main` (migrations 002 to 025) was served on the database built from the current `schema.sql`; its smoke check gave the same result as the new code (the only 4 failures are `robots.txt` and `sitemap.xml` on PHP's built-in server, which answers dotted URLs differently from Apache). The commits after `origin/main` change `schema.sql` only in `database/` (fresh installs), no migration file.
+   Restore the dump from section 4 only if data itself is wrong, and only with the owner's approval, because it discards everything written since. `php cli/db_backup.php` and the restore drill (`tests/db_backup_restore_test.php`: back up, restore into a scratch database, 42 tables, every row count equal) are tested on every run of the suite.
+3. Re-run the smoke checks (`php cli/smoke_check.php https://<domain> --links`); write the incident in `docs/DECISION_LOG.md`.
 
 ## 10. Owner checklist (nothing is deployed until all are ticked)
 

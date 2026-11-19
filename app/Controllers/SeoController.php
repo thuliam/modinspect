@@ -15,6 +15,14 @@ final class SeoController extends Controller
         echo SeoService::robotsTxt((string)$config['base_url'], !empty($config['pilot']));
     }
 
+    public function manifest(): void
+    {
+        global $config;
+        header('Content-Type: application/manifest+json; charset=utf-8');
+        header('Cache-Control: public, max-age=3600');
+        echo SeoService::manifestJson((string)$config['name'], (string)$config['base_url']);
+    }
+
     public function sitemap(): void
     {
         global $config;

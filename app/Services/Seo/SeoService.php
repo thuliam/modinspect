@@ -88,6 +88,20 @@ Disallow: /
         return (string)json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
     }
 
+    /**
+     * LS-20 D4: web app manifest, so a phone can add the site to its home screen. Name comes from the site config (it follows the brand decision, HG-5),
+     * addresses are absolute under the base URL, the colours are the CI canvas and lime. No service worker and no offline promise: it is only a shortcut.
+     */
+    public static function manifestJson(string $name, string $baseUrl): string
+    {
+        $b = rtrim($baseUrl, '/');
+        return (string)json_encode(['name' => $name, 'short_name' => mb_substr($name, 0, 12), 'description' => 'เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง', 'lang' => 'th',
+            'start_url' => $b . '/', 'scope' => $b . '/', 'display' => 'standalone', 'background_color' => '#0a0d14', 'theme_color' => '#0a0d14',
+            'icons' => [['src' => $b . '/assets/brand/icon-192x192.png', 'sizes' => '192x192', 'type' => 'image/png'], ['src' => $b . '/assets/brand/icon-512x512.png', 'sizes' => '512x512', 'type' => 'image/png']]],
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "
+";
+    }
+
     public static function description(string $default, ?string $custom, int $max = 160): string
     {
         $t = trim((string)preg_replace('/\s+/u', ' ', strip_tags($custom !== null && trim($custom) !== '' ? $custom : $default)));

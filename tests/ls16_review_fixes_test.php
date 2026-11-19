@@ -58,6 +58,6 @@ $header = (string)file_get_contents($root . '/app/Views/layouts/header.php');
 ok_ls16(str_contains($header, '<meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">') && str_contains($header, '$ogDefault = rtrim((string) $config[\'base_url\'], \'/\') . \'/assets/brand/hero-hardware.png\''), 'og:image is an absolute, escaped URL (brand picture unless a page passes its own, LS-19 C2)');
 ok_ls16(is_file($root . '/public/assets/brand/hero-hardware.png'), 'The og:image file exists');
 $index = (string)file_get_contents($root . '/app/Views/price/index.php');
-ok_ls16(substr_count($index, 'data-autosubmit') === 2 && !str_contains($index, 'CPU/GPU แล้ว'), 'The price index has the two auto-applied controls and no longer says it covers only CPU/GPU');
+ok_ls16(preg_match_all('/^(?!\s*<\?php\s*\/\/).*data-autosubmit/m', $index) === 3 && !str_contains($index, 'CPU/GPU แล้ว'), 'The price index has the three auto-applied controls (search combo box, sort, priced only) and no longer says it covers only CPU/GPU');
 ok_ls16(str_contains((string)file_get_contents($root . '/public/assets/site.js'), "\$('[data-autosubmit]').on('change'"), 'site.js wires data-autosubmit');
 echo "ls16_review_fixes_test: PASS\n";
