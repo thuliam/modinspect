@@ -27,6 +27,8 @@ foreach (file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $li
 }
 $mode = null;
 if (DIRECTORY_SEPARATOR === '/') { $perms = fileperms($path); $mode = $perms === false ? null : ($perms & 0777); }
-$result = EnvPreflight::evaluate($env, ['file_mode' => $mode, 'public_env_exists' => is_file(ROOT_PATH . '/public/.env')]);
+$writable = []; foreach (['storage/cache', 'storage/cache/ratelimit', 'storage/cache/http', 'storage/logs', 'storage/uploads', 'storage/uploads/reports', 'storage/backups'] as $d) { $writable[$d] = is_dir(ROOT_PATH . '/' . $d) ? is_writable(ROOT_PATH . '/' . $d) : (is_dir(dirname(ROOT_PATH . '/' . $d)) && is_writable(dirname(ROOT_PATH . '/' . $d))); }
+$extensions = ['mbstring' => extension_loaded('mbstring'), 'pdo_mysql' => extension_loaded('pdo_mysql'), 'json' => extension_loaded('json'), 'zip' => class_exists('ZipArchive'), 'gd_freetype' => function_exists('imagettftext')];
+$result = EnvPreflight::evaluate($env, ['file_mode' => $mode, 'public_env_exists' => is_file(ROOT_PATH . '/public/.env'), 'extensions' => $extensions, 'writable' => $writable]);
 echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), PHP_EOL;
 exit($result['verdict'] === 'FAIL' ? 1 : 0);
