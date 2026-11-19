@@ -57,6 +57,37 @@ Disallow: /
         return implode("\n", $out) . "\n";
     }
 
+    /**
+     * LS-19 C2: the share picture of a product page: its own photograph when one is stored (public/assets/products/{slug}.jpg), the brand picture otherwise.
+     * Always an absolute URL (Open Graph requires it). $publicDir is the public folder, passed in so this stays pure.
+     */
+    public static function productImage(string $baseUrl, string $slug, string $publicDir): string
+    {
+        $b = rtrim($baseUrl, '/');
+        if (preg_match('/^[a-z0-9-]+$/', $slug) && is_file($publicDir . '/assets/products/' . $slug . '.jpg')) { return $b . '/assets/products/' . $slug . '.jpg'; }
+        return $b . '/assets/brand/hero-hardware.png';
+    }
+
+    /**
+     * LS-19 C1: schema.org Product for a product page, as a JSON string safe inside <script type="application/ld+json"> (no "</" can close it).
+     * The price part (AggregateOffer, used condition) is added ONLY when the page itself shows a public price: the same rule as the meta description
+     * (median, at least 3 valid samples, an accepted observation). It is the common asking range (Q1–Q3) and its sample count, said to be asking prices,
+     * never a sold price, a rating or a review. Without a public price the object has no offers at all, so nothing invented reaches search results.
+     */
+    public static function productJsonLd(array $p, string $url, string $image): string
+    {
+        $d = ['@context' => 'https://schema.org', '@type' => 'Product', 'name' => (string)($p['full_name'] ?? ''), 'url' => $url, 'image' => $image,
+            'category' => (string)($p['category_name'] ?? '')];
+        if (trim((string)($p['brand_name'] ?? '')) !== '' && strtolower((string)$p['brand_name']) !== 'generic') { $d['brand'] = ['@type' => 'Brand', 'name' => (string)$p['brand_name']]; }
+        $priced = !empty($p['median']) && (int)($p['valid_sample_size'] ?? 0) >= 3 && (int)($p['accepted_observation_count'] ?? 0) > 0 && !empty($p['q1']) && !empty($p['q3']);
+        $d['description'] = $priced ? 'ช่วงราคาประกาศขายมือสองที่พบบ่อย จากข้อมูลที่ผ่านการตรวจ (ราคาประกาศ ไม่ใช่ราคาปิดดีล)' : 'ข้อมูลรุ่นและสเปกจากผู้ผลิต ยังไม่มีราคาตลาดที่ตรวจแล้ว';
+        if ($priced) {
+            $d['offers'] = ['@type' => 'AggregateOffer', 'priceCurrency' => 'THB', 'lowPrice' => (string)round((float)$p['q1']), 'highPrice' => (string)round((float)$p['q3']),
+                'offerCount' => (int)$p['valid_sample_size'], 'itemCondition' => 'https://schema.org/UsedCondition'];
+        }
+        return (string)json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
+    }
+
     public static function description(string $default, ?string $custom, int $max = 160): string
     {
         $t = trim((string)preg_replace('/\s+/u', ' ', strip_tags($custom !== null && trim($custom) !== '' ? $custom : $default)));

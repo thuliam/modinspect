@@ -50,7 +50,7 @@ try {
     $page = $req("$b/build", $jar);
     ok_bh($page['code'] === 200 && preg_match('/name="_token" value="([^"]+)"/', $page['body'], $m) === 1, 'The Build page loads and carries a CSRF token');
     $token = html_entity_decode($m[1]);
-    ok_bh(substr_count($page['body'], 'mi-part-col') >= 8 && str_contains($page['body'], 'id="parts-list"') && str_contains($page['body'], 'id="summary-pane"') && str_contains($page['body'], 'build\/preview'), 'The page has the parts list, the picker cards, the summary pane and the preview address');
+    ok_bh(substr_count($page['body'], 'mi-part-col') >= 8 && str_contains($page['body'], 'id="parts-list"') && str_contains($page['body'], 'id="summary-pane"') && str_contains($page['body'], 'id="mi-build-config"') && str_contains($page['body'], '/build/preview"'), 'The page has the parts list, the picker cards, the summary pane and the preview address');
     ok_bh(substr_count($page['body'], '<main') === 1, 'The page has exactly one main landmark');
 
     $before = $rows();

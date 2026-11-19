@@ -28,7 +28,8 @@ $trend = [
 ob_start();
 require dirname(__DIR__) . '/app/Views/components/trend-chart.php';
 $html = (string)ob_get_clean();
-assert_tl(str_contains($html, '<canvas') && str_contains($html, 'new Chart('), 'Chart.js canvas and init missing');
+// LS-19 D1: the chart is drawn by public/assets/mi-charts.js from a JSON data block (no inline script)
+assert_tl(str_contains($html, '<canvas') && str_contains($html, 'data-chart="trend"') && preg_match('#<script type="application/json" id="(trend[0-9a-f]+)-data">\[\{#', $html) === 1 && str_contains((string)file_get_contents(dirname(__DIR__) . '/public/assets/mi-charts.js'), 'new Chart('), 'Chart.js canvas, data block and init missing');
 assert_tl(substr_count($html, '"med":') === 3, 'Chart data must carry one point per month');
 assert_tl(str_contains($html, '+24.6%'), 'Chart change versus first month must be computed from the buckets');
 

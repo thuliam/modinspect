@@ -558,3 +558,11 @@ body.mi .mi-builder .mi-radar-box { position: relative; height: 260px; }
 /* LS-17 B3: Bootstrap's .text-muted (#6c757d) is made for light pages; on the dark surface it measured 3.85:1 (below 4.5:1).
    The public theme maps it to the secondary text token (about 7:1 on the card surface). Bootstrap sets it with !important, so this must too. */
 body.mi .text-muted { color: var(--ci-text-2) !important; }
+
+/* LS-19 B1: product page jump bar (Bootstrap .nav + scrollspy). Sticks under the 72 px site header; scrolls sideways on phones instead of wrapping. */
+body.mi .mi-section-nav { position: sticky; top: 72px; z-index: 15; flex-wrap: nowrap; overflow-x: auto; gap: 4px; margin: 0 0 16px; padding: 8px 0; background: var(--ci-canvas); border-bottom: 1px solid var(--ci-border); scrollbar-width: none; }
+body.mi .mi-section-nav .nav-link { white-space: nowrap; min-height: 40px; display: inline-flex; align-items: center; padding: 6px 14px; border-radius: var(--ci-r-pill); color: var(--ci-text-2); }
+body.mi .mi-section-nav .nav-link:hover { color: var(--ci-text); background: var(--ci-elevated); }
+body.mi .mi-section-nav .nav-link.active { color: var(--ci-primary); background: var(--ci-elevated); }
+html { scroll-padding-top: 140px; }
+html.motion-full { scroll-behavior: smooth; }

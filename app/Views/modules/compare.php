@@ -55,6 +55,15 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
 <?php else: ?>
     <?php if ($table['mixed_category']): ?>
         <p class="mi-note"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> รุ่นที่เลือกอยู่คนละหมวด สเปกบางแถวจึงเทียบกันไม่ได้ ช่องที่ไม่มีข้อมูลจะเว้นว่างไว้</p>
+        <?php // LS-19 B4: one tap back to a same-category table (only categories with two or more of the chosen models)
+        $sameCat = []; foreach ($cols as $c) { $sameCat[$c['category']][] = $c['slug']; } $sameCat = array_filter($sameCat, static fn(array $s): bool => count($s) >= 2); ?>
+        <?php if ($sameCat): ?>
+            <div class="mi-category-chips mb-3" aria-label="เทียบเฉพาะหมวดเดียว">
+                <?php foreach ($sameCat as $cat => $slugs): ?>
+                    <a href="<?= $base ?>/compare?<?= htmlspecialchars(http_build_query(['m' => $slugs])) ?>"><i class="fas fa-filter mr-2" aria-hidden="true"></i>เทียบเฉพาะหมวด <?= htmlspecialchars((string)$cat) ?> (<?= count($slugs) ?> รุ่น)</a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
     <div class="card mi-table-card table-responsive">
         <table class="table table-hover mi-admin-table mb-0">

@@ -57,9 +57,11 @@ ok_rd(array_sum(array_column($e, 'value')) === 0.0, 'An empty build reads 0 on e
 $root = dirname(__DIR__);
 $view = (string)file_get_contents($root . '/app/Views/modules/build.php');
 $comp = (string)file_get_contents($root . '/app/Views/components/build-radar.php');
+// LS-19 D1: the drawing moved to public/assets/mi-charts.js (no inline script); the component carries the canvas, the data block and the file links
+$chartsJs = (string)file_get_contents($root . '/public/assets/mi-charts.js');
 ok_rd(str_contains($view, "components/build-radar"), 'The saved build page includes the radar component');
-ok_rd(str_contains($comp, "type: 'radar'") && str_contains($comp, 'assets/vendor/chartjs/chart.umd.min.js'), 'The component draws a Chart.js radar from the shipped file, no CDN');
-ok_rd(preg_match('/pointLabels:\s*\{\s*font:\s*\{\s*size:\s*(\d+)/', $comp, $pl) === 1 && (int)$pl[1] >= 13, 'The axis labels are set to at least 13px through Chart.js pointLabels (the default is small): ' . ($pl[1] ?? 'not set'));
+ok_rd(str_contains($comp, 'data-chart="radar"') && str_contains($chartsJs, "type: 'radar'") && str_contains($comp, 'assets/vendor/chartjs/chart.umd.min.js') && str_contains($comp, 'assets/mi-charts.js'), 'The component draws a Chart.js radar from the shipped files, no CDN');
+ok_rd(preg_match('/pointLabels:\s*\{\s*font:\s*\{\s*size:\s*(\d+)/', $chartsJs, $pl) === 1 && (int)$pl[1] >= 13, 'The axis labels are set to at least 13px through Chart.js pointLabels (the default is small): ' . ($pl[1] ?? 'not set'));
 ok_rd(str_contains($comp, 'ไม่ใช่ความแรงของเครื่อง') && str_contains($comp, 'ไม่มีผลทดสอบจริง'), 'The data-quality radar says it is not a speed measure; the spec-based stats (LS-14 OD-1) say they are not a benchmark');
 ok_rd(str_contains($comp, 'SpecRadar::axes'), 'The axes come from SpecRadar, so the formula lives in one tested place');
 echo "spec_radar_test: PASS\n";

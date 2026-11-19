@@ -59,7 +59,7 @@ $thumb = static function (array $p, string $role) use ($base, $roleIcon): string
         </div>
     </div>
     <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
-    <script>window.MI_BUILD = {mode: 'saved'};</script>   <?php /* the page script is loaded once, deferred after jQuery, by the footer */ ?>
+    <script type="application/json" id="mi-build-config">{"mode":"saved"}</script>   <?php /* LS-19 D1: a data block (not run) read by the Build page script, which the footer loads once, deferred after jQuery */ ?>
 <?php else: ?>
     <?php $data = (new BuildPreview())->run($products, [], $newRefs, [], (float) ($old['budget'] ?? 25000), false);   // the empty state; the script asks for the real summary on load ?>
     <form method="post" action="<?= $base ?>/build" id="spec-builder-form" class="mb-4">
@@ -178,6 +178,6 @@ $thumb = static function (array $p, string $role) use ($base, $roleIcon): string
     <!-- phones: the parts list sits far below the picker, so a bar that stays on screen shows the count and the total and jumps to the list -->
     <div class="fixed-bottom d-lg-none bg-dark border-top border-secondary"><a href="#parts-card" class="d-flex justify-content-between align-items-center px-3 py-2 text-white"><span><i class="fas fa-list mr-2" aria-hidden="true"></i>ชิ้นส่วน <b class="js-count">0/8</b></span><b class="js-side-total">฿0</b><span>ดูรายการ <i class="fas fa-chevron-down" aria-hidden="true"></i></span></a></div>
     <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
-    <script>window.MI_BUILD = {mode: 'live', previewUrl: <?= json_encode($base . '/build/preview') ?>, initial: <?= json_encode((object) $initial) ?>};</script>
+    <script type="application/json" id="mi-build-config"><?= json_encode(['mode' => 'live', 'previewUrl' => $base . '/build/preview', 'initial' => (object) $initial], JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES) ?></script>
 <?php endif; ?>
 </section>

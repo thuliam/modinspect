@@ -32,9 +32,14 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 <meta property="og:description" content="<?= htmlspecialchars($seoDescription) ?>">
 <meta property="og:url" content="<?= htmlspecialchars($seoUrl) ?>">
 <?php // LS-16 U-4: link previews in chat apps get the brand hero picture (an absolute URL, as Open Graph requires) ?>
-<meta property="og:image" content="<?= htmlspecialchars(rtrim((string) $config['base_url'], '/') . '/assets/brand/hero-hardware.png') ?>">
-<meta property="og:image:width" content="1026">
+<?php $ogDefault = rtrim((string) $config['base_url'], '/') . '/assets/brand/hero-hardware.png'; $ogImage = isset($ogImage) && is_string($ogImage) && $ogImage !== '' ? $ogImage : $ogDefault; // LS-19 C2: a product page passes its own photo ?>
+<meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">
+<?php if ($ogImage === $ogDefault): ?><meta property="og:image:width" content="1026">
 <meta property="og:image:height" content="436">
+<?php endif; ?>
+<?php if (!empty($jsonLd) && is_string($jsonLd)): // LS-19 C1: schema.org data built by SeoService::productJsonLd (JSON_HEX_TAG, so it cannot close this tag) ?>
+<script type="application/ld+json"><?= $jsonLd ?></script>
+<?php endif; ?>
 <meta name="twitter:card" content="summary_large_image">
 <title><?= htmlspecialchars($title ?? $config['name']) ?> · <?= htmlspecialchars($config['name']) ?></title>
 <link rel="icon" href="<?= $base ?>/favicon.ico?v=<?= (int) @filemtime(ROOT_PATH . '/public/favicon.ico') ?>" sizes="any">
@@ -52,7 +57,7 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/select2/select2.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-select2.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-select2.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-theme.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/mi-theme.css') ?>">
-<script>(function(){var d=document.documentElement,q=matchMedia("(prefers-reduced-motion: reduce)").matches?"calm":"full",m=q;try{var s=localStorage.getItem("mi-motion");if(s==="full"||s==="calm"){m=s}}catch(e){}d.classList.add("js","motion-"+m)})()</script>
+<script src="<?= $base ?>/assets/mi-motion-init.js?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-motion-init.js") ?>"></script>
 </head>
 <body class="mb mi<?= $relativePath === '/' ? ' is-home' : '' ?>">
 <a class="sr-only sr-only-focusable mi-skip" href="#main">ข้ามไปยังเนื้อหา</a>
@@ -88,7 +93,7 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
                 </li>
             </ul>
             <div class="nav-tools">
-                <a class="nav-icon" href="<?= $base ?>/price" aria-label="ค้นหารุ่นสินค้า"><i class="fas fa-search" aria-hidden="true"></i></a>
+                <a class="nav-icon" href="<?= $base ?>/price" aria-label="ค้นหารุ่นสินค้า" title="ค้นหารุ่น (กด / ได้ทุกหน้า)"><i class="fas fa-search" aria-hidden="true"></i></a>
                 <?php if ($authUser): ?><a class="login-button" href="<?= $base ?>/admin">หลังบ้าน</a><?php endif; ?>
                 <?php $memberOffered = array_filter($config['members'] ?? [], static fn($p) => is_array($p) && trim((string) ($p['client_id'] ?? '')) !== '' && trim((string) ($p['client_secret'] ?? '')) !== ''); $memberNow = !empty($_SESSION[\App\Services\Member\MemberAuth::SESSION_MEMBER_ID]); ?>
                 <?php if ($memberNow): ?><a class="login-button" href="<?= $base ?>/account">บัญชีของฉัน</a><?php elseif ($memberOffered): ?><a class="login-button" href="<?= $base ?>/account/login">เข้าสู่ระบบ</a><?php endif; ?>

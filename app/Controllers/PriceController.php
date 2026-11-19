@@ -27,7 +27,11 @@ final class PriceController extends Controller {
         if (!empty($product['median']) && (int)($product['valid_sample_size'] ?? 0) >= 3 && (int)($product['accepted_observation_count'] ?? 0) > 0) {
             $meta = $product['full_name'] . ' ราคาประกาศมือสองที่พบ ' . number_format((float)$product['q1']) . '–' . number_format((float)$product['q3']) . ' บาท จาก ' . (int)$product['valid_sample_size'] . ' ตัวอย่าง (ไม่ใช่ราคาปิดดีล)';
         }
-        $this->view('price/show',['metaDescription'=>$meta,'title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'facts'=>\App\Services\Catalog\ProductFacts::rows($product,$model->referenceSpecs((int)$product['id']),(int)date('Y')),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'evidence'=>$model->evidence((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4)]);
+        // LS-19 C1/C2: share picture and structured data from the same stored snapshot the page shows (no price unless the page shows one)
+        global $config; $base=(string)$config['base_url'];
+        $ogImage=\App\Services\Seo\SeoService::productImage($base,(string)$product['slug'],ROOT_PATH.'/public');
+        $jsonLd=\App\Services\Seo\SeoService::productJsonLd($product,\App\Services\Seo\SeoService::canonical($base,'/price/'.$product['slug']),$ogImage);
+        $this->view('price/show',['ogImage'=>$ogImage,'jsonLd'=>$jsonLd,'metaDescription'=>$meta,'title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'facts'=>\App\Services\Catalog\ProductFacts::rows($product,$model->referenceSpecs((int)$product['id']),(int)date('Y')),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'evidence'=>$model->evidence((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4)]);
     }
 }
 

@@ -51,7 +51,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
     require_once ROOT_PATH . '/app/Views/components/hw-art.php';
     $artType = match (strtolower(trim((string) ($product['category_name'] ?? '')))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' };
     ?>
-    <header class="mi-product-hero row align-items-stretch">
+    <header class="mi-product-hero row align-items-stretch" id="sec-price" data-nav="ราคา">
         <div class="col-lg-6 mb-3">
             <div class="mi-gallery">
                 <span class="mi-gallery-badge"><i class="fas fa-<?= $hasMarketSnapshot ? 'chart-line' : 'info-circle' ?>" aria-hidden="true"></i> <?= $hasMarketSnapshot ? 'มีข้อมูลราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span>
@@ -96,13 +96,16 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         </div>
     </header>
 
+    <?php // LS-19 B1: section jump bar, built by site.js from the data-nav sections below (Bootstrap scrollspy marks where the reader is) ?>
+    <nav id="product-nav" class="nav mi-section-nav" aria-label="ไปยังส่วนของหน้านี้" hidden></nav>
+
     <?php $facts = $facts ?? []; require ROOT_PATH . '/app/Views/components/product-facts.php'; ?>
     <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): ?>
         <p class="mi-trend-note"><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>">ดูคู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></a></p>
     <?php endif; ?>
 
     <?php if (!$hasMarketSnapshot): ?>
-        <div class="mi-detail-grid no-data-detail">
+        <div class="mi-detail-grid no-data-detail" id="sec-market" data-nav="ข้อมูลตลาด">
             <article class="card mi-product-summary-card">
                 <h2>ข้อมูลสินค้า</h2>
                 <dl class="mi-context-list">
@@ -128,7 +131,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             </aside>
         </div>
     <?php else: ?>
-        <div class="mi-detail-grid mi-detail-single">
+        <div class="mi-detail-grid mi-detail-single" id="sec-market" data-nav="ข้อมูลตลาด">
 
 
             <aside class="card mi-confidence-card">
@@ -166,7 +169,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         </div>
 
         <?php require ROOT_PATH . '/app/Views/components/evidence-explorer.php'; ?>
-        <section class="card mi-history-card">
+        <section class="card mi-history-card" id="sec-trend" data-nav="แนวโน้ม">
             <div class="mi-section-head compact">
                 <div>
                     <span class="eyebrow">ประวัติราคา</span>
@@ -184,7 +187,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             <?php endif; ?>
         </section>
         <?php if (!empty($similar)): ?>
-        <section class="card mi-history-card">
+        <section class="card mi-history-card" id="sec-similar" data-nav="รุ่นใกล้เคียง">
             <div class="mi-section-head compact"><div><span class="eyebrow">เทียบรุ่นใกล้เคียง</span><h2>รุ่นอื่นที่ราคาใกล้กัน</h2></div></div>
             <?php $ref = (float)($product['median'] ?? 0); require ROOT_PATH . '/app/Views/components/similar-products.php'; ?>
         </section>

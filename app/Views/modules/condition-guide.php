@@ -25,12 +25,22 @@
     <h1>เช็กสภาพ <?= htmlspecialchars($guide['name']) ?> ก่อนซื้อ</h1>
     <p class="lead"><?= htmlspecialchars($guide['intro']) ?></p>
     <div class="article-grid">
-        <article class="card prose">
+        <?php // LS-19 B2: a checklist to tick while looking at the part (Bootstrap custom checkboxes in a plain form: nothing is sent or stored; "ล้าง" is a native reset) ?>
+        <form class="card prose mi-guide-checklist" aria-label="รายการตรวจ ติ๊กได้ระหว่างดูของ ไม่มีการบันทึก">
             <?php foreach ($guide['sections'] as $i => $s): ?>
                 <h2><?= $i + 1 ?>. <?= htmlspecialchars($s['title']) ?></h2>
-                <ul><?php foreach ($s['items'] as $item): ?><li><?= htmlspecialchars($item) ?></li><?php endforeach; ?></ul>
+                <div class="mb-3">
+                    <?php foreach ($s['items'] as $j => $item): $cid = 'g' . $i . '-' . $j; ?>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="<?= $cid ?>">
+                            <label class="custom-control-label" for="<?= $cid ?>"><?= htmlspecialchars($item) ?></label>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
             <?php endforeach; ?>
-        </article>
+            <p class="mi-trend-note mb-2">ติ๊กไว้ระหว่างดูของจริงได้ ระบบไม่ได้บันทึกหรือส่งข้อมูลนี้ไปไหน</p>
+            <button type="reset" class="btn btn-ghost align-self-start">ล้างที่ติ๊กไว้</button>
+        </form>
         <aside class="card sticky">
             <h2>หมวดอื่น</h2>
             <ul class="list-unstyled mb-3">

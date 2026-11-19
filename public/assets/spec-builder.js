@@ -5,8 +5,10 @@
  */
 (function ($) {
   'use strict';
-  var cfg = window.MI_BUILD || {};
-  if (!cfg.mode) { return; }   // the footer loads this file on every public page; only the Build page sets MI_BUILD
+  // LS-19 D1: the Build page passes its settings in a JSON data block (no inline script); every other page has none and the script stops here
+  var cfgEl = document.getElementById('mi-build-config'), cfg = {};
+  try { cfg = cfgEl ? JSON.parse(cfgEl.textContent) : {}; } catch (e) { cfg = {}; }
+  if (!cfg.mode) { return; }   // the footer loads this file on every public page; only the Build page has the config block
   var ROLES = ['cpu', 'motherboard', 'gpu', 'ram', 'storage', 'psu', 'case', 'cooling'];
   var LABEL = {cpu: 'CPU', motherboard: 'เมนบอร์ด', gpu: 'การ์ดจอ', ram: 'RAM', storage: 'ที่เก็บข้อมูล', psu: 'พาวเวอร์ซัพพลาย', case: 'เคส', cooling: 'ชุดระบายความร้อน'};
   var chart = null, lastValues = [];

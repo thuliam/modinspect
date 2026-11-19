@@ -84,6 +84,27 @@ jQuery(function ($) {
     /* LS-16: a sort or filter control marked data-autosubmit applies at once (the form still has a submit button when scripts are off) */
     $('[data-autosubmit]').on('change', function () { this.form.submit(); });
 
+    /* LS-19 B3: "/" jumps to the search box (or opens the price index, which has one); never while typing in a field or with a modifier key */
+    $(document).on('keydown', function (e) {
+        if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || $(e.target).is('input, textarea, select, [contenteditable], .select2-search__field')) { return; }
+        var $q = $('main input[name="q"]:visible').first();
+        e.preventDefault();
+        if ($q.length) { $q.trigger('focus').select(); } else { window.location.href = $('.nav-icon[href$="/price"]').attr('href') + '?focus=1'; }
+    });
+    if (/[?&]focus=1\b/.test(window.location.search)) { $('main input[name="q"]').first().trigger('focus'); }
+
+    /* LS-19 B1: product page jump bar. Links are made from the sections that exist on this page (data-nav), Bootstrap scrollspy marks the current one. */
+    var $pnav = $('#product-nav');
+    if ($pnav.length) {
+        $('main [data-nav][id]').each(function () {
+            $('<a class="nav-link">').attr('href', '#' + this.id).text($(this).attr('data-nav')).appendTo($pnav);
+        });
+        if ($pnav.children().length > 2) {
+            $pnav.prop('hidden', false);
+            $('body').scrollspy({ target: '#product-nav', offset: 160 });
+        }
+    }
+
     /* LS-18 Compare: the first box that holds a model sets the category; the other boxes only list that category (an optgroup per category),
        and a box holding a model of another category is cleared. Display only: the server still compares whatever it is sent. */
     var $cmp = $('select.js-compare');

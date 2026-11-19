@@ -26,7 +26,8 @@ ok_pw(substr_count($js, '$.ajax') === 1, 'One request type only: the preview');
 $footer = (string)file_get_contents($root . '/app/Views/layouts/footer.php');
 ok_pw(preg_match('#jquery-3\.7\.1\.min\.js.*spec-builder\.js[^\n]*defer#s', $footer) === 1, 'The footer loads jQuery first and then spec-builder.js with defer');
 ok_pw(!str_contains($view, 'spec-builder.js'), 'The Build page does not load spec-builder.js a second time (it would run before jQuery)');
-ok_pw(preg_match('/var cfg = window\.MI_BUILD \|\| \{\};\s*if \(!cfg\.mode\) \{ return; \}/', $js) === 1, 'The script returns at once on pages that do not set MI_BUILD (before it touches $.fx)');
+ok_pw(preg_match('/var cfgEl = document\.getElementById\(\'mi-build-config\'\), cfg = \{\};\s*try \{ cfg = cfgEl \? JSON\.parse\(cfgEl\.textContent\) : \{\}; \} catch \(e\) \{ cfg = \{\}; \}\s*if \(!cfg\.mode\) \{ return; \}/', $js) === 1, 'The script returns at once on pages without the Build config block (before it touches $.fx)');
+ok_pw(substr_count($view, '<script type="application/json" id="mi-build-config">') === 2 && !preg_match('/<script>/', $view), 'The Build page passes its settings as JSON data blocks, no inline script (LS-19 D1)');
 
 // the page
 foreach (['cpu', 'motherboard', 'gpu', 'ram', 'storage', 'psu', 'case', 'cooling'] as $role) { ok_pw(str_contains($view, "BuildPreview::ROLES"), "The page iterates the eight categories ($role)"); }
