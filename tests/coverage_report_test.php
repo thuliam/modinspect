@@ -23,8 +23,11 @@ ok_cv(array_sum(array_column($base, 'models')) === (int)$db->query('SELECT COUNT
 
 $db->beginTransaction();
 try {
-    $p = $db->query("SELECT p.id, p.full_name FROM products p JOIN product_categories c ON c.id = p.category_id WHERE c.slug = 'cpu' AND p.is_active = 1 AND NOT EXISTS (SELECT 1 FROM product_reference_specs s WHERE s.product_id = p.id) ORDER BY p.id LIMIT 1")->fetch(PDO::FETCH_ASSOC);
-    ok_cv((bool)$p, 'The fixture has a CPU with no reference specs');
+    $p = $db->query("SELECT p.id, p.full_name FROM products p JOIN product_categories c ON c.id = p.category_id WHERE c.slug = 'cpu' AND p.is_active = 1 ORDER BY p.id LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+    ok_cv((bool)$p, 'The fixture has a CPU');
+    $db->prepare('DELETE FROM product_reference_specs WHERE product_id = :p')->execute(['p' => $p['id']]);   // start this model from no specs (inside the transaction)
+    $db->prepare('DELETE FROM new_price_references WHERE product_id = :p')->execute(['p' => $p['id']]);
+    $base = $byCat(CoverageReport::build($db));
     $req = IntakeValidator::contract()['spec_keys']['required_per_category']['cpu'];
     $ins = $db->prepare("INSERT INTO product_reference_specs (product_id, spec_key, spec_value, source_url, date_checked, review_status) VALUES (:p, :k, '1', 'https://example.test', '2026-11-10', 'official_checked')");
     foreach (array_slice($req, 0, -1) as $k) { $ins->execute(['p' => $p['id'], 'k' => $k]); }
