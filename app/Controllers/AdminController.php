@@ -156,6 +156,21 @@ final class AdminController extends Controller {
         $this->flash($r['ok']?'success':'danger',$r['ok']?$ok:($messages[$r['error']]??'บันทึกไม่สำเร็จ'));
         $this->redirect('/admin/new-prices');
     }
+    /** LS-14 Module 9: moderation of seller listings (approve / reject with a reason). Approval creates no price (HG-17). */
+    public function sellerListings(): void {
+        if(!$this->requirePermission('listings.moderate')) return;
+        global $config;
+        try { $svc=new \App\Services\Listing\SellerListings(Database::connection($config['db'])); $rows=$svc->moderationQueue(); $photos=$svc->photosFor(array_column($rows,'id')); $ready=true; } catch(\PDOException) { $rows=[]; $photos=[]; $ready=false; }
+        $this->render('seller-listings','Seller listings',['rows'=>$rows,'photos'=>$photos,'ready'=>$ready]);
+    }
+    public function sellerListingAction(): void {
+        if(!$this->requirePermission('listings.moderate')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/seller-listings'); }
+        global $config;
+        $r=(new \App\Services\Listing\SellerListings(Database::connection($config['db'])))->moderate((int)$this->user()['id'],(int)($_POST['id']??0),(string)($_POST['decision']??''),(string)($_POST['note']??''));
+        $this->flash($r['ok']?'success':'danger',$r['ok']?'บันทึกผลการตรวจแล้ว':(['NOTE_REQUIRED'=>'การไม่ผ่านต้องมีเหตุผล','BAD_STATE'=>'ประกาศนี้ไม่ได้อยู่ในสถานะรอตรวจ','BAD_ACTION'=>'คำสั่งไม่ถูกต้อง'][$r['error']]??'บันทึกไม่สำเร็จ'));
+        $this->redirect('/admin/seller-listings');
+    }
     public function users(): void {
         if(!$this->requirePermission('users.manage')) return;
         $this->render('users','Users',['users'=>(new \App\Services\Admin\UserAdministration())->list(),'me'=>(int)$this->user()['id'],'roles'=>\App\Services\Admin\UserAdministration::ROLES]);

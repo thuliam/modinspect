@@ -18,6 +18,7 @@
         <?php endif; ?>
     </div>
     <div class="mi-actions mb-4">
+        <a class="button" href="<?= $base ?>/seller">ประกาศขายของฉัน</a>
         <form method="post" action="<?= $base ?>/account/logout"><input type="hidden" name="_token" value="<?= $token ?>"><button type="submit" class="button ghost">ออกจากระบบ</button></form>
     </div>
     <form class="card" method="post" action="<?= $base ?>/account/delete">

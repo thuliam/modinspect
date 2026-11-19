@@ -32,7 +32,17 @@ $router->get('/seller-price-advisor',[ModuleController::class,'sellerAdvisor']);
 $router->get('/guide/{slug}',[ModuleController::class,'guide']);
 $router->get('/condition-guide',[ModuleController::class,'conditionGuide']);
 $router->get('/condition-guide/{category}',[ModuleController::class,'conditionGuide']);
-$router->get('/seller',[ModuleController::class,'sellerDashboard']);
+// LS-14 Module 9 (OD-5): the seller's side for signed-in members ("new" before {uuid}: the router takes the first match)
+$router->get('/seller',[\App\Controllers\SellerController::class,'index']);
+$router->get('/seller/listings/new',[\App\Controllers\SellerController::class,'form']);
+$router->post('/seller/listings/save',[\App\Controllers\SellerController::class,'save']);
+$router->get('/seller/listings/{uuid}',[\App\Controllers\SellerController::class,'form']);
+$router->post('/seller/listings/{uuid}/photos',[\App\Controllers\SellerController::class,'photos']);
+$router->post('/seller/listings/{uuid}/action',[\App\Controllers\SellerController::class,'action']);
+$router->get('/seller/photos/{uuid}/{file}',[\App\Controllers\SellerController::class,'photo']);
+$router->get('/listings/{uuid}',[\App\Controllers\SellerController::class,'show']);
+$router->get('/admin/seller-listings',[AdminController::class,'sellerListings']);
+$router->post('/admin/seller-listings/action',[AdminController::class,'sellerListingAction']);
 $router->get('/local-match',[ModuleController::class,'localMatch']);
 $router->get('/market-report',[ModuleController::class,'marketReport']);
 $router->get('/shop',[ModuleController::class,'shop']);

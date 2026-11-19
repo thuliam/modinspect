@@ -21,6 +21,8 @@ return [
         'facebook' => ['client_id' => $_ENV['MEMBER_FACEBOOK_APP_ID'] ?? '', 'client_secret' => $_ENV['MEMBER_FACEBOOK_APP_SECRET'] ?? ''],
         'facebook_graph_version' => $_ENV['MEMBER_FACEBOOK_GRAPH_VERSION'] ?? 'v19.0',
     ],
+    // LS-14 Module 9: approved seller listings are shown to everyone only when the owner turns this on (HG-16, marketplace decision)
+    'seller' => ['listings_public' => filter_var($_ENV['SELLER_LISTINGS_PUBLIC'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
     'collection' => [
         'live_collection_enabled' => filter_var($_ENV['MODINSPECT_LIVE_COLLECTION_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
         'paid_provider_calls_enabled' => filter_var($_ENV['MODINSPECT_PAID_PROVIDER_CALLS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),

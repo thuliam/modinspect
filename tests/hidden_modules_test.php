@@ -21,7 +21,8 @@ foreach (['sellerAdvisor', 'compare', 'conditionGuide', 'build', 'guide'] as $m)
 }
 
 // no public view links to a hidden module (the hidden modules' own views may link among themselves)
-$hidden = ['/seller"', '/shop', '/local-match', '/market-report'];
+// LS-14 OD-5: /seller is the members' seller page now (SellerController); the old ModuleController::sellerDashboard stays hidden
+$hidden = ['/shop', '/local-match', '/market-report'];
 $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root . '/app/Views', FilesystemIterator::SKIP_DOTS));
 foreach ($it as $f) {
     if (!$f->isFile() || str_contains(str_replace('\\', '/', $f->getPathname()), '/Views/modules/') && preg_match('/(seller-dashboard|shop-dashboard|inventory|local-match|market-report)\.php$/', $f->getFilename())) { continue; }

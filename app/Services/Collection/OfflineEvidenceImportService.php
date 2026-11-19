@@ -312,6 +312,8 @@ final class OfflineEvidenceImportService
             $errors[] = 'FUTURE_OBSERVED_DATE';
         }
         foreach (CaptureMethod::problems($record, $dataset) as $problem) $errors[] = $problem;
+        // LS-14 OD-5: the optional listing facts shared with seller listings (condition %, warranty, province, shipping, defects, ...)
+        foreach (array_keys(\App\Services\Listing\ListingAttributes::parse($record)['errors']) as $field) $errors[] = 'INVALID_LISTING_' . strtoupper($field);
         return array_values(array_unique($errors));
     }
 
@@ -360,6 +362,7 @@ final class OfflineEvidenceImportService
                 'evidence_hash' => $this->firstValue($record, ['evidence_hash']) ?: null,
                 'ingestion_note' => trim((string)($record['ingestion_note'] ?? '')) ?: null,
                 'capture_method' => strtolower(trim((string)($record['capture_method'] ?? ''))) ?: null,
+                'listing_attributes' => array_filter(\App\Services\Listing\ListingAttributes::parse($record)['values'], static fn($v) => $v !== null),
             ]
         );
     }
