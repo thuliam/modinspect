@@ -101,6 +101,8 @@ $commands = [
     ['label' => 'tests/blog_test.php', 'args' => ['tests/blog_test.php']],
     ['label' => 'tests/glossary_test.php', 'args' => ['tests/glossary_test.php']],
     ['label' => 'tests/used_vs_new_test.php', 'args' => ['tests/used_vs_new_test.php']],
+    ['label' => 'tests/daily_pipeline_test.php', 'args' => ['tests/daily_pipeline_test.php']],
+    ['label' => 'tests/review_batch_report_test.php', 'args' => ['tests/review_batch_report_test.php']],
     ['label' => 'tests/community_forum_test.php', 'args' => ['tests/community_forum_test.php']],
     ['label' => 'tests/community_controller_test.php', 'args' => ['tests/community_controller_test.php']],
     ['label' => 'tests/retention_ls24_test.php', 'args' => ['tests/retention_ls24_test.php']],
