@@ -32,6 +32,13 @@ final class ProductFacts
         'base_ghz' => ['ความเร็วพื้นฐาน', ' GHz'], 'boost_ghz' => ['ความเร็วบูสต์สูงสุด', ' GHz'], 'l2_mb' => ['L2 cache', ' MB'], 'l3_mb' => ['L3 cache', ' MB'], 'memory_support' => ['หน่วยความจำที่รองรับ', ''],
         'gpu_cores' => ['จำนวนคอร์กราฟิก (CUDA / Stream)', ''], 'boost_mhz' => ['ความเร็วบูสต์ (การ์ดจอ)', ' MHz'], 'vram_gb' => ['VRAM', ' GB'], 'bus_width_bit' => ['บัสหน่วยความจำ', ' bit'],
         'power_connector' => ['ขั้วต่อไฟเสริม', ''], 'interface' => ['ช่องต่อ', ''],
+        // LS-23 B5: keys of the collection contract (database/contracts/intake-v1.json); values come from manufacturer pages
+        'chipset' => ['ชิปเซ็ต', ''], 'max_memory_gb' => ['หน่วยความจำสูงสุด', ' GB'], 'memory_slots' => ['จำนวนช่องแรม', ''], 'pcie_gen_x16' => ['PCIe ช่องการ์ดจอ', ''], 'm2_slots' => ['ช่อง M.2', ''],
+        'speed_mhz' => ['ความเร็ว', ' MHz'], 'cas_latency' => ['CAS Latency', ''], 'modules_in_kit' => ['จำนวนแท่งในชุด', ''],
+        'tbw' => ['ความทนทานการเขียน (TBW)', ' TB'], 'read_mbps' => ['ความเร็วอ่านสูงสุด', ' MB/s'], 'write_mbps' => ['ความเร็วเขียนสูงสุด', ' MB/s'],
+        'efficiency_rating' => ['ประสิทธิภาพ (80 Plus)', ''], 'modular' => ['ระบบสายไฟ', ''],
+        'cooler_type' => ['ชนิดการระบายความร้อน', ''], 'radiator_mm' => ['ขนาดหม้อน้ำ', ' mm'], 'socket_support' => ['Socket ที่รองรับ', ''],
+        'length_mm' => ['ความยาวการ์ด', ' mm'], 'has_igpu' => ['กราฟิกในตัว', ''],
     ];
     private const VARIANT_NOTE = 'แหล่งที่มาระบุรุ่นย่อยเฉพาะ ตรวจรุ่นย่อยของชิ้นที่จะซื้อให้ตรงก่อน';
 

@@ -83,7 +83,7 @@
       "title": "Names people use for a model",
       "unique_together": ["alias_text"],
       "columns": [
-        { "name": "product_name", "required": true, "type": "string", "max": 255 },
+        { "name": "product_name", "required": true, "type": "string", "max": 255, "known_product": true },
         { "name": "alias_text", "required": true, "type": "string", "max": 255, "alias_unique": true },
         { "name": "alias_kind", "required": false, "type": "enum", "values": ["shorthand", "typo", "thai_phonetic", "spacing", "marketing_name"] },
         { "name": "evidence_url", "required": false, "type": "url" }

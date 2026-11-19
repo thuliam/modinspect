@@ -106,7 +106,7 @@ final class Product
     /** LS-21: one query for the filter facts of the whole catalog: product_id => [spec_key => spec_value] (read-only; the filters never write) */
     public function specMap(): array {
         try {
-            $rows = $this->db->query("SELECT product_id, spec_key, spec_value FROM product_reference_specs WHERE spec_key IN ('socket','memory_type','form_factor','vram_gb','capacity_gb')")->fetchAll();
+            $rows = $this->db->query("SELECT product_id, spec_key, spec_value FROM product_reference_specs WHERE spec_key IN ('socket','memory_type','form_factor','vram_gb','capacity_gb','speed_mhz','interface','psu_capacity_watt','cooler_type')")->fetchAll();
         } catch (\PDOException $e) { return []; }
         $map = []; foreach ($rows as $r) { $map[(int)$r['product_id']][(string)$r['spec_key']] = (string)$r['spec_value']; }
         return $map;
