@@ -41,6 +41,14 @@ ok_rd($val($d, 'confidence') === 67.5, 'The extra cpu counts in the mean (70, 50
 $z = SpecRadar::axes([$item('cpu', 4000, 4500, 5000, 70), $item('gpu', 0, 0, 0, 50)], 30000.0);
 ok_rd($val($z, 'stability') === 77.8, 'A zero-median part is skipped for stability: ' . $val($z, 'stability'));
 
+// LS-14 (review finding): a part with no price, or only a new-price reference (confidence 0), is not used-market data. It must not raise coverage,
+// pull the mean confidence down as if measured, or count as a perfectly stable price; a new price still counts in what the build would cost
+$m = SpecRadar::axes([$item('cpu', 4000, 4500, 5000, 70), $item('psu', 0, 0, 0, 0), $item('cooling', 2000, 2000, 2000, 0)], 30000.0);
+ok_rd($val($m, 'coverage') === 12.5, 'Only the used-market part covers a category (1 of 8): ' . $val($m, 'coverage'));
+ok_rd($val($m, 'confidence') === 70.0, 'The mean confidence is over used-market parts only: ' . $val($m, 'confidence'));
+ok_rd($val($m, 'stability') === 77.8, 'A new-price reference is not "perfectly stable": ' . $val($m, 'stability'));
+ok_rd($val($m, 'budget') === 21.7, 'The new price still counts toward what the build would cost (4,500 + 2,000 of 30,000): ' . $val($m, 'budget'));
+
 // an empty build gives zeros, not an error
 $e = SpecRadar::axes([], 30000.0);
 ok_rd(array_sum(array_column($e, 'value')) === 0.0, 'An empty build reads 0 on every axis');

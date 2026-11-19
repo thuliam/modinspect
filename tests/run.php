@@ -100,6 +100,8 @@ $commands = [
     ['label' => 'tests/admin_readonly_controls_test.php', 'args' => ['tests/admin_readonly_controls_test.php']],
     ['label' => 'tests/smoke_check_test.php', 'args' => ['tests/smoke_check_test.php']],
     ['label' => 'tests/production_error_page_test.php', 'args' => ['tests/production_error_page_test.php']],
+    ['label' => 'tests/private_storage_ignore_test.php', 'args' => ['tests/private_storage_ignore_test.php']],
+    ['label' => 'tests/ftps_workflow_guard_test.php', 'args' => ['tests/ftps_workflow_guard_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
     ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/product_facts_test.php', 'args' => ['tests/product_facts_test.php']],

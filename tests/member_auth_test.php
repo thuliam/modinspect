@@ -158,10 +158,22 @@ try {
     $db->prepare("UPDATE members SET status = 'active' WHERE id = :id")->execute(['id' => $r['member_id']]);
     $db->prepare("INSERT INTO spec_builds (uuid, budget_min, budget_max, intended_use, member_id) VALUES (:u, 1, 2, 'gaming', :m)")->execute(['u' => 'test-' . bin2hex(random_bytes(8)), 'm' => $r['member_id']]);
     ok_m(count($auth->builds((int)$r['member_id'])) === 1, 'Saved builds are listed for their member');
-    $auth->deleteAccount((int)$r['member_id']);
+    // the member also has a listing with a photo on disk: deleting the account must remove the files too (the database rows go by cascade, files do not)
+    $photoDir = sys_get_temp_dir() . '/mi-del-photos-' . bin2hex(random_bytes(4));
+    $luuid = bin2hex(random_bytes(16)); $pname = bin2hex(random_bytes(12)) . '.jpg';
+    mkdir($photoDir . '/' . $luuid, 0777, true); file_put_contents($photoDir . '/' . $luuid . '/' . $pname, 'x');
+    $otherUuid = bin2hex(random_bytes(16)); mkdir($photoDir . '/' . $otherUuid, 0777, true); file_put_contents($photoDir . '/' . $otherUuid . '/' . $pname, 'x');
+    $pid = (int)$db->query('SELECT id FROM products ORDER BY id LIMIT 1')->fetchColumn();
+    $db->prepare("INSERT INTO seller_listings (uuid, member_id, product_id, asking_price) VALUES (:u, :m, :p, 1000)")->execute(['u' => $luuid, 'm' => $r['member_id'], 'p' => $pid]);
+    (new MemberAuth($db, new \App\Services\Listing\ListingPhotoStore($photoDir)))->deleteAccount((int)$r['member_id']);
+    ok_m(!is_dir($photoDir . '/' . $luuid) && is_file($photoDir . '/' . $otherUuid . '/' . $pname), "Deleting the account removes that member's listing photos from disk and leaves everyone else's alone");
+    @unlink($photoDir . '/' . $otherUuid . '/' . $pname); @rmdir($photoDir . '/' . $otherUuid); @rmdir($photoDir);
     ok_m((int)$db->query('SELECT COUNT(*) FROM members WHERE id = ' . (int)$r['member_id'])->fetchColumn() === 0 && (int)$db->query('SELECT COUNT(*) FROM member_identities WHERE member_id = ' . (int)$r['member_id'])->fetchColumn() === 0, 'Deleting the account removes the member and the identities');
     ok_m((int)$db->query('SELECT COUNT(*) FROM spec_builds WHERE member_id = ' . (int)$r['member_id'])->fetchColumn() === 0 && !isset($_SESSION[MemberAuth::SESSION_MEMBER_ID]), 'Builds lose their owner and the member is signed out');
 } finally {
     $db->rollBack();
 }
+// wiring: the real controller must give MemberAuth the photo store, otherwise "delete my account" would leave the photos behind
+$acc = (string)file_get_contents(dirname(__DIR__) . '/app/Controllers/AccountController.php');
+ok_m(str_contains($acc, 'new MemberAuth(Database::connection($config[\'db\']), new \App\Services\Listing\ListingPhotoStore('), 'AccountController builds MemberAuth with the listing photo store');
 echo "member_auth_test: PASS\n";

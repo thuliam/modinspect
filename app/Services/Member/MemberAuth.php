@@ -17,7 +17,7 @@ final class MemberAuth
     public const SESSION_PENDING = 'member_oauth_pending';
     public const PENDING_TTL = 600;
 
-    public function __construct(private PDO $db) {}
+    public function __construct(private PDO $db, private ?\App\Services\Listing\ListingPhotoStore $photos = null) {}
 
     public function start(OAuthProvider $p, string $redirectUri, bool $consent, ?int $now = null): string
     {
@@ -94,6 +94,9 @@ final class MemberAuth
     /** PDPA: the member deletes their own account. Identities go with it; saved builds stay but lose their owner. */
     public function deleteAccount(int $memberId): void
     {
+        // the listing photos are files: the cascade removes their rows, not the files, so collect the listing ids first
+        $uuids = [];
+        try { $q = $this->db->prepare('SELECT uuid FROM seller_listings WHERE member_id = :id'); $q->execute(['id' => $memberId]); $uuids = $q->fetchAll(PDO::FETCH_COLUMN); } catch (\Throwable) { /* a host without migration 024 has no listings */ }
         $own = !$this->db->inTransaction();
         if ($own) { $this->db->beginTransaction(); }
         try {
@@ -104,6 +107,7 @@ final class MemberAuth
             if ($own) { $this->db->rollBack(); }
             throw $e;
         }
+        foreach ($uuids as $u) { $this->photos?->delete((string)$u); }   // only after the rows are gone for good
         $this->logout();
     }
 

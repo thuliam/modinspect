@@ -34,6 +34,7 @@ final class ListingPhotoStore
         if (!in_array($mime, self::TYPES, true)) { return ['ok' => false, 'error' => 'NOT_AN_IMAGE']; }
         $info = @getimagesize($tmp);
         if (!$info || $info[0] < 1 || $info[1] < 1 || $info[0] * $info[1] > self::MAX_SOURCE_PIXELS) { return ['ok' => false, 'error' => 'NOT_AN_IMAGE']; }
+        if ($mime === 'image/webp' && !function_exists('imagecreatefromwebp')) { return ['ok' => false, 'error' => 'NOT_AN_IMAGE']; }   // this PHP's GD has no WebP: refuse politely instead of a fatal error
         $src = match ($mime) { 'image/jpeg' => @imagecreatefromjpeg($tmp), 'image/png' => @imagecreatefrompng($tmp), default => @imagecreatefromwebp($tmp) };
         if (!$src) { return ['ok' => false, 'error' => 'NOT_AN_IMAGE']; }
         $w = imagesx($src); $h = imagesy($src);

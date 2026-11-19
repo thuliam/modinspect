@@ -85,7 +85,7 @@ final class AccountController extends Controller
         return ProviderRegistry::fromConfig($m, new CurlOAuthHttp(), ROOT_PATH . '/storage/cache/oauth', (string)($m['facebook_graph_version'] ?? 'v19.0'));
     }
 
-    private function auth(): MemberAuth { global $config; return new MemberAuth(Database::connection($config['db'])); }
+    private function auth(): MemberAuth { global $config; return new MemberAuth(Database::connection($config['db']), new \App\Services\Listing\ListingPhotoStore(ROOT_PATH . '/storage/uploads/listings')); }
 
     private function redirectUri(OAuthProvider $p): string { global $config; return rtrim((string)$config['base_url'], '/') . '/account/callback/' . $p->key(); }
 

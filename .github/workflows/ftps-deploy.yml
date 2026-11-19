@@ -163,10 +163,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Checkout the release ref (for cli/smoke_check.php)
+      # the workflow's own commit (main), NOT inputs.ref: a rollback to an older tag must still find cli/smoke_check.php
+      - name: Checkout main (for cli/smoke_check.php)
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - name: Set up PHP 8.3 (curl)
