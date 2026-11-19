@@ -91,6 +91,8 @@ $commands = [
     ['label' => 'tests/intake_new_prices_test.php', 'args' => ['tests/intake_new_prices_test.php']],
     ['label' => 'tests/intake_specs_migration_test.php', 'args' => ['tests/intake_specs_migration_test.php']],
     ['label' => 'tests/intake_products_migration_test.php', 'args' => ['tests/intake_products_migration_test.php']],
+    ['label' => 'tests/intake_sold_prices_test.php', 'args' => ['tests/intake_sold_prices_test.php']],
+    ['label' => 'tests/snapshot_recompute_test.php', 'args' => ['tests/snapshot_recompute_test.php']],
     ['label' => 'tests/condition_guide_test.php', 'args' => ['tests/condition_guide_test.php']],
     ['label' => 'tests/price_index_categories_test.php', 'args' => ['tests/price_index_categories_test.php']],
     ['label' => 'tests/hidden_modules_test.php', 'args' => ['tests/hidden_modules_test.php']],
