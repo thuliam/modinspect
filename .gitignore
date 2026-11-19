@@ -26,3 +26,6 @@ storage/research/
 
 # Database backups hold everything (password hashes, raw listing text): never commit them
 storage/backups/
+
+# LS-14: member photos and report evidence (bank slips) are private and must never be committed
+storage/uploads/

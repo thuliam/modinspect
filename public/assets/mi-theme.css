@@ -39,7 +39,7 @@ body.mi .nav-icon { display: grid; place-items: center; width: 40px; height: 40p
 body.mi .nav-icon:hover { background: rgba(187, 242, 70, .14); color: var(--mi-lime); }
 body.mi .navbar-toggler { padding: 8px 10px; border: 1px solid var(--mb-line); border-radius: var(--mb-radius-sm); background: transparent; }
 body.mi .login-button { padding: 8px 14px; border: 1px solid var(--mb-line); border-radius: var(--mb-radius-sm); color: #fff; font-size: 13px; }
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
     body.mi #site-menu { padding: 12px 0 20px; }
     body.mi .nav-tools { margin-top: 12px; }}
 
@@ -413,7 +413,7 @@ body.mi .mi-go { width: 44px; height: 44px; right: 8px; bottom: 8px; background:
 body.mi .mi-go i { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid var(--ci-border-active); border-radius: 50%; background: rgba(187, 242, 70, .08); }
 body.mi .breadcrumbs a { padding: 0 4px; }
 body.mi .breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 0 4px; }
-@media (min-width: 992px) { body.mi .navbar-expand-lg .navbar-toggler { display: none; } }
+@media (min-width: 1200px) { body.mi .navbar-expand-xl .navbar-toggler { display: none; } }
 
 /* ---- Phase F fixes: tap targets and the last contrast gaps found by the sweep ---- */
 body.mi .mi-product-card h3 a::after { content: ""; position: absolute; inset: 0; z-index: 1; }
@@ -543,3 +543,10 @@ body.mi .pc-art-type .pc-art-cat { font-size: .75rem; letter-spacing: .08em; tex
 body.mi .pc-art-type strong { font-size: 1.35rem; line-height: 1.2; color: var(--ci-text); overflow-wrap: anywhere; }
 body.mi .mi-skip:focus { position: fixed; top: 8px; left: 8px; z-index: 2000; padding: 8px 16px; border-radius: var(--ci-r-md); background: var(--ci-primary); color: var(--ci-on-primary); }
 body.mi main:focus { outline: 0; }
+/* ---- LS-14 4.2: no readable text under 12px on public pages (price cards, badges, the build list); only the size changes, nothing else ---- */
+body.mi .confidence-badge, body.mi .price-status-badge { font-size: 12px; line-height: 16px; }
+body.mi .mb-range-scale, body.mi .mb-range-sm .mb-range-scale, body.mi .mb-range-median { font-size: 12px; }
+body.mi .spec-workspace .brand-name, body.mi .spec-workspace small, body.mi .spec-workspace em, body.mi .spec-workspace .part-image i, body.mi .spec-workspace .unavailable-slot p, body.mi .spec-workspace .spec-summary > p { font-size: 12px; }
+@media (max-width: 480px) { body.mi .mb-range-scale { font-size: 12px; } }
+/* LS-14 4.4: the three totals of a saved build do not fit side by side on a phone (the page grew to 404px at 320px): stack them */
+@media (max-width: 480px) { body.mi .build-totals { grid-template-columns: 1fr; } }

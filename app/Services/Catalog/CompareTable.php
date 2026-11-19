@@ -4,7 +4,7 @@ namespace App\Services\Catalog;
 
 /**
  * F-3: the side-by-side table of the Compare page. Up to four models; rows are the union of their fact labels (ProductFacts rows) in order of first appearance,
- * so a model that lacks a fact shows a gap and never an invented value. A row is marked "differs" when the models do not all show the same value.
+ * so a model that lacks a fact shows a gap and never an invented value. A row is marked "differs" when two models show different values (a gap is unknown, so it never counts).
  * Price uses the one "has a market price" rule (median, valid sample, accepted observation); an unpriced model is shown as unpriced, nothing is borrowed.
  * It never judges: no winner, score, rank or benchmark. Pure.
  */
@@ -47,7 +47,7 @@ final class CompareTable
                 $hit = null;
                 foreach ($it['facts'] as $f) { if ((string)$f['label'] === $label) { $hit = $f; break; } }
                 $cells[] = ['value' => $hit === null ? null : (string)$hit['value'], 'source' => $hit['source'] ?? null, 'note' => $hit['note'] ?? null];
-                $values[] = $hit === null ? "\0none" : (string)$hit['value'];
+                if ($hit !== null) { $values[] = (string)$hit['value']; }   // a gap is unknown, not a different value
             }
             $rows[] = ['label' => $label, 'cells' => $cells, 'differs' => count(array_unique($values)) > 1];
         }

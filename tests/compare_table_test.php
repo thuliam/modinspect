@@ -29,7 +29,7 @@ ok_ct($labels === ['จำนวนคอร์', 'Socket', 'L3 cache', 'TDP'], 
 $by = array_column($t['rows'], null, 'label');
 ok_ct($by['Socket']['cells'][0]['value'] === 'AM4' && $by['Socket']['cells'][1]['value'] === 'AM4' && $by['Socket']['differs'] === false, 'Equal values are not marked as different');
 ok_ct($by['จำนวนคอร์']['differs'] === true && $by['จำนวนคอร์']['cells'][1]['value'] === '8', 'Different values are marked');
-ok_ct($by['L3 cache']['cells'][1]['value'] === null && $by['L3 cache']['differs'] === true, 'A fact only one model has shows a gap (null) for the other and counts as a difference');
+ok_ct($by['L3 cache']['cells'][1]['value'] === null && $by['L3 cache']['differs'] === false, 'A fact only one model has shows a gap (null) for the other; a gap alone is not a difference (LS-14: it made the badge noisy across categories)');
 ok_ct($by['TDP']['cells'][0]['value'] === null && $by['TDP']['cells'][1]['value'] === '105 W', 'The gap can be in the first column too');
 ok_ct($by['Socket']['cells'][0]['source'] === 'https://www.amd.com/a' && $by['Socket']['cells'][1]['source'] === null, 'A source link travels with its own cell only');
 ok_ct($t['mixed_category'] === false, 'Same category is not mixed');
@@ -58,6 +58,14 @@ ok_ct(count(C::build([$a, $a, $b])['columns']) === 2, 'The same model twice is s
 $none = C::build([]);
 ok_ct($none['columns'] === [] && $none['rows'] === [] && $none['any_priced'] === false && $none['mixed_category'] === false, 'Nothing selected gives an empty table');
 
+
+// a gap next to two different real values still differs; a gap next to equal values does not
+$g = C::build([
+    ['product' => ['slug' => 'a', 'full_name' => 'A', 'category_slug' => 'cpu'], 'facts' => [['label' => 'X', 'value' => '1']]],
+    ['product' => ['slug' => 'b', 'full_name' => 'B', 'category_slug' => 'cpu'], 'facts' => []],
+    ['product' => ['slug' => 'c', 'full_name' => 'C', 'category_slug' => 'cpu'], 'facts' => [['label' => 'X', 'value' => '2']]],
+]);
+ok_ct($g['rows'][0]['differs'] === true, 'Two real values that differ are marked even with a gap between them');
 // one model alone has nothing to differ from
 $one = C::build([$a]);
 ok_ct(count($one['rows']) === 3 && !in_array(true, array_column($one['rows'], 'differs'), true), 'A single model has no differences');

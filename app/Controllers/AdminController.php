@@ -17,6 +17,14 @@ use PDO;
 final class AdminController extends Controller {
     private ?array $user = null;
     private function render(string $view,string $title,array $data=[]): void { $this->view('admin/'.$view,['title'=>$title,'auth_user'=>$this->user()]+$data); }
+    /** LS-14 J-0: the server already refuses the write (403); this only stops the page from offering a button that would fail */
+    private function canManage(): bool { return (new AuthorizationService())->can($this->user(), 'products.manage'); }
+    /** drops the action cell (last column) of every row for a read-only role; the column stays so the table keeps its shape */
+    private function withoutActions(array $payload): array {
+        if($this->canManage() || empty($payload['data'])) return $payload;
+        foreach($payload['data'] as $i=>$row){ if(is_array($row) && $row){ $row[array_key_last($row)]=''; $payload['data'][$i]=$row; } }
+        return $payload;
+    }
     private function user(): ?array { return $this->user ??= (new AuthService())->currentUser(); }
     private function requirePermission(string $permission): bool {
         $auth=new AuthService();
@@ -35,8 +43,8 @@ final class AdminController extends Controller {
         return true;
     }
     public function index(): void { if(!$this->requirePermission('admin.dashboard.view')) return; $d=new Dashboard();$this->render('dashboard','Admin Data Quality',$d->adminStats()+['products'=>$d->products(),'sources'=>$d->sources(),'recent_imports'=>$d->recentImportRuns()]); }
-    public function products(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('products','Product Master',['products'=>$d->products(),'categories'=>$d->rows("SELECT id,name,slug FROM product_categories ORDER BY sort_order,name"),'brands'=>$d->rows("SELECT id,name FROM brands ORDER BY name")]); }
-    public function aliases(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('aliases','Product Aliases',['aliases'=>$d->aliases(),'products'=>$d->reviewProductOptions()]); }
+    public function products(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('products','Product Master',['canManage'=>$this->canManage(),'products'=>$d->products(),'categories'=>$d->rows("SELECT id,name,slug FROM product_categories ORDER BY sort_order,name"),'brands'=>$d->rows("SELECT id,name FROM brands ORDER BY name")]); }
+    public function aliases(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('aliases','Product Aliases',['canManage'=>$this->canManage(),'aliases'=>$d->aliases(),'products'=>$d->reviewProductOptions()]); }
     public function observations(): void { if(!$this->requirePermission('review.view')) return; $d=new Dashboard();$this->render('observations','Price Observations',['observations'=>$d->observations($_GET['status']??null,trim((string)($_GET['q']??''))),'products'=>$d->reviewProductOptions(),'sources'=>$d->reviewSourceOptions(),'batch_options'=>$d->reviewBatchOptions(),'status'=>$_GET['status']??'','q'=>trim((string)($_GET['q']??''))]); }
     public function review(): void {
         if(!$this->requirePermission('review.view')) return;
@@ -135,6 +143,74 @@ final class AdminController extends Controller {
         } finally { @unlink($tmp); }
         $this->intake($result['ok']?$result:null,$result['ok']?null:'The file cannot be used: '.str_replace('MISSING_COLUMNS:','missing columns: ',(string)$result['error']));
     }
+    /** LS-14 Module 6.5 (OD-2): new retail prices for the Build page, entered by an admin with the shop link and check date */
+    public function newPrices(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        global $config; $db=Database::connection($config['db']);
+        try { $rows=(new \App\Services\Admin\NewPriceReferences($db))->list(); $ready=true; } catch(\PDOException) { $rows=[]; $ready=false; }
+        $products=(new \App\Models\Product())->search();
+        $this->render('new-prices','ราคาของใหม่อ้างอิง',['rows'=>$rows,'ready'=>$ready,'products'=>$products]);
+    }
+    public function newPriceAction(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/new-prices'); }
+        global $config; $svc=new \App\Services\Admin\NewPriceReferences(Database::connection($config['db']));
+        $actor=(int)$this->user()['id'];
+        $messages=['PRODUCT_NOT_FOUND'=>'ไม่พบสินค้านี้','INVALID_PRICE'=>'ราคาต้องมากกว่า 0 และไม่เกิน 10,000,000 บาท','INVALID_URL'=>'ลิงก์ร้านต้องขึ้นต้นด้วย http:// หรือ https://','INVALID_DATE'=>'วันที่ตรวจต้องเป็นวันที่จริง ไม่เกินวันนี้','NOT_FOUND'=>'ไม่พบรายการนี้'];
+        $action=(string)($_POST['action']??'');
+        if($action==='add') { $r=$svc->add($actor,(int)($_POST['product_id']??0),(string)($_POST['price']??''),(string)($_POST['source_url']??''),(string)($_POST['checked_on']??''),(string)($_POST['note']??'')); $ok='บันทึกราคาของใหม่อ้างอิงแล้ว'; }
+        elseif($action==='delete') { $r=$svc->delete($actor,(int)($_POST['id']??0)); $ok='ลบรายการแล้ว'; }
+        else { $r=['ok'=>false,'error'=>'NOT_FOUND']; $ok=''; }
+        $this->flash($r['ok']?'success':'danger',$r['ok']?$ok:($messages[$r['error']]??'บันทึกไม่สำเร็จ'));
+        $this->redirect('/admin/new-prices');
+    }
+    /** LS-14 Module 9: moderation of seller listings (approve / reject with a reason). Approval creates no price (HG-17). */
+    public function sellerListings(): void {
+        if(!$this->requirePermission('listings.moderate')) return;
+        global $config;
+        try { $svc=new \App\Services\Listing\SellerListings(Database::connection($config['db'])); $rows=$svc->moderationQueue(); $photos=$svc->photosFor(array_column($rows,'id')); $ready=true; } catch(\PDOException) { $rows=[]; $photos=[]; $ready=false; }
+        $this->render('seller-listings','Seller listings',['rows'=>$rows,'photos'=>$photos,'ready'=>$ready]);
+    }
+    public function sellerListingAction(): void {
+        if(!$this->requirePermission('listings.moderate')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/seller-listings'); }
+        global $config;
+        $r=(new \App\Services\Listing\SellerListings(Database::connection($config['db'])))->moderate((int)$this->user()['id'],(int)($_POST['id']??0),(string)($_POST['decision']??''),(string)($_POST['note']??''));
+        $this->flash($r['ok']?'success':'danger',$r['ok']?'บันทึกผลการตรวจแล้ว':(['NOTE_REQUIRED'=>'การไม่ผ่านต้องมีเหตุผล','BAD_STATE'=>'ประกาศนี้ไม่ได้อยู่ในสถานะรอตรวจ','BAD_ACTION'=>'คำสั่งไม่ถูกต้อง'][$r['error']]??'บันทึกไม่สำเร็จ'));
+        $this->redirect('/admin/seller-listings');
+    }
+    /** LS-14 Module 8 (ADR-007): moderation of seller reports. Works even while the public feature is off, so the queue can be prepared. */
+    private function sellerCheckService(): ?\App\Services\Listing\SellerCheck {
+        global $config; $key=(string)($config['seller_check']['hmac_key']??'');
+        return strlen($key)>=32 ? new \App\Services\Listing\SellerCheck(Database::connection($config['db']),$key) : null;
+    }
+    public function sellerReports(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        $svc=$this->sellerCheckService();
+        try {
+            $svc ??= new \App\Services\Listing\SellerCheck(Database::connection($GLOBALS['config']['db']),str_repeat('x',32)); // queue reads never hash; no key is needed to list
+            $rows=$svc->queue(); $disputes=$svc->openDisputes(); $ready=true;
+        } catch(\PDOException) { $rows=[]; $disputes=[]; $ready=false; }
+        $this->render('seller-reports','Seller reports',['rows'=>$rows,'disputes'=>$disputes,'ready'=>$ready]);
+    }
+    public function sellerReportAction(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/seller-reports'); }
+        global $config;
+        $svc=new \App\Services\Listing\SellerCheck(Database::connection($config['db']),(string)($config['seller_check']['hmac_key']??''));
+        $decision=(string)($_POST['decision']??''); $actor=(int)$this->user()['id'];
+        if($decision==='close_dispute') { $ok=$svc->closeDispute($actor,(int)($_POST['dispute_id']??0)); $this->flash($ok?'success':'danger',$ok?'ปิดคำโต้แย้งแล้ว':'ปิดไม่สำเร็จ'); $this->redirect('/admin/seller-reports'); }
+        $r=$svc->moderate($actor,(int)($_POST['id']??0),$decision,(string)($_POST['note']??''));
+        $this->flash($r['ok']?'success':'danger',$r['ok']?'บันทึกผลการตรวจแล้ว':(['NOTE_REQUIRED'=>'การไม่ผ่านต้องมีเหตุผล','BAD_STATE'=>'รายงานนี้ตัดสินแล้ว','BAD_ACTION'=>'คำสั่งไม่ถูกต้อง'][$r['error']]??'บันทึกไม่สำเร็จ'));
+        $this->redirect('/admin/seller-reports');
+    }
+    /** Evidence image of a report, for moderators only. */
+    public function sellerReportEvidence(string $uuid,string $file): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        $path=(new \App\Services\Listing\ListingPhotoStore(ROOT_PATH.'/storage/uploads/reports'))->path($uuid,$file);
+        if($path===null){ http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบไฟล์']); return; }
+        header('Content-Type: image/jpeg'); header('X-Content-Type-Options: nosniff'); header('Cache-Control: private, no-store'); header('Content-Length: '.filesize($path)); readfile($path);
+    }
     public function users(): void {
         if(!$this->requirePermission('users.manage')) return;
         $this->render('users','Users',['users'=>(new \App\Services\Admin\UserAdministration())->list(),'me'=>(int)$this->user()['id'],'roles'=>\App\Services\Admin\UserAdministration::ROLES]);
@@ -220,14 +296,14 @@ final class AdminController extends Controller {
     public function articles(): void { if(!$this->requirePermission('products.view')) return; $this->render('placeholder','Articles',['description'=>'จัดการบทความ SEO, buying guides และสถานะการเผยแพร่']); }
     public function audits(): void { if(!$this->requirePermission('audit.view')) return; $d=new Dashboard();$this->render('audits','Audit Logs',['audits'=>$d->audits()]); }
     public function articlesOperational(): void { if(!$this->requirePermission('products.view')) return; $this->render('articles','Articles',['last_import_summary'=>$_SESSION['admin_import_summary'] ?? null]); }
-    public function productsData(): void { if(!$this->requirePermission('products.view')) return; $this->json((new AdminDataTableService())->products($_GET,$this->baseUrl())); }
-    public function aliasesData(): void { if(!$this->requirePermission('products.view')) return; $this->json((new AdminDataTableService())->aliases($_GET,$this->baseUrl())); }
+    public function productsData(): void { if(!$this->requirePermission('products.view')) return; $this->json($this->withoutActions((new AdminDataTableService())->products($_GET,$this->baseUrl()))); }
+    public function aliasesData(): void { if(!$this->requirePermission('products.view')) return; $this->json($this->withoutActions((new AdminDataTableService())->aliases($_GET,$this->baseUrl()))); }
     public function observationsData(): void { if(!$this->requirePermission('review.view')) return; $this->json((new AdminDataTableService())->observations($_GET,$this->baseUrl())); }
     public function reviewData(): void { if(!$this->requirePermission('review.view')) return; $this->json((new AdminDataTableService())->reviewQueue($_GET,$this->baseUrl())); }
     public function indicesData(): void { if(!$this->requirePermission('snapshots.view')) return; $this->json((new AdminDataTableService())->priceIndices($_GET,$this->baseUrl())); }
     public function sourcesData(): void { if(!$this->requirePermission('sources.view')) return; $this->json((new AdminDataTableService())->sources($_GET,$this->baseUrl(),$this->user() ?? [])); }
     public function jobsData(): void { if(!$this->requirePermission('collection.jobs.view')) return; $this->json((new AdminDataTableService())->jobs($_GET,$this->baseUrl(),$this->user() ?? [])); }
-    public function articlesData(): void { if(!$this->requirePermission('products.view')) return; $this->json((new AdminDataTableService())->articles($_GET,$this->baseUrl())); }
+    public function articlesData(): void { if(!$this->requirePermission('products.view')) return; $this->json($this->withoutActions((new AdminDataTableService())->articles($_GET,$this->baseUrl()))); }
     public function auditsData(): void { if(!$this->requirePermission('audit.view')) return; $this->json((new AdminDataTableService())->audits($_GET)); }
     public function importCsvTemplate(): void { $this->downloadImportTemplate('csv'); }
     public function importJsonTemplate(): void { $this->downloadImportTemplate('json'); }

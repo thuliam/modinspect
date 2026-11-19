@@ -21,6 +21,15 @@ $bad = static function (array $over, array $ctx = []) use ($good): array { retur
 $failed = static fn(array $r): array => array_values(array_map(static fn($c) => $c['name'], array_filter($r['checks'], static fn($c) => $c['status'] === 'fail')));
 $warned = static fn(array $r): array => array_values(array_map(static fn($c) => $c['name'], array_filter($r['checks'], static fn($c) => $c['status'] === 'warn')));
 
+// LS-14: the optional features' settings
+$k32 = str_repeat('k', 32);
+ok_ep(in_array('MEMBER_PROVIDERS', $failed($bad(['MEMBER_GOOGLE_CLIENT_ID' => 'id-only'])), true) && in_array('MEMBER_PROVIDERS', $failed($bad(['MEMBER_FACEBOOK_APP_SECRET' => 'secret-only'])), true), 'A provider with only an id or only a secret fails');
+ok_ep($bad(['MEMBER_GOOGLE_CLIENT_ID' => 'i', 'MEMBER_GOOGLE_CLIENT_SECRET' => 's'])['verdict'] === 'PASS', 'A provider with both values, or none, passes');
+ok_ep(in_array('SELLER_CHECK', $failed($bad(['SELLER_CHECK_ENABLED' => 'true'])), true) && in_array('SELLER_CHECK', $failed($bad(['SELLER_CHECK_ENABLED' => 'true', 'SELLER_CHECK_HMAC_KEY' => 'short'])), true), 'The seller check switched on without a 32-character key fails');
+ok_ep(in_array('SELLER_CHECK', $warned($bad(['SELLER_CHECK_ENABLED' => 'true', 'SELLER_CHECK_HMAC_KEY' => $k32])), true) && !in_array('SELLER_CHECK', $failed($bad(['SELLER_CHECK_ENABLED' => 'true', 'SELLER_CHECK_HMAC_KEY' => $k32])), true), 'The seller check switched on with a key is a warning to confirm the lawyer review');
+ok_ep(in_array('SELLER_LISTINGS_PUBLIC', $warned($bad(['SELLER_LISTINGS_PUBLIC' => 'true'])), true), 'Public seller listings are a warning to confirm HG-16');
+ok_ep(!str_contains(json_encode($bad(['SELLER_CHECK_ENABLED' => 'true', 'SELLER_CHECK_HMAC_KEY' => 'SECRET-KEY-VALUE-ABCDEFGHIJKLMNOPQRSTUVWXYZ'])), 'SECRET-KEY-VALUE'), 'The key value never appears in the report');
+
 foreach (['local', 'testing', 'staging', ''] as $env) { ok_ep(in_array('APP_ENV', $failed($bad(['APP_ENV' => $env])), true), "APP_ENV=[$env] fails"); }
 $noEnv = $good; unset($noEnv['APP_ENV']);
 ok_ep(in_array('APP_ENV', $failed(E::evaluate($noEnv, ['file_mode' => 0640, 'public_env_exists' => false])), true), 'A missing APP_ENV fails (it must be explicit)');

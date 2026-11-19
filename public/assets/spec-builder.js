@@ -10,7 +10,7 @@
     let low = 0, total = 0, high = 0;
     selected.innerHTML = checked.length ? checked.map(input => {
       low += Number(input.dataset.low); total += Number(input.dataset.price); high += Number(input.dataset.high);
-      return `<div class="summary-part"><span><small>${input.dataset.category}</small><b>${input.dataset.name}</b></span><strong>${money(input.dataset.price)}</strong></div>`;
+      return `<div class="summary-part"><span><small>${input.dataset.category}</small><b>${input.dataset.name}</b></span><strong>${input.dataset.basis === "none" ? "ยังไม่มีราคา" : money(input.dataset.price)}</strong></div>`;
     }).join('') : '<div class="summary-empty">ยังไม่ได้เลือกชิ้นส่วน</div>';
     document.getElementById('summary-low').textContent = money(low);
     document.getElementById('summary-total').textContent = money(total);

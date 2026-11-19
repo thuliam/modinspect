@@ -9,7 +9,7 @@ namespace App\Services\Seo;
  */
 final class SeoService
 {
-    public const DISALLOW = ['/admin', '/login', '/logout', '/deal-checker/result/', '/seller'];
+    public const DISALLOW = ['/admin', '/login', '/logout', '/deal-checker/result/', '/seller', '/seller-check', '/account'];
 
     public static function canonical(string $baseUrl, string $path): string
     {
@@ -40,16 +40,18 @@ Disallow: /
 ";
     }
 
-    /** @param list<string> $paths site-relative paths, each already public */
+    /** @param list<string|array{path:string,lastmod?:?string}> $paths site-relative paths, each already public; lastmod is the last snapshot time when known */
     public static function sitemapXml(string $baseUrl, array $paths): string
     {
         $seen = []; $out = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
-        foreach ($paths as $path) {
+        foreach ($paths as $entry) {
+            $path = is_array($entry) ? (string)$entry['path'] : (string)$entry;
+            $ts = is_array($entry) && !empty($entry['lastmod']) ? strtotime((string)$entry['lastmod']) : false;
             foreach (self::DISALLOW as $d) { if (str_starts_with($path, $d)) { continue 2; } }
             $loc = self::canonical($baseUrl, $path);
             if (isset($seen[$loc])) { continue; }
             $seen[$loc] = true;
-            $out[] = '  <url><loc>' . htmlspecialchars($loc, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</loc></url>';
+            $out[] = '  <url><loc>' . htmlspecialchars($loc, ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</loc>' . ($ts !== false ? '<lastmod>' . date('Y-m-d', $ts) . '</lastmod>' : '') . '</url>';
         }
         $out[] = '</urlset>';
         return implode("\n", $out) . "\n";

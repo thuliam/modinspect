@@ -7,7 +7,7 @@ $cats = [
     ['href' => '/price?category=ram', 'title' => 'RAM', 'sub' => 'หน่วยความจำ', 'art' => 'ram'],
     ['href' => '/price?category=storage', 'title' => 'Storage', 'sub' => 'SSD / HDD', 'art' => 'ssd'],
     ['href' => '/deal-checker', 'title' => 'Deal Checker', 'sub' => 'เทียบราคาที่เจอ', 'icon' => 'fa-balance-scale'],
-    ['href' => '/methodology', 'title' => 'วิธีคำนวณ', 'sub' => 'ราคามาจากไหน', 'icon' => 'fa-calculator'],
+    ['href' => '/condition-guide', 'title' => 'เช็กสภาพ', 'sub' => 'คู่มือก่อนจ่ายเงิน', 'icon' => 'fa-clipboard-check'],
 ];
 $why = [
     ['icon' => 'fa-tags', 'fa' => 'fa-tags', 'title' => 'ราคาที่คัดกรองแล้ว', 'text' => 'ตัดประกาศที่ผิดปกติออกก่อนคำนวณ แสดงช่วงราคาและราคากลาง'],
@@ -167,7 +167,7 @@ while (count($featured) < 5 && $byCat) {
         <div class="mi-cta reveal">
             <div class="mi-cta-art"><img src="<?= $base ?>/assets/brand/cta-hardware.png" width="600" height="280" alt="" loading="lazy"></div>
             <div class="mi-cta-copy"><h2>เจอราคาประกาศแล้วไม่แน่ใจ?</h2><p>เปรียบเทียบราคาที่คุณเจอกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p></div>
-            <div class="mi-cta-act"><a class="btn btn-lime" href="<?= $base ?>/deal-checker"><i class="fas fa-balance-scale" aria-hidden="true"></i> เปิด Deal Checker</a><a class="btn btn-ghost" href="<?= $base ?>/price"><i class="fas fa-search" aria-hidden="true"></i> เลือกดูรุ่น</a></div>
+            <div class="mi-cta-act"><a class="btn btn-lime" href="<?= $base ?>/deal-checker"><i class="fas fa-balance-scale" aria-hidden="true"></i> เปิด Deal Checker</a><a class="btn btn-ghost" href="<?= $base ?>/price"><i class="fas fa-search" aria-hidden="true"></i> เลือกดูรุ่น</a><a class="btn btn-ghost" href="<?= $base ?>/compare"><i class="fas fa-columns" aria-hidden="true"></i> เทียบรุ่น</a></div>
         </div>
     </div>
 </section>

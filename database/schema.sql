@@ -226,6 +226,17 @@ CREATE TABLE price_observations (
   observed_at DATETIME NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  condition_percent TINYINT UNSIGNED NULL,
+  under_warranty TINYINT(1) NULL,
+  product_age_months SMALLINT UNSIGNED NULL,
+  province VARCHAR(40) NULL,
+  seller_warranty_terms VARCHAR(255) NULL,
+  has_repair_history TINYINT(1) NULL,
+  shipping_option VARCHAR(20) NULL,
+  shipping_cost DECIMAL(10,2) NULL,
+  test_result_note VARCHAR(255) NULL,
+  defect_codes VARCHAR(255) NULL,
+  defect_note VARCHAR(255) NULL,
   CONSTRAINT fk_obs_raw FOREIGN KEY (raw_observation_id) REFERENCES raw_price_observations(id) ON DELETE SET NULL,
   CONSTRAINT fk_obs_product FOREIGN KEY (product_id) REFERENCES products(id),
   CONSTRAINT fk_obs_variant FOREIGN KEY (product_variant_id) REFERENCES product_variants(id) ON DELETE SET NULL,
@@ -323,6 +334,7 @@ CREATE TABLE deal_checks (
 
 CREATE TABLE spec_builds (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  member_id BIGINT UNSIGNED NULL,
   uuid CHAR(36) NOT NULL UNIQUE,
   user_id BIGINT UNSIGNED NULL,
   budget_min DECIMAL(12,2) NOT NULL,
@@ -539,4 +551,127 @@ CREATE TABLE product_reference_specs (
   UNIQUE KEY uq_ref_spec (product_id, spec_key),
   INDEX idx_ref_spec_key (spec_key),
   CONSTRAINT fk_ref_spec_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE new_price_references (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  price DECIMAL(12,2) NOT NULL,
+  source_url VARCHAR(500) NOT NULL,
+  checked_on DATE NOT NULL,
+  note VARCHAR(255) NULL,
+  created_by BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_new_price_product (product_id, checked_on),
+  CONSTRAINT fk_new_price_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+  CONSTRAINT fk_new_price_user FOREIGN KEY (created_by) REFERENCES users(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE members (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  display_name VARCHAR(120) NULL,
+  email VARCHAR(190) NULL,
+  status ENUM('active','disabled') NOT NULL DEFAULT 'active',
+  terms_accepted_at DATETIME NOT NULL,
+  last_login_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_members_email (email)
+) ENGINE=InnoDB;
+
+CREATE TABLE member_identities (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  member_id BIGINT UNSIGNED NOT NULL,
+  provider VARCHAR(20) NOT NULL,
+  subject VARCHAR(191) NOT NULL,
+  email VARCHAR(190) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_member_identity (provider, subject),
+  CONSTRAINT fk_identity_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE seller_listings (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  uuid CHAR(32) NOT NULL,
+  member_id BIGINT UNSIGNED NOT NULL,
+  product_id BIGINT UNSIGNED NOT NULL,
+  asking_price DECIMAL(12,2) NOT NULL,
+  status ENUM('draft','submitted','approved','rejected','withdrawn') NOT NULL DEFAULT 'draft',
+  condition_percent TINYINT UNSIGNED NULL,
+  under_warranty TINYINT(1) NULL,
+  warranty_months SMALLINT UNSIGNED NULL,
+  product_age_months SMALLINT UNSIGNED NULL,
+  province VARCHAR(40) NULL,
+  seller_warranty_terms VARCHAR(255) NULL,
+  is_defective TINYINT(1) NULL,
+  has_repair_history TINYINT(1) NULL,
+  shipping_option VARCHAR(20) NULL,
+  shipping_cost DECIMAL(10,2) NULL,
+  has_test_result TINYINT(1) NULL,
+  test_result_note VARCHAR(255) NULL,
+  defect_codes VARCHAR(255) NULL,
+  defect_note VARCHAR(255) NULL,
+  moderated_by BIGINT UNSIGNED NULL,
+  moderated_at DATETIME NULL,
+  moderation_note VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_seller_listing_uuid (uuid),
+  INDEX idx_seller_listing_member (member_id),
+  INDEX idx_seller_listing_status (status, created_at),
+  CONSTRAINT fk_seller_listing_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+  CONSTRAINT fk_seller_listing_product FOREIGN KEY (product_id) REFERENCES products(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE seller_listing_photos (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  listing_id BIGINT UNSIGNED NOT NULL,
+  file_name VARCHAR(80) NOT NULL,
+  width SMALLINT UNSIGNED NOT NULL,
+  height SMALLINT UNSIGNED NOT NULL,
+  bytes INT UNSIGNED NOT NULL,
+  sort_order TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_listing_photo (listing_id, sort_order),
+  CONSTRAINT fk_listing_photo FOREIGN KEY (listing_id) REFERENCES seller_listings(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE seller_reports (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  uuid CHAR(32) NOT NULL,
+  member_id BIGINT UNSIGNED NULL,
+  identifier_type ENUM('phone','bank_account') NOT NULL,
+  identifier_hash CHAR(64) NOT NULL,
+  identifier_last4 CHAR(4) NOT NULL,
+  problem_type VARCHAR(30) NOT NULL,
+  note VARCHAR(500) NULL,
+  status ENUM('pending','verified','rejected','disputed') NOT NULL DEFAULT 'pending',
+  moderated_by BIGINT UNSIGNED NULL,
+  moderated_at DATETIME NULL,
+  moderation_note VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_seller_report_uuid (uuid),
+  INDEX idx_seller_report_hash (identifier_hash, status),
+  INDEX idx_seller_report_status (status, created_at),
+  CONSTRAINT fk_seller_report_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE seller_report_evidence (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  report_id BIGINT UNSIGNED NOT NULL,
+  file_name VARCHAR(80) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_report_evidence (report_id),
+  CONSTRAINT fk_report_evidence FOREIGN KEY (report_id) REFERENCES seller_reports(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE seller_report_disputes (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  identifier_hash CHAR(64) NOT NULL,
+  explanation VARCHAR(1000) NOT NULL,
+  contact_email VARCHAR(190) NOT NULL,
+  status ENUM('open','closed') NOT NULL DEFAULT 'open',
+  resolved_by BIGINT UNSIGNED NULL,
+  resolved_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_dispute_hash (identifier_hash, status)
 ) ENGINE=InnoDB;

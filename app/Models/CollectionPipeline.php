@@ -166,6 +166,7 @@ final class CollectionPipeline
                     'observed_at' => $candidate->capturedAt,
                 ]);
                 $observationId = (int)$this->db->lastInsertId();
+                $this->storeListingAttributes($observationId, (array)($candidate->rawMetadata['listing_attributes'] ?? []));
             }
 
             $review = $this->db->prepare(
@@ -250,5 +251,25 @@ final class CollectionPipeline
             return;
         }
         $this->db->rollBack();
+    }
+
+    /**
+     * LS-14 OD-5: the optional listing facts of an imported row (migration 024 columns). "has_test_result" is the existing has_benchmark column.
+     * A file that carries these facts on a database without migration 024 fails loudly instead of dropping them.
+     */
+    private function storeListingAttributes(int $observationId, array $attrs): void
+    {
+        if (!$attrs) { return; }
+        static $hasColumns = null;
+        $hasColumns ??= (bool)$this->db->query("SHOW COLUMNS FROM price_observations LIKE 'condition_percent'")->fetch();
+        if (!$hasColumns) { throw new \RuntimeException('The file carries listing facts (condition %, warranty, province ...): run database/migrations/024_listing_attributes_and_seller_listings.sql first'); }
+        $map = ['has_test_result' => 'has_benchmark'];
+        $set = []; $params = ['id' => $observationId];
+        foreach ($attrs as $k => $v) {
+            if (!in_array($k, \App\Services\Listing\ListingAttributes::FIELDS, true)) { continue; }
+            $col = $map[$k] ?? $k;
+            $set[] = "$col = :$col"; $params[$col] = $v;
+        }
+        if ($set) { $this->db->prepare('UPDATE price_observations SET ' . implode(', ', $set) . ' WHERE id = :id')->execute($params); }
     }
 }

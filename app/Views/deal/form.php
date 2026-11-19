@@ -24,10 +24,15 @@
 
                 <select id="deal-product" name="product_id" required>
                 <option value="">เลือกรุ่นสินค้า</option>
-                <?php foreach ($products as $p): ?>
+                <?php $dealGroups = []; foreach ($products as $p) { $dealGroups[(string) ($p['category_name'] ?? 'อื่น ๆ')][] = $p; } ?>
+                <?php foreach ($dealGroups as $groupName => $groupProducts): ?>
+                <optgroup label="<?= htmlspecialchars($groupName) ?>">
+                <?php foreach ($groupProducts as $p): ?>
                     <option value="<?= (int) $p['id'] ?>" <?= (string) ($_GET['product'] ?? '') === (string) $p['id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($p['full_name']) ?>
                     </option>
+                <?php endforeach; ?>
+                </optgroup>
                 <?php endforeach; ?>
             </select>
 

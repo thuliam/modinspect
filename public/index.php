@@ -32,7 +32,26 @@ $router->get('/seller-price-advisor',[ModuleController::class,'sellerAdvisor']);
 $router->get('/guide/{slug}',[ModuleController::class,'guide']);
 $router->get('/condition-guide',[ModuleController::class,'conditionGuide']);
 $router->get('/condition-guide/{category}',[ModuleController::class,'conditionGuide']);
-$router->get('/seller',[ModuleController::class,'sellerDashboard']);
+// LS-14 Module 9 (OD-5): the seller's side for signed-in members ("new" before {uuid}: the router takes the first match)
+$router->get('/seller',[\App\Controllers\SellerController::class,'index']);
+$router->get('/seller/listings/new',[\App\Controllers\SellerController::class,'form']);
+$router->post('/seller/listings/save',[\App\Controllers\SellerController::class,'save']);
+$router->get('/seller/listings/{uuid}',[\App\Controllers\SellerController::class,'form']);
+$router->post('/seller/listings/{uuid}/photos',[\App\Controllers\SellerController::class,'photos']);
+$router->post('/seller/listings/{uuid}/action',[\App\Controllers\SellerController::class,'action']);
+$router->get('/seller/photos/{uuid}/{file}',[\App\Controllers\SellerController::class,'photo']);
+$router->get('/listings/{uuid}',[\App\Controllers\SellerController::class,'show']);
+// LS-14 Module 8 (OD-3, ADR-007): seller check. Every public route is 404 unless SELLER_CHECK_ENABLED=true and a real HMAC key is set.
+$router->get('/seller-check',[\App\Controllers\SellerCheckController::class,'lookup']);
+$router->get('/seller-check/report',[\App\Controllers\SellerCheckController::class,'reportForm']);
+$router->post('/seller-check/report',[\App\Controllers\SellerCheckController::class,'report']);
+$router->get('/seller-check/dispute',[\App\Controllers\SellerCheckController::class,'disputeForm']);
+$router->post('/seller-check/dispute',[\App\Controllers\SellerCheckController::class,'dispute']);
+$router->get('/admin/seller-reports',[AdminController::class,'sellerReports']);
+$router->post('/admin/seller-reports/action',[AdminController::class,'sellerReportAction']);
+$router->get('/admin/seller-reports/evidence/{uuid}/{file}',[AdminController::class,'sellerReportEvidence']);
+$router->get('/admin/seller-listings',[AdminController::class,'sellerListings']);
+$router->post('/admin/seller-listings/action',[AdminController::class,'sellerListingAction']);
 $router->get('/local-match',[ModuleController::class,'localMatch']);
 $router->get('/market-report',[ModuleController::class,'marketReport']);
 $router->get('/shop',[ModuleController::class,'shop']);
@@ -58,6 +77,15 @@ $router->get('/admin/review-analytics',[AdminController::class,'reviewAnalytics'
 $router->get('/admin/market-trends',[AdminController::class,'marketTrends']);
 $router->get('/admin/unresolved-listings',[AdminController::class,'unresolved']);
 $router->get('/admin/users',[AdminController::class,'users']);
+// LS-14 Module 7: visitor accounts (Google, Microsoft, Facebook)
+$router->get('/account/login',[\App\Controllers\AccountController::class,'login']);
+$router->post('/account/login',[\App\Controllers\AccountController::class,'start']);
+$router->get('/account/callback/{provider}',[\App\Controllers\AccountController::class,'callback']);
+$router->get('/account',[\App\Controllers\AccountController::class,'account']);
+$router->post('/account/logout',[\App\Controllers\AccountController::class,'logout']);
+$router->post('/account/delete',[\App\Controllers\AccountController::class,'delete']);
+$router->get('/admin/new-prices',[AdminController::class,'newPrices']);
+$router->post('/admin/new-prices/action',[AdminController::class,'newPriceAction']);
 $router->get('/admin/intake',[AdminController::class,'intake']);
 $router->get('/admin/beta-readiness',[AdminController::class,'betaReadiness']);
 $router->post('/admin/intake/dry-run',[AdminController::class,'intakeDryRun']);

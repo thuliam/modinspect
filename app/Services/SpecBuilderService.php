@@ -13,14 +13,20 @@ final class SpecBuilderService
     /** LS-11 A: the parts recommended for the Build page (see SpecRecommender) */
     public function recommend(array $products, float $budget, string $use, string $resolution, string $preset): array { return (new SpecRecommender())->recommend($products, $budget, $use, $resolution, $preset); }
 
-    public function generate(array $products, float $budget, string $use, string $resolution, string $mix, array $selectedIds = []): array
+    /**
+     * @param array<int,array> $newRefs LS-14 OD-2: latest admin-entered NEW retail price per product id (new_price_references), used only for a chosen
+     *                                  part that has no used-market price, and always labelled; a chosen part with neither is kept with no price
+     */
+    public function generate(array $products, float $budget, string $use, string $resolution, string $mix, array $selectedIds = [], array $newRefs = []): array
     {
+        $catalogById=[]; foreach($products as $product) $catalogById[(int)$product['id']]=$product;
         $products=array_values(array_filter($products,[self::class,'isPriced']));
         $byId=[]; foreach($products as $product) $byId[(int)$product['id']]=$product;
         $selected=[];
-        foreach(array_filter($selectedIds) as $selectedId) if(isset($byId[(int)$selectedId])) $selected[]=$byId[(int)$selectedId];
-        $cpu = !empty($selectedIds['cpu']) ? ($byId[(int)$selectedIds['cpu']] ?? null) : null;
-        $gpu = !empty($selectedIds['gpu']) ? ($byId[(int)$selectedIds['gpu']] ?? null) : null;
+        // a part the visitor chose counts whatever its price basis; the default plan below still uses used-market prices only
+        foreach(array_filter($selectedIds) as $selectedId) if(isset($catalogById[(int)$selectedId])) $selected[]=$catalogById[(int)$selectedId];
+        $cpu = !empty($selectedIds['cpu']) ? ($catalogById[(int)$selectedIds['cpu']] ?? null) : null;
+        $gpu = !empty($selectedIds['gpu']) ? ($catalogById[(int)$selectedIds['gpu']] ?? null) : null;
         if(!$selected){
             // nothing chosen (LS-13 S-6): the same balanced plan the recommend button gives, built from the priced catalog, instead of three hard-coded models
             $rec=$this->recommend($products,$budget,$use,$resolution,'balanced')['selected'];
@@ -29,12 +35,16 @@ final class SpecBuilderService
             $gpu=isset($rec['gpu'])?($byId[(int)$rec['gpu']]??null):null;
         }
         if (!$selected) return ['items'=>[],'low'=>0,'expected'=>0,'high'=>0,'notes'=>'ไม่มีข้อมูลราคาที่เหมาะสมเพียงพอ'];
-        $items=[];$low=$expected=$high=0;
+        $items=[];$prices=[];
         foreach($selected as $p){
             $role=strtolower((string)$p['category_name']);
-            $items[]=['product_id'=>(int)$p['id'],'component_role'=>$role,'price_low'=>(float)$p['q1'],'price_expected'=>(float)$p['median'],'price_high'=>(float)$p['q3'],'confidence_score'=>(float)$p['confidence_score'],'is_alternative'=>0,'notes'=>'อ้างอิงดัชนีราคาประกาศล่าสุด'];
-            $low+=(float)$p['q1'];$expected+=(float)$p['median'];$high+=(float)$p['q3'];
+            $price=\App\Services\Build\BuildPricing::for($p,$newRefs[(int)$p['id']]??null);
+            $prices[]=$price;
+            $note=$price['basis']==='used'?'อ้างอิงดัชนีราคามือสองที่ผ่านการตรวจแล้ว':($price['basis']==='new_ref'?$price['label'].' ตรวจเมื่อ '.$price['checked_on']:$price['label']);
+            $items[]=['product_id'=>(int)$p['id'],'component_role'=>$role,'price_low'=>$price['low'],'price_expected'=>$price['expected'],'price_high'=>$price['high'],'confidence_score'=>$price['basis']==='used'?(float)$p['confidence_score']:0.0,'is_alternative'=>0,'notes'=>$note];
         }
+        $totals=\App\Services\Build\BuildPricing::totals($prices);
+        $low=$totals['low'];$expected=$totals['expected'];$high=$totals['high'];
         $reserve=max(0,$budget-$expected);
         $motherboard=null;$ram=null;
         foreach($selected as $part){
@@ -59,6 +69,7 @@ final class SpecBuilderService
         $labels=['motherboard'=>'เมนบอร์ด','ram'=>'RAM','storage'=>'ที่เก็บข้อมูล','psu'=>'พาวเวอร์ซัพพลาย','case'=>'เคส','cooling'=>'ชุดระบายความร้อน'];
         $notes.="; งบคงเหลือโดยประมาณ ฿".number_format($reserve).($missing?' สำหรับ '.implode(', ',array_map(fn($m)=>$labels[$m]??$m,$missing)):' เป็นงบสำรอง');
         if($expected>$budget) $notes.='; เกินงบประมาณ ฿'.number_format($expected-$budget);
+        if($totals['new_ref']>0||$totals['none']>0) $notes.='; '.\App\Services\Build\BuildPricing::totalsNote($totals);
         return compact('items','low','expected','high','notes','compatibilityError');
     }
 }
