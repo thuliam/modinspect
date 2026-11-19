@@ -185,6 +185,31 @@ final class AdminController extends Controller {
         global $config; $key=(string)($config['seller_check']['hmac_key']??'');
         return strlen($key)>=32 ? new \App\Services\Listing\SellerCheck(Database::connection($config['db']),$key) : null;
     }
+    /** LS-21 (R-11): community report queue. Reads and decisions never hash an address, so a placeholder key is enough (the public form is what needs the real one). */
+    private function communityReportService(): \App\Services\Community\CommunityReports {
+        global $config; $key=(string)($config['community_reports']['hmac_key']??'');
+        return new \App\Services\Community\CommunityReports(Database::connection($config['db']),strlen($key)>=32 ? $key : str_repeat('x',32));
+    }
+    public function communityReports(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        global $config; $status=(string)($_GET['status']??'new'); if(!in_array($status,['new','accepted','rejected','spam','all'],true)){ $status='new'; }
+        try {
+            $svc=$this->communityReportService(); $rows=$svc->queue($status); $counts=$svc->counts(); $ready=true;
+        } catch(\PDOException) { $rows=[]; $counts=[]; $ready=false; }
+        $this->render('community-reports','Community reports',['rows'=>$rows,'counts'=>$counts,'status'=>$status,'ready'=>$ready,'featureOn'=>\App\Services\Community\CommunityReports::enabled($config)]);
+    }
+    public function communityReportAction(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/community-reports'); }
+        $svc=$this->communityReportService(); $actor=(int)$this->user()['id']; $id=(int)($_POST['id']??0); $decision=(string)($_POST['decision']??'');
+        $backStatus=(string)($_POST['status']??'new'); if(!in_array($backStatus,['new','accepted','rejected','spam','all'],true)){ $backStatus='new'; }   // read once (a second read of a missing key warns and gives '')
+        $back='/admin/community-reports?status='.rawurlencode($backStatus);
+        $errors=['BAD_ACTION'=>'การกระทำไม่ถูกต้อง','NOTE_REQUIRED'=>'การไม่ผ่านหรือทำเครื่องหมายสแปมต้องมีเหตุผล','BAD_STATE'=>'รายงานนี้ตัดสินไปแล้ว','NOT_FOUND'=>'ไม่พบรายงาน','NOT_A_SOLD_PRICE'=>'ใช้ได้กับรายงานราคาที่ขายได้เท่านั้น','NOT_ACCEPTED'=>'ต้องรับรายงานก่อน',
+            'ALREADY_CANDIDATE'=>'ส่งเข้าคิวตรวจราคาไปแล้ว','CANDIDATE_CAP'=>'ผู้แจ้งรหัสเดียวกันส่งเข้าคิวได้ 1 ครั้งต่อรุ่นต่อสัปดาห์','BAD_PAYLOAD'=>'ข้อมูลในรายงานไม่ครบ'];
+        $r=$decision==='candidate' ? $svc->createCandidate($actor,$id) : $svc->moderate($actor,$id,$decision,(string)($_POST['note']??''));
+        $this->flash($r['ok']?'success':'danger',$r['ok']?($decision==='candidate'?'ส่งเข้าคิวตรวจราคาแล้ว (รอผู้ตรวจอนุมัติ ยังไม่กระทบราคา)':'บันทึกผลการตรวจแล้ว'):($errors[$r['error']??'']??'ทำรายการไม่สำเร็จ'));
+        $this->redirect($back);
+    }
     public function sellerReports(): void {
         if(!$this->requirePermission('reports.moderate')) return;
         $svc=$this->sellerCheckService();
@@ -235,7 +260,9 @@ final class AdminController extends Controller {
     }
     public function dataHealth(): void {
         if(!$this->requirePermission('snapshots.view')) return;
-        $this->view('admin/data-health',['title'=>'Data health','report'=>(new \App\Services\Admin\DataHealthReport())->build()]);
+        // LS-21 (R-11): open community reports per product, an attention signal (never a vote); null on a database without the table
+        try { $cr=$this->communityReportService(); $community=['counts'=>$cr->counts(),'products'=>$cr->productsNeedingAttention(5)]; } catch(\PDOException) { $community=null; }
+        $this->view('admin/data-health',['title'=>'Data health','report'=>(new \App\Services\Admin\DataHealthReport())->build(),'community'=>$community]);
     }
     public function marketTrends(): void {
         if(!$this->requirePermission('snapshots.view')) return;

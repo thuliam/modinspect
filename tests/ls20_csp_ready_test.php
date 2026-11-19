@@ -27,11 +27,12 @@ foreach (['header', 'footer', 'admin_header', 'admin_footer', 'auth_header', 'au
     ok_csp(!preg_match('#<(script|link)[^>]+(src|href)="https?://#i', (string)file_get_contents($root . "/app/Views/layouts/$l.php")), "$l.php loads no script or style from another host");
 }
 
-// the policy: report-only now, with the directives the sweep was run against; the enforce note exists
+// the policy: ENFORCING since LS-21 (it was report-only in LS-19/20), with the directives the sweep was run against; the rollback note exists
 $ht = (string)file_get_contents($root . '/public/.htaccess');
-ok_csp(preg_match('/Content-Security-Policy-Report-Only "(default-src \'self\'; script-src \'self\';[^"]*)"/', $ht, $m) === 1, 'The report-only policy is in .htaccess');
+ok_csp(preg_match('/^\s*Header always set Content-Security-Policy "(default-src \'self\'; script-src \'self\';[^"]*)"/m', $ht, $m) === 1 && !preg_match('/^\s*Header always set Content-Security-Policy-Report-Only/m', $ht), 'The ENFORCING policy is in .htaccess (and no report-only copy next to it)');
+ok_csp(str_ends_with($m[1], '; report-uri /csp-report'), 'Violations are reported to /csp-report');
 foreach (["object-src 'none'", "base-uri 'self'", "frame-ancestors 'self'", "connect-src 'self'"] as $d) { ok_csp(str_contains($m[1], $d), "The policy has $d"); }
 ok_csp(!str_contains($m[1], 'unsafe-eval') && !preg_match("/script-src[^;]*unsafe-inline/", $m[1]), 'Scripts allow neither eval nor inline code');
 $note = (string)file_get_contents($root . '/docs/CSP_ENFORCE.md');
-ok_csp(str_contains($note, 'Content-Security-Policy-Report-Only') && str_contains($note, 'Rollback') && str_contains($m[1], "script-src 'self'"), 'The enforce note names the header to change and how to roll back');
+ok_csp(str_contains($note, 'Content-Security-Policy-Report-Only') && str_contains($note, 'Rollback') && str_contains($note, '[modinspect-csp]') && str_contains($m[1], "script-src 'self'"), 'The enforce note names the header to change and how to roll back');
 echo "ls20_csp_ready_test: PASS ($files views scanned)\n";

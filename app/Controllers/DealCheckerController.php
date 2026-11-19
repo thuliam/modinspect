@@ -30,11 +30,28 @@ final class DealCheckerController extends Controller {
         ]);
         $this->redirect('/deal-checker/result/'.$uuid);
     }
+    /** LS-21: the share card of a saved result as a PNG. Drawn once per result and kept for a day; carries nothing the result page does not show. */
+    public function card(string $uuid): void {
+        $deal=(\App\Services\Deal\ShareCard::available(ROOT_PATH.'/public/assets/fonts') && preg_match('/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/',$uuid)) ? (new DealCheck())->findByUuid($uuid) : null;
+        if (!$deal) { http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบผลการประเมิน']); return; }
+        $png=(new \App\Services\Http\FileCache(ROOT_PATH.'/storage/cache/http'))->remember('deal-card-'.$uuid,86400,static function() use($deal):string {
+            $x=\App\Services\DealExplanation::build($deal);
+            $labels=['below_range'=>'ต่ำกว่าช่วงราคาที่พบ','in_range'=>'อยู่ในช่วงตลาด','above_range'=>'สูงกว่าช่วงที่พบ','insufficient'=>'ข้อมูลยังไม่เพียงพอ'];
+            $q1=(float)($deal['suggested_price_min']??0) ?: (float)($deal['q1']??0); $q3=(float)($deal['suggested_price_max']??0) ?: (float)($deal['q3']??0);
+            return \App\Services\Deal\ShareCard::render(['name'=>(string)$deal['full_name'],'price'=>(float)$deal['user_price'],'label'=>(string)(($x['label']??null) ?: ($labels[$deal['result_label']]??'')),
+                'tone'=>(string)($x['tone']??'neutral'),'range'=>($deal['result_label']!=='insufficient'&&$q1>0&&$q3>0)?[$q1,$q3]:null,'median'=>($deal['result_label']!=='insufficient'&&((float)($deal['median']??0))>0)?(float)$deal['median']:null],ROOT_PATH.'/public/assets/fonts',ROOT_PATH.'/public/assets/brand/modinpect-lockup-dark-480.png');
+        });
+        header('Content-Type: image/png'); header('Content-Length: '.strlen($png)); header('Cache-Control: public, max-age=3600'); header('Content-Disposition: inline; filename="modinpect-deal.png"'); header('X-Robots-Tag: noindex');
+        echo $png;
+    }
     public function result(string $uuid): void {
         $deal=(new DealCheck())->findByUuid($uuid);
         if (!$deal) { http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบผลการประเมิน']); return; }
         $model=new Product(); $product=$model->find((int)$deal['product_id']);
-        $this->view('deal/result',['title'=>'ผลการประเมินราคา','deal'=>$deal,'product'=>$product,'trend'=>$product?$model->trend((int)$product['id']):[],'similar'=>$product?$model->similar($product,(float)$deal['user_price'],4):[],'evidence_grades'=>$product?$model->evidenceGrades((int)$product['id']):['total'=>0,'owner_text'=>0]]);
+        // LS-21: the picture a chat app shows for the shared link (and the page's save button) is the card of this very result
+        global $config; $cardOk=\App\Services\Deal\ShareCard::available(ROOT_PATH.'/public/assets/fonts');   // needs GD with FreeType; without it nothing is offered
+        $ogImage=$cardOk ? rtrim((string)$config['base_url'],'/').'/deal-checker/result/'.rawurlencode((string)$deal['uuid']).'/card' : null;
+        $this->view('deal/result',['title'=>'ผลการประเมินราคา','ogImage'=>$ogImage,'cardUrl'=>$ogImage,'ogWidth'=>$cardOk?\App\Services\Deal\ShareCard::WIDTH:null,'ogHeight'=>$cardOk?\App\Services\Deal\ShareCard::HEIGHT:null,'deal'=>$deal,'product'=>$product,'trend'=>$product?$model->trend((int)$product['id']):[],'similar'=>$product?$model->similar($product,(float)$deal['user_price'],4):[],'evidence_grades'=>$product?$model->evidenceGrades((int)$product['id']):['total'=>0,'owner_text'=>0]]);
     }
 }
 

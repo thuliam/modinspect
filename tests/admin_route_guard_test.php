@@ -59,7 +59,11 @@ foreach ($m as [, $verb, $path, $class, $method]) {
     }
     if ($verb === 'post' && !str_contains($body, 'Csrf::verify')) {
         // login/logout verify inside the auth service call; accept only an explicit, named exception
-        if (!in_array($path, ['/login', '/logout'], true) || !str_contains($body, 'Csrf')) { $problems[] = "$verb $path: no CSRF verification in $class::$method"; }
+        // /csp-report (LS-21) is posted by the browser itself, with no form and no token, so it cannot carry CSRF. It is exempt ONLY while it keeps its
+        // compensating controls: a rate limit, and nothing stored or read (no database, session, cookie or request fields). tests/csp_report_test.php pins the same.
+        if ($path === '/csp-report') {
+            if (!str_contains($body, 'RateLimiter') || preg_match('/Database|\$_SESSION|\$_COOKIE|\$_POST|\$_GET|setcookie|INSERT|UPDATE/i', $body)) { $problems[] = "$verb $path: exempt from CSRF only with a rate limit and no storage or session access"; }
+        } elseif (!in_array($path, ['/login', '/logout'], true) || !str_contains($body, 'Csrf')) { $problems[] = "$verb $path: no CSRF verification in $class::$method"; }
     }
 }
 ok_rg($problems === [], "Route guard problems:\n  " . implode("\n  ", $problems));

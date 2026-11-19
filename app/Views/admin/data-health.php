@@ -44,3 +44,15 @@ ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/pric
         </table>
     </div>
 </div>
+<?php if (!empty($community) && array_sum($community['counts']) > 0): // LS-21 (R-11): an attention signal for a moderator, never a vote and never a price input ?>
+<div class="card mi-admin-card mt-3">
+    <div class="card-header">Community reports <a class="btn btn-sm btn-outline-primary float-right" href="<?= $base ?>/admin/community-reports">Open the queue</a></div>
+    <div class="card-body">
+        <p class="mb-2"><?= (int) $community['counts']['new'] ?> new · <?= (int) $community['counts']['accepted'] ?> accepted · <?= (int) $community['counts']['rejected'] ?> rejected · <?= (int) $community['counts']['spam'] ?> spam. Reports are signals for a person to check: they never change a price, and many reports are not a vote.</p>
+        <?php if ($community['products']): ?>
+            <p class="mb-1 text-muted">Models with the most open reports</p>
+            <ul class="mb-0"><?php foreach ($community['products'] as $p): ?><li><a href="<?= $base ?>/price/<?= rawurlencode((string) $p['slug']) ?>" target="_blank" rel="noopener"><?= htmlspecialchars((string) $p['full_name']) ?></a> · <?= (int) $p['new_reports'] ?></li><?php endforeach; ?></ul>
+        <?php endif; ?>
+    </div>
+</div>
+<?php endif; ?>

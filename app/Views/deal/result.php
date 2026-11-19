@@ -7,7 +7,9 @@ $explain = \App\Services\DealExplanation::build($deal);
 $resultLabel = ($explain['label'] ?? null) ?: ($labels[$deal['result_label']] ?? $deal['result_label']);
 $tone = $explain['tone'] ?? ($tones[$deal['result_label']] ?? 'neutral');
 $headline = ($explain['headline'] ?? null) ?: $deal['recommendation'];
-$hasReferenceRange = (float) ($deal['suggested_price_min'] ?? 0) > 0
+// LS-21: an "insufficient data" result never shows a range (a stored range from a snapshot without accepted evidence would contradict the verdict, R-02)
+$hasReferenceRange = $deal['result_label'] !== 'insufficient'
+    && (float) ($deal['suggested_price_min'] ?? 0) > 0
     && (float) ($deal['suggested_price_max'] ?? 0) > 0;
 ?>
 <section class="container page mi-deal-result-page">
@@ -70,6 +72,7 @@ $hasReferenceRange = (float) ($deal['suggested_price_min'] ?? 0) > 0
             <div class="mi-actions">
                 <a class="button" href="<?= $base ?>/price/<?= rawurlencode($deal['slug']) ?>">ดูหน้ารุ่นนี้</a>
                 <a class="button ghost" href="<?= $base ?>/deal-checker">เช็กดีลอื่น</a>
+                <?php if (!empty($cardUrl)): ?><a class="button ghost" href="<?= htmlspecialchars($cardUrl) ?>" download="modinpect-deal.png"><i class="fas fa-download mr-1" aria-hidden="true"></i>บันทึกเป็นภาพ</a><?php endif; ?>
                 <a class="button ghost" href="<?= $base ?>/compare/<?= rawurlencode($deal['slug']) ?>">เทียบกับรุ่นอื่น</a>
                 <?php $dealGuideCat = strtolower((string) ($product['category_slug'] ?? '')); if (\App\Services\Catalog\ConditionGuide::for($dealGuideCat) !== null): ?><a class="button ghost" href="<?= $base ?>/condition-guide/<?= rawurlencode($dealGuideCat) ?>">คู่มือเช็กสภาพ</a><?php endif; ?>
             </div>

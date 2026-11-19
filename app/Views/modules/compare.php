@@ -7,6 +7,25 @@ $byCat = [];
 foreach ($options as $o) { $byCat[$o['category']][] = $o; }
 $hasNote = false;
 foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['note'])) { $hasNote = true; } } }
+$diff = []; $same = [];
+foreach ($table['rows'] as $r) { if ($r['differs']) { $diff[] = $r; } else { $same[] = $r; } }
+$pricedCols = array_values(array_filter($cols, static fn(array $c): bool => $c['priced']));
+$lowMedian = $pricedCols ? min(array_column($pricedCols, 'median')) : null;
+// ▲ highest / ▼ lowest value of a row (only when two or more cells are plain numbers with at most a unit, and they differ). It says which value is larger, not which is better.
+$extremes = static function (array $values): array {
+    $nums = [];
+    foreach ($values as $i => $v) { if ($v !== null && preg_match('/^\s*(\d[\d,]*(?:\.\d+)?)\s?[A-Za-z%]*\s*$/', (string)$v, $m)) { $nums[$i] = (float)str_replace(',', '', $m[1]); } }
+    if (count($nums) < 2 || max($nums) === min($nums)) { return []; }
+    $out = []; foreach ($nums as $i => $n) { if ($n === max($nums)) { $out[$i] = 'max'; } elseif ($n === min($nums)) { $out[$i] = 'min'; } }
+    return $out;
+};
+$mark = static fn(?string $m): string => $m === 'max' ? ' <i class="fas fa-chevron-up mi-cmp-mark" title="สูงสุดในแถวนี้" aria-label="สูงสุดในแถวนี้"></i>' : ($m === 'min' ? ' <i class="fas fa-chevron-down mi-cmp-mark" title="ต่ำสุดในแถวนี้" aria-label="ต่ำสุดในแถวนี้"></i>' : '');
+$cell = static function (array $cell): string {
+    if ($cell['value'] === null) { return '<span class="text-muted">ไม่มีข้อมูล</span>'; }
+    $o = htmlspecialchars($cell['value']);
+    if (!empty($cell['source'])) { $o .= ' <small><a href="' . htmlspecialchars($cell['source']) . '" target="_blank" rel="noopener noreferrer">ที่มา</a></small>'; }
+    return $o;
+};
 ?>
 <section class="container page">
 <span class="eyebrow">เปรียบเทียบสินค้า</span><h1>เปรียบเทียบสเปกและราคา</h1>
@@ -16,7 +35,7 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
     <div class="form-row">
         <?php // LS-18 (owner): searchable Select2 boxes grouped by category; once one model is chosen the other boxes only offer its category
         // (site.js locks them, data-cat on every option). Without scripts it is a plain grouped <select>; typed names in old links still resolve (CompareTable::resolve). ?>
-        <?php for ($i = 0; $i < min(4, $slots + 1); $i++): $sel = $chosen[$i] ?? ''; ?>
+        <?php for ($i = 0; $i < 4; $i++): $sel = $chosen[$i] ?? ''; ?>
             <div class="form-group col-md-3">
                 <label for="m<?= $i ?>">รุ่นที่ <?= $i + 1 ?></label>
                 <select id="m<?= $i ?>" name="m[]" class="form-control h-auto js-select2-manual js-compare" data-placeholder="พิมพ์หรือเลือกรุ่น">
@@ -36,7 +55,10 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
     <?php if (!empty($unmatched)): ?>
         <p class="mi-note" role="alert"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> ไม่พบรุ่นที่ตรงกับ “<?= htmlspecialchars(implode('”, “', array_map(static fn(string $u): string => mb_substr($u, 0, 60), $unmatched))) ?>” หรือมีหลายรุ่นที่ตรงกัน ลองเลือกจากรายการที่ขึ้นมาตอนพิมพ์</p>
     <?php endif; ?>
-    <button type="submit" class="btn btn-primary">เปรียบเทียบ</button>
+    <div class="d-flex align-items-center">
+        <button type="submit" class="btn btn-primary flex-grow-1">เปรียบเทียบ</button>
+        <?php if ($chosen): ?><a class="btn btn-ghost ml-3" href="<?= $base ?>/compare">ล้างทั้งหมด</a><?php endif; ?>
+    </div>
 </form>
 
 <?php if (count($cols) < 2): ?>
@@ -65,6 +87,24 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
             </div>
         <?php endif; ?>
     <?php endif; ?>
+    <div class="row mb-4">
+        <?php foreach ($cols as $c): ?>
+            <div class="col-md-<?= (int) (12 / max(2, count($cols))) ?> col-6 mb-3">
+                <div class="card h-100"><div class="card-body">
+                    <span class="mi-trend-note"><?= htmlspecialchars($c['category']) ?></span>
+                    <h2 class="h6 mb-2"><a href="<?= $base ?>/price/<?= htmlspecialchars($c['slug']) ?>"><?= htmlspecialchars($c['name']) ?></a></h2>
+                    <?php if ($c['priced']): ?>
+                        <p class="h4 mb-1">฿<?= number_format($c['median']) ?></p>
+                        <p class="mi-trend-note mb-1">ช่วง ฿<?= number_format($c['range'][0]) ?>–<?= number_format($c['range'][1]) ?> · <?= (int) $c['samples'] ?> ตัวอย่าง</p>
+                        <p class="mi-trend-note mb-0"><?php if ($lowMedian !== null && $c['median'] > $lowMedian): ?>สูงกว่ารุ่นที่ราคากลางต่ำสุด <?= number_format(($c['median'] / $lowMedian - 1) * 100) ?>%<?php elseif (count($pricedCols) > 1): ?>ราคากลางต่ำสุดในกลุ่มที่เลือก<?php else: ?>ความมั่นใจราคา <?= htmlspecialchars($confTh[$c['confidence']] ?? 'ข้อมูลยังไม่พอ') ?><?php endif; ?></p>
+                    <?php else: ?>
+                        <p class="text-muted mb-0">ยังไม่มีราคาตลาดที่ตรวจแล้ว</p>
+                    <?php endif; ?>
+                </div></div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <p class="mi-trend-note">ต่างกัน <?= count($diff) ?> รายการ · เหมือนกัน <?= count($same) ?> รายการ · กดหัวข้อเพื่อพับ/ขยายกลุ่ม · <i class="fas fa-chevron-up mi-cmp-mark" aria-hidden="true"></i> สูงสุด <i class="fas fa-chevron-down mi-cmp-mark" aria-hidden="true"></i> ต่ำสุดในแถว (บอกว่าค่ามากหรือน้อย ไม่ได้บอกว่ารุ่นไหนดีกว่า)</p>
     <div class="card mi-table-card table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
             <thead>
@@ -75,7 +115,21 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
                     <?php endforeach; ?>
                 </tr>
             </thead>
+            <?php
+            $group = static function (string $id, string $title, int $count, bool $open, int $span): string {
+                return '<tr class="mi-cmp-group"><th colspan="' . $span . '" scope="colgroup"><a href="#' . $id . '" role="button" class="mi-cmp-toggle' . ($open ? '' : ' collapsed') . '" data-toggle="collapse" aria-expanded="' . ($open ? 'true' : 'false') . '" aria-controls="' . $id . '"><i class="fas fa-chevron-up mi-chev-up" aria-hidden="true"></i><i class="fas fa-chevron-down mi-chev-down" aria-hidden="true"></i><span>' . htmlspecialchars($title) . '</span><small>' . $count . '</small></a></th></tr>';
+            };
+            $span = count($cols) + 1;
+            $specRows = static function (array $rows, string $badge) use ($cell, $extremes, $mark): void {
+                foreach ($rows as $r): ?>
+                    <?php $ex = $extremes(array_column($r['cells'], 'value')); ?><tr><th scope="row"><?= htmlspecialchars($r['label']) ?><?= $badge ?></th><?php foreach ($r['cells'] as $i => $c): ?><td><?= $cell($c) ?><?= $mark($ex[$i] ?? null) ?></td><?php endforeach; ?></tr>
+                <?php endforeach;
+            };
+            ?>
             <tbody>
+                <?= $group('cmp-price', 'ราคาตลาด', 4, true, $span) ?>
+            </tbody>
+            <tbody id="cmp-price" class="collapse show">
                 <tr>
                     <th scope="row">ช่วงราคาที่พบบ่อย</th>
                     <?php foreach ($cols as $c): ?>
@@ -84,30 +138,25 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
                 </tr>
                 <tr>
                     <th scope="row">ค่ากลาง</th>
-                    <?php foreach ($cols as $c): ?><td><?= $c['priced'] ? '฿' . number_format($c['median']) : '<span class="text-muted">—</span>' ?></td><?php endforeach; ?>
+                    <?php $ex = $extremes(array_map(static fn(array $c) => $c['priced'] ? (string)(int)$c['median'] : null, $cols)); foreach ($cols as $i => $c): ?><td><?= $c['priced'] ? '฿' . number_format($c['median']) . $mark($ex[$i] ?? null) : '<span class="text-muted">—</span>' ?></td><?php endforeach; ?>
                 </tr>
                 <tr>
                     <th scope="row">จำนวนตัวอย่าง</th>
-                    <?php foreach ($cols as $c): ?><td><?= $c['priced'] ? (int)$c['samples'] : '<span class="text-muted">—</span>' ?></td><?php endforeach; ?>
+                    <?php $ex = $extremes(array_map(static fn(array $c) => $c['priced'] ? (string)(int)$c['samples'] : null, $cols)); foreach ($cols as $i => $c): ?><td><?= $c['priced'] ? (int) $c['samples'] . $mark($ex[$i] ?? null) : '<span class="text-muted">—</span>' ?></td><?php endforeach; ?>
                 </tr>
                 <tr>
                     <th scope="row">ความมั่นใจของราคา</th>
                     <?php foreach ($cols as $c): ?><td><?= $c['priced'] ? htmlspecialchars($confTh[$c['confidence']] ?? 'ข้อมูลยังไม่พอ') : '<span class="text-muted">—</span>' ?></td><?php endforeach; ?>
                 </tr>
-                <?php foreach ($table['rows'] as $r): ?>
-                    <tr>
-                        <th scope="row"><?= htmlspecialchars($r['label']) ?><?php if ($r['differs']): ?> <span class="badge badge-warning">ต่างกัน</span><?php endif; ?></th>
-                        <?php foreach ($r['cells'] as $cell): ?>
-                            <td>
-                                <?php if ($cell['value'] === null): ?><span class="text-muted">ไม่มีข้อมูล</span><?php else: ?>
-                                    <?= htmlspecialchars($cell['value']) ?>
-                                    <?php if (!empty($cell['source'])): ?><small><a href="<?= htmlspecialchars($cell['source']) ?>" target="_blank" rel="noopener noreferrer">ที่มา</a></small><?php endif; ?>
-                                <?php endif; ?>
-                            </td>
-                        <?php endforeach; ?>
-                    </tr>
-                <?php endforeach; ?>
             </tbody>
+            <?php if ($diff): ?>
+            <tbody><?= $group('cmp-diff', 'สเปกที่ต่างกัน', count($diff), true, $span) ?></tbody>
+            <tbody id="cmp-diff" class="collapse show"><?php $specRows($diff, ' <span class="badge badge-warning">ต่างกัน</span>'); ?></tbody>
+            <?php endif; ?>
+            <?php if ($same): ?>
+            <tbody><?= $group('cmp-same', 'สเปกที่เหมือนกัน', count($same), !$diff, $span) ?></tbody>
+            <tbody id="cmp-same" class="collapse<?= $diff ? '' : ' show' ?>"><?php $specRows($same, ''); ?></tbody>
+            <?php endif; ?>
         </table>
     </div>
     <?php if (!$table['any_priced']): ?>

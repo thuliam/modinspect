@@ -32,6 +32,35 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
             <?php endforeach; ?>
             <a href="<?= $base ?>/price<?= ($q !== '' || $keep) ? '?' . htmlspecialchars(http_build_query(array_filter(['q' => $q]) + $keep)) : '' ?>" class="<?= $category === null && $q === '' ? 'active' : '' ?>">ทั้งหมด</a>
         </div>
+        <?php // LS-21: special filters of the chosen category; the choices are only values that exist in that category's models
+        $specOptions = $specOptions ?? []; $specFilters = $specFilters ?? [];
+        $speedOpts = $specOptions['speed'] ?? []; ?>
+        <?php if ($specOptions): ?>
+        <div class="form-inline mt-3" aria-label="ตัวกรองเฉพาะหมวด">
+            <?php foreach ($specOptions as $key => $values): if ($key === 'speed') { continue; } ?>
+                <label class="mr-2 mb-0" for="spec-<?= $key ?>"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS[$key] ?? $key) ?></label>
+                <select id="spec-<?= $key ?>" name="<?= $key ?>" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="150px">
+                    <option value="">ทั้งหมด</option>
+                    <?php foreach ($values as $v): $text = in_array($key, ['cap'], true) ? ((int) $v >= 1000 ? ((int) $v / 1000) . ' TB' : $v . ' GB') : ($key === 'vram' ? $v . ' GB' : $v); ?>
+                        <option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters[$key] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($text) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endforeach; ?>
+            <?php if ($speedOpts): ?>
+                <label class="mr-2 mb-0" for="spec-speed_min"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS['speed']) ?></label>
+                <select id="spec-speed_min" name="speed_min" class="form-control h-auto mr-1 mb-2 mb-sm-0" data-autosubmit data-width="110px" aria-label="ความเร็วต่ำสุด">
+                    <option value="">ต่ำสุด</option>
+                    <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_min'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
+                </select>
+                <span class="mr-1">–</span>
+                <select id="spec-speed_max" name="speed_max" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="110px" aria-label="ความเร็วสูงสุด">
+                    <option value="">สูงสุด</option>
+                    <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_max'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+            <?php if ($specFilters): ?><a class="btn btn-ghost btn-sm mb-2 mb-sm-0" href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $category]) + $keep)) ?>">ล้างตัวกรอง</a><?php endif; ?>
+        </div>
+        <?php endif; ?>
         <div class="form-inline mt-3">
             <label class="mr-2 mb-0" for="price-sort">เรียงตาม</label>
             <select id="price-sort" name="sort" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="240px">

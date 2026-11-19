@@ -17,7 +17,7 @@ final class RetentionPurge
     public const MIN_HOURS = 1;
 
     /**
-     * @param array{deal_checks_days?:?int,builds_days?:?int,ratelimit_hours?:?int} $opts
+     * @param array{deal_checks_days?:?int,builds_days?:?int,community_days?:?int,ratelimit_hours?:?int} $opts
      * @return array{apply:bool,results:array<string,array{period:int,unit:string,matched:int,deleted:int}>}
      */
     public static function run(PDO $db, array $opts, string $cacheDir, bool $apply, ?int $now = null): array
@@ -35,7 +35,13 @@ final class RetentionPurge
             $hours = (int)$opts['ratelimit_hours'];
             if ($hours < self::MIN_HOURS) { throw new InvalidArgumentException('ratelimit_hours must be at least ' . self::MIN_HOURS); }
         }
-        if ($targets === [] && $hours === null) { throw new InvalidArgumentException('Give at least one period; there is no default retention'); }
+        // LS-21 (R-11, ADR-006 S4): rejected and spam community reports, counted from the day they were decided. Accepted and new reports are never purged here.
+        $community = null;
+        if (($opts['community_days'] ?? null) !== null) {
+            $community = (int)$opts['community_days'];
+            if ($community < self::MIN_DAYS) { throw new InvalidArgumentException('community_days must be at least ' . self::MIN_DAYS . ' days'); }
+        }
+        if ($targets === [] && $hours === null && $community === null) { throw new InvalidArgumentException('Give at least one period; there is no default retention'); }
 
         $tables = ['deal_checks' => 'deal_checks', 'builds' => 'spec_builds'];
         $results = [];
@@ -54,6 +60,18 @@ final class RetentionPurge
                     $deleted = $d->rowCount();
                 }
                 $results[$name] = ['period' => $days, 'unit' => 'days', 'matched' => $matched, 'deleted' => $deleted];
+            }
+            if ($community !== null) {
+                $cut = date('Y-m-d H:i:s', $now - $community * 86400);
+                $c = $db->prepare("SELECT COUNT(*) FROM community_reports WHERE status IN ('rejected','spam') AND decided_at IS NOT NULL AND decided_at < :cut");
+                $c->execute(['cut' => $cut]);
+                $matched = (int)$c->fetchColumn(); $deleted = 0;
+                if ($apply && $matched > 0) {
+                    $d = $db->prepare("DELETE FROM community_reports WHERE status IN ('rejected','spam') AND decided_at IS NOT NULL AND decided_at < :cut");
+                    $d->execute(['cut' => $cut]);
+                    $deleted = $d->rowCount();
+                }
+                $results['community_reports'] = ['period' => $community, 'unit' => 'days', 'matched' => $matched, 'deleted' => $deleted];
             }
             if ($hours !== null) {
                 $matched = 0;

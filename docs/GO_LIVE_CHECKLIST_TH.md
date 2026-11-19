@@ -19,8 +19,10 @@
   - **ตั้งเป็นปิดไว้ก่อน:** `APP_PILOT` (true ถ้ายังเป็นช่วงทดลองปิด), `MODINSPECT_LIVE_COLLECTION_ENABLED=false`, `MODINSPECT_PAID_PROVIDER_CALLS_ENABLED=false`, `GEMINI_PROVIDER_ENABLED=false`
   - **ปล่อยว่างจนกว่าจะพร้อม:** `MEMBER_GOOGLE_*`, `MEMBER_MICROSOFT_*`, `MEMBER_FACEBOOK_*` (HG-13)
   - **seller:** `SELLER_CHECK_ENABLED=false` (HG-14), `SELLER_LISTINGS_PUBLIC=false` (HG-16)
+  - **รายงานจากชุมชน (R-11):** `COMMUNITY_REPORTS_ENABLED=false` และ `COMMUNITY_REPORTS_HMAC_KEY` ว่างไว้ก่อน จะเปิดได้เมื่อพี่อนุมัติข้อความความเป็นส่วนตัว ตั้งคนตรวจรายงานประจำ และสร้างคีย์ยาว 32 ตัวอักษรขึ้นไป (`openssl rand -hex 32`) ดู ADR-006
 - [ ] **HTTPS ใช้ได้ทุกหน้า** ถ้า host ถอด TLS ก่อนถึง PHP ต้องตั้งให้ PHP เห็น `HTTPS=on` ไม่อย่างนั้น cookie จะไม่มี `Secure` (ดู `SECURITY_REVIEW_2026-11-19.md`)
 - [ ] **สร้างโฟลเดอร์ `storage/`** ตาม 5b และตั้งให้เขียนได้
+- [ ] **PHP บน host ต้องมี GD แบบรองรับ FreeType** (ดูใน phpinfo ที่หัวข้อ gd ต้องเขียนว่า FreeType Support: enabled) ใช้วาดการ์ดภาพผลเช็กดีล ถ้าไม่มี ระบบจะซ่อนปุ่ม "บันทึกเป็นภาพ" เอง ไม่เกิด error
 
 ## ฐานข้อมูล (4)
 
@@ -29,7 +31,7 @@
   - import `schema.sql`
   - จาก `seed.sql` เอาเฉพาะแคตตาล็อก (หมวด ยี่ห้อ รุ่น ชื่อเรียก) ห้ามเอาราคาทดสอบ
   - คำสั่งข้อมูล (INSERT/UPDATE) ของ migration ทุกตัวตามลำดับ
-- [ ] **ถ้าเป็นฐานเดิม:** ลง migration 022, 023, 024, 025 ตามลำดับ แล้วจดว่าลงตัวไหนไปแล้ว
+- [ ] **ถ้าเป็นฐานเดิม:** ลง migration 022, 023, 024, 025, 026 ตามลำดับ แล้วจดว่าลงตัวไหนไปแล้ว
 - [ ] **สร้างผู้ดูแลคนแรก:** ใช้ `cli/create_admin_user.php` ให้พี่พิมพ์รหัสเอง ห้ามวางในแชต
 
 ## ขึ้นระบบ (5, 5b)

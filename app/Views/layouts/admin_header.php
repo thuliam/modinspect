@@ -38,6 +38,7 @@ $groups = [
         ['label' => 'Data health', 'icon' => 'fa-heartbeat', 'href' => '/admin/data-health', 'permission' => 'snapshots.view', 'paths' => ['/admin/data-health']],
         ['label' => 'Price Index', 'icon' => 'fa-tags', 'href' => '/admin/price-indices', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-indices']],
         ['label' => 'Seller reports', 'icon' => 'fa-flag', 'href' => '/admin/seller-reports', 'permission' => 'reports.moderate', 'paths' => ['/admin/seller-reports']],
+        ['label' => 'Community reports', 'icon' => 'fa-comments', 'href' => '/admin/community-reports', 'permission' => 'reports.moderate', 'paths' => ['/admin/community-reports']],
         ['label' => 'Seller listings', 'icon' => 'fa-shopping-bag', 'href' => '/admin/seller-listings', 'permission' => 'listings.moderate', 'paths' => ['/admin/seller-listings']],
         ['label' => 'New-price refs', 'icon' => 'fa-tag', 'href' => '/admin/new-prices', 'permission' => 'products.manage', 'paths' => ['/admin/new-prices']],
     ],
@@ -84,7 +85,7 @@ $userInitial = htmlspecialchars(strtoupper(substr((string) ($authUser['name'] ??
 <meta name="description" content="ModInspect Admin operations console">
 <title><?= htmlspecialchars($title ?? 'Admin') ?> - <?= htmlspecialchars($config['name']) ?> Admin</title>
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css">
+<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/admin/vendor/fontawesome/css/fontawesome-all.css') ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/datatables/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/css/admin.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/ci-tokens.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/ci-tokens.css") ?>">

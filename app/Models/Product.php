@@ -103,6 +103,14 @@ final class Product
         return ['snapshot_id' => $sid, 'included' => $included, 'excluded' => $excluded, 'sources' => count($sources)];
     }
     /** Manufacturer specs with their source (product_reference_specs). Fails soft: a missing table or a database hiccup must never break the product page. */
+    /** LS-21: one query for the filter facts of the whole catalog: product_id => [spec_key => spec_value] (read-only; the filters never write) */
+    public function specMap(): array {
+        try {
+            $rows = $this->db->query("SELECT product_id, spec_key, spec_value FROM product_reference_specs WHERE spec_key IN ('socket','memory_type','form_factor','vram_gb','capacity_gb')")->fetchAll();
+        } catch (\PDOException $e) { return []; }
+        $map = []; foreach ($rows as $r) { $map[(int)$r['product_id']][(string)$r['spec_key']] = (string)$r['spec_value']; }
+        return $map;
+    }
     public function referenceSpecs(int $productId): array {
         try {
             $stmt = $this->db->prepare("SELECT spec_key, spec_value, unit, source_url, date_checked, review_status FROM product_reference_specs WHERE product_id=:id ORDER BY id");

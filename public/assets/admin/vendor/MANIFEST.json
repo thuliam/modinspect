@@ -21,27 +21,22 @@
             }
         },
         "fontawesome": {
-            "version": "5.0.9",
+            "version": "5.15.4",
             "license": "Icons CC BY 4.0, Fonts SIL OFL 1.1, Code MIT",
-            "source": "Copied from the Concept template. Known defect: CSS references *.html font files (404) instead of woff2; browsers fall back to .woff.",
-            "provenance": "template-copy-unverified",
+            "source": "npm @fortawesome/fontawesome-free@5.15.4 (official Font Awesome Free package, the last 5.x), tarball sha512 verified at install; only css/all.css (kept as css/fontawesome-all.css), webfonts/*.woff2, webfonts/*.woff and LICENSE.txt are kept. Replaces the Concept template copy whose CSS pointed woff2 at missing .html files (a 404 on every page, G-7). Downloaded 2026-11-19 with owner approval (LS-21).",
+            "provenance": "official-npm-verified",
+            "npm_integrity": {
+                "@fortawesome/fontawesome-free@5.15.4": "sha512-eYm8vijH/hpzr/6/1CJ/V/Eb1xQFW2nnUKArb3z+yUWv7HTwj6M7SP957oMjfZjAHU6qpoNc2wQvIxBLWYa/Jg=="
+            },
             "files": {
-                "fontawesome/css/fontawesome-all.css": "f5045cd44d62ed1e19c37f906ee45fa7cd0dd701fb90325d22a29ed3cf526989",
-                "fontawesome/webfonts/fa-brands-400.eot": "b9c345f4fa1349aea117ed753492783a632513f2dd75dc86942cfbc630c84d05",
-                "fontawesome/webfonts/fa-brands-400.svg": "15fe80489bf95e94ba22be4084a11dcf5ff3c631fa8ded2051c0f99f08895f52",
-                "fontawesome/webfonts/fa-brands-400.ttf": "8c507886294992429a98e9382dd1557ef1e7d4a45d6a7bbffa9771e839190c23",
-                "fontawesome/webfonts/fa-brands-400.woff": "a25479bdac618c6b4f32a3f60bedee6b4fe759db1500c790eab5f94fdeb59f92",
-                "fontawesome/webfonts/fa-brands-400d41d.eot": "b9c345f4fa1349aea117ed753492783a632513f2dd75dc86942cfbc630c84d05",
-                "fontawesome/webfonts/fa-regular-400.eot": "33a8657a09af038500733bdaf969d8928b48475f26020cc35ca7193a53fcbedc",
-                "fontawesome/webfonts/fa-regular-400.svg": "75e64a952613e7f6cdc74628f8bf85206db9a75cc1926ffccb8f1caade2e4db7",
-                "fontawesome/webfonts/fa-regular-400.ttf": "c25d1ee715f6ca69202404165aa0942709ff14d1bd99f9df5b124522d42077ef",
-                "fontawesome/webfonts/fa-regular-400.woff": "e4d56ba6fcd7b99e7e83ee13aa2cecbf6391bc9965d18f43a13bec2957ecd851",
-                "fontawesome/webfonts/fa-regular-400d41d.eot": "33a8657a09af038500733bdaf969d8928b48475f26020cc35ca7193a53fcbedc",
-                "fontawesome/webfonts/fa-solid-900.eot": "31bb4aa00b5293474c3d74e67a316442a8de04a5331edb3e9e11349b7355fcec",
-                "fontawesome/webfonts/fa-solid-900.svg": "54997dacd19dcdad4bffdda880c9aa9268ef52281ab39fb0d17b7ba7618a49a6",
-                "fontawesome/webfonts/fa-solid-900.ttf": "7cf25b1d45ac4436b575e86dcafdd37efc5faeab3bdad3144a9af3b7eae4b48f",
-                "fontawesome/webfonts/fa-solid-900.woff": "e20ab4de8913d1e569c3016c5c5aecfd6589f2bff211c387f2d0422d9123ae2f",
-                "fontawesome/webfonts/fa-solid-900d41d.eot": "31bb4aa00b5293474c3d74e67a316442a8de04a5331edb3e9e11349b7355fcec"
+                "fontawesome/LICENSE.txt": "e779748dfe75e84f974df3c7bc07f842011a100159158b0f1f49b2f2a5a515cb",
+                "fontawesome/css/fontawesome-all.css": "0cb8cc3fee4275e182236ab19c3aae55274f43aa0ffde9c0510d8d59fcf8e5dc",
+                "fontawesome/webfonts/fa-brands-400.woff": "f9217f66874b0c01cd8c10b6a295dbc4f609acb6f5adc41c37da46641b57eb02",
+                "fontawesome/webfonts/fa-brands-400.woff2": "8ea8791754915a898a3100e63e32978a6d1763be6df8e73a39d3a90d691cdeef",
+                "fontawesome/webfonts/fa-regular-400.woff": "cb9e9e693192413cde2b1f21c1dc1d44b6fe7b27cc2b458e8b359d18f9ff8f4e",
+                "fontawesome/webfonts/fa-regular-400.woff2": "e42a88444448ac3d60549cc7c1ff2c8a9cac721034c073d80a14a44e79730cca",
+                "fontawesome/webfonts/fa-solid-900.woff": "3f6d3488cf65374f6f676c315340b0ac2be832bd55240c809448e36ef9b96326",
+                "fontawesome/webfonts/fa-solid-900.woff2": "9834b82ad26e2a37583d22676a12dd2eb0fe7c80356a2114d0db1aa8b3899537"
             }
         },
         "datatables": {

@@ -58,6 +58,6 @@ $header = (string)file_get_contents($root . '/app/Views/layouts/header.php');
 ok_ls16(str_contains($header, '<meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">') && str_contains($header, '$ogDefault = rtrim((string) $config[\'base_url\'], \'/\') . \'/assets/brand/hero-hardware.png\''), 'og:image is an absolute, escaped URL (brand picture unless a page passes its own, LS-19 C2)');
 ok_ls16(is_file($root . '/public/assets/brand/hero-hardware.png'), 'The og:image file exists');
 $index = (string)file_get_contents($root . '/app/Views/price/index.php');
-ok_ls16(preg_match_all('/^(?!\s*<\?php\s*\/\/).*data-autosubmit/m', $index) === 3 && !str_contains($index, 'CPU/GPU แล้ว'), 'The price index has the three auto-applied controls (search combo box, sort, priced only) and no longer says it covers only CPU/GPU');
-ok_ls16(str_contains((string)file_get_contents($root . '/public/assets/site.js'), "\$('[data-autosubmit]').on('change'"), 'site.js wires data-autosubmit');
+ok_ls16(preg_match_all('/^(?!\s*<\?php\s*\/\/).*data-autosubmit/m', $index) === 6 && !str_contains($index, 'CPU/GPU แล้ว'), 'The price index has six auto-applied controls (search combo box, sort, priced only, plus the LS-21 spec filters: generic select, speed min, speed max) and no longer says it covers only CPU/GPU');
+ok_ls16(str_contains((string)file_get_contents($root . '/public/assets/mi-select.js'), "\$('[data-autosubmit]').on('change'") && !str_contains((string)file_get_contents($root . '/public/assets/site.js'), "\$('[data-autosubmit]').on('change'"), 'mi-select.js (public and Admin) wires data-autosubmit, once');
 echo "ls16_review_fixes_test: PASS\n";

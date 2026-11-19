@@ -9,7 +9,7 @@ namespace App\Services\Seo;
  */
 final class SeoService
 {
-    public const DISALLOW = ['/admin', '/login', '/logout', '/deal-checker/result/', '/seller', '/seller-check', '/account'];
+    public const DISALLOW = ['/admin', '/login', '/logout', '/deal-checker/result/', '/seller', '/seller-check', '/account', '/report'];
 
     public static function canonical(string $baseUrl, string $path): string
     {

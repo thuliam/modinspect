@@ -25,4 +25,8 @@ jQuery(function ($) {
         });
     };
     window.miSelectInit(document);
+
+    /* LS-16 / LS-21: a sort or filter control marked data-autosubmit applies at once (the form still has a submit button when scripts are off).
+       Here, not in site.js, so it works in Admin too. */
+    $('[data-autosubmit]').on('change', function () { this.form.submit(); });
 });

@@ -566,3 +566,13 @@ body.mi .mi-section-nav .nav-link:hover { color: var(--ci-text); background: var
 body.mi .mi-section-nav .nav-link.active { color: var(--ci-primary); background: var(--ci-elevated); }
 html { scroll-padding-top: 140px; }
 html.motion-full { scroll-behavior: smooth; }
+
+/* LS-21: compare table group headers (Bootstrap collapse toggles); the chevron shows the state */
+.mi-cmp-group th { background: var(--ci-surface-2, rgba(255,255,255,.04)); font-weight: 600; }
+.mi-cmp-group .mi-chev-down, .mi-cmp-group .collapsed .mi-chev-up { display: none; }
+.mi-cmp-group .collapsed .mi-chev-down { display: inline-block; }
+/* LS-21 compare: group toggle is a plain link (no .btn); marks beside the highest / lowest value of a row */
+.mi-cmp-toggle { display: flex; align-items: center; gap: 10px; padding: 6px 0; color: inherit; text-decoration: none; }
+.mi-cmp-toggle:hover { color: inherit; text-decoration: none; }
+.mi-cmp-toggle small { opacity: .6; }
+.mi-cmp-mark { margin-left: 8px; font-size: .75em; opacity: .85; }

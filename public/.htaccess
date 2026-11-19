@@ -19,10 +19,11 @@ RewriteRule ^ index.php [QSA,L]
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
-    # LS-19 D2: Content-Security-Policy in REPORT-ONLY mode (blocks nothing; the browser console lists what would be blocked). Public pages no
-    # longer use inline scripts (LS-19 D1). Inline style attributes stay allowed (reveal delays, Select2 sizing). The sign-in form may redirect to
-    # the three providers. Switching to the enforcing header is an owner decision after the report has been read (docs/LS19_LONG_SPRINT_PLAN.md).
-    Header always set Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' https://accounts.google.com https://login.microsoftonline.com https://www.facebook.com"
+    # Content-Security-Policy, ENFORCING since LS-21 (owner decision 2026-11-19; it was report-only from LS-19). No view has an inline script or handler
+    # (tests/ls20_csp_ready_test.php keeps it so) and a 35-page sweep found no violation. Inline style attributes stay allowed (reveal delays, Select2
+    # sizing). The sign-in form may redirect to the three providers. Violations are posted to /csp-report and logged as "[modinspect-csp]" lines in the
+    # server log. To roll back, change the header name below to Content-Security-Policy-Report-Only (docs/CSP_ENFORCE.md).
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self' https://accounts.google.com https://login.microsoftonline.com https://www.facebook.com; report-uri /csp-report"
 </IfModule>
 
 # Performance (LS-2 H-9). Every block is conditional, so a host without the module simply skips it.

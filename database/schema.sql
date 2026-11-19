@@ -736,3 +736,24 @@ CREATE TABLE seller_report_disputes (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_dispute_hash (identifier_hash, status)
 ) ENGINE=InnoDB;
+
+-- LS-21 (R-11): community reports, see database/migrations/026_community_reports.sql
+CREATE TABLE community_reports (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  report_type ENUM('wrong_product','price_looks_off','stale','sold_price','spec_wrong') NOT NULL,
+  product_id BIGINT UNSIGNED NOT NULL,
+  observation_id BIGINT UNSIGNED NULL,
+  snapshot_id BIGINT UNSIGNED NULL,
+  candidate_observation_id BIGINT UNSIGNED NULL,
+  payload JSON NOT NULL,
+  reporter_hash CHAR(32) NOT NULL,
+  status ENUM('new','accepted','rejected','spam') NOT NULL DEFAULT 'new',
+  moderator_id BIGINT UNSIGNED NULL,
+  moderation_note VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  decided_at DATETIME NULL,
+  INDEX idx_reports_status (status, created_at),
+  INDEX idx_reports_product (product_id, report_type),
+  INDEX idx_reports_reporter (reporter_hash, product_id, created_at),
+  CONSTRAINT fk_community_report_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;

@@ -34,7 +34,9 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 <?php // LS-16 U-4: link previews in chat apps get the brand hero picture (an absolute URL, as Open Graph requires) ?>
 <?php $ogDefault = rtrim((string) $config['base_url'], '/') . '/assets/brand/hero-hardware.png'; $ogImage = isset($ogImage) && is_string($ogImage) && $ogImage !== '' ? $ogImage : $ogDefault; // LS-19 C2: a product page passes its own photo ?>
 <meta property="og:image" content="<?= htmlspecialchars($ogImage) ?>">
-<?php if ($ogImage === $ogDefault): ?><meta property="og:image:width" content="1026">
+<?php if (!empty($ogWidth) && !empty($ogHeight)): ?><meta property="og:image:width" content="<?= (int) $ogWidth ?>">
+<meta property="og:image:height" content="<?= (int) $ogHeight ?>">
+<?php elseif ($ogImage === $ogDefault): ?><meta property="og:image:width" content="1026">
 <meta property="og:image:height" content="436">
 <?php endif; ?>
 <?php if (!empty($jsonLd) && is_string($jsonLd)): // LS-19 C1: schema.org data built by SeoService::productJsonLd (JSON_HEX_TAG, so it cannot close this tag) ?>
@@ -52,7 +54,7 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 <link rel="preload" href="<?= $base ?>/assets/fonts/PlusJakartaSans-800.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="<?= $base ?>/assets/fonts/Prompt-Thai-600.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css">
+<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/admin/vendor/fontawesome/css/fontawesome-all.css') ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/app.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/app.css') ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/ci-tokens.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/ci-tokens.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/select2/select2.min.css">

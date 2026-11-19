@@ -104,6 +104,10 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <p class="mi-trend-note"><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>">ดูคู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></a></p>
     <?php endif; ?>
 
+    <?php if (!empty($communityOn)): // LS-21 (R-11): only when the owner has switched community reports on ?>
+        <p class="mi-trend-note"><i class="fas fa-flag mr-1" aria-hidden="true"></i><a href="<?= $base ?>/report/<?= rawurlencode((string) $product['slug']) ?>">พบข้อมูลไม่ถูกต้อง หรืออยากแจ้งราคาที่ขายได้? แจ้งเรา</a></p>
+    <?php endif; ?>
+
     <?php if (!$hasMarketSnapshot): ?>
         <div class="mi-detail-grid no-data-detail" id="sec-market" data-nav="ข้อมูลตลาด">
             <article class="card mi-product-summary-card">

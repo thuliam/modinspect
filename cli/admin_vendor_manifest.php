@@ -29,9 +29,10 @@ $components = [
         'provenance' => 'template-copy-unverified',
     ],
     'fontawesome' => [
-        'dir' => 'fontawesome', 'version' => '5.0.9', 'license' => 'Icons CC BY 4.0, Fonts SIL OFL 1.1, Code MIT',
-        'source' => 'Copied from the Concept template. Known defect: CSS references *.html font files (404) instead of woff2; browsers fall back to .woff.',
-        'provenance' => 'template-copy-unverified',
+        'dir' => 'fontawesome', 'version' => '5.15.4', 'license' => 'Icons CC BY 4.0, Fonts SIL OFL 1.1, Code MIT',
+        'source' => 'npm @fortawesome/fontawesome-free@5.15.4 (official Font Awesome Free package, the last 5.x), tarball sha512 verified at install; only css/all.css (kept as css/fontawesome-all.css), webfonts/*.woff2, webfonts/*.woff and LICENSE.txt are kept. Replaces the Concept template copy whose CSS pointed woff2 at missing .html files (a 404 on every page, G-7). Downloaded 2026-11-19 with owner approval (LS-21).',
+        'provenance' => 'official-npm-verified',
+        'npm_integrity' => ['@fortawesome/fontawesome-free@5.15.4' => 'sha512-eYm8vijH/hpzr/6/1CJ/V/Eb1xQFW2nnUKArb3z+yUWv7HTwj6M7SP957oMjfZjAHU6qpoNc2wQvIxBLWYa/Jg=='],
     ],
     'datatables' => [
         'dir' => 'datatables', 'version' => '1.13.11', 'license' => 'MIT',

@@ -33,7 +33,7 @@ $_GET = ['a' => 'x', 'b' => ['x'], 'c' => 5];
 ok_l17(L17Probe::q('a') === 'x' && L17Probe::q('b') === '' && L17Probe::q('missing') === '' && L17Probe::q('c') === '', 'queryString keeps strings only');
 $_GET = [];
 $price = (string)file_get_contents($root . '/app/Controllers/PriceController.php');
-ok_l17(!preg_match('/\(string\)\s*\(\$_GET\[/', $price) && substr_count($price, 'self::queryString(') === 3, 'The price index reads q, category and sort through queryString');
+ok_l17(!preg_match('/\(string\)\s*\(\$_GET\[/', $price) && substr_count($price, 'self::queryString(') === 4, 'The price index reads q, category and sort (and, LS-21, the spec filters in one loop) through queryString');
 foreach (['app/Views/deal/form.php', 'app/Views/modules/seller-advisor.php'] as $v) {
     ok_l17(!preg_match('/\(string\)\s*\(\$_GET\[/', (string)file_get_contents($root . '/' . $v)), "$v never casts a raw query value to string");
 }

@@ -81,8 +81,7 @@ jQuery(function ($) {
         $('.mi-featured > [data-cat]').each(function () { $(this).toggle(f === 'all' || $(this).data('cat') === f); });
     });
 
-    /* LS-16: a sort or filter control marked data-autosubmit applies at once (the form still has a submit button when scripts are off) */
-    $('[data-autosubmit]').on('change', function () { this.form.submit(); });
+    /* data-autosubmit moved to mi-select.js (LS-21): that file is loaded by the public pages and by Admin, this one only by the public pages */
 
     /* LS-20 B1: a read-only field marked data-select-on-focus selects its text when focused (was an inline onfocus handler) */
     $(document).on('focus', '[data-select-on-focus]', function () { this.select(); });

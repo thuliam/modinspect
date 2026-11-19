@@ -17,6 +17,9 @@ foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') ==
 <div class="row mi-metric-row">
     <div class="col-xl col-md-4 col-sm-6"><a class="card mi-metric-card gradient-warning" href="<?= $base ?>/admin/review-queue?dataset=REAL&status=pending"><span>REAL Pending</span><strong><?= $realPending ?></strong><small>Calibration review queue</small></a></div>
     <div class="col-xl col-md-4 col-sm-6"><a class="card mi-metric-card gradient-success" href="<?= $base ?>/admin/review-queue?dataset=MOCK_TEST&status=pending"><span>MOCK/Test Pending</span><strong><?= $mockPending ?></strong><small>Kept separate from REAL</small></a></div>
+    <?php $otherPending = (int) ($summary['by_dataset']['UNKNOWN']['pending'] ?? 0); if ($otherPending > 0): // LS-21: candidates from sources that are neither REAL nor MOCK/TEST (for example a community sold-price report) are hidden by the default REAL filter ?>
+    <div class="col-xl col-md-4 col-sm-6"><a class="card mi-metric-card gradient-primary" href="<?= $base ?>/admin/review-queue?dataset=UNKNOWN&status=pending"><span>Other sources pending</span><strong><?= $otherPending ?></strong><small>Community reports and other unclassified sources</small></a></div>
+    <?php endif; ?>
     <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card gradient-info"><span>Approved</span><strong><?= $approved ?></strong><small>All datasets</small></div></div>
     <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card gradient-purple"><span>Rejected</span><strong><?= $rejected ?></strong><small>All datasets</small></div></div>
     <div class="col-xl col-md-4 col-sm-6"><div class="card mi-metric-card gradient-ocean"><span>Excluded</span><strong><?= $excluded ?></strong><small>All datasets</small></div></div>

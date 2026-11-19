@@ -73,7 +73,8 @@ foreach ($routes as [, $verb, $path, $controller, $method]) {
     if (str_starts_with($path, '/admin') && !str_contains($code, 'requirePermission')) {
         $missing[] = "no RBAC guard: {$verb} {$path}";
     }
-    if ($verb === 'post' && !str_contains($code, 'Csrf::verify')) {
+    // /csp-report is the one named exemption (browser-posted, no token): its compensating controls are pinned by admin_route_guard_test + csp_report_test
+    if ($verb === 'post' && $path !== '/csp-report' && !str_contains($code, 'Csrf::verify')) {
         $missing[] = "no CSRF check: post {$path}";
     }
 }

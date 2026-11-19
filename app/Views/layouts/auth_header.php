@@ -9,7 +9,7 @@ $base = $config['base_url'];
 <meta name="description" content="ModInspect Admin login">
 <title><?= htmlspecialchars($title ?? 'Admin Login') ?> - <?= htmlspecialchars($config['name']) ?></title>
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css">
+<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/admin/vendor/fontawesome/css/fontawesome-all.css') ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/css/admin.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/ci-tokens.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/ci-tokens.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-dropx.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-dropx.css") ?>">

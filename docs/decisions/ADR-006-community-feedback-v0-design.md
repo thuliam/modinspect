@@ -1,6 +1,6 @@
 # ADR-006: Community feedback v0: design and schema proposal (nothing built)
 
-**Status:** Option A accepted by the owner on 2026-11-17 (DL-071); moderation owner and retention still open. Design record only: no table, route, form or code exists. It needs the owner's approval of scope and of the privacy wording before anything is built (LS-3 decision D-1: design first, a small form only after approval).
+**Status:** Option A accepted by the owner on 2026-11-17 (DL-071). **BUILT, SWITCHED OFF (LS-21, 2026-11-19, DL-112)**: slices S1 to S4 exist and are tested; nothing is visible to visitors until the owner sets `COMMUNITY_REPORTS_ENABLED=true` with a real `COMMUNITY_REPORTS_HMAC_KEY`. Still open for the owner: approve the privacy wording, name who moderates and how often, confirm retention (the CLI option exists, no period is set). It needs the owner's approval of scope and of the privacy wording before anything is built (LS-3 decision D-1: design first, a small form only after approval).
 **Date:** 2026-11-17
 **Builds on:** ADR-005 (community feedback is evidence, not voting), Blueprint v1.1 section 3.6, `docs/PRODUCT_REQUIREMENTS.md` R-05 and R-11, `docs/SECURITY_REVIEW_2026-11-16.md`.
 
@@ -94,3 +94,15 @@ The privacy and terms wording shown to visitors (draft: "We keep only the choice
 2. Is a sold-price report worth building before a second listing-level source exists?
 3. Who moderates, and how often? (A report queue nobody reads is worse than no form.)
 4. Are the retention periods acceptable?
+
+
+## As built (LS-21, 2026-11-19)
+
+- **Gate.** Every public route answers 404 unless `COMMUNITY_REPORTS_ENABLED=true` and `COMMUNITY_REPORTS_HMAC_KEY` is 32+ characters. The product page links to the form only then. `/report` is disallowed in `robots.txt` and not in the sitemap.
+- **S1** migration `026_community_reports.sql` (also in `schema.sql` and the CI dump `modinspect.sql`; adds one column to the proposal, `candidate_observation_id`, so a report can become a candidate only once, and an evidence source `community_report` with reliability 20 and evidence quality low), admin queue at `/admin/community-reports` (permission `reports.moderate`: admin and reviewer).
+- **S2** public form `/report/{slug}` (chooser, then one form per type), CSRF, honeypot (a filled one gets the normal thank-you page and nothing is stored), 5 posts per hour per client, 3 reports per product per client per day, an identical report again is stored once. Choices and numbers only: no text box, so the `note` of the draft is not built; extra fields posted by hand are dropped.
+- **S3** moderation (accepted, rejected, spam; a reason is required for the last two; audited) and the two effects: `wrong_product` and `spec_wrong` stay as tasks for the admin (a link to the product admin page); an accepted **sold_price** can be sent to price review, which creates a raw row, an evidence row (level E), a **pending** observation with `price_type = 'sold'` and a review decision, so it appears in the review queue under the dataset filter UNKNOWN (a card shows the count). A reviewer still approves or excludes it, and even if approved the snapshot engine ignores it for the asking cohort (`WRONG_PRICE_TYPE`). One candidate per client per product per week.
+- **Narrower than the draft.** `price_looks_off` with a price is kept as a signal and is NOT turned into an observation candidate: the price the visitor says they "see" is not a transaction and has no listing behind it. The draft allowed it; only sold-price reports can become candidates.
+- **S4** Data health card (counts and the models with the most open reports, an attention signal and never a vote), and `php cli/retention_purge.php --community-days=N` which deletes only rejected and spam reports decided more than N days ago (floor 7, no default; ADR proposes 90). Accepted and new reports are never purged by it.
+- **Anonymous code.** `reporter_hash` is the first 32 characters of an HMAC of the client address under a key that is itself an HMAC of the date, so it changes every day and cannot be reversed without the server key.
+- **Tests.** `tests/community_reports_test.php` (validation, hash, limits, moderation, candidate, retention, file guards, with mutation checks), `tests/community_reports_http_test.php` (real server: off, off without a key, the whole public flow, 419, honeypot, rate limit, nothing changes a price).
