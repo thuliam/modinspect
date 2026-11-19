@@ -30,7 +30,7 @@ $fixture = static fn(string $title): array => [
     'C_reference_specs.csv' => [$cols('C'), [[$product, 'speed_mhz', '3200', 'MHz', 'https://www.example-maker.com/p/1', '2026-11-10', 'official_checked', '']]],
 ];
 $dir = sys_get_temp_dir() . '/mi_dr_' . bin2hex(random_bytes(4));
-$work = $dir . '/work';
+$work = ROOT_PATH . '/storage/import/test/dr_' . $tag;   // the importer reads only files inside the project root
 $mk($dir . '/ok', $fixture('NVIDIA GeForce RTX 3070 8GB used'));
 $mk($dir . '/bad', $fixture("NVIDIA GeForce RTX 3070 $secret โทร 081-234-5678"));
 
@@ -67,7 +67,8 @@ try {
     ok_dr($after['price_indices'] === $before['price_indices'] && $approved() === $ap, 'No snapshot was created and nothing was approved');
 } finally {
     $db->rollBack();
-    foreach (['ok', 'bad', 'work'] as $d) { foreach (glob($dir . '/' . $d . '/*') ?: [] as $f) { @unlink($f); } @rmdir($dir . '/' . $d); }
+    foreach (['ok', 'bad'] as $d) { foreach (glob($dir . '/' . $d . '/*') ?: [] as $f) { @unlink($f); } @rmdir($dir . '/' . $d); }
+    foreach (glob($work . '/*') ?: [] as $f) { @unlink($f); } @rmdir($work);
     @rmdir($dir);
 }
 $src = (string)file_get_contents(ROOT_PATH . '/app/Services/Intake/IntakeDailyRun.php');

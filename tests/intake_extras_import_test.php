@@ -40,7 +40,8 @@ $csv('A_used_listings.csv', ['capture_method', 'source_listing_url', 'source_ite
     ['owner_transcription', "https://www.facebook.com/marketplace/item/93{$tag}02/", "IE-$tag-2", 'NVIDIA GeForce RTX 3070 8GB used x2 bundle', '15000', '2026-11-14 12:05:00', 'used']]);
 $csv('A_used_listings_extra.csv', ['source_item_id', 'product_name_guess', 'warranty_remaining_months', 'has_box', 'has_receipt', 'usage_hint_months', 'province', 'posted_at', 'flag'], [
     ["IE-$tag-1", '', '6', '1', '0', '14', 'นนทบุรี', '', ''], ["IE-$tag-2", '', '', '', '', '', '', '', 'bundle']]);
-$out = $dir . '/second_source.csv';
+$importDir = ROOT_PATH . '/storage/import/test'; if (!is_dir($importDir)) { mkdir($importDir, 0777, true); }   // the importer reads only files inside the project root
+$out = $importDir . '/ie_' . $tag . '.csv';
 exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(ROOT_PATH . '/cli/intake_prepare_import.php') . ' ' . escapeshellarg($dir) . ' --out=' . escapeshellarg($out) . ' 2>&1', $o, $code);
 $sum = json_decode(implode("\n", $o), true);
 ok_ie($code === 0 && $sum['written'] === 1 && $sum['left_out'] === ['bundle' => 1] && is_file($out), 'The prepare CLI writes one row and reports the bundle left out: ' . implode(' ', $o));
@@ -56,6 +57,6 @@ try {
     ok_ie($o2['verified_status'] === 'pending', 'The observation waits for a human review');
 } finally {
     $db->rollBack();
-    array_map('unlink', glob($dir . '/*') ?: []); @rmdir($dir);
+    array_map('unlink', glob($dir . '/*') ?: []); @rmdir($dir); @unlink($out);
 }
 echo "intake_extras_import_test: PASS\n";
