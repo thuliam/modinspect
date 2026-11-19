@@ -1,8 +1,10 @@
 <?php ob_start(); ?>Products<?php $dxT = ob_get_clean(); ob_start(); ?>Canonical Product Master records used by resolution, review, and price snapshots.<?php $dxD = ob_get_clean(); ob_start(); ?><button class="btn btn-primary js-product-new" type="button" aria-controls="product-form-panel" aria-expanded="false">
         <i class="fas fa-plus mr-2"></i>Add Product
     </button><?php $dxA = ob_get_clean(); ?>
-<?= mi_page_header($base, array (  0 => 'Catalog',), $dxT, $dxD, $dxA) ?>
+<?php $canManage = $canManage ?? true; ?>
+<?= mi_page_header($base, array (  0 => 'Catalog',), $dxT, $dxD, $canManage ? $dxA : '') ?>
 
+<?php if ($canManage): ?>
 <div id="product-form-panel" class="collapse">
     <form id="product-form" class="card mi-admin-card mi-product-form-card mb-3" method="post" action="<?= $base ?>/admin/products/save">
         <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
@@ -75,6 +77,7 @@
         </div>
     </form>
 </div>
+<?php endif; ?>
 
 <form id="products-filters" class="card mi-admin-card mi-filter-card mb-3 js-datatable-filters" data-target="#products-table">
     <div class="card-header">

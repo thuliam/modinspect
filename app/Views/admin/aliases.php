@@ -1,6 +1,8 @@
 <?php ob_start(); ?>Aliases<?php $dxT = ob_get_clean(); ob_start(); ?>Resolver mapping from observed market naming to canonical Product Master records.<?php $dxD = ob_get_clean(); ob_start(); ?><button class="btn btn-primary js-alias-new" type="button"><i class="fas fa-plus mr-2"></i>Add Alias</button><?php $dxA = ob_get_clean(); ?>
-<?= mi_page_header($base, array (  0 => 'Catalog',), $dxT, $dxD, $dxA) ?>
+<?php $canManage = $canManage ?? true; ?>
+<?= mi_page_header($base, array (  0 => 'Catalog',), $dxT, $dxD, $canManage ? $dxA : '') ?>
 
+<?php if ($canManage): ?>
 <form id="alias-form" class="card mi-admin-card mb-3" method="post" action="<?= $base ?>/admin/product-aliases/save">
     <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
     <input type="hidden" name="alias_id" value="">
@@ -15,6 +17,7 @@
         <button class="btn btn-primary" type="submit">Save Alias</button>
     </div>
 </form>
+<?php endif; ?>
 
 <form id="aliases-filters" class="card mi-admin-card mb-3 js-datatable-filters" data-target="#aliases-table">
     <div class="card-body">

@@ -17,6 +17,14 @@ use PDO;
 final class AdminController extends Controller {
     private ?array $user = null;
     private function render(string $view,string $title,array $data=[]): void { $this->view('admin/'.$view,['title'=>$title,'auth_user'=>$this->user()]+$data); }
+    /** LS-14 J-0: the server already refuses the write (403); this only stops the page from offering a button that would fail */
+    private function canManage(): bool { return (new AuthorizationService())->can($this->user(), 'products.manage'); }
+    /** drops the action cell (last column) of every row for a read-only role; the column stays so the table keeps its shape */
+    private function withoutActions(array $payload): array {
+        if($this->canManage() || empty($payload['data'])) return $payload;
+        foreach($payload['data'] as $i=>$row){ if(is_array($row) && $row){ $row[array_key_last($row)]=''; $payload['data'][$i]=$row; } }
+        return $payload;
+    }
     private function user(): ?array { return $this->user ??= (new AuthService())->currentUser(); }
     private function requirePermission(string $permission): bool {
         $auth=new AuthService();
@@ -35,8 +43,8 @@ final class AdminController extends Controller {
         return true;
     }
     public function index(): void { if(!$this->requirePermission('admin.dashboard.view')) return; $d=new Dashboard();$this->render('dashboard','Admin Data Quality',$d->adminStats()+['products'=>$d->products(),'sources'=>$d->sources(),'recent_imports'=>$d->recentImportRuns()]); }
-    public function products(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('products','Product Master',['products'=>$d->products(),'categories'=>$d->rows("SELECT id,name,slug FROM product_categories ORDER BY sort_order,name"),'brands'=>$d->rows("SELECT id,name FROM brands ORDER BY name")]); }
-    public function aliases(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('aliases','Product Aliases',['aliases'=>$d->aliases(),'products'=>$d->reviewProductOptions()]); }
+    public function products(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('products','Product Master',['canManage'=>$this->canManage(),'products'=>$d->products(),'categories'=>$d->rows("SELECT id,name,slug FROM product_categories ORDER BY sort_order,name"),'brands'=>$d->rows("SELECT id,name FROM brands ORDER BY name")]); }
+    public function aliases(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('aliases','Product Aliases',['canManage'=>$this->canManage(),'aliases'=>$d->aliases(),'products'=>$d->reviewProductOptions()]); }
     public function observations(): void { if(!$this->requirePermission('review.view')) return; $d=new Dashboard();$this->render('observations','Price Observations',['observations'=>$d->observations($_GET['status']??null,trim((string)($_GET['q']??''))),'products'=>$d->reviewProductOptions(),'sources'=>$d->reviewSourceOptions(),'batch_options'=>$d->reviewBatchOptions(),'status'=>$_GET['status']??'','q'=>trim((string)($_GET['q']??''))]); }
     public function review(): void {
         if(!$this->requirePermission('review.view')) return;
@@ -288,14 +296,14 @@ final class AdminController extends Controller {
     public function articles(): void { if(!$this->requirePermission('products.view')) return; $this->render('placeholder','Articles',['description'=>'จัดการบทความ SEO, buying guides และสถานะการเผยแพร่']); }
     public function audits(): void { if(!$this->requirePermission('audit.view')) return; $d=new Dashboard();$this->render('audits','Audit Logs',['audits'=>$d->audits()]); }
     public function articlesOperational(): void { if(!$this->requirePermission('products.view')) return; $this->render('articles','Articles',['last_import_summary'=>$_SESSION['admin_import_summary'] ?? null]); }
-    public function productsData(): void { if(!$this->requirePermission('products.view')) return; $this->json((new AdminDataTableService())->products($_GET,$this->baseUrl())); }
-    public function aliasesData(): void { if(!$this->requirePermission('products.view')) return; $this->json((new AdminDataTableService())->aliases($_GET,$this->baseUrl())); }
+    public function productsData(): void { if(!$this->requirePermission('products.view')) return; $this->json($this->withoutActions((new AdminDataTableService())->products($_GET,$this->baseUrl()))); }
+    public function aliasesData(): void { if(!$this->requirePermission('products.view')) return; $this->json($this->withoutActions((new AdminDataTableService())->aliases($_GET,$this->baseUrl()))); }
     public function observationsData(): void { if(!$this->requirePermission('review.view')) return; $this->json((new AdminDataTableService())->observations($_GET,$this->baseUrl())); }
     public function reviewData(): void { if(!$this->requirePermission('review.view')) return; $this->json((new AdminDataTableService())->reviewQueue($_GET,$this->baseUrl())); }
     public function indicesData(): void { if(!$this->requirePermission('snapshots.view')) return; $this->json((new AdminDataTableService())->priceIndices($_GET,$this->baseUrl())); }
     public function sourcesData(): void { if(!$this->requirePermission('sources.view')) return; $this->json((new AdminDataTableService())->sources($_GET,$this->baseUrl(),$this->user() ?? [])); }
     public function jobsData(): void { if(!$this->requirePermission('collection.jobs.view')) return; $this->json((new AdminDataTableService())->jobs($_GET,$this->baseUrl(),$this->user() ?? [])); }
-    public function articlesData(): void { if(!$this->requirePermission('products.view')) return; $this->json((new AdminDataTableService())->articles($_GET,$this->baseUrl())); }
+    public function articlesData(): void { if(!$this->requirePermission('products.view')) return; $this->json($this->withoutActions((new AdminDataTableService())->articles($_GET,$this->baseUrl()))); }
     public function auditsData(): void { if(!$this->requirePermission('audit.view')) return; $this->json((new AdminDataTableService())->audits($_GET)); }
     public function importCsvTemplate(): void { $this->downloadImportTemplate('csv'); }
     public function importJsonTemplate(): void { $this->downloadImportTemplate('json'); }

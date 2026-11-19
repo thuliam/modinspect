@@ -79,6 +79,47 @@ curl -sD - -o /dev/null "$B/" | grep -i 'x-content-type-options\|x-frame-options
 5. Open `/`, `/price`, a product page, `/deal-checker`, `/login` in a browser at desktop and phone width; check the console for errors and missing assets.
 6. Confirm the home page shows the honest "no market price yet" state until reviewed evidence exists (no price may appear without an approved snapshot).
 
+## 5b. The route that fits this account (LS-14, 2026-11-19): no shell, FTPS from GitHub Actions
+
+Found on 2026-11-18: the HostAtom account has **no shell** (SSH accepts the login and closes the connection), so the `git clone` route in
+`deploy/hostatom_release.sh` cannot run there. The subdomain `modinspect.thuliamdev.com` already exists (PHP 8.3, document root `.../modinspect/public`).
+The route that works without a shell:
+
+1. **Code:** GitHub Actions workflow `ModInspect FTPS Deploy (manual)` (`.github/workflows/ftps-deploy.yml`, runs from `main` only).
+   - Run it first with `mode = plan`: it builds the allowlisted package (`app/`, `config/`, `public/`; never `.env`, never `public/assets/products-mfr/`),
+     checks PHP syntax, and lists what it would upload. It writes nothing to the host.
+   - Then run it with `mode = deploy` and `confirm = DEPLOY`. It uploads over verified explicit FTPS, code first and `public/` last, never deletes anything,
+     never touches `.env`, `storage/` or the database, then runs `php cli/smoke_check.php` against the live site.
+   - Rollback = run it again with `ref` set to the previous release tag (files are overwritten one by one; the database is not involved).
+   - Secrets: `MODINSPECT_FTPS_USERNAME` (must be `modinspect@thuliamdev.com`) and `MODINSPECT_FTPS_PASSWORD` are repository secrets the owner already set.
+     Not confirmed until the first `plan` run: that the FTP account's root is the `modinspect/` folder.
+2. **Database (no shell, so no `cli/migrate.php`):** in DirectAdmin take a backup first (Backup and Restore, or phpMyAdmin Export), then in phpMyAdmin select
+   the database and **Import** each file of `database/migrations/` that is not applied yet, in numeric order. The DEV database `thuliam_modinspect` was at
+   migration **021** on 2026-11-18; migrations **022** (new-price references), **023** (members), **024** (listing facts, seller listings) and **025**
+   (seller reports) are additive and have only been applied to the isolated test database. A page that needs a missing table says so (admin) or has no
+   effect (public) instead of failing. Never import `database/seed.sql` or TEST/MOCK data into production.
+3. **Folders the app writes to** (create in File Manager, outside the document root, writable by the web user): `storage/cache/ratelimit`, `storage/cache/oauth`,
+   `storage/uploads/listings`, `storage/uploads/reports`, `storage/logs`, `storage/import`. `.env` and `storage/` are created by the owner, never uploaded by the workflow.
+4. **Smoke check** replaces the curl block in section 5 (same list, plus health, private paths and robots):
+
+```bash
+php cli/smoke_check.php https://modinspect.thuliamdev.com   # exit 0 = every check passed
+```
+
+5. **Optional features are closed unless the owner opens them in `.env`** (all default to off or empty):
+
+```
+# visitor sign-in: a provider appears only when both its id and secret are set (HG-13); Apple is not offered (paid, HG-15)
+MEMBER_GOOGLE_CLIENT_ID=            MEMBER_GOOGLE_CLIENT_SECRET=
+MEMBER_MICROSOFT_CLIENT_ID=         MEMBER_MICROSOFT_CLIENT_SECRET=
+MEMBER_FACEBOOK_APP_ID=             MEMBER_FACEBOOK_APP_SECRET=
+# redirect URI to register at each provider: https://modinspect.thuliamdev.com/account/callback/google | microsoft | facebook
+# seller check (reports about a phone or account): off until a lawyer has read the wording (HG-14) and a long random key is set (HG-18)
+SELLER_CHECK_ENABLED=false          SELLER_CHECK_HMAC_KEY=
+# approved seller listings visible to everyone (HG-16)
+SELLER_LISTINGS_PUBLIC=false
+```
+
 ## 6. Font Awesome (gate G-7)
 
 The bundled Font Awesome 5.0.9 CSS points at `*.html` font files (404, falls back to `.woff`) and lacks newer icons. Before launch the owner approves
@@ -110,4 +151,7 @@ means moving those into files first (tracked as follow-up), then a report-only t
 - [ ] Rights settled (photos, logos)
 - [ ] Production `.env` created on the server, DB user is not root
 - [ ] Backup taken, rollback owner named
+- [ ] Migrations 022 to 025 imported (phpMyAdmin) after the backup, or consciously left out
+- [ ] `storage/` folders from section 5b created and writable; `.env` has `SELLER_CHECK_ENABLED=false` unless HG-14 is done
+- [ ] First `plan` run read, `smoke_check` passes after `deploy`
 - [ ] Written go-ahead to deploy to modinspect.thuliamdev.com

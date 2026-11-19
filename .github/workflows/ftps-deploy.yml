@@ -163,15 +163,19 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Check the pages (GET, the router answers HEAD with 404)
-        shell: bash
-        run: |
-          B=https://modinspect.thuliamdev.com
-          fail=0
-          for p in / /price /deal-checker /methodology /login /favicon.ico; do
-            c=$(curl -s -o /dev/null -w '%{http_code}' "$B$p"); echo "$p $c"; [ "$c" = "200" ] || fail=1
-          done
-          a=$(curl -s -o /dev/null -w '%{http_code}' "$B/admin"); echo "/admin $a"; [ "$a" = "302" ] || fail=1
-          e=$(curl -s -o /dev/null -w '%{http_code}' "$B/.env"); echo "/.env $e"; case "$e" in 403|404) ;; *) fail=1 ;; esac
-          w=$(curl -s "$B/" | grep -c 'PHP Warning\|Fatal error' || true); echo "warnings $w"; [ "$w" = "0" ] || fail=1
-          exit $fail
+      - name: Checkout the release ref (for cli/smoke_check.php)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - name: Set up PHP 8.3 (curl)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: curl
+          coverage: none
+          tools: none
+
+      - name: Run the smoke check (GET only, the same list a person runs by hand)
+        run: php cli/smoke_check.php https://modinspect.thuliamdev.com

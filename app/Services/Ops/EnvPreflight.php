@@ -39,6 +39,17 @@ final class EnvPreflight
         $add('DB_USERNAME', strtolower($val('DB_USERNAME')) !== 'root' ? 'pass' : 'warn', strtolower($val('DB_USERNAME')) !== 'root' ? 'the application does not use the root database user' : 'use a dedicated database user with only this database');
         $add('GEMINI_API_KEY', $val('GEMINI_API_KEY') === '' ? 'pass' : 'warn', $val('GEMINI_API_KEY') === '' ? 'no provider key on the host' : 'a provider key is present; remove it unless a live run is approved');
 
+        // LS-14: the optional features. Half-configured is a failure (a provider that looks on but cannot work, or a switch on without its safeguard).
+        $halfProviders = [];
+        foreach (['GOOGLE' => ['MEMBER_GOOGLE_CLIENT_ID', 'MEMBER_GOOGLE_CLIENT_SECRET'], 'MICROSOFT' => ['MEMBER_MICROSOFT_CLIENT_ID', 'MEMBER_MICROSOFT_CLIENT_SECRET'], 'FACEBOOK' => ['MEMBER_FACEBOOK_APP_ID', 'MEMBER_FACEBOOK_APP_SECRET']] as $p => [$id, $sec]) {
+            if (($val($id) === '') !== ($val($sec) === '')) { $halfProviders[] = $p; }
+        }
+        $add('MEMBER_PROVIDERS', $halfProviders === [] ? 'pass' : 'fail', $halfProviders === [] ? 'every sign-in provider has both its id and secret, or neither' : 'set both the id and the secret (or neither) for ' . implode(', ', $halfProviders));
+        $checkOn = $truthy($val('SELLER_CHECK_ENABLED'));
+        $keyOk = strlen($val('SELLER_CHECK_HMAC_KEY')) >= 32;
+        $add('SELLER_CHECK', !$checkOn ? 'pass' : ($keyOk ? 'warn' : 'fail'), !$checkOn ? 'the seller check is off' : ($keyOk ? 'the seller check is ON: confirm the lawyer review (HG-14) is done' : 'SELLER_CHECK_ENABLED is on but SELLER_CHECK_HMAC_KEY is missing or shorter than 32 characters'));
+        $add('SELLER_LISTINGS_PUBLIC', $truthy($val('SELLER_LISTINGS_PUBLIC')) ? 'warn' : 'pass', $truthy($val('SELLER_LISTINGS_PUBLIC')) ? 'approved seller listings are public: confirm HG-16 (marketplace decision)' : 'seller listings are not public');
+
         $add('ENV_FILE_LOCATION', empty($ctx['public_env_exists']) ? 'pass' : 'fail', empty($ctx['public_env_exists']) ? 'no .env inside the web root' : 'an .env file is inside the web root; move it out');
         $mode = $ctx['file_mode'] ?? null;
         if ($mode !== null) {
