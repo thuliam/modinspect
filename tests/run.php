@@ -96,6 +96,7 @@ $commands = [
     ['label' => 'tests/intake_daily_run_test.php', 'args' => ['tests/intake_daily_run_test.php']],
     ['label' => 'tests/coverage_report_test.php', 'args' => ['tests/coverage_report_test.php']],
     ['label' => 'tests/condition_feasibility_test.php', 'args' => ['tests/condition_feasibility_test.php']],
+    ['label' => 'tests/listing_reader_test.php', 'args' => ['tests/listing_reader_test.php']],
     ['label' => 'tests/condition_guide_test.php', 'args' => ['tests/condition_guide_test.php']],
     ['label' => 'tests/price_index_categories_test.php', 'args' => ['tests/price_index_categories_test.php']],
     ['label' => 'tests/hidden_modules_test.php', 'args' => ['tests/hidden_modules_test.php']],

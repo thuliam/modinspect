@@ -27,6 +27,8 @@ $router->post('/report/{slug}',[CommunityReportController::class,'submit']);
 $router->get('/price',[PriceController::class,'index']);
 $router->get('/price/{slug}',[PriceController::class,'show']);
 $router->get('/deal-checker',[DealCheckerController::class,'form']);
+$router->get('/read-listing',[\App\Controllers\ListingReaderController::class,'form']);
+$router->post('/read-listing',[\App\Controllers\ListingReaderController::class,'read']);
 $router->post('/deal-checker',[DealCheckerController::class,'store']);
 $router->get('/deal-checker/result/{uuid}',[DealCheckerController::class,'result']);
 $router->get('/deal-checker/result/{uuid}/card',[DealCheckerController::class,'card']);
