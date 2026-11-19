@@ -86,8 +86,10 @@ if (!function_exists('mi_logo')) {
     /** Approved brand lockup (owner kit, references/04, cropped with black made transparent; geometry untouched). Single source for header and footer. */
     function mi_logo(string $base): string
     {
-        $file = ROOT_PATH . '/public/assets/brand/modinpect-lockup-dark.png';
-        return '<img class="mi-logo" src="' . $base . '/assets/brand/modinpect-lockup-dark.png?v=' . (int) @filemtime($file) . '" width="900" height="181" alt="modinpect">';
+        // LS-17 C1: the logo shows at about 240 px, so the page loads a 480 px copy (2x screens; 35 KB instead of 97 KB) made from the same file;
+        // the original stays as the source. The width/height attributes keep the original ratio, CSS sets the drawn size.
+        $file = ROOT_PATH . '/public/assets/brand/modinpect-lockup-dark-480.png';
+        return '<img class="mi-logo" src="' . $base . '/assets/brand/modinpect-lockup-dark-480.png?v=' . (int) @filemtime($file) . '" width="900" height="181" alt="modinpect">';
     }
 }if (!function_exists('mi_art_img')) {
     /**

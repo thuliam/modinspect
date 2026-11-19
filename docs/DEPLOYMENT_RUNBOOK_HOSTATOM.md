@@ -50,7 +50,7 @@ GEMINI_API_KEY=            # leave empty: the zero-cost POC policy forbids paid 
 ## 4. Database
 
 1. Back up first: `mysqldump --single-transaction --routines <db> > modinspect-YYYYMMDD-HHMM.sql` (store it off the server).
-2. New database: import `database/schema.sql`, then apply each file in `database/migrations/` in order with
+2. New database: import `database/schema.sql`, then apply each file in `database/migrations/` in order (the CI job "Fresh install rehearsal", `cli/rehearse_fresh_install.php`, proves this chain on an empty MariaDB 10.6 for every PR) with
    `php cli/migrate.php database/migrations/<file>.sql` (already-applied migrations must be skipped: record which ones ran).
 3. Seed only what the product needs (`database/seed.sql` contains fixture rows: do **not** load fixtures or TEST/MOCK evidence into production).
 4. Create the first admin with `php cli/create_admin_user.php` over SSH or a one-off script; the password is typed by the owner, never pasted into chat.
@@ -64,7 +64,7 @@ GEMINI_API_KEY=            # leave empty: the zero-cost POC policy forbids paid 
 4. Smoke checks (all must pass; paste the output in the release note):
 
 ```bash
-# GET, not HEAD: the router answers HEAD requests with 404
+# the router answers HEAD like GET since LS-16; the full check is: php cli/smoke_check.php "$B" --links
 B=https://modinspect.thuliamdev.com
 for p in / /price /deal-checker /methodology /login /favicon.ico; do printf '%s ' "$p"; curl -s -o /dev/null -w '%{http_code}
 ' "$B$p"; done   # all 200

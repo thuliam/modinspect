@@ -8,12 +8,14 @@ final class PriceController extends Controller {
     public function index(): void {
         $q=\App\Services\Search\SearchQuery::clip(self::queryString('q')); $category=trim(self::queryString('category')) ?: null;
         $model=new Product(); $products=$model->search($q,$category);
+        // LS-17 C3: with no search and no category the result IS the whole catalog, so the name list reuses it instead of running the same query twice
+        $catalog=($q===''&&$category===null) ? $products : $model->search();
         // LS-16 U-1: order and "priced only" are display choices on the same rows (no new query); an unknown key falls back to the catalog order
         $sort=self::queryString('sort'); if(!isset(\App\Services\Catalog\PriceList::SORTS[$sort])){ $sort=''; }
         $pricedOnly=($_GET['priced']??'')==='1';
         $products=\App\Services\Catalog\PriceList::apply($products,$sort,$pricedOnly);
         // F-7: the names feed the browser's own autocomplete; when nothing was found, a typo-tolerant "did you mean" (suggestion only, results are never changed)
-        $names=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'full_name'=>$p['full_name']],$model->search());
+        $names=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'full_name'=>$p['full_name']],$catalog);
         $didYouMean=!$products && $q!=='' ? \App\Services\Search\DidYouMean::suggest($q,$names) : [];
         $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'sort'=>$sort,'pricedOnly'=>$pricedOnly,'suggestions'=>$products ? [] : $model->popular(6),'names'=>$names,'didYouMean'=>$didYouMean]);
     }

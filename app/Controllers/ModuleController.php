@@ -16,6 +16,8 @@ final class ModuleController extends Controller {
         // LS-17 A2 (S-1): only the first few entries are looked at; 400 unknown slugs in one URL took 5.6 s (one product lookup each)
         $wanted=array_slice(array_values(array_unique(array_map('trim',$wanted))),0,\App\Services\Catalog\CompareTable::MAX_MODELS*2);
         $all=$model->search();
+        // LS-17 C3: search() and findBySlug() share one SELECT, so a chosen model is taken from the catalog already loaded (no query per column)
+        $bySlug=[]; foreach($all as $row){ $bySlug[(string)$row['slug']]=$row; }
         $items=[]; $chosen=[]; $unmatched=[];
         foreach($wanted as $typed){
             if($typed===''||count($chosen)>=\App\Services\Catalog\CompareTable::MAX_MODELS){ continue; }
@@ -23,7 +25,7 @@ final class ModuleController extends Controller {
             $s=\App\Services\Catalog\CompareTable::resolve($typed,$all);
             if($s===null){ $unmatched[]=$typed; continue; }
             if(isset($chosen[$s])){ continue; }
-            $p=$model->findBySlug($s); if(!$p){ $unmatched[]=$typed; continue; }
+            $p=$bySlug[$s] ?? null; if(!$p){ $unmatched[]=$typed; continue; }
             $chosen[$s]=true;
             $items[]=['product'=>$p,'facts'=>\App\Services\Catalog\ProductFacts::rows($p,$model->referenceSpecs((int)$p['id']),(int)date('Y'))];
         }
