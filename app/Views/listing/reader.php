@@ -86,7 +86,7 @@ $yn = static fn(?bool $b): string => $b === true ? 'มีระบุ' : 'ไ�
                 <?php endforeach; ?>
                 </ul>
             <?php else: ?><p class="mb-0">ไม่พบวลีที่อยู่ในรายการเฝ้าระวัง นี่ไม่ได้แปลว่าปลอดภัย ลองถามคำถามด้านล่างก่อนจ่ายเสมอ</p><?php endif; ?>
-            <p class="mi-trend-note mt-3 mb-0">รายการนี้อธิบายข้อความในประกาศ ไม่ได้ตัดสินตัวผู้ขาย</p>
+            <p class="mi-trend-note mt-3 mb-0">รายการนี้อธิบายข้อความในประกาศ ไม่ได้ตัดสินตัวผู้ขาย · <a href="<?= $base ?>/glossary">ศัพท์ตลาดมือสอง</a></p>
         </section>
         <aside class="card mi-result-panel">
             <h2 class="h5">คำถามที่ควรถามก่อนจ่าย</h2>

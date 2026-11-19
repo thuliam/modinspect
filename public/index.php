@@ -38,6 +38,7 @@ $router->post('/community/thread/{id}/reply',[\App\Controllers\CommunityControll
 $router->post('/community/review',[\App\Controllers\CommunityController::class,'review']);
 $router->post('/community/vote',[\App\Controllers\CommunityController::class,'vote']);
 $router->post('/community/flag',[\App\Controllers\CommunityController::class,'flagItem']);
+$router->get('/glossary',[\App\Controllers\HomeController::class,'glossary']);
 $router->get('/read-listing',[\App\Controllers\ListingReaderController::class,'form']);
 $router->post('/read-listing',[\App\Controllers\ListingReaderController::class,'read']);
 $router->post('/deal-checker',[DealCheckerController::class,'store']);

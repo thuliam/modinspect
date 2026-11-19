@@ -6,5 +6,6 @@ use App\Models\Product;
 
 final class HomeController extends Controller {
     public function index(): void { $this->view('home/index',['title'=>'เช็กราคาคอมมือสอง','products'=>(new Product())->popular(),'counts'=>(new Product())->publicCounts(),'brands'=>(new Product())->brandsInCatalog()]); }
+    public function glossary(): void { $this->view('pages/glossary',['title'=>'ศัพท์ตลาดมือสอง','metaDescription'=>'ตัวโชว์ ตัวขุด ประกันศูนย์ ถอดเครื่อง และคำอื่น ๆ ในประกาศขายคอมมือสอง แปลว่าอะไร และควรถามอะไรก่อนซื้อ','terms'=>\App\Services\Catalog\Glossary::terms()]); }
     public function methodology(): void { $this->view('pages/methodology',['title'=>'วิธีคำนวณและความโปร่งใส']); }
 }

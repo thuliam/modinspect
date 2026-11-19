@@ -99,6 +99,7 @@ $commands = [
     ['label' => 'tests/listing_reader_test.php', 'args' => ['tests/listing_reader_test.php']],
     ['label' => 'tests/ls24_share_negotiation_test.php', 'args' => ['tests/ls24_share_negotiation_test.php']],
     ['label' => 'tests/blog_test.php', 'args' => ['tests/blog_test.php']],
+    ['label' => 'tests/glossary_test.php', 'args' => ['tests/glossary_test.php']],
     ['label' => 'tests/community_forum_test.php', 'args' => ['tests/community_forum_test.php']],
     ['label' => 'tests/community_controller_test.php', 'args' => ['tests/community_controller_test.php']],
     ['label' => 'tests/condition_guide_test.php', 'args' => ['tests/condition_guide_test.php']],
