@@ -100,6 +100,7 @@ $commands = [
     ['label' => 'tests/ls24_share_negotiation_test.php', 'args' => ['tests/ls24_share_negotiation_test.php']],
     ['label' => 'tests/blog_test.php', 'args' => ['tests/blog_test.php']],
     ['label' => 'tests/glossary_test.php', 'args' => ['tests/glossary_test.php']],
+    ['label' => 'tests/used_vs_new_test.php', 'args' => ['tests/used_vs_new_test.php']],
     ['label' => 'tests/community_forum_test.php', 'args' => ['tests/community_forum_test.php']],
     ['label' => 'tests/community_controller_test.php', 'args' => ['tests/community_controller_test.php']],
     ['label' => 'tests/retention_ls24_test.php', 'args' => ['tests/retention_ls24_test.php']],

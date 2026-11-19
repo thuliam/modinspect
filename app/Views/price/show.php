@@ -207,5 +207,6 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             <?php endforeach; ?>
         </div></div>
     </section>
+    <?php if (!empty($uvn)) { require ROOT_PATH . '/app/Views/components/used-vs-new.php'; } // LS-24 A5, only when both prices exist ?>
     <?php if (!empty($cm_on)) { require ROOT_PATH . '/app/Views/components/community-product.php'; } // LS-24 M9, only while the forum is on ?>
 </section>

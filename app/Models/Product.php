@@ -104,6 +104,13 @@ final class Product
     }
     /** Manufacturer specs with their source (product_reference_specs). Fails soft: a missing table or a database hiccup must never break the product page. */
     /** LS-21: one query for the filter facts of the whole catalog: product_id => [spec_key => spec_value] (read-only; the filters never write) */
+    /** LS-24 A5: the latest NEW retail price the owner recorded for a model, or null (also when migration 022 is not applied). Read-only. */
+    public function latestNewPrice(int $productId): ?array {
+        try {
+            $s = $this->db->prepare('SELECT price, source_url, checked_on FROM new_price_references WHERE product_id = :p ORDER BY checked_on DESC, id DESC LIMIT 1'); $s->execute(['p' => $productId]);
+            return $s->fetch() ?: null;
+        } catch (\PDOException $e) { return null; }
+    }
     public function specMap(): array {
         try {
             $rows = $this->db->query("SELECT product_id, spec_key, spec_value FROM product_reference_specs WHERE spec_key IN ('socket','memory_type','form_factor','vram_gb','capacity_gb','speed_mhz','interface','psu_capacity_watt','cooler_type')")->fetchAll();
