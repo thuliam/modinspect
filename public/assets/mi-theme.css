@@ -543,3 +543,10 @@ body.mi .pc-art-type .pc-art-cat { font-size: .75rem; letter-spacing: .08em; tex
 body.mi .pc-art-type strong { font-size: 1.35rem; line-height: 1.2; color: var(--ci-text); overflow-wrap: anywhere; }
 body.mi .mi-skip:focus { position: fixed; top: 8px; left: 8px; z-index: 2000; padding: 8px 16px; border-radius: var(--ci-r-md); background: var(--ci-primary); color: var(--ci-on-primary); }
 body.mi main:focus { outline: 0; }
+/* ---- LS-14 4.2: no readable text under 12px on public pages (price cards, badges, the build list); only the size changes, nothing else ---- */
+body.mi .confidence-badge, body.mi .price-status-badge { font-size: 12px; line-height: 16px; }
+body.mi .mb-range-scale, body.mi .mb-range-sm .mb-range-scale, body.mi .mb-range-median { font-size: 12px; }
+body.mi .spec-workspace .brand-name, body.mi .spec-workspace small, body.mi .spec-workspace em, body.mi .spec-workspace .part-image i, body.mi .spec-workspace .unavailable-slot p, body.mi .spec-workspace .spec-summary > p { font-size: 12px; }
+@media (max-width: 480px) { body.mi .mb-range-scale { font-size: 12px; } }
+/* LS-14 4.4: the three totals of a saved build do not fit side by side on a phone (the page grew to 404px at 320px): stack them */
+@media (max-width: 480px) { body.mi .build-totals { grid-template-columns: 1fr; } }
