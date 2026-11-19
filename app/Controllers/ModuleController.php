@@ -27,16 +27,33 @@ final class ModuleController extends Controller {
         $result=$slug!=='' ? (new SpecBuild())->find($slug) : null;
         if($slug!=='' && !$result){ http_response_code(404);$this->view('errors/404',['title'=>'ไม่พบสเปก']);return; }
         $products=(new Product())->search(); $catalog=$this->buildCatalog(); $newRefs=$catalog->newPriceRefs();
-        $buildStats=[]; $buildChecks=[];
+        $preview=null;
         if($result){
-            // LS-14 OD-1: the six spec-based stats and the compatibility checks of the saved parts, recomputed from today's catalog (nothing stored)
-            $byId=[]; foreach($products as $p) $byId[(int)$p['id']]=$p;
-            $byRole=[]; foreach($result['items'] as $it) if(isset($byId[(int)$it['product_id']])) $byRole[strtolower((string)$it['component_role'])]=$byId[(int)$it['product_id']];
-            $parts=$catalog->parts($byRole,$newRefs);
-            $buildStats=\App\Services\Build\BuildStats::axes($parts,$catalog->statsReference($products,$newRefs));
-            $buildChecks=\App\Services\Build\BuildCompatibility::check($parts);
+            // LS-15: a saved build is shown with the same summary the live page uses (BuildPreview), recomputed from today's catalog, nothing stored
+            $sel=[]; foreach($result['items'] as $it) $sel[strtolower((string)$it['component_role'])]=(int)$it['product_id'];
+            $preview=(new \App\Services\Build\BuildPreview())->run($products,$sel,$newRefs,$catalog->allSpecs($products),(float)$result['budget_max'],false);
         }
-        $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>$result,'errors'=>[],'old'=>[],'newRefs'=>$newRefs,'buildStats'=>$buildStats,'buildChecks'=>$buildChecks]);
+        $this->view('modules/build',['title'=>'จัดสเปกคอมมือสอง','products'=>$products,'result'=>$result,'errors'=>[],'old'=>[],'newRefs'=>$newRefs,'preview'=>$preview]);
+    }
+    /**
+     * LS-15: live preview for the Build page. POST role ids (parts[cpu]=12 ...) and the budget; answers JSON with the summary HTML (the same partial the
+     * saved page uses) and the status of every candidate part. Writes nothing. CSRF token and a per-client rate limit like the other public POSTs.
+     */
+    public function buildPreview(): void {
+        global $config;
+        header('Content-Type: application/json; charset=utf-8'); header('Cache-Control: no-store');
+        $fail=static function(int $code,string $error): void { http_response_code($code); echo json_encode(['error'=>$error]); };
+        if(!Csrf::verify($_POST['_token']??($_SERVER['HTTP_X_CSRF_TOKEN']??null))){ $fail(419,'csrf'); return; }
+        $limit=(new \App\Services\Http\RateLimiter(ROOT_PATH.'/storage/cache/ratelimit'))->attempt('build-preview',(string)($_SERVER['REMOTE_ADDR']??''),300,600);
+        if(!$limit['allowed']){ header('Retry-After: '.$limit['retry_after']); $fail(429,'rate'); return; }
+        $sel=[]; foreach(array_keys(\App\Services\Build\BuildPreview::ROLES) as $role){ $v=$_POST['parts'][$role]??null; if(is_scalar($v) && ctype_digit((string)$v)) $sel[$role]=(int)$v; }
+        $budget=filter_var($_POST['budget']??0,FILTER_VALIDATE_FLOAT); $budget=($budget!==false && $budget>=0 && $budget<=5000000)?(float)$budget:0.0;
+        $products=(new Product())->search(); $catalog=$this->buildCatalog();
+        $data=(new \App\Services\Build\BuildPreview())->run($products,$sel,$catalog->newPriceRefs(),$catalog->allSpecs($products),$budget,true);
+        $base=(string)$config['base_url']; $mode='live';
+        ob_start(); require ROOT_PATH.'/app/Views/components/build-summary.php'; $html=(string)ob_get_clean();
+        $cand=[]; foreach($data['candidates'] as $role=>$list) foreach($list as $id=>$c) $cand[$role][$id]=[$c['status'],$c['reason']];
+        echo json_encode(['summary_html'=>$html,'candidates'=>$cand,'blocked'=>$data['blocked'],'chosen'=>$data['chosen_count'],'expected'=>$data['totals']['expected']],JSON_UNESCAPED_UNICODE);
     }
     private function buildCatalog(): \App\Services\Build\BuildCatalog { global $config; return new \App\Services\Build\BuildCatalog(\App\Core\Database::connection($config['db'])); }
     public function storeBuild(): void {

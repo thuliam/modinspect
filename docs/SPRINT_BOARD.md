@@ -272,3 +272,11 @@ The owner started the revise session and on 2026-11-17 approved all Recommended 
 | M3 | Read-only admin controls, smoke check, preflight keys, production error test, runbook 5b | DONE (Thai admin: not done on purpose, DL-105) | `tests/admin_readonly_controls_test.php`, `tests/smoke_check_test.php`, `tests/production_error_page_test.php`, `tests/env_preflight_test.php` |
 | M4 | Text under 12 px, phone overflow, multi-width sweep | DONE | measured in a browser: 0 elements under 12 px on 9 pages; saved build was 404 px wide at 320 px, fixed; 320/768/1440 clean (375/1024 earlier) |
 | M5 | Code review of the LS-14 diff | DONE, 5 findings fixed | uploads not git-ignored (`tests/private_storage_ignore_test.php`), account deletion left photo files, rollback smoke job could not find its script (`tests/ftps_workflow_guard_test.php`), data-quality radar counted unpriced parts, WebP without GD support. Skipped: the two Chart.js radar scripts are near copies (low) |
+## LS-15 "/build builder" (owner, 2026-11-19; DL-106)
+
+| ID | Task | Status | Evidence |
+|---|---|---|---|
+| B1 | `BuildPreview`: one source for the page, summary and per-part fit status | DONE | `tests/build_preview_test.php` (mutations killed, one equivalent survivor; picker/summary property) |
+| B2 | `POST /build/preview` and save re-validation | DONE | `tests/build_preview_http_test.php` (CSRF 419, blocked sets not saved, saved total equals live total, no writes by preview) |
+| B3 | Three-pane page, filters, compatible-only toggle, animation, radar, mobile bar | DONE | browser check at 320/375/768/1440 and a clean console (only the known `fa-solid-900.html` 404); `tests/build_page_wiring_test.php` |
+| B4 | Not done / next | OPEN | live visual review by the owner; old `.part-option` CSS may now be dead; the GPU length check stays "unknown" by design |

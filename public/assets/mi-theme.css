@@ -550,3 +550,15 @@ body.mi .spec-workspace .brand-name, body.mi .spec-workspace small, body.mi .spe
 @media (max-width: 480px) { body.mi .mb-range-scale { font-size: 12px; } }
 /* LS-14 4.4: the three totals of a saved build do not fit side by side on a phone (the page grew to 404px at 320px): stack them */
 @media (max-width: 480px) { body.mi .build-totals { grid-template-columns: 1fr; } }
+
+/* ---- LS-15 build page: the few rules Bootstrap utilities cannot express (thumbnail box, sticky list offset, radar height) ---- */
+body.mi .mi-builder .mi-thumb { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; border-radius: var(--ci-r-md); background: rgba(255, 255, 255, .06); color: var(--ci-text-2); overflow: hidden; }
+body.mi .mi-builder .mi-thumb img { width: 100%; height: 100%; object-fit: cover; }
+body.mi .mi-builder .mi-thumb-lg { width: 100%; height: 96px; flex-basis: auto; border-radius: var(--ci-r-md) var(--ci-r-md) 0 0; font-size: 1.8rem; }
+body.mi .mi-builder .mi-parts-card { top: 88px; max-height: calc(100vh - 104px); overflow: auto; }
+body.mi .mi-builder .mi-part-row .flex-grow-1 { min-width: 0; }
+body.mi .mi-builder .mi-part-name { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.mi .mi-builder .mi-part-title { overflow-wrap: anywhere; }
+body.mi .mi-builder .mi-part-card:hover { border-color: var(--ci-border-active); }
+body.mi .mi-builder .mi-radar-box { position: relative; height: 260px; }
+@media (max-width: 991.98px) { body.mi .mi-builder .mi-parts-card { position: static; max-height: none; } }

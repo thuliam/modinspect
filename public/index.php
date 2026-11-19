@@ -26,6 +26,7 @@ $router->get('/methodology',[HomeController::class,'methodology']);
 $router->get('/compare/{slug}',[ModuleController::class,'compare']);
 $router->get('/compare',[ModuleController::class,'compare']);
 $router->get('/build',[ModuleController::class,'build']);
+$router->post('/build/preview',[ModuleController::class,'buildPreview']);
 $router->post('/build',[ModuleController::class,'storeBuild']);
 $router->get('/build/{slug}',[ModuleController::class,'build']);
 $router->get('/seller-price-advisor',[ModuleController::class,'sellerAdvisor']);

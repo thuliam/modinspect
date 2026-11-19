@@ -45,14 +45,20 @@ final class BuildCatalog
         return $out;
     }
 
+    /** the reference specs of every given product in one query (the live preview judges all candidate parts against the same data) */
+    public function allSpecs(array $products): array
+    {
+        return $this->specsFor(array_map(static fn(array $p): int => (int)$p['id'], $products));
+    }
+
     /**
      * Chosen parts by role, ready for BuildCompatibility / BuildStats.
      * @param array<string,array> $byRole role => catalog row
      * @return array<string,array{product:array,specs:array<string,string>,price:float}>
      */
-    public function parts(array $byRole, array $newRefs): array
+    public function parts(array $byRole, array $newRefs, ?array $specsById = null): array
     {
-        $specs = $this->specsFor(array_map(static fn(array $p): int => (int)$p['id'], $byRole));
+        $specs = $specsById ?? $this->specsFor(array_map(static fn(array $p): int => (int)$p['id'], $byRole));
         $out = [];
         foreach ($byRole as $role => $p) {
             $out[$role] = ['product' => $p, 'specs' => $specs[(int)$p['id']] ?? [], 'price' => BuildPricing::for($p, $newRefs[(int)$p['id']] ?? null)['expected']];
@@ -61,10 +67,10 @@ final class BuildCatalog
     }
 
     /** BuildStats reference over every CPU and GPU in the catalog. @param list<array> $products Product::search rows */
-    public function statsReference(array $products, array $newRefs): array
+    public function statsReference(array $products, array $newRefs, ?array $specsById = null): array
     {
         $cg = array_values(array_filter($products, static fn(array $p): bool => in_array(strtolower((string)$p['category_slug']), ['cpu', 'gpu'], true)));
-        $specs = $this->specsFor(array_map(static fn(array $p): int => (int)$p['id'], $cg));
+        $specs = $specsById ?? $this->specsFor(array_map(static fn(array $p): int => (int)$p['id'], $cg));
         $entries = [];
         foreach ($cg as $p) {
             $entries[] = ['role' => strtolower((string)$p['category_slug']), 'product' => $p, 'specs' => $specs[(int)$p['id']] ?? [], 'price' => BuildPricing::for($p, $newRefs[(int)$p['id']] ?? null)['expected']];

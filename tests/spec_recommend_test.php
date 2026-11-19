@@ -101,8 +101,8 @@ foreach ([15000.0, 25000.0, 40000.0, 60000.0, 120000.0] as $b) {
 $root = dirname(__DIR__);
 $view = (string)file_get_contents($root . '/app/Views/modules/build.php');
 $ctl = (string)file_get_contents($root . '/app/Controllers/ModuleController.php');
-ok_sr(str_contains($view, '<select name="preset">') && str_contains($view, "\$old['preset']"), 'The form offers the presets in a select like the other controls, and keeps the choice after a round trip');
-foreach (['saving', 'balanced', 'full'] as $p) { ok_sr(str_contains($view, "'$p'=>"), "The form offers the $p preset"); }
+ok_sr(str_contains($view, 'name="preset"') && str_contains($view, "\$old['preset']"), 'The form offers the presets in a select like the other controls, and keeps the choice after a round trip');
+foreach (['saving', 'balanced', 'full'] as $p) { ok_sr(str_contains($view, "'$p' =>"), "The form offers the $p preset"); }
 ok_sr(str_contains($view, 'name="action" value="recommend"'), 'The form has a recommend button');
 ok_sr(str_contains($view, "\$old['parts']"), 'Recommended parts come back ticked through the same radios the visitor uses');
 ok_sr(str_contains($ctl, "'recommend'") && str_contains($ctl, '->recommend('), 'The controller calls SpecBuilderService::recommend on the recommend action');

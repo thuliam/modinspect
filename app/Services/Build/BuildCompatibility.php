@@ -125,8 +125,20 @@ final class BuildCompatibility
             : self::row('psu', 'กำลังไฟ PSU', 'fail', false, sprintf('PSU %d W ต่ำกว่าที่ประเมินไว้ประมาณ %d W', $have, $need));
     }
 
+    /** roles each check involves: a candidate part for role R is judged only by the checks that list R */
+    public const ROLES = [
+        'socket' => ['cpu', 'motherboard'],
+        'memory' => ['ram', 'motherboard'],
+        'cpu_memory' => ['ram', 'cpu'],
+        'form_factor' => ['case', 'motherboard'],
+        'cooler_height' => ['case', 'cooling'],
+        'cooler_socket' => ['cpu', 'cooling'],
+        'gpu_length' => ['case', 'gpu'],
+        'psu' => ['psu', 'cpu', 'gpu'],
+    ];
+
     private static function row(string $key, string $label, string $status, bool $blocking, string $text): array
     {
-        return ['key' => $key, 'label' => $label, 'status' => $status, 'blocking' => $blocking, 'text' => $text];
+        return ['key' => $key, 'label' => $label, 'status' => $status, 'blocking' => $blocking, 'text' => $text, 'roles' => self::ROLES[$key] ?? []];
     }
 }

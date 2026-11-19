@@ -86,9 +86,9 @@ ok_se(str_contains($gen(['cpu' => 1], 30000.0, 'gaming', '1080p', 'new')['notes'
 // the Build page labels a category "has price data" only when at least one of its parts is priced (found on DEV: motherboard, PSU, case and cooling were labelled
 // "มีข้อมูลราคา" with no selectable part). One rule decides it, SpecBuilderService::isPriced, and the side menu must use it for class, label and icon.
 ok_se(SpecBuilderService::isPriced($cpu) && !SpecBuilderService::isPriced($unpriced) && !SpecBuilderService::isPriced($noMedian) && !SpecBuilderService::isPriced($noSample) && !SpecBuilderService::isPriced($noAccepted), 'isPriced follows the three conditions');
+// LS-15: the page decides every part's price label in ONE place, BuildPricing::for (which itself uses isPriced), for the picker cards and the summary alike
 $view = (string)file_get_contents(dirname(__DIR__) . '/app/Views/modules/build.php');
-preg_match('/^<aside class="component-nav.*$/m', $view, $m);
-// LS-14 OD-2: no category is locked any more, but the "has a used price" label still comes only from isPriced (via $pricedIn); a new-price reference has its own label
-ok_se(isset($m[0]) && str_contains($m[0], '$navState($slot[2])') && str_contains($view, '$pricedIn[$k]>0?[') && str_contains($view, '[SpecBuilderService::class,') === false && str_contains($view, '\App\Services\SpecBuilderService::class,'."'isPriced'") && str_contains($view, 'มีราคาของใหม่อ้างอิง'), 'The side menu labels used prices by isPriced and new-price references separately');
-ok_se(str_contains($view, "[\\App\\Services\\SpecBuilderService::class,'isPriced']"), 'The view counts priced parts with SpecBuilderService::isPriced');
+ok_se(str_contains($view, 'BuildPricing::for($p, $newRefs[(int) $p[\'id\']] ?? null)'), 'Each picker card takes its price and label from BuildPricing::for');
+ok_se(!str_contains($view, 'มีข้อมูลราคา') && !str_contains($view, 'isPriced'), 'The view has no second, hand-written rule for what counts as priced');
+ok_se(str_contains((string)file_get_contents(dirname(__DIR__) . '/app/Services/Build/BuildPricing.php'), 'SpecBuilderService::isPriced($product)'), 'BuildPricing uses the one isPriced rule');
 echo "spec_builder_estimate_test: PASS\n";

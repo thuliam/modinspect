@@ -104,9 +104,10 @@ ok_b(str_contains(S::NOTE, 'ไม่ใช่ผลทดสอบจริง'
 $root = dirname(__DIR__);
 $ctl = (string)file_get_contents($root . '/app/Controllers/ModuleController.php');
 ok_b(str_contains($ctl, 'generate($products,(float)$budget,$use,$resolution,$mix,$selected,$newRefs)') && str_contains($ctl, 'BuildCompatibility::blocked($checks)'), 'storeBuild uses the new-price references and blocks on a blocking check');
-ok_b(str_contains($ctl, 'BuildStats::axes(') && str_contains($ctl, 'BuildCompatibility::check($parts)'), 'The saved build page gets the stats and the checks');
+$prev = (string)file_get_contents($root . '/app/Services/Build/BuildPreview.php');
+ok_b(str_contains($ctl, '(new \App\Services\Build\BuildPreview())->run(') && str_contains($prev, 'BuildStats::axes(') && str_contains($prev, 'BuildCompatibility::check('), 'The saved build page gets the stats and the checks from BuildPreview');
 $view = (string)file_get_contents($root . '/app/Views/modules/build.php');
-ok_b(!str_contains($view, "<?= \$partReady?'':'disabled' ?>") && str_contains($view, 'BuildPricing::for($part'), 'No part is disabled any more; each shows its price basis');
-ok_b(str_contains((string)file_get_contents($root . '/app/Views/components/build-stats.php'), 'BuildStats::NOTE'), 'The stats chart carries the not-a-benchmark note');
+ok_b(preg_match('/js-add"[^>]*disabled/', $view) === 0 && str_contains($view, 'BuildPricing::for($p,'), 'No part is disabled in the markup (the server decides which parts do not fit); each shows its price basis');
+ok_b(str_contains((string)file_get_contents($root . '/app/Views/components/build-summary.php'), 'BuildStats::NOTE'), 'The stats chart carries the not-a-benchmark note');
 
 echo "build_services_test: PASS\n";
