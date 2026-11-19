@@ -52,3 +52,22 @@ Row: `ROW_REQUIRED_EMPTY`, `ROW_BLANK`, `ROW_TOO_MANY_CELLS`, `ROW_TOO_LONG`, `R
 
 `php cli/export_collection_targets.php [--out-dir=storage/import]` writes `B_targets.csv` (models with no new-price reference, motherboard/PSU/case/cooling first), `A_targets.csv`
 (models that still need used listings) and `D_existing_names.csv` (every model and alias) for the collector. Read-only on the database; CSV cells that start with `=+-@` are neutralised.
+
+## The commands (all dry run or read-only unless stated)
+
+| Step | Command | What it does |
+|---|---|---|
+| Targets for the collector | `php cli/export_collection_targets.php` | writes `B_targets.csv`, `A_targets.csv`, `D_existing_names.csv` |
+| Check a batch | `php cli/intake_validate.php <folder-or-zip> [--json]` | row codes and completeness, no cell values printed |
+| One command for a batch | `php cli/intake_daily_run.php <folder> [--apply --actor=ID]` | dry run by default; each clean dataset goes through its importer; a dataset with a problem is skipped whole |
+| A: used listings (+ extras) | `php cli/intake_prepare_import.php <folder>` then `php cli/import_market_evidence.php --file=... --dataset=real --dry-run` | joins the extras (warranty, age, province, box, receipt), leaves out wanted/trade/bundle; rows become PENDING candidates |
+| B: new prices | `php cli/intake_import_new_prices.php <file> --actor=ID [--apply]` | `new_price_references` through the admin service, audited |
+| C: specs | `php cli/intake_generate_specs_migration.php <file>` | writes an INSERT IGNORE migration; applying it is a separate step |
+| D: models and aliases | `php cli/intake_generate_products_migration.php <folder>` | writes an additive migration; run it before the specs migration of the same batch |
+| F: sold prices | `php cli/intake_import_sold_prices.php <file> --actor=ID [--apply]` | PENDING `sold` candidates for the review queue; never approved, never a snapshot |
+| After a review | `php cli/snapshot_recompute.php [--apply]` | shows which prices appear or move; `--apply` stores a snapshot only for new or changed products |
+| Measure | `php cli/coverage_report.php [--missing]`, `php cli/condition_feasibility.php` | per-category coverage; whether a price can honestly be split by warranty, box or receipt |
+
+Dataset E (condition checks) has no importer yet: its text is a draft for the owner's approval (HG-4), so only the check and the completeness criteria exist.
+Spec keys the contract adds (chipset, speed_mhz, cooler_type, ...) need no schema change: `spec_key` is free text; `ProductFacts` holds their Thai labels, and the price-index filters read `speed_mhz`, `interface`, `psu_capacity_watt` and `cooler_type` before they fall back to the model name.
+`memory_bus_bit` in the contract is stored as the catalog's existing key `bus_width_bit`.

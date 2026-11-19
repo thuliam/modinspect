@@ -51,19 +51,9 @@ $ctx = ['now' => new DateTimeImmutable('now')];
 if ($useDb) {
     try {
         global $config;
-        $db = \App\Core\Database::connection($config['db']);
-        $ctx['products'] = []; $ctx['names'] = []; $ctx['aliases'] = [];
-        foreach ($db->query('SELECT p.full_name n, c.slug cat FROM products p JOIN product_categories c ON c.id=p.category_id WHERE p.is_active=1')->fetchAll(PDO::FETCH_ASSOC) as $r) {
-            $k = IntakeValidator::norm((string)$r['n']); $ctx['products'][$k] = (string)$r['cat']; $ctx['names'][$k] = (string)$r['n'];
-        }
-        foreach ($db->query('SELECT normalized_alias a FROM product_aliases')->fetchAll(PDO::FETCH_COLUMN) as $a) { $ctx['aliases'][(string)$a] = true; }
-        $ctx['b_targets'] = array_map(static fn(array $t): string => $t[2], \App\Services\Admin\IntakeTargets::newPriceTargets($db));
-        $resolver = new \App\Services\ProductResolver\ProductResolver((new \App\Models\CollectionPipeline())->catalog());
-        $ctx['resolve'] = static function (string $title) use ($resolver, $ctx): ?string {
-            $r = $resolver->resolve($title);
-            return $r->productId !== null && $r->confidence >= 0.7 ? $r->matchedName : null;
-        };
-    } catch (\Throwable $e) { unset($ctx['products'], $ctx['names'], $ctx['aliases'], $ctx['b_targets'], $ctx['resolve']); fwrite(STDERR, "Catalog not reachable; model checks skipped.\n"); }
+        $ctx = \App\Services\Intake\IntakeContext::fromDb(\App\Core\Database::connection($config['db']));
+    } catch (\Throwable $e) { fwrite(STDERR, "Catalog not reachable; model checks skipped.
+"); }
 }
 // models proposed in the same batch (D_new_products.csv) are known to the other files
 if (isset($paths['D_products'], $ctx['products'])) {
