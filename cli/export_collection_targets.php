@@ -19,7 +19,7 @@ global $config;
 $db = Database::connection($config['db']);
 
 $files = [
-    'B_targets.csv' => [['category', 'brand', 'product_name'], IntakeTargets::newPriceTargets($db)],
+    'B_targets.csv' => [['category', 'brand', 'product_name', 'priority'], IntakeTargets::newPriceTargets($db)],
     'A_targets.csv' => [['status', 'need_more_rows', 'have_rows', 'product_name'], IntakeTargets::usedListingTargets($db)],
     'D_existing_names.csv' => [['category', 'brand', 'product_name', 'aliases'], IntakeTargets::existingNames($db)],
 ];

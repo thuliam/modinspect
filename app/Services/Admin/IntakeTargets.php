@@ -13,7 +13,7 @@ use PDO;
  */
 final class IntakeTargets
 {
-    /** @return list<array{0:string,1:string,2:string}> [category, brand, product_name] */
+    /** @return list<array{0:string,1:string,2:string,3:int}> [category, brand, product_name, priority 1..4 for the categories that block /build, 9 otherwise] */
     public static function newPriceTargets(PDO $db): array
     {
         $order = ['motherboard' => 0, 'psu' => 1, 'case' => 2, 'cooling' => 3];
@@ -22,7 +22,7 @@ final class IntakeTargets
                 WHERE p.is_active=1 AND NOT EXISTS (SELECT 1 FROM new_price_references n WHERE n.product_id=p.id) ORDER BY p.full_name")->fetchAll(PDO::FETCH_ASSOC);
         } catch (\PDOException $e) { return []; }   // migration 022 not applied: nothing to list
         usort($rows, static fn(array $a, array $b): int => [$order[$a['cat']] ?? 9, $a['name']] <=> [$order[$b['cat']] ?? 9, $b['name']]);
-        return array_map(static fn(array $r): array => [(string)$r['cat'], (string)$r['brand'], (string)$r['name']], $rows);
+        return array_map(static fn(array $r): array => [(string)$r['cat'], (string)$r['brand'], (string)$r['name'], isset($order[$r['cat']]) ? $order[$r['cat']] + 1 : 9], $rows);
     }
 
     /** @return list<array{0:string,1:string,2:string,3:string}> [category, brand, product_name, aliases joined with " | "] */
