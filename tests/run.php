@@ -95,6 +95,8 @@ $commands = [
     ['label' => 'tests/seller_listing_test.php', 'args' => ['tests/seller_listing_test.php']],
     ['label' => 'tests/seller_controller_test.php', 'args' => ['tests/seller_controller_test.php']],
     ['label' => 'tests/import_listing_attributes_test.php', 'args' => ['tests/import_listing_attributes_test.php']],
+    ['label' => 'tests/seller_check_test.php', 'args' => ['tests/seller_check_test.php']],
+    ['label' => 'tests/seller_check_http_test.php', 'args' => ['tests/seller_check_http_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
     ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/product_facts_test.php', 'args' => ['tests/product_facts_test.php']],

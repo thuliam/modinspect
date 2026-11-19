@@ -18,6 +18,7 @@ final class AuthorizationService
             'review.decide',
             'review.analytics.view',
             'listings.moderate',
+            'reports.moderate',
         ],
         'operator' => [
             'admin.dashboard.view',

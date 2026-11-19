@@ -23,6 +23,8 @@ return [
     ],
     // LS-14 Module 9: approved seller listings are shown to everyone only when the owner turns this on (HG-16, marketplace decision)
     'seller' => ['listings_public' => filter_var($_ENV['SELLER_LISTINGS_PUBLIC'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
+    // LS-14 Module 8 (ADR-007): off unless enabled AND keyed. The key is a long random secret in .env (HG-18), never in the repository.
+    'seller_check' => ['enabled' => filter_var($_ENV['SELLER_CHECK_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['SELLER_CHECK_HMAC_KEY'] ?? '')],
     'collection' => [
         'live_collection_enabled' => filter_var($_ENV['MODINSPECT_LIVE_COLLECTION_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
         'paid_provider_calls_enabled' => filter_var($_ENV['MODINSPECT_PAID_PROVIDER_CALLS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),

@@ -171,6 +171,38 @@ final class AdminController extends Controller {
         $this->flash($r['ok']?'success':'danger',$r['ok']?'บันทึกผลการตรวจแล้ว':(['NOTE_REQUIRED'=>'การไม่ผ่านต้องมีเหตุผล','BAD_STATE'=>'ประกาศนี้ไม่ได้อยู่ในสถานะรอตรวจ','BAD_ACTION'=>'คำสั่งไม่ถูกต้อง'][$r['error']]??'บันทึกไม่สำเร็จ'));
         $this->redirect('/admin/seller-listings');
     }
+    /** LS-14 Module 8 (ADR-007): moderation of seller reports. Works even while the public feature is off, so the queue can be prepared. */
+    private function sellerCheckService(): ?\App\Services\Listing\SellerCheck {
+        global $config; $key=(string)($config['seller_check']['hmac_key']??'');
+        return strlen($key)>=32 ? new \App\Services\Listing\SellerCheck(Database::connection($config['db']),$key) : null;
+    }
+    public function sellerReports(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        $svc=$this->sellerCheckService();
+        try {
+            $svc ??= new \App\Services\Listing\SellerCheck(Database::connection($GLOBALS['config']['db']),str_repeat('x',32)); // queue reads never hash; no key is needed to list
+            $rows=$svc->queue(); $disputes=$svc->openDisputes(); $ready=true;
+        } catch(\PDOException) { $rows=[]; $disputes=[]; $ready=false; }
+        $this->render('seller-reports','Seller reports',['rows'=>$rows,'disputes'=>$disputes,'ready'=>$ready]);
+    }
+    public function sellerReportAction(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/seller-reports'); }
+        global $config;
+        $svc=new \App\Services\Listing\SellerCheck(Database::connection($config['db']),(string)($config['seller_check']['hmac_key']??''));
+        $decision=(string)($_POST['decision']??''); $actor=(int)$this->user()['id'];
+        if($decision==='close_dispute') { $ok=$svc->closeDispute($actor,(int)($_POST['dispute_id']??0)); $this->flash($ok?'success':'danger',$ok?'ปิดคำโต้แย้งแล้ว':'ปิดไม่สำเร็จ'); $this->redirect('/admin/seller-reports'); }
+        $r=$svc->moderate($actor,(int)($_POST['id']??0),$decision,(string)($_POST['note']??''));
+        $this->flash($r['ok']?'success':'danger',$r['ok']?'บันทึกผลการตรวจแล้ว':(['NOTE_REQUIRED'=>'การไม่ผ่านต้องมีเหตุผล','BAD_STATE'=>'รายงานนี้ตัดสินแล้ว','BAD_ACTION'=>'คำสั่งไม่ถูกต้อง'][$r['error']]??'บันทึกไม่สำเร็จ'));
+        $this->redirect('/admin/seller-reports');
+    }
+    /** Evidence image of a report, for moderators only. */
+    public function sellerReportEvidence(string $uuid,string $file): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        $path=(new \App\Services\Listing\ListingPhotoStore(ROOT_PATH.'/storage/uploads/reports'))->path($uuid,$file);
+        if($path===null){ http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบไฟล์']); return; }
+        header('Content-Type: image/jpeg'); header('X-Content-Type-Options: nosniff'); header('Cache-Control: private, no-store'); header('Content-Length: '.filesize($path)); readfile($path);
+    }
     public function users(): void {
         if(!$this->requirePermission('users.manage')) return;
         $this->render('users','Users',['users'=>(new \App\Services\Admin\UserAdministration())->list(),'me'=>(int)$this->user()['id'],'roles'=>\App\Services\Admin\UserAdministration::ROLES]);
