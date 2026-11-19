@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="th"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"secondary-fixed-dim":"#4ae176","surface-tint":"#a2d72b","surface":"#0f141c","inverse-surface":"#dee2ee","background":"#0f141c","on-surface":"#dee2ee","on-tertiary-container":"#786000","on-primary":"#253600","on-background":"#dee2ee","inverse-on-surface":"#2c3139","tertiary":"#fffbff","on-error-container":"#ffdad6","primary":"#fbffe8","surface-container-high":"#252a33","on-tertiary-fixed-variant":"#574500","surface-container-lowest":"#090e16","secondary-container":"#00b954","surface-container-highest":"#30353e","primary-fixed":"#bdf448","surface-variant":"#30353e","on-error":"#690005","tertiary-container":"#ffdd74","on-primary-container":"#4e6c00","surface-dim":"#0f141c","secondary-fixed":"#6bff8f","on-secondary-fixed":"#002109","primary-container":"#bbf246","tertiary-fixed-dim":"#eec200","surface-container":"#1b2028","surface-container-low":"#171c24","on-secondary-fixed-variant":"#005321","inverse-primary":"#4a6700","on-tertiary":"#3c2f00","primary-fixed-dim":"#a2d72b","surface-bright":"#343942","error":"#ffb4ab","secondary":"#4ae176","on-tertiary-fixed":"#231b00","outline":"#8d937c","on-surface-variant":"#c3c9b0","tertiary-fixed":"#ffe083","on-secondary":"#003915","on-primary-fixed-variant":"#374e00","error-container":"#93000a","outline-variant":"#434936","on-secondary-container":"#004119","on-primary-fixed":"#141f00"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1.5rem","margin-mobile":"1rem","space-xs":"0.25rem","gutter-mobile":"0.75rem",margin:"2rem","space-md":"1rem",gutter:"1.25rem","space-xl":"2.5rem","space-sm":"0.5rem"},fontFamily:{"title-md":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"display-xl-mobile":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"display-xl":["Plus Jakarta Sans"]},fontSize:{"title-md":["18px",{lineHeight:"24px",fontWeight:"600"}],"headline-lg-mobile":["24px",{lineHeight:"32px",fontWeight:"700"}],"display-xl-mobile":["32px",{lineHeight:"40px",fontWeight:"800"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-lg":["14px",{lineHeight:"18px",fontWeight:"700"}],"label-sm":["10px",{lineHeight:"14px",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"body-sm":["12px",{lineHeight:"18px",fontWeight:"400"}],"headline-lg":["32px",{lineHeight:"40px",fontWeight:"700"}],"headline-md":["22px",{lineHeight:"28px",fontWeight:"700"}],"display-xl":["48px",{lineHeight:"56px",fontWeight:"800"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased min-h-screen flex flex-col"><header class="fixed top-0 left-0 right-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.45)]"><div class="h-20 w-full max-w-[1440px] mx-auto px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-xl flex-shrink-0"><a class="flex items-center gap-space-sm group" data-path="home" href="#"><div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center shadow-[0_0_16px_rgba(187,242,70,0.25)]"><span class="material-symbols-outlined text-primary-container text-[22px]">verified</span></div><span class="font-headline-md text-headline-md text-on-surface tracking-tight uppercase flex items-center">mod<span class="text-primary-container">inspect</span></span></a><nav class="hidden xl:flex items-center gap-space-lg" data-active-classes="text-primary-container font-label-lg text-label-lg"><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="home" href="#">Home</a><a aria-current="page" class="transition-colors text-primary-container font-label-lg text-label-lg" data-path="buy" href="#">Buy</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="sell" href="#">Sell</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="inspect" href="#">Inspect</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="how-it-works" href="#">How it works</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-space-xs" data-path="categories" href="#">Categories<span class="material-symbols-outlined text-[16px]">expand_more</span></a></nav></div><div class="flex-1 max-w-md hidden md:flex items-center"><div class="w-full flex items-center bg-surface-container-low rounded-lg px-space-md py-space-sm transition-all focus-within:bg-surface-container-high"><span class="material-symbols-outlined text-on-surface-variant text-[20px] mr-space-sm">search</span><input class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm focus:outline-none" placeholder="ค้นหาอุปกรณ์ IT, โน้ตบุ๊ก, การ์ดจอ, รหัสตรวจสภาพ..." type="text"/><span class="material-symbols-outlined text-primary-container text-[18px] ml-space-xs">tune</span></div></div><div class="flex items-center gap-space-md flex-shrink-0"><button aria-label="Search" class="md:hidden w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">search</span></button><a aria-label="Favorites" class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors" data-path="favorites" href="#"><span class="material-symbols-outlined text-[20px]">favorite</span></a><a aria-label="Cart" class="relative w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="cart" href="#"><span class="material-symbols-outlined text-[20px]">shopping_bag</span><span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm flex items-center justify-center shadow-[0_0_10px_rgba(187,242,70,0.5)]">2</span></a><a aria-label="Profile" class="flex items-center pl-space-xs" data-path="user-profile" href="#"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.3)]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></a></div></div></header><main class="w-full pt-20 bg-surface flex-1"><div class="flex flex-col w-full text-on-surface">
+<!-- TOP BREADCRUMB & METRIC STATUS BAR -->
+<section class="w-full max-w-[1440px] mx-auto px-margin pt-space-md pb-space-xs">
+<div class="flex flex-wrap items-center justify-between gap-space-sm">
+<nav class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+<a class="hover:text-primary-container transition-colors" data-path="home" href="#">หน้าแรก</a>
+<span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+<a class="hover:text-primary-container transition-colors" data-path="categories" href="#">Gaming Notebooks</a>
+<span class="material-symbols-outlined text-[16px] text-outline">chevron_right</span>
+<span class="text-on-surface font-label-md text-label-md">ASUS ROG Strix G15 (2022)</span>
+<span class="text-outline">/</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">MOD-89421</span>
+</nav>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5 bg-surface-container-low px-space-md py-1 rounded-full text-secondary-fixed">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_currentColor]"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wide">สต็อกพร้อมส่ง • ตรวจสอบแล้ว 100%</span>
+</div>
+<div class="hidden md:flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-container">visibility</span>
+<span>มีผู้เข้าชมขณะนี้ 38 คน</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 1: PRODUCT HERO & BUY BOX (SPLIT BENTO GRID) -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-md">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- LEFT COLUMN: STUDIO GALLERY & HIGH-RES VIEWER (7 Cols) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Main Stage Container -->
+<div class="relative w-full rounded-xl bg-surface-container-low overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+<!-- Ambient Glow Backdrop -->
+<div class="absolute inset-0 bg-gradient-to-tr from-surface-container-lowest via-surface-container-high/20 to-primary-container/10 pointer-events-none"></div>
+<!-- Pinned Status Badges Over Image -->
+<div class="absolute top-space-md left-space-md z-20 flex flex-wrap gap-space-xs">
+<span class="inline-flex items-center gap-1.5 px-space-md py-1 rounded-full bg-surface-container-highest/90 text-primary-container font-label-md text-label-md backdrop-blur-md shadow-[0_0_16px_rgba(187,242,70,0.25)]">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              Verified by modinspect
+            </span>
+<span class="inline-flex items-center gap-1 px-space-md py-1 rounded-full bg-secondary-container/20 text-secondary-fixed font-label-md text-label-md backdrop-blur-md">
+<span class="material-symbols-outlined text-[16px]">workspace_premium</span>
+              สภาพดีมาก (Grade A+)
+            </span>
+</div>
+<!-- Studio Photo Main Viewport -->
+<div class="relative w-full h-[440px] sm:h-[500px] flex items-center justify-center p-space-lg">
+<img class="w-full h-full object-contain transition-all duration-500 transform group-hover:scale-[1.02]" data-alt="High-contrast dark-aesthetic studio product shot of an ASUS ROG Strix G15 gaming laptop, screen open displaying dynamic neon lime cybernetic graphic, illuminated RGB backlit keyboard, matte grey metal chassis, resting on dark carbon desk, directional rim lighting with electric lime accents, pristine reflection" id="main-product-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqLIJ-nnYEwik9rB2O675FJJCDTzCrlaYYkrKt0lGrb6drrwExN6ml4GJf8gtyCzqW5ccxAp9Acy1j1iNeCxIlksD8A5xqdmWA7RSqSCKpSu7DFBiyBOb5UDzqQdY-E2KzyygBO_vCeGjdBOZezaeDN_Z-3toWXE3ZTsXaBvG2PBuefc-Nnhyw5mZFjUSKELg0mtDz0EPKp4dRU8B4LUCEGsvA8m3HivizdORg4ps"/>
+</div>
+<!-- Quick Interactive Floaters inside Photo Frame -->
+<div class="absolute bottom-space-md left-space-md right-space-md z-20 flex items-center justify-between pointer-events-none">
+<div class="flex items-center gap-space-xs pointer-events-auto">
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container/90 hover:bg-surface-container-highest text-on-surface text-label-sm font-label-sm backdrop-blur-md transition-colors shadow-md" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary-container">360</span>
+                หมุนดูรอบทิศ 360°
+              </button>
+<button class="flex items-center gap-1.5 px-space-md py-1.5 rounded-lg bg-surface-container/90 hover:bg-surface-container-highest text-on-surface text-label-sm font-label-sm backdrop-blur-md transition-colors shadow-md" type="button">
+<span class="material-symbols-outlined text-[16px]">zoom_in</span>
+                ซูมระดับไมโคร (4K)
+              </button>
+</div>
+<div class="pointer-events-auto px-space-sm py-1 rounded bg-surface-container-lowest/90 font-label-sm text-label-sm text-on-surface-variant backdrop-blur-md">
+              รูปถ่ายเครื่องจริง SN: G513RM-HF003W
+            </div>
+</div>
+</div>
+<!-- Thumbnails Reel -->
+<div class="grid grid-cols-5 gap-space-xs sm:gap-space-sm">
+<button class="relative rounded-lg overflow-hidden bg-surface-container-low aspect-video p-1 transition-all shadow-[0_0_12px_rgba(187,242,70,0.3)]">
+<img class="w-full h-full object-cover rounded" data-alt="Front view angle of ASUS ROG Strix G15 gaming laptop showing illuminated screen and bright neon keyboard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP9GzcRhX_dRgKpI5CuUXofcXa7x1xqWknTCK3m5KtcTUXNPsRIe9MccW4Tz1Y1OxPF3fARAtLPfqy4EwMHhWCIOGiX9_A_bquaYPoRJORnxIfj000AJ5J_71tmvqyO_i7HUSiKOAaZFsdJ8xLWm_6W2u0GXeDdf5yBtlHt1zA6-omexZtW_4NLAakMQ5KhZHi1_ggzzkxlLVNRuL3lpz97JuhP5TVSbqZkgShSOA"/>
+<div class="absolute inset-0 bg-primary-container/10"></div>
+</button>
+<button class="relative rounded-lg overflow-hidden bg-surface-container-low aspect-video p-1 opacity-70 hover:opacity-100 transition-all">
+<img class="w-full h-full object-cover rounded" data-alt="Close up view of the mechanical gaming keyboard and touchpad on ASUS ROG Strix G15 with zero key wear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbi2UYQ4QBbW3slNFGYthQSZAXD9qPM74-NOcwAzyRBVUtCjzaUApgONsSBqU56z81DK8x0RwmBroCe-LyiiTPLzRJKVt_CAukdBJ1sK33x8RagJoiCzzkNNNVSJ1bxR7n5szrxZz40fQlNwkcQQNqs9uE9xxNGaC3rl7rcpFZ9iE3y5I_hD8tD1loG3dbfoVHXRQmZyZNWn_uUdzyv0Yq2woryJeoTyfcjSs4tT8"/>
+</button>
+<button class="relative rounded-lg overflow-hidden bg-surface-container-low aspect-video p-1 opacity-70 hover:opacity-100 transition-all">
+<img class="w-full h-full object-cover rounded" data-alt="Side profile showing I/O ports, USB-C, HDMI and cooling exhaust vent with pristine clean copper fins" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-zBmYxM8YRcYrLIz6OBDvPounB4jMQnLe6VtKMYHG4LA8X2OLThT8MoJ-Q4_hp8WBmpGi_7ItP6fu-DIoycY664MdeTz3smXG4_sGQwf0C1tVO5tZbaWb9oL8U-0-mAbfrnFVKX172sU_qbrVbrpnJ7UJLfAIGcYWnnO3T0N7HGhJvJZiXBjPlVSCImCiq8vQIRkb6fhBhSzWpXweE1SUiDUXb6RKg9ZGeeVF99k"/>
+</button>
+<button class="relative rounded-lg overflow-hidden bg-surface-container-low aspect-video p-1 opacity-70 hover:opacity-100 transition-all">
+<img class="w-full h-full object-cover rounded" data-alt="Rear and bottom chassis view of ASUS ROG laptop showing factory tamper-proof seals and intake grilles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGUoFGaJeG9t509QGmwJ36_u6SP841StwcY1xxSA10Znw_PhAHAwmEBTIbbW6QohnbZpzhTp_FYT7jYWwNWx7DMbrL5kGBtrhg7QOcA1UwGjtH0a5ln4DACPOF7uxyidRIkN77UfRG2vsCAkP1H8I7wnxswhnyoVfktcq9LOIAmS-5VsbsoONBggQmGSZCGwq0fW3FaUa22pL7zzhB6CauWffcLjCdXwvQIe15ZP8"/>
+</button>
+<button class="relative rounded-lg overflow-hidden bg-surface-container-low aspect-video p-1 opacity-70 hover:opacity-100 transition-all">
+<img class="w-full h-full object-cover rounded" data-alt="modinspect laboratory inspection table with technician calibration card and serial barcode certificate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCn6QuIgU-OUE128IFTxSlTTB5bBcIZ_E8or1Ix6WzbbkvKOlhRgMs_Xa4JsOTtbINZD0slcp0wnmy4CitISHqHD6-V_AMMY5R3FL7AmJ71QuU5NP-_JrncPzaYBEhspi8MRm_En-e5jLjiRaS4I7Xc-N74X4o8by5qBbicTujf6z_8DY0J37zsHYtUmreQmpaJRryyGqbqz1mf6nckmLvkZvo79BlYuCNQKkqi04w"/>
+<div class="absolute bottom-1 right-1 bg-surface-container-lowest/90 rounded px-1 text-[9px] font-label-sm text-primary-container">ใบตรวจ</div>
+</button>
+</div>
+<!-- Seller Mini-Card Trust Anchor -->
+<div class="flex items-center justify-between p-space-md rounded-xl bg-surface-container-low shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="relative">
+<div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center text-primary-container font-headline-md text-headline-md font-bold">
+                IT
+              </div>
+<span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-secondary-container flex items-center justify-center text-surface-container-lowest">
+<span class="material-symbols-outlined text-[11px] font-bold">check</span>
+</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<h4 class="font-title-md text-title-md text-on-surface">ร้าน IT_Resale</h4>
+<span class="px-space-xs py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm">PRO SELLER</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">KYC Verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                ★ 4.9 (128 ออเดอร์สำเร็จ) • ส่งไวเฉลี่ย 4 ชั่วโมง • สมาชิก 2 ปี
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-md py-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md text-label-md flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary-container">chat</span>
+              แชทผู้ขาย
+            </button>
+<button class="px-space-sm py-space-xs rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md text-label-md transition-colors" type="button">
+              ดูหน้าร้าน
+            </button>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: BUY BOX & SPECS AT A GLANCE (5 Cols) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="p-space-lg rounded-xl bg-surface-container-low shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex flex-col gap-space-md">
+<!-- Header Area -->
+<div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm mb-1">
+<span>รหัสสินค้า: <strong class="text-on-surface font-semibold">MOD-89421</strong></span>
+<span class="text-outline">S/N: G513RM-HF003W</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight leading-snug">
+              ASUS ROG Strix G15 (2022) Gaming Laptop
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+              Ryzen 7 6800H / RTX 3060 6GB / 16GB DDR5 / 512GB NVMe / 15.6" FHD 300Hz
+            </p>
+</div>
+<!-- Review Stars & Inspection Anchor Link -->
+<div class="flex items-center justify-between py-space-xs bg-surface-container-lowest/50 px-space-md rounded-lg">
+<div class="flex items-center gap-space-xs">
+<div class="flex text-tertiary-fixed-dim">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface font-bold">4.9</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(28 รีวิว)</span>
+</div>
+<a class="flex items-center gap-1 font-label-md text-label-md text-primary-container hover:underline" href="#inspection-report">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              ดูใบรับรอง 96/100
+            </a>
+</div>
+<!-- Pricing Block with Installment Tag -->
+<div class="p-space-md rounded-lg bg-surface-container flex flex-col gap-1">
+<div class="flex items-baseline gap-space-md">
+<span class="font-display-xl text-display-xl text-primary font-black tracking-tight">฿29,900</span>
+<span class="font-title-md text-title-md text-outline line-through">฿34,900</span>
+<span class="px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary-fixed font-label-sm text-label-sm font-bold">
+                ประหยัด ฿5,000 (-14%)
+              </span>
+</div>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-tertiary-container text-[18px]">credit_card</span>
+<span>ผ่อน 0% สูงสุด 10 เดือน (เริ่มต้นเพียง <strong class="text-on-surface">฿2,990</strong>/เดือน)</span>
+</div>
+</div>
+<!-- Highlight Telemetry Metrics -->
+<div class="grid grid-cols-3 gap-space-xs text-center">
+<div class="p-space-sm rounded-lg bg-surface-container-high/60 flex flex-col items-center">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">battery_charging_full</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">สุขภาพแบตฯ</span>
+<span class="font-label-lg text-label-lg text-on-surface font-bold">94% สมบูรณ์</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-high/60 flex flex-col items-center">
+<span class="material-symbols-outlined text-primary-container text-[20px]">speed</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Stress Test</span>
+<span class="font-label-lg text-label-lg text-on-surface font-bold">100% ผ่าน</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-high/60 flex flex-col items-center">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-[20px]">shield_with_heart</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">ประกันคุ้มครอง</span>
+<span class="font-label-lg text-label-lg text-on-surface font-bold">90 วัน ฟรี</span>
+</div>
+</div>
+<!-- Shipping and Escrow Notice -->
+<div class="space-y-space-xs text-on-surface-variant font-body-sm text-body-sm bg-surface-container-lowest/60 p-space-md rounded-lg">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">local_shipping</span>
+<span><strong>จัดส่งด่วนพิเศษ:</strong> ถึงภายใน 24-48 ชม. พร้อมประกันพัสดุเต็มมูลค่า</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container text-[18px]">lock</span>
+<span><strong>ระบบ Escrow คุ้มครองผู้ซื้อ:</strong> เงินไม่ถูกโอนให้ผู้ขายจนกว่าคุณจะกดรับสินค้า</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary-container text-[18px]">replay</span>
+<span><strong>การันตีคืนเงิน 100%:</strong> ภายใน 7 วันหากสภาพไม่ตรงตามรายงานผลตรวจ</span>
+</div>
+</div>
+<!-- Main Call-to-Actions -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="grid grid-cols-12 gap-space-sm">
+<button class="col-span-8 sm:col-span-9 h-13 py-3.5 px-space-md rounded-lg bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container font-headline-md text-title-md font-bold tracking-tight text-center shadow-[0_0_24px_rgba(187,242,70,0.35)] transition-all flex items-center justify-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+                ซื้อทันที (Buy Now)
+              </button>
+<button aria-label="Add to cart" class="col-span-4 sm:col-span-3 h-13 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-lg text-label-lg flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[22px] text-primary-container">add_shopping_cart</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<button class="py-2.5 rounded-lg bg-surface-container-high/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">favorite</span>
+                บันทึกเป็นสิ่งที่ชอบ
+              </button>
+<button class="py-2.5 rounded-lg bg-surface-container-high/60 hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">share</span>
+                แชร์อุปกรณ์นี้
+              </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: OFFICIAL INSPECTION REPORT (FLAGSHIP SHOWCASE) -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-xl" id="inspection-report">
+<!-- Outer Lab Card Container -->
+<div class="relative rounded-2xl bg-surface-container-low overflow-hidden shadow-[0_24px_60px_rgba(0,0,0,0.7)]">
+<!-- Top Cybernetic Header Ribbon -->
+<div class="bg-surface-container-lowest px-space-lg py-space-md flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container font-extrabold">MODINSPECT CERTIFIED BENCHMARK</span>
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">60-POINT RIGOROUS PROTOCOL</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight font-bold">
+              รายงานผลการตรวจสอบทางเทคนิคเชิงวิศวกรรม
+            </h2>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm text-body-sm font-body-sm">
+<div class="bg-surface-container px-space-md py-1.5 rounded-lg text-on-surface-variant">
+<span>Cert ID: </span><strong class="text-primary-container font-mono">#INSPECT-2025-88412</strong>
+</div>
+<div class="bg-surface-container px-space-md py-1.5 rounded-lg text-on-surface-variant">
+<span>ตรวจเมื่อ: </span><strong class="text-on-surface">14 พ.ค. 2025</strong>
+</div>
+<div class="bg-surface-container px-space-md py-1.5 rounded-lg text-on-surface-variant">
+<span>Inspector: </span><strong class="text-on-surface">#TECH-04 (Senior Hardware Tech)</strong>
+</div>
+<button class="px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary-container hover:bg-primary-fixed-dim font-label-md text-label-md flex items-center gap-1.5 shadow-[0_0_14px_rgba(187,242,70,0.3)] transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+            ดาวน์โหลดใบรับรองฉบับเต็ม (PDF)
+          </button>
+</div>
+</div>
+<!-- Main Lab Content Area -->
+<div class="p-space-lg lg:p-space-xl flex flex-col gap-space-xl">
+<!-- Score Overview & 4 Pillars Bento Row -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center">
+<!-- Master Health Gauge (4 Cols) -->
+<div class="lg:col-span-4 rounded-xl bg-surface-container p-space-lg flex flex-col items-center justify-center text-center relative overflow-hidden shadow-inner">
+<div class="absolute -top-12 -left-12 w-32 h-32 bg-primary-container/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative w-44 h-44 flex items-center justify-center my-space-xs">
+<!-- Radial Meter SVG -->
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 120 120">
+<circle class="text-surface-container-highest stroke-current" cx="60" cy="60" fill="transparent" r="50" stroke-width="9"></circle>
+<circle class="text-primary-container stroke-current" cx="60" cy="60" fill="transparent" r="50" stroke-dasharray="314.159" stroke-dashoffset="12.56" stroke-linecap="round" stroke-width="9" style="filter: drop-shadow(0 0 8px rgba(187, 242, 70, 0.45));"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-display-xl text-display-xl font-extrabold text-primary-container tracking-tight leading-none">96</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold mt-1">/ 100 คะแนน</span>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-space-md py-1 rounded-full bg-secondary-container/20 text-secondary-fixed font-label-md text-label-md mt-2">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+              เกรดสภาพ A+ (ยอดเยี่ยม พร้อมลุย)
+            </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-space-sm leading-relaxed">
+              อุปกรณ์ผ่านเกณฑ์มาตรฐานการตรวจสอบอย่างละเอียด 60 รายการ ระบบระบายความร้อนและฮาร์ดแวร์ทำงานได้ประสิทธิภาพเทียบเท่าของใหม่ 99.2%
+            </p>
+</div>
+<!-- 4 Pillars Breakdown (8 Cols) -->
+<div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+<!-- Pillar 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-high/60 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-[20px]">memory</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">1. ฮาร์ดแวร์ &amp; Stress Test</span>
+</div>
+<span class="font-headline-md text-headline-md text-primary-container font-black">100<span class="text-body-sm text-on-surface-variant">/100</span></span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden mb-space-sm">
+<div class="h-full bg-primary-container rounded-full w-full"></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  FurMark GPU ทดสอบ 30 นาที อุณหภูมิสูงสุดคงที่ 68°C • Cinebench R23 ผ่านฉลุย ไม่มี Thermal Throttling
+                </p>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center gap-2 text-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span>ประสิทธิภาพเต็ม 100%</span>
+</div>
+</div>
+<!-- Pillar 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-high/60 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">battery_charging_full</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">2. แบตเตอรี่ &amp; การจ่ายไฟ</span>
+</div>
+<span class="font-headline-md text-headline-md text-secondary-fixed font-black">94<span class="text-body-sm text-on-surface-variant">/100</span></span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden mb-space-sm">
+<div class="h-full bg-secondary-fixed rounded-full" style="width: 94%;"></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  รอบชาร์จ Cycle Count: 48 รอบ • Battery Health 94.2% • พาวเวอร์อแดปเตอร์แท้ ROG 240W จ่ายไฟนิ่งเสถียร
+                </p>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center gap-2 text-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span>เก็บประจุได้นานกว่า 4.5 ชม.</span>
+</div>
+</div>
+<!-- Pillar 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-high/60 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px]">monitor</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">3. หน้าจอ &amp; การแสดงผล</span>
+</div>
+<span class="font-headline-md text-headline-md text-tertiary-fixed-dim font-black">98<span class="text-body-sm text-on-surface-variant">/100</span></span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden mb-space-sm">
+<div class="h-full bg-tertiary-fixed-dim rounded-full" style="width: 98%;"></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  จอ IPS 300Hz ไม่มี Dead Pixel หรือ Bright Pixel • แสงสว่าง 300 nits สม่ำเสมอทั่วแผง • บานพับแน่นหนา
+                </p>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center gap-2 text-secondary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">check_circle</span>
+<span>จอสีตรง sRGB 100% สมบูรณ์</span>
+</div>
+</div>
+<!-- Pillar 4 -->
+<div class="p-space-md rounded-xl bg-surface-container-high/60 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">laptop_chromebook</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">4. บอดี้ &amp; รูปลักษณ์ภายนอก</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface font-black">92<span class="text-body-sm text-on-surface-variant">/100</span></span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden mb-space-sm">
+<div class="h-full bg-on-surface-variant rounded-full" style="width: 92%;"></div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                  พบคราบรอยขนแมวบางๆ บริเวณฝาใต้เครื่อง 1 จุด (ดูรูปขยาย) ไม่มีรอยแตกร้าว คีย์บอร์ดตัวอักษรชัดไม่ลอก
+                </p>
+</div>
+<div class="mt-space-sm pt-space-xs flex items-center gap-2 text-secondary-fixed-dim font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">info</span>
+<span>ตำหนิน้อยมาก ไม่กระทบการใช้</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 60-Point Diagnostic Checklist Matrix -->
+<div>
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">ผลทดสอบระบบอุปกรณ์แยกส่วน (60-Point Telemetry Checklist)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ผ่านการตรวจสอบด้วยซอฟต์แวร์ระดับโรงงานและเครื่องมือฮาร์ดแวร์ตรวจวัดจริง</p>
+</div>
+<span class="hidden sm:inline-block px-space-md py-1 rounded bg-surface-container font-label-sm text-label-sm text-secondary-fixed">
+              สถานะ: ตรวจผ่านทุกรายการ (ALL PASSED)
+            </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-sm font-body-sm text-body-sm">
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>CPU Multi-core Stress (Passmark)</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">ผ่าน</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>GPU 3DMark TimeSpy Benchmark</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">ผ่าน (9,180 pts)</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>RAM MemTest86 4 คาบการทดสอบ</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">0 Errors</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>SSD CrystalDiskInfo Health Status</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">99% Good (สุขภาพดี)</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>แป้นพิมพ์ RGB Per-Key &amp; ทัชแพด</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">กดติดครบ 100%</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>Wi-Fi 6E (802.11ax) &amp; Bluetooth 5.2</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">เชื่อมต่อนิ่งเสถียร</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>พอร์ต Type-C, USB-A x3, HDMI, LAN</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">ตรวจครบทุกช่อง</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>ลำโพงคู่ Dolby Atmos &amp; ไมโครโฟน AI</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">เสียงใสชัดเจน</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[18px]">check_circle</span>
+<span>ชุดพัดลมคู่ Dual Arc Flow Fans</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary-fixed bg-secondary-container/10 px-2 py-0.5 rounded">เงียบสนิท ไร้ฝุ่นเกาะ</span>
+</div>
+</div>
+</div>
+<!-- Transparent Flaw Zoom (Inspector Macro Photos) -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="Macro photography of a tiny hairline cosmetic scratch on the matte bottom plastic panel of laptop, measured with a laboratory millimeter ruler to show scale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChLA5ZSBlZTI6QoeBwI57hf4Abdc6xfeJGCU-MKFaigO9VqX1hLoVldkv9EXlcNjvIrSH9oswdqggl4yyN-aebPI2K9sNOa2NUbLJTGPutcY1SK-sJxG5as-BHVEKVdDvONb8yrOtQXLqM3ivWZ6-8sZM-DSTGjtTvSnuk_pDoa8uwJmNtam96BYsPIQHuYfV6ZqqDCjXNIoKYpLxtUOOSdZLOMrTga9z0YwoyHdI"/>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="px-space-xs py-0.5 rounded bg-tertiary-container/20 text-tertiary-fixed-dim font-label-sm text-label-sm font-bold">บันทึกตำหนิ #DEF-01</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">ตำแหน่ง: ฝาครอบใต้เครื่องด้านล่าง</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1">
+                มีรอยขนแมวบางขนาดประมาณ 4 มม. เกิดจากการวางบนโต๊ะ ไม่มีความลึก ไม่กระทบต่อการใช้งานและระบบระบายความร้อน
+              </p>
+</div>
+</div>
+<button class="w-full md:w-auto px-space-md py-2 rounded-lg bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-md text-label-md transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">photo_camera</span>
+            ดูภาพขยายความละเอียดสูง
+          </button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: TECHNICAL SPECIFICATIONS (BENTO TABLE) -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-md">
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+<div class="flex items-center justify-between mb-space-lg">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container font-bold">TECHNICAL SPECIFICATIONS</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">ข้อมูลสเปกเครื่องอย่างเป็นทางการ</h3>
+</div>
+<div class="text-on-surface-variant font-body-sm text-body-sm hidden md:block">
+          โมเดล: ASUS ROG Strix G15 G513RM
+        </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-space-xl gap-y-space-sm font-body-sm text-body-sm">
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">หน่วยประมวลผล (Processor)</span>
+<span class="font-semibold text-on-surface text-right">AMD Ryzen 7 6800H (8 Cores / 16 Threads, up to 4.7GHz)</span>
+</div>
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">การ์ดจอแสดงผล (Graphics)</span>
+<span class="font-semibold text-on-surface text-right">NVIDIA GeForce RTX 3060 6GB GDDR6 (140W Max TGP with MUX Switch)</span>
+</div>
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">หน่วยความจำหลัก (RAM)</span>
+<span class="font-semibold text-on-surface text-right">16GB DDR5 4800MHz (Dual Channel, อัปเกรดได้สูงสุด 64GB)</span>
+</div>
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">พื้นที่จัดเก็บข้อมูล (Storage)</span>
+<span class="font-semibold text-on-surface text-right">512GB PCIe 4.0 NVMe M.2 SSD (มีช่อง M.2 ว่างอีก 1 ช่อง)</span>
+</div>
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">หน้าจอ (Display Screen)</span>
+<span class="font-semibold text-on-surface text-right">15.6" Full HD (1920x1080) IPS, 300Hz 3ms, sRGB 100%, Adaptive-Sync</span>
+</div>
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">ระบบปฏิบัติการ (Operating System)</span>
+<span class="font-semibold text-on-surface text-right">Windows 11 Home 64-bit แท้ติดเครื่อง (เปิดใช้งานอัตโนมัติ)</span>
+</div>
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">การเชื่อมต่อไร้สาย (Wireless)</span>
+<span class="font-semibold text-on-surface text-right">Wi-Fi 6E (802.11ax) + Bluetooth 5.2 (Dual band)</span>
+</div>
+<div class="flex items-start justify-between py-space-sm bg-surface-container-lowest/40 px-space-md rounded-lg">
+<span class="text-on-surface-variant">น้ำหนัก &amp; แบตเตอรี่</span>
+<span class="font-semibold text-on-surface text-right">2.30 กก. | 4-cell Li-ion 90WHrs พร้อมชาร์จเร็ว Type-C PD 100W</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: 4-STEP BUYER ESCROW & TRUST PILLARS -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-lg">
+<div class="text-center max-w-2xl mx-auto mb-space-lg">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container font-extrabold">TRANSACTION SAFETY GUARANTEE</span>
+<h3 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-1">ซื้ออุปกรณ์ไอทีมั่นใจ ปลอดภัย 100%</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">มาตรฐานการซื้อขายอุปกรณ์อิเล็กทรอนิกส์มือสองที่คุ้มครองผู้ซื้อตลอดเส้นทาง</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col gap-space-sm relative group hover:bg-surface-container transition-colors shadow-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container font-headline-md text-headline-md font-bold flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.3)]">
+          1
+        </div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold mt-1">ตรวจสภาพโดยช่างผู้เชี่ยวชาญ</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          อุปกรณ์ทุกชิ้นต้องผ่านเกณฑ์ทดสอบฮาร์ดแวร์ 60 จุด พร้อมรายงานผลวัดอุณหภูมิและอายุชิปเซ็ตจริงก่อนลงขาย
+        </p>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col gap-space-sm relative group hover:bg-surface-container transition-colors shadow-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container font-headline-md text-headline-md font-bold flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.3)]">
+          2
+        </div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold mt-1">ชำระผ่านระบบ Escrow พักเงิน</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          ระบบจะกักเก็บเงินค่าสินค้าไว้ในบัญชีกลาง modinspect และจะไม่โอนให้ผู้ขายจนกว่าคุณจะได้รับของและกดยืนยัน
+        </p>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col gap-space-sm relative group hover:bg-surface-container transition-colors shadow-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container font-headline-md text-headline-md font-bold flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.3)]">
+          3
+        </div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold mt-1">การันตีคืนเงิน 100% ใน 7 วัน</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          หากสินค้ามีปัญหา ไม่ติด หรือสภาพไม่ตรงกับรายงานผลการตรวจ สามารถกดขอส่งคืนและรับเงินคืนเต็มจำนวนทันที
+        </p>
+</div>
+<div class="p-space-lg rounded-xl bg-surface-container-low flex flex-col gap-space-sm relative group hover:bg-surface-container transition-colors shadow-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container font-headline-md text-headline-md font-bold flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.3)]">
+          4
+        </div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold mt-1">รับประกัน ModInspect Care 90 วัน</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          อุ่นใจด้วยบริการหลังการขาย รับประกันการทำงานของเมนบอร์ด ซีพียู และการ์ดจอ ฟรีค่าแรงและค่าอะไหล่
+        </p>
+</div>
+</div>
+</section>
+<!-- SECTION 5: CUSTOMER REVIEWS & FEEDBACK -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-md">
+<div class="rounded-xl bg-surface-container-low p-space-lg shadow-sm">
+<div class="flex flex-wrap items-center justify-between gap-space-md mb-space-lg">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container font-bold">VERIFIED REVIEWS</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">รีวิวจากผู้ซื้อสินค้าจากร้านนี้ (28 รีวิว)</h3>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-bright transition-colors" type="button">
+            เรียงตาม: ล่าสุด
+          </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Review 1 -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 text-primary-container flex items-center justify-center font-bold text-label-sm">
+                TK
+              </div>
+<div>
+<span class="font-label-md text-label-md text-on-surface">คุณธนภัทร ก.</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm block text-xs">ซื้อ ASUS TUF Dash F15 จากร้านนี้</span>
+</div>
+</div>
+<div class="flex text-tertiary-fixed-dim">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            "เครื่องสภาพดีมาก ตรงตามใบตรวจ 100% แพ็คส่งบับเบิ้ลหนาแน่นมาก 2 ชั้น ชาร์จเล่นเกม Cyberpunk ความร้อนนิ่งตามที่แจ้งใน Furmark เลยครับ ไว้ใจได้"
+          </p>
+<span class="text-[11px] text-outline mt-1">เมื่อ 2 สัปดาห์ที่แล้ว • ยืนยันการสั่งซื้อสำเร็จ</span>
+</div>
+<!-- Review 2 -->
+<div class="p-space-md rounded-xl bg-surface-container flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 text-secondary-fixed flex items-center justify-center font-bold text-label-sm">
+                WP
+              </div>
+<div>
+<span class="font-label-md text-label-md text-on-surface">คุณวรพล ส.</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm block text-xs">ซื้อ Lenovo Legion 5 จากร้านนี้</span>
+</div>
+</div>
+<div class="flex text-tertiary-fixed-dim">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            "ชอบระบบรายงานผลตรวจมากครับ ทำให้กล้าซื้อโน้ตบุ๊กมือสองราคาสองหมื่นปลายๆ โดยไม่ต้องนั่งลุ้น สบายใจมีประกัน 90 วันให้อีกด้วย แนะนำร้านนี้ครับ"
+          </p>
+<span class="text-[11px] text-outline mt-1">เมื่อ 1 เดือนที่แล้ว • ยืนยันการสั่งซื้อสำเร็จ</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 6: RECOMMENDED SIMILAR CERTIFIED PRODUCTS -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-xl">
+<div class="flex items-center justify-between mb-space-md">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary-container font-extrabold">RECOMMENDED HARDWARE</span>
+<h3 class="font-headline-md text-headline-md text-on-surface font-bold">สินค้าใกล้เคียงที่ผ่านการตรวจสภาพแล้ว</h3>
+</div>
+<a class="font-label-md text-label-md text-primary-container hover:underline flex items-center gap-1" data-path="categories" href="#">
+        ดูทั้งหมดในหมวดหมู่นี้
+        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1: PC Set RTX 4060 -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden flex flex-col group hover:bg-surface-container transition-all shadow-sm">
+<div class="relative w-full aspect-square bg-surface-container-lowest p-space-md flex items-center justify-center">
+<span class="absolute top-space-sm left-space-sm px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary-fixed font-label-sm text-label-sm font-semibold">
+            Used (สภาพดี)
+          </span>
+<button aria-label="Wishlist" class="absolute top-space-sm right-space-sm w-7 h-7 rounded-full bg-surface-container-high/80 hover:text-primary-container flex items-center justify-center text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Compact gaming PC desktop set in dark tempered glass case with vibrant neon green internal RGB fans, neat cable routing, pristine GPU" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7TN6IRl-rIk_eqNe6s2Hhqq90uK3dQP4qzpcOtDMQxy6Urxsba6-ry3n8QG1EHOUCCfH0N0SQqoiyc-FllhTkSYVoyje5beHTUlyp-t2KdN4zw993nPZEgDUX7UYafWJMEVYPbFRVRvT5UW7crq-T0HELqDto8ztVHQU-8_RTQi4Eu1V4vMXL1ffdWNDWu2JV6AMJHygsXt-6r9e1rIVI9h64AV0f3d-CxqPZAiA"/>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface line-clamp-1 font-bold">PC Set: i5-12400F / RTX 4060</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">16GB DDR4 / 1TB NVMe SSD</p>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm mt-1">
+<span class="text-tertiary-fixed-dim font-bold">★ 4.8</span>
+<span>(16 รีวิว) • GadgetHub</span>
+</div>
+</div>
+<div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-title-md text-title-md text-on-surface font-extrabold">฿26,500</span>
+<span class="font-body-sm text-body-sm text-outline line-through">฿29,900</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs mt-space-xs">
+<button class="py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm transition-colors" type="button">
+                ดูสเปก
+              </button>
+<button class="py-1.5 rounded bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container font-label-sm text-label-sm font-bold transition-colors" type="button">
+                ซื้อทันที
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: LG UltraGear Monitor -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden flex flex-col group hover:bg-surface-container transition-all shadow-sm">
+<div class="relative w-full aspect-square bg-surface-container-lowest p-space-md flex items-center justify-center">
+<span class="absolute top-space-sm left-space-sm px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary-fixed font-label-sm text-label-sm font-semibold">
+            Used (สภาพดีมาก)
+          </span>
+<button aria-label="Wishlist" class="absolute top-space-sm right-space-sm w-7 h-7 rounded-full bg-surface-container-high/80 hover:text-primary-container flex items-center justify-center text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="LG UltraGear 27 inch 2K gaming monitor display screen with thin bezel and ergonomic stand, crisp screen with no dead pixels" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAK0etqJzoIqQjMponbgs-z7KX7omG_HssMas476ma4zuDi67eVtdpX1CdDVwsAIjULSS7oheeJByy6n6F_W2iep3eCgEkLL5JyR3l1-ZQ58ZCZbKMavgRhURp3niPrTDT22MCaQU36wqI7_A4tDDJHyJhuYdF_XGqiz1de2VDOWQqMjJHsHD9rns1Nmej0Nx5mMeCkdLQjS-rGvLzP-Bz7v0LWDmzejh4EuKHb_r0"/>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface line-clamp-1 font-bold">LG UltraGear 27" 2K 165Hz</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">27GP850-B Nano IPS 1ms</p>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm mt-1">
+<span class="text-tertiary-fixed-dim font-bold">★ 4.9</span>
+<span>(45 รีวิว) • MonitorPro</span>
+</div>
+</div>
+<div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-title-md text-title-md text-on-surface font-extrabold">฿8,900</span>
+<span class="font-body-sm text-body-sm text-outline line-through">฿11,900</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs mt-space-xs">
+<button class="py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm transition-colors" type="button">
+                ดูสเปก
+              </button>
+<button class="py-1.5 rounded bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container font-label-sm text-label-sm font-bold transition-colors" type="button">
+                ซื้อทันที
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: MSI RTX 4070 Ventus -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden flex flex-col group hover:bg-surface-container transition-all shadow-sm">
+<div class="relative w-full aspect-square bg-surface-container-lowest p-space-md flex items-center justify-center">
+<span class="absolute top-space-sm left-space-sm px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary-fixed font-label-sm text-label-sm font-semibold">
+            Used (สภาพดี)
+          </span>
+<button aria-label="Wishlist" class="absolute top-space-sm right-space-sm w-7 h-7 rounded-full bg-surface-container-high/80 hover:text-primary-container flex items-center justify-center text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Triple fan MSI GeForce RTX 4070 Ventus 3X graphics card on black reflective acrylic, clean heatsink fins and gold PCIe connectors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsyi7DaW_YOWY_2-mwLm4Gfk-mJ98Urvv6fpA5-47mW4rLNVnrLKmcZrNXtajf1Rpgsukh37CZxNakz0qV1sCOWAk_yvCh0HfccOhRhGMNs36mzyYoHyW48p5-ngy8UJcM59BKS8BAY_JSx-kl2nv9sDVe8i6RBdyrwHIVbOJ1NIdmVrIBUzl_Ie609QvJUtTdZtVvMvDMSymzBuHzdVkhmgOZtjPddwYOPLUiRAo"/>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface line-clamp-1 font-bold">MSI RTX 4070 Ventus 3X 12GB</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">ประกันศูนย์ไทยเหลือ 1.5 ปี</p>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm mt-1">
+<span class="text-tertiary-fixed-dim font-bold">★ 4.8</span>
+<span>(32 รีวิว) • GPU_Store</span>
+</div>
+</div>
+<div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-title-md text-title-md text-on-surface font-extrabold">฿18,900</span>
+<span class="font-body-sm text-body-sm text-outline line-through">฿21,900</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs mt-space-xs">
+<button class="py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm transition-colors" type="button">
+                ดูสเปก
+              </button>
+<button class="py-1.5 rounded bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container font-label-sm text-label-sm font-bold transition-colors" type="button">
+                ซื้อทันที
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4: Corsair RAM Kit -->
+<div class="rounded-xl bg-surface-container-low overflow-hidden flex flex-col group hover:bg-surface-container transition-all shadow-sm">
+<div class="relative w-full aspect-square bg-surface-container-lowest p-space-md flex items-center justify-center">
+<span class="absolute top-space-sm left-space-sm px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary-fixed font-label-sm text-label-sm font-semibold">
+            Used (สภาพดีมาก)
+          </span>
+<button aria-label="Wishlist" class="absolute top-space-sm right-space-sm w-7 h-7 rounded-full bg-surface-container-high/80 hover:text-primary-container flex items-center justify-center text-on-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">favorite</span>
+</button>
+<img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" data-alt="Pair of Corsair Vengeance RGB PRO DDR4 RAM memory modules glowing with intense neon lime and cyber accents, pristine gold edge pins" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-lQ6FdEJ00PjikP4jDxA0ExiNryO8ZA6f0j52lT-tR75RlrNfahONzQtqx6raZhPhZxcL4qVRa1hZJ0VNivVB4AvPtIfTfKalOPY2mW9rN9E_dmteEqi6qNGbZ3YTV5zpX0dwJx7VRCE_Hcyioh2rzOnRDvQRxpTXrYmNmoIIvMEN7gprDqdM9xG3oFIlDI64HUqCubpvJo-xRNFydXJZ0eWWDfPiltHzQxywcHQ"/>
+</div>
+<div class="p-space-md flex flex-col flex-1 justify-between gap-space-sm">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface line-clamp-1 font-bold">Corsair Vengeance RGB Pro 32GB</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">DDR4 3600MHz (16GBx2)</p>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm mt-1">
+<span class="text-tertiary-fixed-dim font-bold">★ 4.9</span>
+<span>(67 รีวิว) • PCCom</span>
+</div>
+</div>
+<div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-title-md text-title-md text-on-surface font-extrabold">฿2,790</span>
+<span class="font-body-sm text-body-sm text-outline line-through">฿3,290</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs mt-space-xs">
+<button class="py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-label-sm text-label-sm transition-colors" type="button">
+                ดูสเปก
+              </button>
+<button class="py-1.5 rounded bg-primary-container hover:bg-primary-fixed-dim text-on-primary-container font-label-sm text-label-sm font-bold transition-colors" type="button">
+                ซื้อทันที
+              </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- STICKY MOBILE/DESKTOP QUICK-BAR TRIGGER SCRIPT -->
+<script>
+    // Smooth scroll for inspection report anchor
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</div></main><footer class="w-full bg-surface-container-lowest mt-auto"><div class="w-full max-w-[1440px] mx-auto px-margin pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter mb-space-xl"><div class="lg:col-span-2 flex flex-col pr-0 lg:pr-space-xl"><a class="flex items-center gap-space-sm mb-space-md" data-path="home" href="#"><div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.2)]"><span class="material-symbols-outlined text-primary-container text-[18px]">verified</span></div><span class="font-headline-md text-headline-md text-on-surface tracking-tight uppercase">mod<span class="text-primary-container">inspect</span></span></a><p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-space-md">Marketplace สำหรับซื้อ ขาย และตรวจสอบอุปกรณ์ IT มือสองที่เชื่อถือได้ คุ้มค่า และยั่งยืน รายงานผลตรวจเชิงวิศวกรรมมาตรฐานสูงสุดในไทย</p><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">forum</span></div><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">smart_display</span></div><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">share</span></div></div></div><div class="flex flex-col"><h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-space-md">เมนูหลัก</h4><ul class="flex flex-col gap-space-sm"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="home" href="#">หน้าแรก</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="buy" href="#">เลือกซื้อสินค้า</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="sell" href="#">ลงขายอุปกรณ์ IT</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="inspect" href="#">บริการตรวจสอบสภาพ</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="how-it-works" href="#">ขั้นตอนการทำงาน</a></li></ul></div><div class="flex flex-col"><h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-space-md">หมวดหมู่สินค้า</h4><ul class="flex flex-col gap-space-sm"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">Gaming Notebooks</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">การ์ดจอ GPU Series</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">ซีพียู &amp; เมนบอร์ด</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">จอมอนิเตอร์ 144Hz+</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">อุปกรณ์ Gaming Gear</a></li></ul></div><div class="flex flex-col"><h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-space-md">ช่วยเหลือ &amp; ติดต่อเรา</h4><ul class="flex flex-col gap-space-sm"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="support" href="#">ศูนย์ช่วยเหลือ</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="inspection-policy" href="#">มาตรฐานการตรวจสอบ</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="guarantee" href="#">การรับประกันและคืนเงิน</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="contact-us" href="#">ติดต่อทีมงาน Support</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="privacy-terms" href="#">เงื่อนไขและข้อกำหนด</a></li></ul></div></div><div class="pt-space-md flex flex-col md:flex-row items-center justify-between gap-space-md bg-surface-container-lowest"><p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 modinspect. All rights reserved.</p><div class="flex items-center gap-space-sm"><span class="font-label-sm text-label-sm text-primary-container tracking-widest uppercase bg-surface-container px-space-md py-space-xs rounded-full shadow-[0_0_14px_rgba(187,242,70,0.15)]">BUY • SELL • INSPECT • REUSE</span></div></div></div></footer></body></html>

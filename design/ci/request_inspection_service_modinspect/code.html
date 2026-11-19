@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="th"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"secondary-fixed-dim":"#4ae176","surface-tint":"#a2d72b","surface":"#0f141c","inverse-surface":"#dee2ee","background":"#0f141c","on-surface":"#dee2ee","on-tertiary-container":"#786000","on-primary":"#253600","on-background":"#dee2ee","inverse-on-surface":"#2c3139","tertiary":"#fffbff","on-error-container":"#ffdad6","primary":"#fbffe8","surface-container-high":"#252a33","on-tertiary-fixed-variant":"#574500","surface-container-lowest":"#090e16","secondary-container":"#00b954","surface-container-highest":"#30353e","primary-fixed":"#bdf448","surface-variant":"#30353e","on-error":"#690005","tertiary-container":"#ffdd74","on-primary-container":"#4e6c00","surface-dim":"#0f141c","secondary-fixed":"#6bff8f","on-secondary-fixed":"#002109","primary-container":"#bbf246","tertiary-fixed-dim":"#eec200","surface-container":"#1b2028","surface-container-low":"#171c24","on-secondary-fixed-variant":"#005321","inverse-primary":"#4a6700","on-tertiary":"#3c2f00","primary-fixed-dim":"#a2d72b","surface-bright":"#343942","error":"#ffb4ab","secondary":"#4ae176","on-tertiary-fixed":"#231b00","outline":"#8d937c","on-surface-variant":"#c3c9b0","tertiary-fixed":"#ffe083","on-secondary":"#003915","on-primary-fixed-variant":"#374e00","error-container":"#93000a","outline-variant":"#434936","on-secondary-container":"#004119","on-primary-fixed":"#141f00"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1.5rem","margin-mobile":"1rem","space-xs":"0.25rem","gutter-mobile":"0.75rem",margin:"2rem","space-md":"1rem",gutter:"1.25rem","space-xl":"2.5rem","space-sm":"0.5rem"},fontFamily:{"title-md":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"display-xl-mobile":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"display-xl":["Plus Jakarta Sans"]},fontSize:{"title-md":["18px",{lineHeight:"24px",fontWeight:"600"}],"headline-lg-mobile":["24px",{lineHeight:"32px",fontWeight:"700"}],"display-xl-mobile":["32px",{lineHeight:"40px",fontWeight:"800"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-lg":["14px",{lineHeight:"18px",fontWeight:"700"}],"label-sm":["10px",{lineHeight:"14px",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"body-sm":["12px",{lineHeight:"18px",fontWeight:"400"}],"headline-lg":["32px",{lineHeight:"40px",fontWeight:"700"}],"headline-md":["22px",{lineHeight:"28px",fontWeight:"700"}],"display-xl":["48px",{lineHeight:"56px",fontWeight:"800"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased min-h-screen flex flex-col"><header class="fixed top-0 left-0 right-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_12px_rgba(0,0,0,0.45)]"><div class="h-20 w-full max-w-[1440px] mx-auto px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-xl flex-shrink-0"><a class="flex items-center gap-space-sm group" data-path="home" href="#"><div class="w-9 h-9 rounded-lg bg-surface-container-high flex items-center justify-center shadow-[0_0_16px_rgba(187,242,70,0.25)]"><span class="material-symbols-outlined text-primary-container text-[22px]">verified</span></div><span class="font-headline-md text-headline-md text-on-surface tracking-tight uppercase flex items-center">mod<span class="text-primary-container">inspect</span></span></a><nav class="hidden xl:flex items-center gap-space-lg" data-active-classes="text-primary-container font-label-lg text-label-lg"><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="home" href="#">Home</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="buy" href="#">Buy</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="sell" href="#">Sell</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="inspect" href="#">Inspect</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors" data-path="how-it-works" href="#">How it works</a><a class="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-space-xs" data-path="categories" href="#">Categories<span class="material-symbols-outlined text-[16px]">expand_more</span></a></nav></div><div class="flex-1 max-w-md hidden md:flex items-center"><div class="w-full flex items-center bg-surface-container-low rounded-lg px-space-md py-space-sm transition-all focus-within:bg-surface-container-high"><span class="material-symbols-outlined text-on-surface-variant text-[20px] mr-space-sm">search</span><input class="w-full bg-transparent text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm focus:outline-none" placeholder="ค้นหาอุปกรณ์ IT, โน้ตบุ๊ก, การ์ดจอ, รหัสตรวจสภาพ..." type="text"/><span class="material-symbols-outlined text-primary-container text-[18px] ml-space-xs">tune</span></div></div><div class="flex items-center gap-space-md flex-shrink-0"><button aria-label="Search" class="md:hidden w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">search</span></button><a aria-label="Favorites" class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors" data-path="favorites" href="#"><span class="material-symbols-outlined text-[20px]">favorite</span></a><a aria-label="Cart" class="relative w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" data-path="cart" href="#"><span class="material-symbols-outlined text-[20px]">shopping_bag</span><span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm flex items-center justify-center shadow-[0_0_10px_rgba(187,242,70,0.5)]">2</span></a><a aria-label="Profile" class="flex items-center pl-space-xs" data-path="user-profile" href="#"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.3)]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></a></div></div></header><main class="w-full pt-20 bg-surface flex-1"><div class="flex flex-col w-full">
+<!-- Top Ambient Glow Line -->
+<div class="w-full h-1 bg-gradient-to-r from-transparent via-primary-container/80 to-transparent"></div>
+<!-- Hero Header / Service Banner -->
+<section class="w-full max-w-[1440px] mx-auto px-margin pt-space-xl pb-space-lg">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-low p-space-lg md:p-space-xl shadow-xl">
+<!-- Glow Gradients -->
+<div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-primary-container/10 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-secondary/10 blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-lg">
+<div class="max-w-3xl">
+<div class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-high mb-space-md shadow-[0_0_12px_rgba(187,242,70,0.15)]">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-sm text-label-sm text-primary-container uppercase tracking-wider">ModInspect Engineering Certified™</span>
+</div>
+<h1 class="font-display-xl text-headline-lg md:text-display-xl text-primary font-extrabold tracking-tight mb-space-sm leading-tight">
+            ส่งตรวจสภาพอุปกรณ์ IT มือสอง
+          </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl leading-relaxed">
+            ยกระดับความน่าเชื่อถือ อัปราคาขายได้สูงขึ้น ปิดการขายไวขึ้น 3 เท่า ด้วยใบรับรองมาตรฐานการตรวจเชิงวิศวกรรมฮาร์ดแวร์ลึก 60 จุด
+          </p>
+</div>
+<!-- Quick Benchmark Badge Widget -->
+<div class="flex-shrink-0 flex items-center gap-space-md p-space-md rounded-xl bg-surface-container-high shadow-md">
+<div class="w-14 h-14 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary-container shadow-[0_0_16px_rgba(187,242,70,0.2)]">
+<span class="material-symbols-outlined text-[32px]">verified</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-primary font-bold">3.2x</span>
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">Faster Sold</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">สถิติปิดการขายจริงภายใน 48 ชม.</span>
+</div>
+</div>
+</div>
+<!-- Trust Pillars Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mt-space-xl pt-space-lg bg-surface-container-lowest/60 rounded-lg p-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">qr_code_scanner</span>
+</div>
+<div>
+<h2 class="font-label-lg text-label-lg text-primary font-bold">ออกใบรับรองดิจิทัล &amp; QR Code</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">สแกนตรวจสอบ Telemetry และ Stress-test ได้ทันที</p>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">photo_camera</span>
+</div>
+<div>
+<h2 class="font-label-lg text-label-lg text-primary font-bold">ถ่ายภาพสตูดิโอ 360° ฟรีทุกมุม</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">สตูดิโอมืออาชีพ ซูมสภาพจริง ละเอียดยันรอยน็อต</p>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">shield</span>
+</div>
+<div>
+<h2 class="font-label-lg text-label-lg text-primary font-bold">คุ้มครองประกันขนส่ง 100%</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ดูแลครอบคลุมมูลค่าเต็มวงเงินระหว่างส่งตรวจและจัดเก็บ</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Step Navigation Ribbon -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-sm">
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+<!-- Step 1 (Active) -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-high shadow-[0_0_16px_rgba(187,242,70,0.12)]">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container font-label-lg text-label-lg flex items-center justify-center font-bold">
+            1
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-primary-container uppercase tracking-wider font-semibold">ขั้นตอนที่ 1</span>
+<span class="font-label-lg text-label-lg text-primary truncate">ข้อมูลอุปกรณ์ &amp; สเปก</span>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-lowest opacity-85">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface font-label-lg text-label-lg flex items-center justify-center font-bold">
+            2
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">ขั้นตอนที่ 2</span>
+<span class="font-label-lg text-label-lg text-on-surface truncate">เลือกแพ็กเกจตรวจ</span>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-lowest opacity-85">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface font-label-lg text-label-lg flex items-center justify-center font-bold">
+            3
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">ขั้นตอนที่ 3</span>
+<span class="font-label-lg text-label-lg text-on-surface truncate">วิธีจัดส่งเครื่อง</span>
+</div>
+</div>
+<!-- Step 4 -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container-lowest opacity-85">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface font-label-lg text-label-lg flex items-center justify-center font-bold">
+            4
+          </div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">ขั้นตอนที่ 4</span>
+<span class="font-label-lg text-label-lg text-on-surface truncate">สรุปข้อมูล &amp; ชำระ</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Booking Interface: 2-Column Split -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-lg">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Multi-Step Forms & Interactive Selectors -->
+<div class="lg:col-span-8 flex flex-col gap-space-xl">
+<!-- SECTION 1: Device Category & Specifications -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-lg flex flex-col gap-space-lg">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-7 h-7 rounded-md bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center justify-center font-bold">01</span>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">ข้อมูลอุปกรณ์และสเปก (Device Details)</h2>
+</div>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container px-space-sm py-space-xs rounded">ตรวจสอบสถานะแบบเรียลไทม์</span>
+</div>
+<!-- Category Selection Cards -->
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">เลือกประเภทฮาร์ดแวร์ที่ต้องการส่งตรวจ *</label>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-space-sm">
+<!-- Notebook (Selected) -->
+<button class="flex flex-col items-center justify-center p-space-md rounded-lg bg-surface-container-high text-primary-container shadow-[0_0_16px_rgba(187,242,70,0.18)] transition-all" type="button">
+<span class="material-symbols-outlined text-[28px] mb-space-xs">laptop_chromebook</span>
+<span class="font-label-md text-label-md font-bold text-center">Gaming Laptop</span>
+<span class="font-label-sm text-label-sm text-primary-container/80 mt-1">โน้ตบุ๊กเกมมิ่ง</span>
+</button>
+<!-- PC Desktop -->
+<button class="flex flex-col items-center justify-center p-space-md rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" type="button">
+<span class="material-symbols-outlined text-[28px] mb-space-xs">desktop_windows</span>
+<span class="font-label-md text-label-md font-semibold text-center">Desktop PC</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">คอมประกอบชุด</span>
+</button>
+<!-- Graphic Card GPU -->
+<button class="flex flex-col items-center justify-center p-space-md rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" type="button">
+<span class="material-symbols-outlined text-[28px] mb-space-xs">memory</span>
+<span class="font-label-md text-label-md font-semibold text-center">GPU / การ์ดจอ</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">NVIDIA / AMD</span>
+</button>
+<!-- Monitor -->
+<button class="flex flex-col items-center justify-center p-space-md rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" type="button">
+<span class="material-symbols-outlined text-[28px] mb-space-xs">tv</span>
+<span class="font-label-md text-label-md font-semibold text-center">Monitor จอคอม</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">144Hz+ Gaming</span>
+</button>
+<!-- Other -->
+<button class="flex flex-col items-center justify-center p-space-md rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" type="button">
+<span class="material-symbols-outlined text-[28px] mb-space-xs">developer_board</span>
+<span class="font-label-md text-label-md font-semibold text-center">Components</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">CPU / RAM / SSD</span>
+</button>
+</div>
+</div>
+<!-- Brand & Model Inputs with Quick Chips -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">แบรนด์ผู้ผลิต (Brand) *</label>
+<div class="relative">
+<input class="w-full bg-surface-container text-on-surface font-body-md text-body-md rounded-lg px-space-md py-space-sm focus:outline-none focus:bg-surface-container-high transition-colors" placeholder="เช่น ASUS, Lenovo, MSI, Acer" type="text" value="ASUS ROG"/>
+<span class="material-symbols-outlined absolute right-space-sm top-1/2 -translate-y-1/2 text-primary-container text-[20px]">check_circle</span>
+</div>
+<div class="flex flex-wrap gap-1 mt-1">
+<button class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container-high text-primary-container" type="button">ASUS ROG</button>
+<button class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface" type="button">Lenovo Legion</button>
+<button class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface" type="button">MSI Gaming</button>
+<button class="font-label-sm text-label-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface" type="button">Acer Predator</button>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">ชื่อรุ่น / สเปกคร่าวๆ (Model Specification) *</label>
+<div class="relative">
+<input class="w-full bg-surface-container text-on-surface font-body-md text-body-md rounded-lg px-space-md py-space-sm focus:outline-none focus:bg-surface-container-high transition-colors" placeholder="เช่น Strix G15 G513RM, Legion 5 Pro" type="text" value="Strix G15 (2022) - R7-6800H / RTX 3070Ti"/>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">ระบุ CPU / GPU หากทราบ หรือให้ช่างตรวจเช็คอัตโนมัติ</span>
+</div>
+</div>
+<!-- S/N & Year of Purchase -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">หมายเลขซีเรียลนัมเบอร์ (Serial Number - S/N)</label>
+<div class="flex gap-space-xs">
+<input class="flex-1 bg-surface-container text-on-surface font-body-md text-body-md rounded-lg px-space-md py-space-sm focus:outline-none focus:bg-surface-container-high font-mono tracking-wider" placeholder="ดูที่ใต้ตัวเครื่อง หรือกล่องบรรจุภัณฑ์" type="text" value="N5NRCX04291845G"/>
+<button class="px-space-md rounded-lg bg-surface-container text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high flex items-center justify-center" title="สแกนบาร์โค้ด" type="button">
+<span class="material-symbols-outlined text-[20px]">barcode_scanner</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">ปีที่ซื้อหรือระยะเวลาใช้งานโดยประมาณ</label>
+<select class="w-full bg-surface-container text-on-surface font-body-md text-body-md rounded-lg px-space-md py-space-sm focus:outline-none focus:bg-surface-container-high">
+<option value="2023-2024">ประมาณ 1 - 2 ปี (ยังอยู่ในประกันศูนย์หรือเพิ่งหมด)</option>
+<option selected="" value="2022">ประมาณ 2 - 3 ปี (หมดประกันศูนย์แล้ว)</option>
+<option value="older">มากกว่า 3 ปีขึ้นไป</option>
+<option value="unknown">ไม่ทราบแน่ชัด / เครื่องสั่งประกอบ</option>
+</select>
+</div>
+</div>
+<!-- Initial Seller Condition Self-Check -->
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<label class="font-label-md text-label-md text-on-surface-variant">การประเมินสภาพเบื้องต้นโดยผู้ส่งตรวจ (Self Assessment)</label>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm">
+<div class="p-space-md rounded-lg bg-surface-container flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-[18px]">brush</span>
+                  สภาพภายนอก
+                </span>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input checked="" class="accent-primary-container" name="ext_condition" type="radio"/>
+<span>สวยงาม รอยน้อยมาก (95%+)</span>
+</label>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input class="accent-primary-container" name="ext_condition" type="radio"/>
+<span>มีรอยขนแมวตามการใช้งาน</span>
+</label>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input class="accent-primary-container" name="ext_condition" type="radio"/>
+<span>มีรอยบุบ / บิ่น / สีถลอก</span>
+</label>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-primary-container text-[18px]">inventory_2</span>
+                  อุปกรณ์ครบกล่อง
+                </span>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input checked="" class="accent-primary-container" type="checkbox"/>
+<span>มีกล่องบรรจุภัณฑ์เดิมแท้</span>
+</label>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input checked="" class="accent-primary-container" type="checkbox"/>
+<span>อะแดปเตอร์สายชาร์จแท้</span>
+</label>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input class="accent-primary-container" type="checkbox"/>
+<span>ใบเสร็จรับเงิน / เอกสารประกัน</span>
+</label>
+</div>
+<div class="p-space-md rounded-lg bg-surface-container flex flex-col gap-space-xs">
+<span class="font-label-md text-label-md text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[18px]">build</span>
+                  ประวัติการแกะ/ซ่อม
+                </span>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input checked="" class="accent-primary-container" name="repair_history" type="radio"/>
+<span>เครื่องเดิม ไม่เคยแกะซ่อมหนัก</span>
+</label>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input class="accent-primary-container" name="repair_history" type="radio"/>
+<span>เคยแกะอัปเกรด RAM / SSD</span>
+</label>
+<label class="flex items-center gap-space-xs text-body-sm text-on-surface cursor-pointer">
+<input class="accent-primary-container" name="repair_history" type="radio"/>
+<span>เคยเปลี่ยนพัดลม / ซิลิโคน</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Pre-screening Photos Upload Grid -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface-variant">อัปโหลดภาพถ่ายตัวเครื่องเพื่อประเมินเบื้องต้น (4 - 6 มุมแนะนำ) *</label>
+<span class="font-label-sm text-label-sm text-primary-container font-mono">3 / 6 รูปภาพพร้อมตรวจ</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-space-sm">
+<!-- Upload Slot 1 (Uploaded) -->
+<div class="relative group rounded-lg overflow-hidden bg-surface-container-high aspect-square">
+<img class="w-full h-full object-cover" data-alt="High tech top view photograph of ASUS ROG gaming laptop keyboard with RGB backlight glowing softly on dark engineering desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXIHsK07T0_L3AZp6ZWJAPadSAC1TtXk3S4IkVcwOjSEUfIrMpPyk2bjmg_I5brAVrZIC5N0V1E5CKkdBEq9t3Vbu_YU9yfziRHJyvarqO4hHjNk6a0gnfFqo5ms8YNDLGbdg7zl_oM_ZOJGMcCsE2G-ooFl8aBCoKH8TeSCpYfOmD4vsUICEPT90_QHBMvb27jYE1KZzyWNRQ5d6H26tO0Kjd-PDygJeihBO_RbY"/>
+<div class="absolute inset-0 bg-surface-container-lowest/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1 transition-opacity">
+<button class="w-7 h-7 rounded-full bg-error text-on-error flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+</div>
+<div class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-surface-container-lowest/90 font-label-sm text-label-sm text-primary font-mono">หน้าจอ/แป้นพิมพ์</div>
+</div>
+<!-- Upload Slot 2 (Uploaded) -->
+<div class="relative group rounded-lg overflow-hidden bg-surface-container-high aspect-square">
+<img class="w-full h-full object-cover" data-alt="High quality close up studio photo of gaming laptop top lid lid cover with ROG metallic emblem reflecting subtle neon light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJd6WzNAwVuOy_0ZftUBgz2sRu8Vnke_NWswnP4T3HNhf-kfjYNy8365r6iVc6KK9sLv8517Tq1CjGj5TPYKEtPJsr7Wi_-L7Lc1xj6W0GL10DKjRf08oNySC-tq0K4DqtcDIXPVorTyuSDve_7pg-eXm3qX9YxXMMOSe-0izN8JCq8PsOripr4XuzbiHFTds2vqKMsgwJrm9BBzyx0GCtlZ4981USTdE92SJRVtM"/>
+<div class="absolute inset-0 bg-surface-container-lowest/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1 transition-opacity">
+<button class="w-7 h-7 rounded-full bg-error text-on-error flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+</div>
+<div class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-surface-container-lowest/90 font-label-sm text-label-sm text-primary font-mono">ฝาบน</div>
+</div>
+<!-- Upload Slot 3 (Uploaded) -->
+<div class="relative group rounded-lg overflow-hidden bg-surface-container-high aspect-square">
+<img class="w-full h-full object-cover" data-alt="Macro view of gaming notebook side heat exhaust vents and HDMI USB ports clean condition" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyj9P90loHS7YBNEICBk9oGRwi8T31pBciuHpbZILpeVJknvYpGNdkhLBkg5pozdyqef-YcgmVuTZkwXG1yUPUoONgKp2qUrnUseI7A3BdtjahfjjkGbOAODE5DZNhN8CeA02YgKeh3REO67GxTFxAGsQTh8SaB8fQZK3UzpW-TypzIBBe4lvx1_TPEmkhRQfRhtZ9SVzfQbhJ-pOhVimCVuw1kBBMRrLEx1QOLzo"/>
+<div class="absolute inset-0 bg-surface-container-lowest/60 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-1 transition-opacity">
+<button class="w-7 h-7 rounded-full bg-error text-on-error flex items-center justify-center" type="button"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+</div>
+<div class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-surface-container-lowest/90 font-label-sm text-label-sm text-primary font-mono">พอร์ตเชื่อมต่อ</div>
+</div>
+<!-- Upload Slot 4 (Empty / Add) -->
+<div class="rounded-lg bg-surface-container flex flex-col items-center justify-center p-space-xs text-center cursor-pointer hover:bg-surface-container-high hover:text-primary-container transition-all aspect-square">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant mb-1">add_a_photo</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ก้นเครื่อง / น็อต</span>
+</div>
+<!-- Upload Slot 5 (Empty / Add) -->
+<div class="rounded-lg bg-surface-container flex flex-col items-center justify-center p-space-xs text-center cursor-pointer hover:bg-surface-container-high hover:text-primary-container transition-all aspect-square">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant mb-1">add_a_photo</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">จอขณะเปิดภาพเทส</span>
+</div>
+<!-- Upload Slot 6 (Empty / Add) -->
+<div class="rounded-lg bg-surface-container flex flex-col items-center justify-center p-space-xs text-center cursor-pointer hover:bg-surface-container-high hover:text-primary-container transition-all aspect-square">
+<span class="material-symbols-outlined text-[24px] text-on-surface-variant mb-1">add_a_photo</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">อุปกรณ์ &amp; กล่อง</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 2: Select Inspection Package Tier -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-lg flex flex-col gap-space-lg">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-7 h-7 rounded-md bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center justify-center font-bold">02</span>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">เลือกแพ็กเกจการตรวจสภาพ (Inspection Packages)</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ทุกแพ็กเกจการันตีโดย ModInspect Lab</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Card 1: Standard Check -->
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-all">
+<div class="flex flex-col gap-space-sm">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-title-md text-title-md text-primary font-bold">Standard Check</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ตรวจพื้นฐาน 30 จุด สภาพพร้อมใช้</p>
+</div>
+</div>
+<div class="py-space-xs">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-primary font-extrabold">฿390</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ เครื่อง</span>
+</div>
+</div>
+<ul class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface pt-space-xs">
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check</span>
+<span>ตรวจการเปิด-ปิดติด และเช็คสเปกฮาร์ดแวร์</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check</span>
+<span>ทดสอบพอร์ต I/O และการเชื่อมต่อ Wi-Fi/BT</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check</span>
+<span>รายงานดิจิทัลสรุปสถานะทั่วไป</span>
+</li>
+<li class="flex items-start gap-space-xs text-on-surface-variant opacity-60">
+<span class="material-symbols-outlined text-[18px] flex-shrink-0">close</span>
+<span>ไม่มี Stress Test หนักต่อเนื่อง</span>
+</li>
+</ul>
+</div>
+<button class="w-full mt-space-md py-space-sm px-space-md rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:text-primary-container transition-colors" type="button">
+                เลือกแพ็กเกจนี้
+              </button>
+</div>
+<!-- Card 2: Pro Benchmark (RECOMMENDED) -->
+<div class="relative flex flex-col justify-between p-space-md rounded-xl bg-surface-container-high shadow-[0_0_24px_rgba(187,242,70,0.18)]">
+<!-- Top Highlight Ribbon -->
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 px-space-md py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(187,242,70,0.4)]">
+                ★ ยอดนิยมสูงสุด (Recommended)
+              </div>
+<div class="flex flex-col gap-space-sm pt-space-xs">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-title-md text-title-md text-primary font-bold">Pro Benchmark</h3>
+<p class="font-body-sm text-body-sm text-primary-container">ตรวจเจาะลึก 60 จุด Telemetry Checklist</p>
+</div>
+<span class="material-symbols-outlined text-primary-container text-[24px]">verified</span>
+</div>
+<div class="py-space-xs">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-primary font-extrabold">฿790</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ เครื่อง</span>
+</div>
+</div>
+<ul class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface pt-space-xs">
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check_circle</span>
+<span><strong>Full Stress Test:</strong> FurMark, Cinebench, 3DMark</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check_circle</span>
+<span>วิเคราะห์สุขภาพแบตเตอรี่ Cycle Count และความจุ</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check_circle</span>
+<span><strong>ถ่ายรูปสตูดิโอ 360°</strong> ซูมตำหนิระดับ Macro ฟรี</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check_circle</span>
+<span>รับตรารับรอง <strong>ModInspect Verified A+</strong></span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px] flex-shrink-0">check_circle</span>
+<span>ประกัน ModInspect Care 30 วัน</span>
+</li>
+</ul>
+</div>
+<!-- Selected Active Indicator Button -->
+<button class="w-full mt-space-md py-space-sm px-space-md rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md font-bold shadow-[0_0_16px_rgba(187,242,70,0.3)] flex items-center justify-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">done</span>
+                แพ็กเกจที่คุณเลือกอยู่
+              </button>
+</div>
+<!-- Card 3: Elite Escrow Listing -->
+<div class="flex flex-col justify-between p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-all">
+<div class="flex flex-col gap-space-sm">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-title-md text-title-md text-primary font-bold">Elite Escrow</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ครบวงจร ฝากคลัง ปิดการขายพร้อมส่ง</p>
+</div>
+</div>
+<div class="py-space-xs">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-primary font-extrabold">฿1,290</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">/ เครื่อง</span>
+</div>
+</div>
+<ul class="flex flex-col gap-space-xs font-body-sm text-body-sm text-on-surface pt-space-xs">
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check</span>
+<span>รวมบริการ Pro Benchmark ครบทุกฟังก์ชัน</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check</span>
+<span>เก็บเครื่องในคลังควบคุมอุณหภูมิและความชื้น</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0">check</span>
+<span>modinspect จัดส่งด่วนถึงผู้ซื้อทันทีเมื่อปิดการขาย</span>
+</li>
+<li class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[18px] flex-shrink-0">check</span>
+<span>คุ้มครองรับประกันนานสูงสุด 90 วัน</span>
+</li>
+</ul>
+</div>
+<button class="w-full mt-space-md py-space-sm px-space-md rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:text-primary-container transition-colors" type="button">
+                เลือกแพ็กเกจนี้
+              </button>
+</div>
+</div>
+<!-- Add-on Services Accordion / Toggles -->
+<div class="mt-space-sm p-space-md rounded-lg bg-surface-container flex flex-col gap-space-md">
+<h4 class="font-label-lg text-label-lg text-primary font-bold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[20px]">tune</span>
+              บริการเสริมดูแลเครื่องเฉพาะทาง (Optional Add-ons)
+            </h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Addon 1 -->
+<label class="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer">
+<input class="mt-1 accent-primary-container w-4 h-4" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-semibold">เปลี่ยนซิลิโคนพรีเมียม PTM7950</span>
+<span class="font-label-md text-label-md text-primary-container font-mono">+฿350</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Honeywell Phase Change หรือ Thermal Grizzly Kryonaut ลดอุณหภูมิ 5-10°C</p>
+</div>
+</label>
+<!-- Addon 2 (Selected) -->
+<label class="flex items-start gap-space-sm p-space-sm rounded-lg bg-surface-container-high transition-colors cursor-pointer shadow-[0_0_12px_rgba(187,242,70,0.1)]">
+<input checked="" class="mt-1 accent-primary-container w-4 h-4" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-semibold">ทำความสะอาดฝุ่นภายในฮีตซิงก์ &amp; พัดลม</span>
+<span class="font-label-md text-label-md text-primary-container font-mono">+฿190</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">เป่าลมแรงดันสูง คลีนคราบฝุ่นสะสม เพิ่มประสิทธิภาพ Airflow</p>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- SECTION 3: Logistics & Handover Options -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-lg flex flex-col gap-space-lg">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-sm">
+<span class="w-7 h-7 rounded-md bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center justify-center font-bold">03</span>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">วิธีการส่งมอบเครื่องเพื่อตรวจสอบ (Logistics &amp; Handover)</h2>
+</div>
+<span class="font-label-sm text-label-sm text-secondary">มีประกันภัยคุ้มครองทุกช่องทาง</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Option A: Courier Pickup (Selected) -->
+<label class="p-space-md rounded-xl bg-surface-container-high cursor-pointer flex flex-col justify-between shadow-[0_0_16px_rgba(187,242,70,0.12)]">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-[28px]">local_shipping</span>
+<input checked="" class="accent-primary-container w-4 h-4" name="logistics_method" type="radio"/>
+</div>
+<h4 class="font-title-md text-title-md text-primary font-bold mt-space-xs">เรียกเข้ารับถึงบ้าน</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lalamove / Flash Express พร้อมกล่องกันกระแทกนิรภัย modinspect</p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase font-semibold">กทม. &amp; ปริมณฑล</span>
+<span class="font-label-md text-label-md text-primary-container font-bold">ฟรีค่าเข้ารับ</span>
+</div>
+</label>
+<!-- Option B: Drop-off Parcel -->
+<label class="p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer flex flex-col justify-between">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]">inventory</span>
+<input class="accent-primary-container w-4 h-4" name="logistics_method" type="radio"/>
+</div>
+<h4 class="font-title-md text-title-md text-primary font-bold mt-space-xs">ส่งพัสดุด้วยตนเอง</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Drop-off ที่ Kerry Express, EMS ทั่วประเทศ (แนบรหัสส่งฟรี)</p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">ทั่วประเทศไทย</span>
+<span class="font-label-md text-label-md text-secondary font-bold">ฟรีค่าส่ง</span>
+</div>
+</label>
+<!-- Option C: Lab Drop-in -->
+<label class="p-space-md rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors cursor-pointer flex flex-col justify-between">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-on-surface-variant text-[28px]">storefront</span>
+<input class="accent-primary-container w-4 h-4" name="logistics_method" type="radio"/>
+</div>
+<h4 class="font-title-md text-title-md text-primary font-bold mt-space-xs">ส่งที่ ModInspect Lab</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">นำส่งด้วยตนเองที่สาขาพระราม 9 หรือฟอร์จูนทาวน์ ตรวจเสร็จใน 2 ชม.</p>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Walk-in Express</span>
+<span class="font-label-md text-label-md text-primary-container font-bold">รอรับได้ทันที</span>
+</div>
+</label>
+</div>
+<!-- Pickup Address Form snippet -->
+<div class="p-space-md rounded-lg bg-surface-container flex flex-col gap-space-sm">
+<h4 class="font-label-md text-label-md text-primary font-semibold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[18px]">location_on</span>
+              ที่อยู่สำหรับเรียกรถเข้ารับพัสดุ
+            </h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<input class="w-full bg-surface-container-low text-on-surface font-body-sm text-body-sm rounded-lg px-space-md py-space-sm focus:outline-none" placeholder="ชื่อ-นามสกุล และเบอร์โทร" type="text" value="สมชาย มั่นคงเจริญ (081-998-7654)"/>
+<input class="w-full bg-surface-container-low text-on-surface font-body-sm text-body-sm rounded-lg px-space-md py-space-sm focus:outline-none" placeholder="ช่วงเวลาที่สะดวกให้เข้ารับ" type="text" value="วันพรุ่งนี้ (10:00 - 13:00 น.)"/>
+</div>
+<textarea class="w-full bg-surface-container-low text-on-surface font-body-sm text-body-sm rounded-lg px-space-md py-space-sm focus:outline-none" placeholder="รายละเอียดที่อยู่ / จุดสังเกต" rows="2">เลขที่ 88/14 อาคารเทคโนโพลิส ถ.รัชดาภิเษก แขวงห้วยขวาง เขตห้วยขวาง กทม. 10310</textarea>
+</div>
+</div>
+</div>
+<!-- Right Column: Sticky Summary & Guarantees Panel -->
+<div class="lg:col-span-4 flex flex-col gap-space-md lg:sticky lg:top-24">
+<!-- Order Summary Card -->
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<h3 class="font-title-md text-title-md text-primary font-bold">สรุปรายการส่งตรวจ</h3>
+<span class="font-label-sm text-label-sm text-primary-container bg-surface-container-high px-space-sm py-0.5 rounded-full font-mono">DRAFT #INS-8902</span>
+</div>
+<!-- Device Card Preview -->
+<div class="flex items-center gap-space-sm p-space-sm rounded-lg bg-surface-container">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">laptop_chromebook</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-primary font-bold truncate">ASUS ROG Strix G15</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">R7-6800H / RTX 3070Ti</span>
+<span class="font-label-sm text-label-sm text-secondary font-mono mt-0.5">S/N: N5NRCX04...</span>
+</div>
+</div>
+<!-- Line Items Breakdown -->
+<div class="flex flex-col gap-space-xs py-space-xs font-body-sm text-body-sm">
+<div class="flex justify-between items-center text-on-surface">
+<span>แพ็กเกจ Pro Benchmark (60 จุด)</span>
+<span class="font-mono text-primary font-semibold">฿790</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span>บริการเสริม: ทำความสะอาดฝุ่นภายใน</span>
+<span class="font-mono text-primary font-semibold">฿190</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span class="flex items-center gap-1">
+                ประกันพัสดุและค่าจัดส่งเข้ารับ
+                <span class="material-symbols-outlined text-[14px] text-primary-container" title="โปรโมชั่นฟรี">info</span>
+</span>
+<span class="font-mono text-secondary font-semibold">ฟรี (โปรโมชั่น)</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span>ถ่ายภาพสตูดิโอ 360° มุมมองโปร</span>
+<span class="font-mono text-secondary font-semibold">ฟรี</span>
+</div>
+</div>
+<!-- Total Calculation -->
+<div class="pt-space-sm bg-surface-container-lowest p-space-md rounded-lg flex items-baseline justify-between">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block">ยอดชำระสุทธิ (Total)</span>
+<span class="font-label-sm text-label-sm text-secondary">รวมภาษีมูลค่าเพิ่มแล้ว</span>
+</div>
+<div class="text-right">
+<span class="font-headline-lg text-headline-lg text-primary-container font-extrabold font-mono">฿980</span>
+</div>
+</div>
+<!-- Trust Callout -->
+<div class="p-space-sm rounded-lg bg-surface-container flex items-start gap-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary-container text-[18px] flex-shrink-0 mt-0.5">verified_user</span>
+<span><strong>รับประกันความคุ้มค่า:</strong> หากเครื่องไม่ผ่านเกณฑ์การตรวจเบื้องต้น (เช่น เปิดไม่ติด/ชิปเสีย) modinspect ยินดีคืนเงินค่าตรวจสภาพเต็มจำนวน</span>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<button class="w-full py-space-md px-space-lg rounded-lg bg-primary-container text-on-primary-container font-label-lg text-label-lg font-bold shadow-[0_0_20px_rgba(187,242,70,0.35)] hover:bg-primary-fixed transition-all flex items-center justify-center gap-space-xs" type="button">
+<span>ยืนยันและดำเนินการต่อ</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<button class="w-full py-space-sm px-space-md rounded-lg bg-surface-container text-on-surface-variant font-label-md text-label-md hover:text-primary hover:bg-surface-container-high transition-colors flex items-center justify-center gap-space-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">bookmark</span>
+<span>บันทึกแบบร่างไว้ก่อน (Save Draft)</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Live Sample Widget -->
+<div class="bg-surface-container-low rounded-xl p-space-md shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">ตัวอย่างผลตรวจที่จะได้รับ</span>
+<span class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span> Live Sample
+            </span>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded-lg flex flex-col gap-space-xs">
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant font-mono">CPU Temp (Max Load)</span>
+<span class="text-primary font-mono font-bold">78.4°C <span class="text-secondary font-normal">[Pass]</span></span>
+</div>
+<!-- Progress Line Indicator -->
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="w-[72%] h-full bg-gradient-to-r from-secondary to-primary-container"></div>
+</div>
+<div class="flex justify-between items-center text-body-sm mt-1">
+<span class="text-on-surface-variant font-mono">GPU Hotspot Delta</span>
+<span class="text-primary font-mono font-bold">11.2°C <span class="text-secondary font-normal">[Normal]</span></span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="w-[58%] h-full bg-gradient-to-r from-secondary to-primary-container"></div>
+</div>
+<div class="flex justify-between items-center text-body-sm mt-1">
+<span class="text-on-surface-variant font-mono">Battery Health Score</span>
+<span class="text-primary-container font-mono font-bold">92.4%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+<div class="w-[92%] h-full bg-primary-container"></div>
+</div>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant text-center">ผู้ซื้อสแกนดูชาร์ตอุณหภูมิและการทดสอบได้ 100%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Impact / Metric Showcase Banner -->
+<section class="w-full max-w-[1440px] mx-auto px-margin py-space-lg">
+<div class="bg-surface-container-low rounded-xl p-space-lg shadow-lg">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg divide-y md:divide-y-0 md:divide-x divide-surface-container">
+<div class="flex items-center gap-space-md md:pr-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[28px]">trending_up</span>
+</div>
+<div>
+<div class="font-headline-lg text-headline-lg text-primary font-extrabold">+18.4%</div>
+<div class="font-label-md text-label-md text-on-surface-variant">ราคาขายเฉลี่ยสูงกว่าสินค้าทั่วไปที่ไม่มีใบตรวจ</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md pt-space-md md:pt-0 md:px-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-secondary flex-shrink-0">
+<span class="material-symbols-outlined text-[28px]">schedule</span>
+</div>
+<div>
+<div class="font-headline-lg text-headline-lg text-secondary font-extrabold">48 ชม.</div>
+<div class="font-label-md text-label-md text-on-surface-variant">ระยะเวลาปิดการขายเฉลี่ยหลังผ่านการรับรอง ModInspect</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md pt-space-md md:pt-0 md:pl-space-md">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container flex-shrink-0">
+<span class="material-symbols-outlined text-[28px]">handshake</span>
+</div>
+<div>
+<div class="font-headline-lg text-headline-lg text-primary font-extrabold">99.8%</div>
+<div class="font-label-md text-label-md text-on-surface-variant">อัตราผู้ซื้อพอใจสูงสุด ไม่มีการเคลมคืนสินค้าเนื่องจากสภาพไม่ตรงปก</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ & Engineering Inspection Workflow Details -->
+<section class="w-full max-w-[1440px] mx-auto px-margin pt-space-md pb-space-xl">
+<div class="flex flex-col gap-space-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary-container uppercase font-mono tracking-wider">MODINSPECT SELLER GUIDELINES</span>
+<h2 class="font-headline-lg text-headline-lg text-primary font-bold">คำถามที่พบบ่อยเกี่ยวกับการส่งตรวจสภาพ (FAQ)</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- FAQ 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-space-xs">
+<h3 class="font-title-md text-title-md text-primary font-bold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[20px]">help</span>
+            ทำไมผู้ขายถึงควรตรวจสภาพก่อนลงประกาศขาย?
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            ผู้ซื้ออุปกรณ์ IT มือสองส่วนใหญ่กังวลเรื่องการ์ดจอไหม้ พัดลมฝืด หรือความร้อนเกิน การมีใบผลตรวจ Telemetry เชิงลึกทำให้ผู้ซื้อตัดสินใจได้ทันทีโดยไม่ต้องต่อราคา ไม่ต้องถ่ายวิดีโอเทสซ้ำๆ ช่วยลดเวลาปิดการขายได้ถึง 3.2 เท่า
+          </p>
+</div>
+<!-- FAQ 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-space-xs">
+<h3 class="font-title-md text-title-md text-primary font-bold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[20px]">timer</span>
+            ขั้นตอนการตรวจใช้เวลานานแค่ไหน?
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            สำหรับการส่งตรวจแบบ Express หรือ Walk-in ที่ศูนย์ จะใช้เวลาเฉลี่ย 2 ชั่วโมง สำหรับการส่งพัสดุทั่วไป เมื่อเครื่องมาถึง ModInspect Lab จะเข้าสู่กระบวนการตรวจ Stress-Test 60 จุด ภายใน 24 ชั่วโมง และอัปเดตผลขึ้นระบบออนไลน์ทันที
+          </p>
+</div>
+<!-- FAQ 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-space-xs">
+<h3 class="font-title-md text-title-md text-primary font-bold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[20px]">lock_reset</span>
+            ข้อมูลส่วนบุคคลในเครื่องจะปลอดภัยหรือไม่?
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            ทางแล็บใช้ ModInspect Diagnostic OS แยกบน External NVMe เพื่อรันเบนช์มาร์กฮาร์ดแวร์โดยตรง โดยไม่มีการเปิดดูไฟล์ส่วนตัวของผู้ขาย แนะนำให้ผู้ขายรีเซ็ต Windows หรือ Format ข้อมูลสำคัญออกก่อนส่งมอบเพื่อความสบายใจสูงสุด
+          </p>
+</div>
+<!-- FAQ 4 -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-sm flex flex-col gap-space-xs">
+<h3 class="font-title-md text-title-md text-primary font-bold flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[20px]">security</span>
+            หากเครื่องเสียหายหรือสูญหายระหว่างจัดส่ง ใครเป็นผู้รับผิดชอบ?
+          </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            ระบบ ModInspect ทำงานร่วมกับบริษัทประกันชั้นนำ ทุกเครื่องที่เรียกเข้ารับผ่านระบบจะได้รับความคุ้มครองภัยขนส่งเต็มมูลค่าประเมิน 100% ตลอดเส้นทางจนกว่าจะตรวจสภาพเสร็จสิ้นและส่งกลับถึงมือ
+          </p>
+</div>
+</div>
+</div>
+</section>
+</div></main><footer class="w-full bg-surface-container-lowest mt-auto"><div class="w-full max-w-[1440px] mx-auto px-margin pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter mb-space-xl"><div class="lg:col-span-2 flex flex-col pr-0 lg:pr-space-xl"><a class="flex items-center gap-space-sm mb-space-md" data-path="home" href="#"><div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center shadow-[0_0_12px_rgba(187,242,70,0.2)]"><span class="material-symbols-outlined text-primary-container text-[18px]">verified</span></div><span class="font-headline-md text-headline-md text-on-surface tracking-tight uppercase">mod<span class="text-primary-container">inspect</span></span></a><p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed mb-space-md">Marketplace สำหรับซื้อ ขาย และตรวจสอบอุปกรณ์ IT มือสองที่เชื่อถือได้ คุ้มค่า และยั่งยืน รายงานผลตรวจเชิงวิศวกรรมมาตรฐานสูงสุดในไทย</p><div class="flex items-center gap-space-sm"><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">forum</span></div><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">smart_display</span></div><div class="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">share</span></div></div></div><div class="flex flex-col"><h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-space-md">เมนูหลัก</h4><ul class="flex flex-col gap-space-sm"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="home" href="#">หน้าแรก</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="buy" href="#">เลือกซื้อสินค้า</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="sell" href="#">ลงขายอุปกรณ์ IT</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="inspect" href="#">บริการตรวจสอบสภาพ</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="how-it-works" href="#">ขั้นตอนการทำงาน</a></li></ul></div><div class="flex flex-col"><h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-space-md">หมวดหมู่สินค้า</h4><ul class="flex flex-col gap-space-sm"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">Gaming Notebooks</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">การ์ดจอ GPU Series</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">ซีพียู &amp; เมนบอร์ด</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">จอมอนิเตอร์ 144Hz+</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="categories" href="#">อุปกรณ์ Gaming Gear</a></li></ul></div><div class="flex flex-col"><h4 class="font-label-lg text-label-lg text-on-surface uppercase tracking-wider mb-space-md">ช่วยเหลือ &amp; ติดต่อเรา</h4><ul class="flex flex-col gap-space-sm"><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="support" href="#">ศูนย์ช่วยเหลือ</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="inspection-policy" href="#">มาตรฐานการตรวจสอบ</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="guarantee" href="#">การรับประกันและคืนเงิน</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="contact-us" href="#">ติดต่อทีมงาน Support</a></li><li class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary-container transition-colors"><a data-path="privacy-terms" href="#">เงื่อนไขและข้อกำหนด</a></li></ul></div></div><div class="pt-space-md flex flex-col md:flex-row items-center justify-between gap-space-md bg-surface-container-lowest"><p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 modinspect. All rights reserved.</p><div class="flex items-center gap-space-sm"><span class="font-label-sm text-label-sm text-primary-container tracking-widest uppercase bg-surface-container px-space-md py-space-xs rounded-full shadow-[0_0_14px_rgba(187,242,70,0.15)]">BUY • SELL • INSPECT • REUSE</span></div></div></div></footer></body></html>
