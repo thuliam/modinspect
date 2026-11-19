@@ -19,7 +19,7 @@ $extremes = static function (array $values): array {
     $out = []; foreach ($nums as $i => $n) { if ($n === max($nums)) { $out[$i] = 'max'; } elseif ($n === min($nums)) { $out[$i] = 'min'; } }
     return $out;
 };
-$mark = static fn(?string $m): string => $m === 'max' ? ' <i class="fas fa-chevron-up mi-cmp-mark" title="สูงสุดในแถวนี้" aria-label="สูงสุดในแถวนี้"></i>' : ($m === 'min' ? ' <i class="fas fa-chevron-down mi-cmp-mark" title="ต่ำสุดในแถวนี้" aria-label="ต่ำสุดในแถวนี้"></i>' : '');
+$mark = static fn(?string $m): string => $m === 'max' ? ' <span class="badge badge-pill mi-cmp-mark" title="สูงสุดในแถวนี้"><i class="fas fa-arrow-up text-success" aria-hidden="true"></i><span class="sr-only">สูงสุดในแถวนี้</span></span>' : ($m === 'min' ? ' <span class="badge badge-pill mi-cmp-mark" title="ต่ำสุดในแถวนี้"><i class="fas fa-arrow-down text-danger" aria-hidden="true"></i><span class="sr-only">ต่ำสุดในแถวนี้</span></span>' : '');
 $cell = static function (array $cell): string {
     if ($cell['value'] === null) { return '<span class="text-muted">ไม่มีข้อมูล</span>'; }
     $o = htmlspecialchars($cell['value']);
@@ -108,7 +108,7 @@ $cell = static function (array $cell): string {
     <?php $diffLabels = array_slice(array_map(static fn(array $r): string => (string) $r['label'], $diff), 0, 6); ?>
     <?php if ($diffLabels): ?><p class="mb-2"><strong>ที่ต่างกันระหว่างรุ่นที่เลือก:</strong> <?= htmlspecialchars(implode(', ', $diffLabels)) ?><?= count($diff) > 6 ? ' และอีก ' . (count($diff) - 6) . ' รายการ' : '' ?></p><?php endif; ?>
     <p class="d-print-none mb-2"><button type="button" class="btn btn-ghost btn-sm" data-copy-url><i class="fas fa-link mr-1" aria-hidden="true"></i><span>คัดลอกลิงก์เปรียบเทียบ</span></button> <button type="button" class="btn btn-ghost btn-sm" data-print><i class="fas fa-print mr-1" aria-hidden="true"></i>พิมพ์</button></p>
-    <p class="mi-trend-note">ต่างกัน <?= count($diff) ?> รายการ · เหมือนกัน <?= count($same) ?> รายการ · กดหัวข้อเพื่อพับ/ขยายกลุ่ม · <i class="fas fa-chevron-up mi-cmp-mark" aria-hidden="true"></i> สูงสุด <i class="fas fa-chevron-down mi-cmp-mark" aria-hidden="true"></i> ต่ำสุดในแถว (บอกว่าค่ามากหรือน้อย ไม่ได้บอกว่ารุ่นไหนดีกว่า)</p>
+    <p class="mi-trend-note">ต่างกัน <?= count($diff) ?> รายการ · เหมือนกัน <?= count($same) ?> รายการ · กดหัวข้อเพื่อพับ/ขยายกลุ่ม · <span class="badge badge-pill"><i class="fas fa-arrow-up text-success" aria-hidden="true"></i></span> ค่าสูงสุดในแถว <span class="badge badge-pill"><i class="fas fa-arrow-down text-danger" aria-hidden="true"></i></span> ค่าต่ำสุดในแถว · สีบอกทิศทางของตัวเลขเท่านั้น ไม่ได้บอกว่ารุ่นไหนดีกว่า (เช่น TDP สูงไม่ได้แปลว่าดี)</p>
     <div class="card mi-table-card table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
             <thead>
