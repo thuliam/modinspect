@@ -79,6 +79,8 @@ try {
     ok_cr($svc->submit($pid, 'spec_wrong', ['spec' => 'socket'], '1.1.1.1', $now->modify('+1 day'))['ok'], 'The next day the same client may report again (a new code)');
     $r = $svc->submit($pid, 'wrong_product', ['should_be' => (string)$pid2], '3.3.3.3', $now);
     ok_cr($r['ok'] && json_decode((string)$db->query('SELECT payload FROM community_reports WHERE id = ' . (int)$r['id'])->fetchColumn(), true) === ['should_be_product_id' => $pid2], 'wrong_product points at a catalog model');
+    $named = array_values(array_filter($svc->queue('all'), static fn(array $q): bool => (int)$q['id'] === (int)$r['id']))[0] ?? [];
+    ok_cr(($named['should_be_name'] ?? '') === (string)$db->query('SELECT full_name FROM products WHERE id = ' . (int)$pid2)->fetchColumn(), 'LS-22: the queue shows the name of the model the reporter pointed at');
     $soldRow = $svc->submit($pid, 'sold_price', $sold, '4.4.4.4', $now);
     ok_cr($soldRow['ok'], 'A sold-price report is stored');
     ok_cr($priceState() === $before, 'SIGNAL ONLY: after all these reports no snapshot, median or approved asking observation changed');

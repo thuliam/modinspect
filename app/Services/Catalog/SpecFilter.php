@@ -13,9 +13,9 @@ final class SpecFilter
     /** category slug => list of filter keys, in display order */
     public const BY_CATEGORY = [
         'cpu' => ['socket'], 'motherboard' => ['socket', 'mem', 'form'], 'ram' => ['mem', 'cap', 'speed'],
-        'gpu' => ['vram', 'mem'], 'storage' => ['cap'],
+        'gpu' => ['vram', 'chip'], 'storage' => ['cap', 'iface'], 'psu' => ['watt'], 'cooling' => ['ctype'],
     ];
-    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM'];
+    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM', 'iface' => 'อินเทอร์เฟซ', 'watt' => 'กำลังไฟ (W)', 'chip' => 'ชิปกราฟิก', 'ctype' => 'แบบระบายความร้อน'];
 
     /** @param array<string,string> $specs @return array<string,string> filter key => normalised value */
     public static function attrs(array $product, array $specs): array
@@ -32,6 +32,15 @@ final class SpecFilter
         if (($cap === '' || !is_numeric($cap)) && preg_match('/(\d+(?:\.\d+)?)\s?(TB|GB)\b/i', $name, $m)) { $cap = (string)(int)round((float)$m[1] * (strtoupper($m[2]) === 'TB' ? 1000 : 1)); }
         if ($cap !== '' && is_numeric($cap)) { $a['cap'] = (string)(int)$cap; }
         if (preg_match('/\bDDR[345]-(\d{3,5})\b/i', $name, $m)) { $a['speed'] = $m[1]; }
+        // LS-22: facts read from the model name only when it says them outright; otherwise the model simply has no value
+        if (preg_match('/\b(NVMe|SATA)\b/i', $name, $m)) { $a['iface'] = strtoupper($m[1]) === 'NVME' ? 'NVMe' : 'SATA'; } elseif (preg_match('/\bM\.2\b/i', $name)) { $a['iface'] = 'NVMe'; }
+        if (($product['category_slug'] ?? '') === 'psu' && preg_match('/\b(\d{3,4})\s?W\b/i', $name, $m)) { $a['watt'] = (string)(int)$m[1]; }
+        if (($product['category_slug'] ?? '') === 'gpu') {
+            if (preg_match('/\b(NVIDIA|GeForce|RTX|GTX)\b/i', $name)) { $a['chip'] = 'NVIDIA'; } elseif (preg_match('/\b(AMD|Radeon|RX)\b/i', $name)) { $a['chip'] = 'AMD'; } elseif (preg_match('/\b(Intel|Arc)\b/i', $name)) { $a['chip'] = 'Intel'; }
+        }
+        if (($product['category_slug'] ?? '') === 'cooling') {
+            if (preg_match('/\b(AIO|Liquid|Water)\b/i', $name)) { $a['ctype'] = 'AIO'; } elseif (preg_match('/\b(Air|Tower)\b/i', $name)) { $a['ctype'] = 'Air'; }
+        }
         return $a;
     }
 
@@ -47,7 +56,7 @@ final class SpecFilter
                 if ($v !== null) { $vals[$v] = true; }
             }
             $vals = array_map('strval', array_keys($vals));
-            if (in_array($key, ['cap', 'speed', 'vram'], true)) { sort($vals, SORT_NUMERIC); } else { natcasesort($vals); $vals = array_values($vals); }
+            if (in_array($key, ['cap', 'speed', 'vram', 'watt'], true)) { sort($vals, SORT_NUMERIC); } else { natcasesort($vals); $vals = array_values($vals); }
             if (count($vals) >= 2) { $out[$key] = $vals; }
         }
         return $out;
@@ -60,7 +69,7 @@ final class SpecFilter
         if (!$active || !isset(self::BY_CATEGORY[$category])) { return array_values($products); }
         return array_values(array_filter($products, static function (array $p) use ($specMap, $active): bool {
             $a = self::attrs($p, $specMap[(int)$p['id']] ?? []);
-            foreach (['socket', 'mem', 'form', 'cap', 'vram'] as $k) {
+            foreach (['socket', 'mem', 'form', 'cap', 'vram', 'iface', 'watt', 'chip', 'ctype'] as $k) {
                 if (isset($active[$k]) && ($a[$k] ?? null) !== $active[$k]) { return false; }
             }
             if (isset($active['speed_min']) || isset($active['speed_max'])) {

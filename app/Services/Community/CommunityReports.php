@@ -139,7 +139,15 @@ final class CommunityReports
                 (SELECT COUNT(*) FROM community_reports x WHERE x.product_id = r.product_id AND x.status = 'new') product_new_reports
             FROM community_reports r JOIN products p ON p.id = r.product_id LEFT JOIN price_indices pi ON pi.id = r.snapshot_id
             $where ORDER BY r.id $order LIMIT " . max(1, min(500, $limit)))->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($rows as &$r) { $r['payload'] = json_decode((string)$r['payload'], true) ?: []; }
+        $ids = [];
+        foreach ($rows as &$r) { $r['payload'] = json_decode((string)$r['payload'], true) ?: []; if (isset($r['payload']['should_be_product_id'])) { $ids[(int)$r['payload']['should_be_product_id']] = true; } }
+        unset($r);
+        if ($ids) {   // LS-22: show the model name the reporter pointed at, one query for the whole page
+            $names = []; $q = $this->db->query('SELECT id, full_name FROM products WHERE id IN (' . implode(',', array_map('intval', array_keys($ids))) . ')');
+            foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $p) { $names[(int)$p['id']] = (string)$p['full_name']; }
+            foreach ($rows as &$r) { $id = (int)($r['payload']['should_be_product_id'] ?? 0); if ($id > 0 && isset($names[$id])) { $r['should_be_name'] = $names[$id]; } }
+            unset($r);
+        }
         return $rows;
     }
 

@@ -84,6 +84,7 @@ $commands = [
     ['label' => 'tests/cpu_gpu_spec_migration_test.php', 'args' => ['tests/cpu_gpu_spec_migration_test.php']],
     ['label' => 'tests/compare_table_test.php', 'args' => ['tests/compare_table_test.php']],
     ['label' => 'tests/spec_filter_test.php', 'args' => ['tests/spec_filter_test.php']],
+    ['label' => 'tests/spec_coverage_test.php', 'args' => ['tests/spec_coverage_test.php']],
     ['label' => 'tests/condition_guide_test.php', 'args' => ['tests/condition_guide_test.php']],
     ['label' => 'tests/price_index_categories_test.php', 'args' => ['tests/price_index_categories_test.php']],
     ['label' => 'tests/hidden_modules_test.php', 'args' => ['tests/hidden_modules_test.php']],

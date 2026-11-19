@@ -104,6 +104,10 @@ $cell = static function (array $cell): string {
             </div>
         <?php endforeach; ?>
     </div>
+    <?php // LS-22: a plain statement of what differs (labels only, no verdict), plus copy-link and print; both are hidden on paper ?>
+    <?php $diffLabels = array_slice(array_map(static fn(array $r): string => (string) $r['label'], $diff), 0, 6); ?>
+    <?php if ($diffLabels): ?><p class="mb-2"><strong>ที่ต่างกันระหว่างรุ่นที่เลือก:</strong> <?= htmlspecialchars(implode(', ', $diffLabels)) ?><?= count($diff) > 6 ? ' และอีก ' . (count($diff) - 6) . ' รายการ' : '' ?></p><?php endif; ?>
+    <p class="d-print-none mb-2"><button type="button" class="btn btn-ghost btn-sm" data-copy-url><i class="fas fa-link mr-1" aria-hidden="true"></i><span>คัดลอกลิงก์เปรียบเทียบ</span></button> <button type="button" class="btn btn-ghost btn-sm" data-print><i class="fas fa-print mr-1" aria-hidden="true"></i>พิมพ์</button></p>
     <p class="mi-trend-note">ต่างกัน <?= count($diff) ?> รายการ · เหมือนกัน <?= count($same) ?> รายการ · กดหัวข้อเพื่อพับ/ขยายกลุ่ม · <i class="fas fa-chevron-up mi-cmp-mark" aria-hidden="true"></i> สูงสุด <i class="fas fa-chevron-down mi-cmp-mark" aria-hidden="true"></i> ต่ำสุดในแถว (บอกว่าค่ามากหรือน้อย ไม่ได้บอกว่ารุ่นไหนดีกว่า)</p>
     <div class="card mi-table-card table-responsive">
         <table class="table table-hover mi-admin-table mb-0">

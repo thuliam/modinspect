@@ -29,3 +29,6 @@ storage/backups/
 
 # LS-14: member photos and report evidence (bank slips) are private and must never be committed
 storage/uploads/
+
+# LS-22: deployment-package build output (contains a copy of .env); never commit
+/dist/

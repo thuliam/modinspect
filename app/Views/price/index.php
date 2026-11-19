@@ -38,27 +38,31 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
         <?php if ($specOptions): ?>
         <div class="form-inline mt-3" aria-label="ตัวกรองเฉพาะหมวด">
             <?php foreach ($specOptions as $key => $values): if ($key === 'speed') { continue; } ?>
+                <div class="d-flex align-items-center mr-3 mb-2">
                 <label class="mr-2 mb-0" for="spec-<?= $key ?>"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS[$key] ?? $key) ?></label>
-                <select id="spec-<?= $key ?>" name="<?= $key ?>" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="150px">
+                <select id="spec-<?= $key ?>" name="<?= $key ?>" class="form-control h-auto" data-autosubmit data-width="150px">
                     <option value="">ทั้งหมด</option>
-                    <?php foreach ($values as $v): $text = in_array($key, ['cap'], true) ? ((int) $v >= 1000 ? ((int) $v / 1000) . ' TB' : $v . ' GB') : ($key === 'vram' ? $v . ' GB' : $v); ?>
+                    <?php foreach ($values as $v): $text = in_array($key, ['cap'], true) ? ((int) $v >= 1000 ? ((int) $v / 1000) . ' TB' : $v . ' GB') : ($key === 'vram' ? $v . ' GB' : ($key === 'watt' ? $v . ' W' : $v)); ?>
                         <option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters[$key] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($text) ?></option>
                     <?php endforeach; ?>
                 </select>
+                </div>
             <?php endforeach; ?>
             <?php if ($speedOpts): ?>
+                <div class="d-flex align-items-center mr-3 mb-2">
                 <label class="mr-2 mb-0" for="spec-speed_min"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS['speed']) ?></label>
-                <select id="spec-speed_min" name="speed_min" class="form-control h-auto mr-1 mb-2 mb-sm-0" data-autosubmit data-width="110px" aria-label="ความเร็วต่ำสุด">
+                <select id="spec-speed_min" name="speed_min" class="form-control h-auto mr-1" data-autosubmit data-width="110px" aria-label="ความเร็วต่ำสุด">
                     <option value="">ต่ำสุด</option>
                     <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_min'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
                 </select>
                 <span class="mr-1">–</span>
-                <select id="spec-speed_max" name="speed_max" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="110px" aria-label="ความเร็วสูงสุด">
+                <select id="spec-speed_max" name="speed_max" class="form-control h-auto" data-autosubmit data-width="110px" aria-label="ความเร็วสูงสุด">
                     <option value="">สูงสุด</option>
                     <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_max'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
                 </select>
+                </div>
             <?php endif; ?>
-            <?php if ($specFilters): ?><a class="btn btn-ghost btn-sm mb-2 mb-sm-0" href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $category]) + $keep)) ?>">ล้างตัวกรอง</a><?php endif; ?>
+            <?php if ($specFilters): ?><a class="btn btn-ghost btn-sm mb-2" href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $category]) + $keep)) ?>">ล้างตัวกรอง</a><?php endif; ?>
         </div>
         <?php endif; ?>
         <div class="form-inline mt-3">
@@ -86,6 +90,16 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
         <div class="mi-empty-state">
             <h2>ไม่พบสินค้าที่ค้นหา</h2>
             <p>ลองใช้ชื่อรุ่นแบบสั้น เช่น “3070”, “5700X3D” หรือเลือกหมวดสินค้าก่อนค้นหาอีกครั้ง</p>
+            <?php // LS-22: take one filter off at a time instead of starting over
+            $base_params = array_filter(['q' => $q, 'category' => $category, 'sort' => $sort ?? '', 'priced' => !empty($pricedOnly) ? '1' : ''] + $specFilters);
+            $names_th = ['q' => 'คำค้น', 'category' => 'หมวด', 'sort' => 'การเรียง', 'priced' => 'เฉพาะรุ่นที่มีราคา'] + \App\Services\Catalog\SpecFilter::LABELS + ['speed_min' => 'ความเร็วต่ำสุด', 'speed_max' => 'ความเร็วสูงสุด'];
+            $removable = array_diff_key($base_params, ['sort' => 1]); ?>
+            <?php if (count($removable) > 1): ?>
+            <p class="mi-trend-note">เอาตัวกรองออกทีละตัว:</p>
+            <div class="mi-category-chips" aria-label="เอาตัวกรองออก">
+                <?php foreach ($removable as $k => $v): ?><a href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_diff_key($base_params, [$k => 1]))) ?>">ไม่เอา <?= htmlspecialchars((string) ($names_th[$k] ?? $k)) ?>: <?= htmlspecialchars((string) $v) ?></a><?php endforeach; ?>
+            </div>
+            <?php endif; ?>
             <?php if (!empty($didYouMean)): ?>
             <p class="mi-trend-note">คุณหมายถึงรุ่นเหล่านี้หรือไม่:</p>
             <div class="mi-category-chips" aria-label="คุณหมายถึง">

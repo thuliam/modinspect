@@ -24,6 +24,21 @@ final class CspReport
             self::clean((string)($r['disposition'] ?? 'enforce'), 10));
     }
 
+    /**
+     * LS-22: count the violation lines found in a log (any other line is ignored): ["directive blocked" => ['count' => n, 'pages' => [page => n]]], most frequent first. Pure.
+     * @param iterable<string> $lines @return array<string,array{count:int,pages:array<string,int>}>
+     */
+    public static function summarize(iterable $lines): array
+    {
+        $out = [];
+        foreach ($lines as $l) {
+            if (!preg_match('/\[modinspect-csp\] directive=(\S+) blocked=(\S+) page=(\S+) disposition=(\S+)/', (string)$l, $m)) { continue; }
+            $k = $m[1] . ' ' . $m[2]; $out[$k]['count'] = ($out[$k]['count'] ?? 0) + 1; $out[$k]['pages'][$m[3]] = ($out[$k]['pages'][$m[3]] ?? 0) + 1;
+        }
+        uasort($out, static fn(array $a, array $b): int => $b['count'] <=> $a['count']);
+        return $out;
+    }
+
     /** an address reduced to scheme, host and path (or the keyword the browser sent: inline, eval, data, ...) */
     private static function where(string $u): string
     {

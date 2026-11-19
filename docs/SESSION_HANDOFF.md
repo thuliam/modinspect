@@ -1,6 +1,15 @@
 ﻿# ModInspect Session Handoff
 
-## CURRENT HANDOFF (2026-11-15, after R0 + T1 slice). Read this first; sections below are history.
+## LATEST HANDOFF (2026-11-19, LS-21 done, LS-22 running). Read this first; everything below is history.
+
+- **Branch:** `studio` (PR #6). LS-21 is `4fae5de`, committed, **not pushed** (owner pushes). Latest CI on the PR (run 44523306461) was green. `dist/` is deployment-package output containing a copy of `.env`; it is git-ignored since LS-22.
+- **Tests:** `MODINSPECT_ENV_FILE=.env.testing APP_ENV=testing C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe tests/run.php` (exit 0). Never run CLI against the DB without `MODINSPECT_ENV_FILE=.env.testing`.
+- **Shipped LS-16 to LS-21:** `/build`, Select2 everywhere, enforcing CSP (`public/.htaccess`, `/csp-report`, see `docs/CSP_ENFORCE.md`), Thai share card for Deal Checker (needs GD+FreeType on the host), Font Awesome 5.15.4, community reports (migration 026, OFF: `COMMUNITY_REPORTS_ENABLED=false`), Compare with 4 slots/stat cards/collapsible groups/highest-lowest markers, category-specific price filters (`SpecFilter`).
+- **Plan:** `docs/LS22_LONG_SPRINT_PLAN.md`. Status of each milestone is in `docs/PROJECT_STATUS.md`.
+- **Standing rules:** no deploy, no spend, no `main` merge, no push without the owner's word, no hand-written CSS/JS where a library can do it, downloads need approval, seller check stays OFF (HG-14, HG-18), community/seller submissions never set price snapshots, do not touch the live sites.
+- **Owner gates open:** push `studio`, Compare marker wording, community-report privacy text/moderator/retention/enable flag, brand name HG-5, Admin re-UAT G-2, credential rotation G-5, deploy target, merge PR #6, GD+FreeType on host, second-hand prices for motherboard/PSU/case/cooling (R-3).
+
+## CURRENT HANDOFF (2026-11-15, after R0 + T1 slice). Historical.
 
 - **Repo:** `C:\laragon\www\modinspect`, branch `checkpoint/claude-baseline-2026-11-14`. Remote heads: `origin/main` 4b84d19, `studio`/`office` 4f6713c (not moved). Owner's untracked files `MODINSPECT_LADIP_TECHNICAL_DESIGN_PROPOSAL.md` and `design/ci/` must stay untouched and uncommitted.
 - **Runtime:** use the absolute PHP path `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe` (`php` is not on the cmd PATH). Tests: `MODINSPECT_ENV_FILE=.env.testing php tests/run.php` (41 steps, exit 0 on 2026-11-15). The CI test DB is built from the tracked `modinspect.sql`: every new table must be added there as well as to `database/schema.sql` and a migration.

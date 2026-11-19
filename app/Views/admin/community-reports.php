@@ -10,7 +10,7 @@ $labels = ['new' => 'ใหม่', 'accepted' => 'รับแล้ว', 'reje
 $detail = static function (array $r): string {
     $p = $r['payload']; $out = [];
     switch ($r['report_type']) {
-        case 'wrong_product': $out[] = isset($p['should_be_product_id']) ? 'ควรเป็นรุ่น #' . (int) $p['should_be_product_id'] : 'รุ่นที่ถูกต้องไม่มีในแคตตาล็อก'; break;
+        case 'wrong_product': $out[] = isset($p['should_be_product_id']) ? 'ควรเป็นรุ่น ' . ($r['should_be_name'] ?? '#' . (int) $p['should_be_product_id']) : 'รุ่นที่ถูกต้องไม่มีในแคตตาล็อก'; break;
         case 'price_looks_off': $out[] = ($p['direction'] ?? '') === 'higher' ? 'ช่วงราคาดูสูงเกินไป' : 'ช่วงราคาดูต่ำเกินไป'; if (isset($p['seen_price'])) { $out[] = 'ราคาที่เห็น ฿' . number_format((int) $p['seen_price']); } break;
         case 'sold_price':
             $out[] = 'ขายได้ ฿' . number_format((int) ($p['price'] ?? 0)) . ' · ' . htmlspecialchars((string) ($p['month'] ?? '')); $out[] = 'สภาพ ' . (C::CONDITIONS[$p['condition'] ?? ''] ?? '-');

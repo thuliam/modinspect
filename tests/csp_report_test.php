@@ -31,4 +31,11 @@ ok_cr(str_contains($ctl, 'http_response_code(204)') && str_contains($ctl, "attem
 ok_cr(!preg_match('/\\$_(GET|POST|SESSION|COOKIE)|Database|file_put_contents|INSERT|setcookie/i', $ctl), 'It stores nothing and touches no session, cookie or database');
 ok_cr(str_contains((string)file_get_contents($root . '/public/index.php'), "\$router->post('/csp-report',[SecurityController::class,'cspReport']);"), 'The route exists');
 ok_cr(str_contains((string)file_get_contents($root . '/public/.htaccess'), '; report-uri /csp-report"'), 'The policy points browsers at it');
+// LS-22 D2: the summary counts only our own lines, most frequent first, and the CLI cannot write
+$one = (string)CspReport::line(json_encode(['csp-report' => ['document-uri' => 'https://x.test/a', 'blocked-uri' => 'inline', 'effective-directive' => 'script-src']]));
+$two = (string)CspReport::line(json_encode(['csp-report' => ['document-uri' => 'https://x.test/b', 'blocked-uri' => 'https://cdn.test/x.js', 'effective-directive' => 'script-src']]));
+$sum = CspReport::summarize(["[Thu] PHP Warning: unrelated\n", $one, $two, $one, "garbage [modinspect-csp] directive="]);
+ok_cr(array_key_first($sum) === 'script-src inline' && $sum['script-src inline']['count'] === 2 && $sum['script-src inline']['pages']['https://x.test/a'] === 2 && count($sum) === 2, 'The summary counts violation lines by directive and blocked thing, ignoring every other line');
+ok_cr(CspReport::summarize([]) === [], 'An empty log summarises to nothing');
+ok_cr(!preg_match('/\b(file_put_contents|unlink|INSERT|UPDATE|DELETE)\b/', (string)file_get_contents($root . '/cli/csp_summary.php')), 'The summary CLI does not write');
 echo "csp_report_test: PASS\n";

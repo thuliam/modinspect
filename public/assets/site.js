@@ -140,3 +140,15 @@ jQuery(function ($) {
         relock();
     }
 });
+
+// LS-22: copy-link and print buttons (glue only)
+$(function () {
+    $(document).on('click', '[data-print]', function () { window.print(); });
+    $(document).on('click', '[data-copy-url]', function () {
+        var $b = $(this), done = function () { $b.find('span').text('คัดลอกแล้ว'); };
+        if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(window.location.href).then(done); return; }
+        var $t = $('<input>').val(window.location.href).appendTo('body').select(); // plain-http fallback
+        try { if (document.execCommand('copy')) { done(); } } catch (e) { /* the address bar still has the link */ }
+        $t.remove();
+    });
+});

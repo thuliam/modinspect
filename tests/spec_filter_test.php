@@ -26,7 +26,7 @@ ok_sf($ids(F::apply($products, $specs, 'cpu', ['socket' => 'AM4'])) === [1], 'So
 ok_sf(!in_array(4, $ids(F::apply($products, $specs, 'cpu', ['socket' => 'AM4'])), true), 'A model without a socket fact never matches a socket filter');
 ok_sf(count(F::apply($products, $specs, 'cpu', [])) === 12, 'No filter changes nothing');
 ok_sf(count(F::apply($products, $specs, 'cpu', ['socket' => ''])) === 12, 'An empty value is ignored');
-ok_sf(count(F::apply($products, $specs, 'psu', ['socket' => 'AM4'])) === 12, 'A category without special filters ignores them');
+ok_sf(count(F::apply($products, $specs, 'case', ['socket' => 'AM4'])) === 12, 'A category without special filters ignores them');
 
 ok_sf($ids(F::apply($products, $specs, 'ram', ['mem' => 'DDR4'])) === [10], 'RAM type read from the name');
 ok_sf($ids(F::apply($products, $specs, 'ram', ['mem' => 'DDR5', 'cap' => '16'])) === [11], 'RAM type + size combine');
@@ -43,5 +43,21 @@ ok_sf($o['cap'] === ['8', '16', '32'], 'Size options sort numerically: ' . json_
 ok_sf($o['speed'] === ['1600', '3200', '5600'], 'Speed options sort numerically');
 ok_sf(isset(F::options($products, $specs, 'cpu')['socket']) && !isset(F::options($products, $specs, 'cpu')['mem']), 'CPU offers a socket filter only');
 ok_sf(F::options([$p(1, 'cpu', 'One')], [1 => ['socket' => 'AM4']], 'cpu') === [], 'A filter with a single possible value is not offered');
+
+// LS-22: interface, PSU watts, GPU chip maker, cooler type; each read from the name only when the name says it outright
+$more = [
+    $p(40, 'storage', 'NVMe M.2 SSD 1TB'), $p(41, 'storage', 'SATA SSD 512GB'), $p(42, 'storage', 'Mystery drive 1TB'),
+    $p(50, 'psu', 'Corsair RM750e 750W'), $p(51, 'psu', 'Seasonic 550W'), $p(52, 'psu', 'No watt PSU'),
+    $p(60, 'gpu', 'NVIDIA GeForce RTX 3070'), $p(61, 'gpu', 'AMD Radeon RX 6800'), $p(62, 'gpu', 'Intel Arc A750'), $p(63, 'gpu', 'Mystery card'),
+    $p(70, 'cooling', 'Noctua NH-D15 Air Cooler'), $p(71, 'cooling', 'Arctic Liquid Freezer 240 AIO'), $p(72, 'cooling', 'Unknown cooler'),
+];
+ok_sf($ids(F::apply($more, [], 'storage', ['iface' => 'NVMe'])) === [40], 'Storage interface NVMe from the name (M.2 counts)');
+ok_sf($ids(F::apply($more, [], 'storage', ['iface' => 'SATA'])) === [41], 'Storage interface SATA');
+ok_sf($ids(F::apply($more, [], 'psu', ['watt' => '750'])) === [50], 'PSU watt filter');
+ok_sf(!in_array(52, $ids(F::apply($more, [], 'psu', ['watt' => '550'])), true), 'A PSU with no watt in the name never matches');
+ok_sf($ids(F::apply($more, [], 'gpu', ['chip' => 'AMD'])) === [61] && $ids(F::apply($more, [], 'gpu', ['chip' => 'Intel'])) === [62] && $ids(F::apply($more, [], 'gpu', ['chip' => 'NVIDIA'])) === [60], 'GPU chip maker');
+ok_sf($ids(F::apply($more, [], 'cooling', ['ctype' => 'AIO'])) === [71] && $ids(F::apply($more, [], 'cooling', ['ctype' => 'Air'])) === [70], 'Cooler type');
+ok_sf(F::options($more, [], 'psu') === ['watt' => ['550', '750']], 'PSU watt options sort numerically');
+ok_sf(isset(F::options($more, [], 'gpu')['chip']) && !in_array('', F::options($more, [], 'gpu')['chip'], true), 'GPU chip options exclude unknown');
 
 echo "spec_filter_test: PASS\n";
