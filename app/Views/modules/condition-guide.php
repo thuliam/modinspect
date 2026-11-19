@@ -8,10 +8,10 @@
     <p class="lead">เลือกหมวดสินค้าเพื่อดูสิ่งที่ควรดู ควรทดสอบ ควรถาม และควรระวัง</p>
     <?php // LS-16 U-3: the same category cards as the home page (picture for the four with one, an icon for the rest), so the guide looks like the rest of the site
     require_once ROOT_PATH . '/app/Views/components/hw-art.php';
-    $guideArt = ['cpu' => ['art' => 'cpu'], 'gpu' => ['art' => 'gpu'], 'ram' => ['art' => 'ram'], 'storage' => ['art' => 'ssd'], 'psu' => ['icon' => 'fa-bolt'], 'motherboard' => ['icon' => 'fa-server']]; ?>
+    $guideArt = ['cpu' => ['art' => 'cpu'], 'gpu' => ['art' => 'gpu'], 'ram' => ['art' => 'ram'], 'storage' => ['art' => 'ssd'], 'psu' => ['icon' => 'fa-bolt'], 'motherboard' => ['icon' => 'fa-server'], 'case' => ['icon' => 'fa-box'], 'cooling' => ['icon' => 'fa-snowflake']]; ?>
     <div class="row mi-cats">
         <?php foreach ($categories as $i => $c): $a = $guideArt[$c['slug']] ?? ['icon' => 'fa-clipboard-check']; ?>
-            <div class="col-6 col-md-4 mb-3">
+            <div class="col-6 col-md-4 col-xl-3 mb-3">
                 <a class="mi-cat reveal" style="--d:<?= (int)$i * 70 ?>ms" href="<?= $base ?>/condition-guide/<?= htmlspecialchars($c['slug']) ?>">
                     <span class="mi-cat-art"><?= isset($a['art']) ? mi_art_img($a['art'], $base) : '<i class="fas ' . htmlspecialchars($a['icon']) . '" aria-hidden="true"></i>' ?></span>
                     <strong><?= htmlspecialchars($c['name']) ?></strong>

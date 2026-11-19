@@ -12,7 +12,7 @@ use App\Services\Catalog\ConditionGuide as G;
  */
 function ok_cg(bool $c, string $m): void { if (!$c) { throw new RuntimeException($m); } }
 
-ok_cg(array_column(G::categories(), 'slug') === ['cpu', 'gpu', 'ram', 'storage', 'psu', 'motherboard'], 'Six categories in a fixed order');
+ok_cg(array_column(G::categories(), 'slug') === ['cpu', 'gpu', 'ram', 'storage', 'psu', 'motherboard', 'case', 'cooling'], 'Eight categories in a fixed order, the same as /build (LS-17 B2)');
 
 foreach (G::categories() as $c) {
     $g = G::for($c['slug']);
@@ -30,7 +30,7 @@ foreach (G::categories() as $c) {
     ok_cg(str_contains($g['note'], 'ไม่ใช่การรับรอง'), "{$c['slug']} says plainly it is not a certification");
 }
 
-ok_cg(G::for('case') === null && G::for('') === null && G::for('GPU') !== null, 'Unknown category gives null, slug is case-insensitive');
+ok_cg(G::for('monitor') === null && G::for('') === null && G::for('GPU') !== null, 'Unknown category gives null, slug is case-insensitive');
 
 // the guide and the Deal Checker reminder list cover the same six categories
 $chk = (string)file_get_contents(dirname(__DIR__) . '/app/Services/ConditionChecklist.php');

@@ -14,22 +14,23 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
 
 <form method="get" action="<?= $base ?>/compare" class="card mb-4">
     <div class="form-row">
+        <?php // LS-17 B1: free text with the catalog as suggestions (native datalist, no script): typing "3070" narrows 106 models on a phone
+        $nameOf = []; foreach ($options as $o) { $nameOf[$o['slug']] = $o['name']; } ?>
         <?php for ($i = 0; $i < min(4, $slots + 1); $i++): $sel = $chosen[$i] ?? ''; ?>
             <div class="form-group col-md-3">
                 <label for="m<?= $i ?>">รุ่นที่ <?= $i + 1 ?></label>
-                <select id="m<?= $i ?>" name="m[]" class="form-control">
-                    <option value="">— ไม่เลือก —</option>
-                    <?php foreach ($byCat as $cat => $list): ?>
-                        <optgroup label="<?= htmlspecialchars($cat) ?>">
-                            <?php foreach ($list as $o): ?>
-                                <option value="<?= htmlspecialchars($o['slug']) ?>"<?= $o['slug'] === $sel ? ' selected' : '' ?>><?= htmlspecialchars($o['name']) ?></option>
-                            <?php endforeach; ?>
-                        </optgroup>
-                    <?php endforeach; ?>
-                </select>
+                <input id="m<?= $i ?>" name="m[]" class="form-control h-auto" list="compare-names" autocomplete="off" placeholder="พิมพ์ชื่อรุ่น เช่น 3070" value="<?= htmlspecialchars($nameOf[$sel] ?? '') ?>">
             </div>
         <?php endfor; ?>
     </div>
+    <datalist id="compare-names">
+        <?php foreach ($byCat as $cat => $list): foreach ($list as $o): ?>
+            <option value="<?= htmlspecialchars($o['name']) ?>"><?= htmlspecialchars($cat) ?></option>
+        <?php endforeach; endforeach; ?>
+    </datalist>
+    <?php if (!empty($unmatched)): ?>
+        <p class="mi-note" role="alert"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> ไม่พบรุ่นที่ตรงกับ “<?= htmlspecialchars(implode('”, “', array_map(static fn(string $u): string => mb_substr($u, 0, 60), $unmatched))) ?>” หรือมีหลายรุ่นที่ตรงกัน ลองเลือกจากรายการที่ขึ้นมาตอนพิมพ์</p>
+    <?php endif; ?>
     <button type="submit" class="btn btn-primary">เปรียบเทียบ</button>
 </form>
 
@@ -56,7 +57,7 @@ foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['no
                 <tr>
                     <th scope="col"></th>
                     <?php foreach ($cols as $c): ?>
-                        <th scope="col"><a href="<?= $base ?>/price/<?= htmlspecialchars($c['slug']) ?>"><?= htmlspecialchars($c['name']) ?></a><br><small class="text-muted"><?= htmlspecialchars($c['category']) ?></small></th>
+                        <th scope="col"><a href="<?= $base ?>/price/<?= htmlspecialchars($c['slug']) ?>"><?= htmlspecialchars($c['name']) ?></a><span class="d-block font-weight-normal"><?= htmlspecialchars($c['category']) ?></span></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>

@@ -19,6 +19,7 @@ final class Product
     public function search(string $query = '', ?string $category = null): array {
         $sql = $this->select . " WHERE p.is_active=1";
         $params = [];
+        $query = \App\Services\Search\SearchQuery::clip($query);
         if ($query !== '') {
             // the original substring match stays as it was; SearchQuery adds the compact and any-order-words matches (they only add results)
             $extra = \App\Services\Search\SearchQuery::extraConditions($query);

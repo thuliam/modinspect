@@ -13,16 +13,22 @@ final class ModuleController extends Controller {
         $model=new Product();
         // the model in the path comes first, then the picker's m[] (a visitor may also type the query by hand); only known active slugs survive, at most four
         $wanted=array_merge($slug!=='' ? [$slug] : [], array_values(array_filter((array)($_GET['m']??[]),'is_string')));
-        $items=[]; $chosen=[];
-        foreach($wanted as $s){
-            $s=trim($s); if($s===''||isset($chosen[$s])||count($chosen)>=\App\Services\Catalog\CompareTable::MAX_MODELS){ continue; }
-            $p=$model->findBySlug($s); if(!$p){ continue; }
+        // LS-17 A2 (S-1): only the first few entries are looked at; 400 unknown slugs in one URL took 5.6 s (one product lookup each)
+        $wanted=array_slice(array_values(array_unique(array_map('trim',$wanted))),0,\App\Services\Catalog\CompareTable::MAX_MODELS*2);
+        $all=$model->search();
+        $items=[]; $chosen=[]; $unmatched=[];
+        foreach($wanted as $typed){
+            if($typed===''||count($chosen)>=\App\Services\Catalog\CompareTable::MAX_MODELS){ continue; }
+            // LS-17 B1: the boxes are free text with suggestions, so a slug, a full name or an unambiguous part of a name is accepted
+            $s=\App\Services\Catalog\CompareTable::resolve($typed,$all);
+            if($s===null){ $unmatched[]=$typed; continue; }
+            if(isset($chosen[$s])){ continue; }
+            $p=$model->findBySlug($s); if(!$p){ $unmatched[]=$typed; continue; }
             $chosen[$s]=true;
             $items[]=['product'=>$p,'facts'=>\App\Services\Catalog\ProductFacts::rows($p,$model->referenceSpecs((int)$p['id']),(int)date('Y'))];
         }
-        $all=$model->search();
         $options=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'name'=>$p['full_name'],'category'=>$p['category_name']],$all);
-        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen),'pairs'=>\App\Services\Catalog\CompareTable::suggestPairs($all)]);
+        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen),'unmatched'=>$unmatched,'pairs'=>\App\Services\Catalog\CompareTable::suggestPairs($all)]);
     }
     public function build(string $slug=''): void {
         $result=$slug!=='' ? (new SpecBuild())->find($slug) : null;

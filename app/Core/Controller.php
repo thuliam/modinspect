@@ -24,6 +24,11 @@ class Controller
         require $viewFile;
         require ROOT_PATH . '/app/Views/layouts/footer.php';
     }
+    /** LS-17 A2 (S-3): a query value as a string; "?q[]=x" arrives as an array and is treated as absent instead of raising "Array to string" warnings */
+    protected static function queryString(string $key): string {
+        $v = $_GET[$key] ?? '';
+        return is_string($v) ? $v : '';
+    }
     protected function redirect(string $path): never {
         global $config;
         if (defined('MODINSPECT_TESTING')) {

@@ -18,7 +18,7 @@ if ($layout['valid']):
 ?>
 <div class="mb-range mb-range-<?= $rangeSize === 'sm' ? 'sm' : 'lg' ?>">
     <div class="mb-range-figures">
-        <span class="mb-range-label">ช่วงราคาที่พบ (Q1–Q3)</span>
+        <span class="mb-range-label" title="ครึ่งกลางของราคาที่พบ (Q1–Q3) ดูวิธีคิดที่หน้าวิธีคำนวณ">ช่วงราคาที่พบบ่อย</span>
         <strong class="mb-range-value"><?= $baht($q1) ?> – <?= $baht($q3) ?></strong>
     </div>
     <div class="mb-range-track" role="img" aria-label="ช่วงราคา <?= $baht($q1) ?> ถึง <?= $baht($q3) ?> ราคากลาง <?= $baht($median) ?> จากราคาต่ำสุด <?= $baht($low) ?> ถึงสูงสุด <?= $baht($high) ?>">

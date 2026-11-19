@@ -1,7 +1,7 @@
 <section class="container page narrow">
 <span class="eyebrow">ผู้ช่วยตั้งราคาขาย · ใช้ได้บางส่วน</span><h1>ตั้งราคาอย่างมีเหตุผล โดยไม่ถูกกดราคา</h1>
 <form class="card form" method="get">
-    <label>สินค้า<select name="product_id" required><?php foreach($products as $p): ?><option value="<?= (int)$p['id'] ?>" <?= (string)($_GET['product_id']??'')===(string)$p['id']?'selected':'' ?>><?= htmlspecialchars($p['full_name']) ?></option><?php endforeach; ?></select></label>
+    <label>สินค้า<select name="product_id" required><?php foreach($products as $p): ?><option value="<?= (int)$p['id'] ?>" <?= (is_string($_GET['product_id']??null)?$_GET['product_id']:'')===(string)$p['id']?'selected':'' ?>><?= htmlspecialchars($p['full_name']) ?></option><?php endforeach; ?></select></label>
     <div class="two"><label>สภาพ<select name="condition"><option value="like_new">เหมือนใหม่</option><option value="good">ดี</option><option value="fair">พอใช้</option><option value="poor">มีตำหนิ</option></select></label><label>ต้องการขายภายใน<select disabled><option>ยังไม่เปิดใช้งาน</option></select></label></div>
     <button>ประเมินราคาขาย</button>
 </form>

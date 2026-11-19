@@ -54,7 +54,7 @@ while (count($featured) < 5 && $byCat) {
                         <a href="<?= $base ?>/price?q=<?= rawurlencode((string) $chip['model_name']) ?>"><?= htmlspecialchars((string) $chip['model_name']) ?></a>
                     <?php endforeach; ?>
                     </div>
-                <p class="mi-data-note reveal" style="--d:400ms">ยังเป็น POC: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
+                <p class="mi-data-note reveal" style="--d:400ms">อยู่ระหว่างทดลอง: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
             </div>
             <div class="col-lg-7 mi-hero-art reveal" style="--d:150ms"><img src="<?= $base ?>/assets/brand/hero-hardware.png" width="1026" height="436" alt="โน้ตบุ๊ก คอมพิวเตอร์ตั้งโต๊ะ การ์ดจอ SSD และจอภาพ (ภาพประกอบ)"></div>
         </div>

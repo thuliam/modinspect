@@ -25,6 +25,14 @@ final class SearchQuery
     }
 
     /** @return list<string> compact words; Thai-only words are dropped when at least one other word is left */
+    /** LS-17 A2 (S-2): the longest catalog name is under 60 characters; a longer query only makes every condition heavier (1,200 words took 0.8 s) */
+    public const MAX_LENGTH = 80;
+
+    public static function clip(string $query): string
+    {
+        return trim(mb_substr(trim($query), 0, self::MAX_LENGTH));
+    }
+
     public static function words(string $query): array
     {
         $all = [];

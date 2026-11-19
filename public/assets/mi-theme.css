@@ -346,9 +346,11 @@ body.mi label { color: var(--ci-text-2); font-weight: 600; font-size: 14px; }
 /* ---- dark tables ---- */
 body.mi table, body.mi .table { width: 100%; color: var(--ci-text); background: var(--ci-surface); border-collapse: separate; border-spacing: 0; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); overflow: hidden; }
 body.mi table thead th, body.mi .table thead th { background: var(--ci-highlight); color: var(--ci-text-2); border: 0; border-bottom: 1px solid var(--ci-border); font-size: 12px; line-height: 16px; font-weight: 600; padding: 12px 14px; }
-body.mi table td, body.mi .table td { padding: 12px 14px; border: 0; border-bottom: 1px solid var(--ci-border); color: var(--ci-text); background: transparent; vertical-align: middle; }
-body.mi table tbody tr:last-child td { border-bottom: 0; }
-body.mi table tbody tr:hover td, body.mi .table tbody tr:hover td { background: var(--ci-elevated); }
+body.mi table td, body.mi .table td, body.mi table tbody th { padding: 12px 14px; border: 0; border-bottom: 1px solid var(--ci-border); color: var(--ci-text); background: transparent; vertical-align: middle; }
+body.mi table tbody tr:last-child td, body.mi table tbody tr:last-child th { border-bottom: 0; }
+/* LS-17: row headers (Compare) are labels: muted text on the dark row, not the legacy light th of app.css */
+body.mi table tbody th { color: var(--ci-text-2); font-family: inherit; font-size: 14px; font-weight: 500; text-transform: none; }
+body.mi table tbody tr:hover td, body.mi .table tbody tr:hover td, body.mi table tbody tr:hover th { background: var(--ci-elevated); }
 body.mi .table-responsive { border-radius: var(--ci-r-md); }
 
 /* ---- notices: prototype/mock/info boxes use the gold tone (warning), not red ---- */
@@ -360,15 +362,7 @@ body.mi .alert-success { background: rgba(34, 197, 94, .1); border-color: rgba(3
 
 /* ---- Phase C5: /build page on the dark surface (legacy light-theme rules overridden) ---- */
 body.mi .draft-pill { background: rgba(34, 197, 94, .15); border: 1px solid var(--ci-verified); border-radius: var(--ci-r-pill); color: var(--ci-verified); font-size: 12px; font-weight: 600; padding: 4px 12px; }
-body.mi .component-nav a { color: var(--ci-text-2); border-radius: var(--ci-r-md); border: 1px solid transparent; min-height: 44px; transition: background .2s, border-color .2s, color .2s; }
-body.mi .component-nav a.available { background: var(--ci-elevated); color: var(--ci-text); border-color: var(--ci-border); }
-body.mi .component-nav a.available:hover { border-color: var(--ci-primary); color: var(--ci-primary); }
-body.mi .component-nav a.disabled { opacity: .55; color: var(--ci-text-2); }
 body.mi .part-filters { background: var(--ci-elevated); border-bottom: 1px solid var(--ci-border); color: var(--ci-text-2); }
-body.mi .part-option { color: var(--ci-text); border: 1px solid transparent; border-radius: var(--ci-r-md); }
-body.mi .part-option:hover { background: var(--ci-elevated); }
-body.mi .part-option:has(input:checked) { border-color: var(--ci-primary); background: var(--ci-elevated); }
-body.mi .part-option input:checked + .part-radio { border: 5px solid var(--ci-primary); }
 body.mi .part-radio { border: 2px solid var(--ci-border-active); background: var(--ci-canvas); }
 body.mi .budget-state { border-radius: var(--ci-r-md); border: 1px solid var(--ci-border); font-weight: 600; }
 body.mi .budget-state.ok { background: rgba(34, 197, 94, .12); border-color: var(--ci-verified); color: var(--ci-verified); }
@@ -402,7 +396,7 @@ html.motion-calm body.mi .mi-hero .reveal { animation-name: ciFade; }
 @media (prefers-reduced-motion: reduce) { html.motion-full body.mi .mi-hero-art img { animation: none; } }
 /* tap targets: 44px minimum */
 body.mi .btn, body.mi .button, body.mi button[type=submit], body.mi .product-card-action, body.mi .mi-tabs button, body.mi .mi-chips a, body.mi .motion-toggle, body.mi .navbar-toggler,
-body.mi .footer-links a, body.mi .dropdown-item, body.mi .mi-head > a, body.mi .login-button, body.mi .component-nav a, body.mi .breadcrumbs a, body.mi .navbar-nav .nav-link { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+body.mi .footer-links a, body.mi .dropdown-item, body.mi .mi-head > a, body.mi .login-button, body.mi .breadcrumbs a, body.mi .navbar-nav .nav-link { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 body.mi .navbar-nav .nav-link { display: flex; }
 body.mi .nav-icon { width: 44px; height: 44px; }
 body.mi .footer-links li { margin-bottom: 0; }
@@ -423,11 +417,9 @@ body.mi .mi-category-chips a, body.mi .mi-compact-list a { display: inline-flex;
 body.mi .mi-compact-list a { justify-content: flex-start; }
 body.mi #photo-credits li a, body.mi .prose li a { display: inline-block; padding: 10px 0; }
 body.mi .navbar-brand { padding: 5px 0; min-height: 44px; display: inline-flex; align-items: center; }
-body.mi .brand-name, body.mi .part-option .brand-name, body.mi .component-nav small, body.mi .part-option small, body.mi .part-option span { color: var(--ci-text-2); }
-body.mi .part-option b, body.mi .part-option strong { color: var(--ci-text); }
+body.mi .brand-name { color: var(--ci-text-2); }
 body.mi .mi-product-card h3 a { display: block; min-height: 44px; }
-body.mi .socket-hint, body.mi .component-nav span, body.mi .spec-summary span, body.mi .spec-controls span, body.mi .component-head span, body.mi .summary-money span, body.mi .build-item span, body.mi .summary-empty { color: var(--ci-text-2); }
-body.mi .component-nav a.available b, body.mi .component-nav a.available span b { color: var(--ci-text); }
+body.mi .socket-hint, body.mi .spec-summary span, body.mi .spec-controls span, body.mi .component-head span, body.mi .summary-money span, body.mi .build-item span, body.mi .summary-empty { color: var(--ci-text-2); }
 html.motion-calm body.mi .reveal { transition-duration: .35s, .4s; }
 
 /* ---- brand logos: shown on a light chip because several logos are black; never recoloured ---- */
@@ -562,3 +554,7 @@ body.mi .mi-builder .mi-part-title { overflow-wrap: anywhere; }
 body.mi .mi-builder .mi-part-card:hover { border-color: var(--ci-border-active); }
 body.mi .mi-builder .mi-radar-box { position: relative; height: 260px; }
 @media (max-width: 991.98px) { body.mi .mi-builder .mi-parts-card { position: static; max-height: none; } }
+
+/* LS-17 B3: Bootstrap's .text-muted (#6c757d) is made for light pages; on the dark surface it measured 3.85:1 (below 4.5:1).
+   The public theme maps it to the secondary text token (about 7:1 on the card surface). Bootstrap sets it with !important, so this must too. */
+body.mi .text-muted { color: var(--ci-text-2) !important; }

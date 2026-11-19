@@ -1,3 +1,5 @@
+<?php // LS-17 A2 (S-3): prefill from the query string only when the values are plain strings ("?product[]=x" raised a warning per product)
+$preProduct = is_string($_GET['product'] ?? null) ? $_GET['product'] : ''; $prePrice = is_string($_GET['user_price'] ?? null) ? $_GET['user_price'] : ''; ?>
 <section class="container page mi-deal-page">
     <div class="mi-page-heading narrow-copy">
         <span class="eyebrow">Deal Checker</span>
@@ -28,7 +30,7 @@
                 <?php foreach ($dealGroups as $groupName => $groupProducts): ?>
                 <optgroup label="<?= htmlspecialchars($groupName) ?>">
                 <?php foreach ($groupProducts as $p): ?>
-                    <option value="<?= (int) $p['id'] ?>" <?= (string) ($_GET['product'] ?? '') === (string) $p['id'] ? 'selected' : '' ?>>
+                    <option value="<?= (int) $p['id'] ?>" <?= $preProduct === (string) $p['id'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($p['full_name']) ?>
                     </option>
                 <?php endforeach; ?>
@@ -40,7 +42,7 @@
 
                         <div class="mi-field">
                 <label for="deal-price">ราคาที่พบ (บาท)</label>
-                <input id="deal-price" type="number" name="user_price" min="1" max="10000000" step="1" value="<?= htmlspecialchars((string) ($_GET['user_price'] ?? '')) ?>" placeholder="เช่น 7900" required>
+                <input id="deal-price" type="number" name="user_price" min="1" max="10000000" step="1" value="<?= htmlspecialchars($prePrice) ?>" placeholder="เช่น 7900" required>
                 <small class="mi-hint">ใส่ราคาที่ผู้ขายประกาศ ไม่ใช่ราคาที่ตกลงกันแล้ว</small>
             </div>
 

@@ -51,7 +51,7 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
     <?php else: ?>
         <div class="mi-empty-state">
             <h2>ไม่พบสินค้าที่ค้นหา</h2>
-            <p>ลองใช้ชื่อรุ่นแบบสั้น เช่น “3070”, “5700X3D” หรือเลือกหมวด CPU/GPU ก่อนค้นหาอีกครั้ง</p>
+            <p>ลองใช้ชื่อรุ่นแบบสั้น เช่น “3070”, “5700X3D” หรือเลือกหมวดสินค้าก่อนค้นหาอีกครั้ง</p>
             <?php if (!empty($didYouMean)): ?>
             <p class="mi-trend-note">คุณหมายถึงรุ่นเหล่านี้หรือไม่:</p>
             <div class="mi-category-chips" aria-label="คุณหมายถึง">

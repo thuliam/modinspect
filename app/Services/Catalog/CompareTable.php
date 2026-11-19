@@ -13,6 +13,38 @@ final class CompareTable
     public const MAX_MODELS = 4;
 
     /**
+     * LS-17 B1: what a Compare box means. The boxes are free text with the catalog names as suggestions, so a value may be a slug (links, old URLs),
+     * a full name picked from the list, or something typed. Order: exact slug, exact full or model name (any case), then the ONE model whose name
+     * contains every typed word. Two or more candidates is ambiguous and gives null, never a guess (3060 must not become 3060 Ti). Pure.
+     * @param list<array> $products Product::search rows
+     */
+    public static function resolve(string $typed, array $products): ?string
+    {
+        $t = trim($typed); if ($t === '') { return null; }
+        $low = mb_strtolower($t);
+        foreach ($products as $p) { if ((string)$p['slug'] === $t) { return $t; } }
+        foreach ($products as $p) {
+            if (mb_strtolower((string)($p['full_name'] ?? '')) === $low || ($p['model_name'] ?? '') !== '' && mb_strtolower((string)$p['model_name']) === $low) { return (string)$p['slug']; }
+        }
+        $words = array_values(array_filter(preg_split('/\s+/u', $low) ?: [], static fn(string $w): bool => $w !== ''));
+        $hits = []; $base = [];
+        foreach ($products as $p) {
+            $tokens = array_values(array_filter(preg_split('/[^\p{L}\p{N}]+/u', mb_strtolower((string)($p['full_name'] ?? ''))) ?: [], static fn(string $x): bool => $x !== ''));
+            $all = true;
+            foreach ($words as $w) { if (!in_array($w, $tokens, true)) { $all = false; break; } }
+            if (!$all) { continue; }
+            $hits[] = (string)$p['slug'];
+            // "3070" means the plain RTX 3070, not the 3070 Ti: a hit whose other words are only brand or family names is the base model
+            if (array_diff($tokens, $words, self::FAMILY_WORDS) === []) { $base[] = (string)$p['slug']; }
+        }
+        if (count($hits) === 1) { return $hits[0]; }
+        return count($base) === 1 ? $base[0] : null;
+    }
+
+    /** brand and family words that never tell two models apart (a variant word such as ti, super, xt, x3d, x or a size never appears here) */
+    private const FAMILY_WORDS = ['amd', 'nvidia', 'intel', 'geforce', 'radeon', 'rtx', 'gtx', 'rx', 'arc', 'ryzen', 'core', 'i3', 'i5', 'i7', 'i9'];
+
+    /**
      * LS-16 U-2: ready-made pairs for the empty Compare page, so a first visit shows a table in one tap. Two priced models of the SAME category
      * (a cross-category table is mostly gaps), taken in the catalog's own order (popular first), at most one pair per category. Pure.
      * @param list<array> $products Product::search rows

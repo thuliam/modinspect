@@ -30,6 +30,10 @@ try {
     [$code, $out] = $run("http://127.0.0.1:$port");
     // the built-in server answers a few paths differently from Apache (dotted URLs), so only the pages we care about are asserted here
     ok_sm(str_contains($out, 'ok    GET /price is 200') && str_contains($out, 'ok    /admin sends a visitor to the login') && str_contains($out, 'ok    /.env is not served'), 'The healthy site passes the page, admin and secret checks: ' . $out);
+    ok_sm(str_contains($out, 'ok    HEAD /price is 200'), 'HEAD is answered like GET (LS-16 B-1, checked by LS-17 A1): ' . $out);
+    exec(escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg($root . '/cli/smoke_check.php') . ' ' . escapeshellarg("http://127.0.0.1:$port") . ' --links 2>&1', $lo);
+    $lo = implode("\n", $lo);
+    ok_sm(preg_match('/ok    every internal link answers \((\d+) checked\)/', $lo, $lm) === 1 && (int)$lm[1] >= 20, 'With --links every internal link of the key pages and the sitemap answers, and enough were found to mean something: ' . $lo);
     [$badCode, $bad] = $run("http://127.0.0.1:$port/nowhere");
     ok_sm($badCode === 1 && str_contains($bad, 'FAIL  GET /price is 200') && str_contains($bad, 'SMOKE FAIL'), 'A site where nothing lives fails with exit 1: ' . $bad);
     [$usage] = $run('not a url');
