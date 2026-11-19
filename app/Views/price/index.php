@@ -29,7 +29,7 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
         </div>
         <div class="form-inline mt-3">
             <label class="mr-2 mb-0" for="price-sort">เรียงตาม</label>
-            <select id="price-sort" name="sort" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit>
+            <select id="price-sort" name="sort" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="240px">
                 <?php foreach (\App\Services\Catalog\PriceList::SORTS as $value => $label): ?>
                     <option value="<?= htmlspecialchars($value) ?>"<?= ($sort ?? '') === $value ? ' selected' : '' ?>><?= htmlspecialchars($label) ?></option>
                 <?php endforeach; ?>

@@ -83,4 +83,37 @@ jQuery(function ($) {
 
     /* LS-16: a sort or filter control marked data-autosubmit applies at once (the form still has a submit button when scripts are off) */
     $('[data-autosubmit]').on('change', function () { this.form.submit(); });
+
+    /* LS-18 Compare: the first box that holds a model sets the category; the other boxes only list that category (an optgroup per category),
+       and a box holding a model of another category is cleared. Display only: the server still compares whatever it is sent. */
+    var $cmp = $('select.js-compare');
+    if ($cmp.length && $.fn.select2) {
+        var lockCat = null;
+        var matcher = function (params, data, $self, locked) {
+            if (locked && lockCat && data.children && data.text !== lockCat) { return null; }
+            var out = $.fn.select2.defaults.defaults.matcher(params, data);
+            if (out && out.children) {   // a model already chosen in another box is not offered again
+                var taken = $cmp.not($self).map(function () { return $(this).val(); }).get();
+                out = $.extend({}, out, { children: $.grep(out.children, function (c) { return $.inArray(c.id, taken) < 0; }) });
+                if (!out.children.length) { return null; }
+            }
+            return out;
+        };
+        var relock = function () {
+            var $first = $cmp.filter(function () { return $(this).val(); }).first();
+            lockCat = $first.length ? String($first.find('option:selected').data('cat')) : null;
+            $cmp.not($first).each(function () {
+                var $s = $(this), cat = $s.find('option:selected').data('cat');
+                if (lockCat && cat && String(cat) !== lockCat) { $s.val('').trigger('change.select2'); }
+            });
+            $('#compare-lock-note').prop('hidden', !lockCat).find('strong').text(lockCat || '');
+        };
+        $cmp.each(function () {
+            var $s = $(this);
+            $s.select2(window.miSelect2Options($s, { placeholder: $s.data('placeholder'), allowClear: true, minimumResultsForSearch: 0,
+                matcher: function (params, data) { return matcher(params, data, $s, !$s.is($cmp.filter(function () { return $(this).val(); }).first())); } }));
+        });
+        $cmp.on('change', relock);
+        relock();
+    }
 });

@@ -1,0 +1,28 @@
+/* LS-18: Select2 in the brand CI (Cybernetic Trust tokens from ci-tokens.css), for the public site and Admin alike.
+   Only colours, radius and height are set, so the control looks like the Bootstrap fields next to it (46 px, the theme's input height). */
+.select2-container--default .select2-selection--single {
+    height: auto; min-height: 46px; display: flex; align-items: center;
+    background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md);
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered { color: var(--ci-text); line-height: 1.4; padding: 8px 36px 8px 14px; }
+.select2-container--default .select2-selection--single .select2-selection__placeholder { color: var(--ci-text-2); }
+.select2-container--default .select2-selection--single .select2-selection__arrow { height: 100%; right: 8px; }
+.select2-container--default .select2-selection--single .select2-selection__arrow b { border-color: var(--ci-text-2) transparent transparent transparent; }
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b { border-color: transparent transparent var(--ci-text-2) transparent; }
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--single { border-color: var(--ci-primary); box-shadow: 0 0 0 3px rgba(187, 242, 70, .2); outline: 0; }
+.select2-container--default.select2-container--disabled .select2-selection--single { opacity: .55; background: var(--ci-surface); }
+.select2-dropdown { background: var(--ci-elevated); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text); overflow: hidden; z-index: 1060; }
+.select2-search--dropdown { padding: 8px; }
+.select2-container--default .select2-search--dropdown .select2-search__field { background: var(--ci-canvas); color: var(--ci-text); border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); padding: 8px 10px; min-height: 40px; }
+.select2-container--default .select2-search--dropdown .select2-search__field:focus { border-color: var(--ci-primary); outline: 0; }
+.select2-container--default .select2-results > .select2-results__options { max-height: 320px; }
+.select2-container--default .select2-results__option { padding: 9px 14px; min-height: 40px; }
+.select2-container--default .select2-results__option[aria-selected=true] { background: var(--ci-highlight, rgba(187, 242, 70, .12)); color: var(--ci-text); }
+.select2-container--default .select2-results__option--highlighted[aria-selected] { background: var(--ci-primary); color: var(--ci-canvas); }
+.select2-container--default .select2-results__option[aria-disabled=true] { color: var(--ci-text-3, #64748b); }
+.select2-container--default .select2-results__group { color: var(--ci-text-2); font-size: 12px; font-weight: 600; letter-spacing: .02em; padding: 10px 14px 4px; }
+.select2-container--default .select2-results__option .select2-results__option { padding-left: 22px; }
+.select2-container--default .select2-results__message { color: var(--ci-text-2); }
+.select2-container--default .select2-selection--single .select2-selection__clear { margin-left: 10px; color: var(--ci-text-2); font-size: 18px; }
+.select2-container--default .select2-selection--single .select2-selection__clear:hover { color: var(--ci-text); }

@@ -58,6 +58,21 @@
                 "datatables/js/dataTables.bootstrap4.min.js": "e8dd8ff4b7568aa33170d6750c480e8cac29999da8a3a3e78dea13a4dfd8c8ef",
                 "datatables/js/jquery.dataTables.min.js": "a33146fad8c7228dc4dc90043e3e50d51cead8b2267aeac32b0a8f3be8a52b86"
             }
+        },
+        "select2": {
+            "version": "4.0.13",
+            "license": "MIT",
+            "source": "npm select2@4.0.13 (official package), tarball sha512 verified at install; only dist/js/select2.min.js, dist/css/select2.min.css, dist/js/i18n/th.js and LICENSE.md are kept. Downloaded 2026-11-19 with owner approval (LS-18).",
+            "provenance": "official-npm-verified",
+            "npm_integrity": {
+                "select2@4.0.13": "sha512-1JeB87s6oN/TDxQQYCvS5EFoQyvV6eYMZZ0AeA4tdFDYWN3BAGZ8npr17UBFddU0lgAt3H0yjX3X6/ekOj1yjw=="
+            },
+            "files": {
+                "select2/LICENSE.md": "4ee0cbc51370afde358652a0f977972053729ed578b6a42f5e2a037d114f0b39",
+                "select2/select2.min.css": "15d6ad4dfdb43d0affad683e70029f97a8f8fc8637a28845009ee0542dccdf81",
+                "select2/select2.min.js": "00501810e93307a8882a74d864e7547fd1458deea539361dc1124ac133799a4b",
+                "select2/th.js": "b1a0cf2e4fb676ae5fb4a0af5b5c1d76424e83e99703e194a0f3d53a5499ac86"
+            }
         }
     }
 }

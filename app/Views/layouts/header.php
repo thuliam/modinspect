@@ -49,6 +49,8 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/app.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/app.css') ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/ci-tokens.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/ci-tokens.css") ?>">
+<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/select2/select2.min.css">
+<link rel="stylesheet" href="<?= $base ?>/assets/mi-select2.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-select2.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-theme.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/mi-theme.css') ?>">
 <script>(function(){var d=document.documentElement,q=matchMedia("(prefers-reduced-motion: reduce)").matches?"calm":"full",m=q;try{var s=localStorage.getItem("mi-motion");if(s==="full"||s==="calm"){m=s}}catch(e){}d.classList.add("js","motion-"+m)})()</script>
 </head>

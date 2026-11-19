@@ -113,7 +113,7 @@
     $('#picker-title').text('เลือก ' + LABEL[role]);
     var brands = {};
     $grid.find('.mi-part-col[data-role="' + role + '"]').each(function () { brands[$(this).data('brand')] = 1; });
-    $('#f-brand').html('<option value="">ทุกยี่ห้อ</option>' + Object.keys(brands).sort().map(function (b) { return $('<option>').val(b).text(b)[0].outerHTML; }).join(''));
+    $('#f-brand').html('<option value="">ทุกยี่ห้อ</option>' + Object.keys(brands).sort().map(function (b) { return $('<option>').val(b).text(b)[0].outerHTML; }).join('')).trigger('change.select2');   // LS-18: Select2 redraws its label (no filter re-run)
     $('#f-q').val('');
     $grid.find('.mi-part-col').prop('hidden', true);   // so the new category fades in
     renderList(); applyFilters(true);

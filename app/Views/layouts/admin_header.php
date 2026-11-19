@@ -88,6 +88,8 @@ $userInitial = htmlspecialchars(strtoupper(substr((string) ($authUser['name'] ??
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/datatables/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/css/admin.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/ci-tokens.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/ci-tokens.css") ?>">
+<link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/select2/select2.min.css">
+<link rel="stylesheet" href="<?= $base ?>/assets/mi-select2.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-select2.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-admin.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-admin.css") ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/mi-dropx.css?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-dropx.css") ?>">
 <script src="<?= $base ?>/assets/mi-dropx.js?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-dropx.js") ?>"></script>

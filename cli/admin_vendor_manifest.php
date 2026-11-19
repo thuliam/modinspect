@@ -42,6 +42,12 @@ $components = [
             'datatables.net-bs4@1.13.11' => 'sha512-1LnxzQDFKpwvBETc8wtUtQ+pUXhs6NJomNST5pRzzHAccckkj9rZeOp3mevKDnDJKuNhBM1Y0rIeZGylJnqh9A==',
         ],
     ],
+    'select2' => [
+        'dir' => 'select2', 'version' => '4.0.13', 'license' => 'MIT',
+        'source' => 'npm select2@4.0.13 (official package), tarball sha512 verified at install; only dist/js/select2.min.js, dist/css/select2.min.css, dist/js/i18n/th.js and LICENSE.md are kept. Downloaded 2026-11-19 with owner approval (LS-18).',
+        'provenance' => 'official-npm-verified',
+        'npm_integrity' => ['select2@4.0.13' => 'sha512-1JeB87s6oN/TDxQQYCvS5EFoQyvV6eYMZZ0AeA4tdFDYWN3BAGZ8npr17UBFddU0lgAt3H0yjX3X6/ekOj1yjw=='],
+    ],
 ];
 
 $mode = in_array('--write', $argv ?? [], true) ? 'write' : 'verify';
