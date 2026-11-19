@@ -25,7 +25,7 @@ final class ShareCard
     }
 
     /**
-     * @param array{name:string,price:float,label:string,tone:string,range:?array{0:float,1:float},median:?float} $c
+     * @param array{name:string,price:float,label:string,tone:string,range:?array{0:float,1:float},median:?float,caption?:string} $c (caption: the small line above the price, default "the price you found"; LS-24 C1 uses it for the product card)
      * @return string PNG bytes
      */
     public static function render(array $c, string $fontDir, string $logoFile): string
@@ -55,7 +55,7 @@ final class ShareCard
         $y = 210; foreach ($lines as $l) { ThaiText::draw($im, $size, 80, $y, $text, $semi, $l); $y += (int)round($size * 1.25); }
 
         // the price found
-        ThaiText::draw($im, 26, 80, 292, $muted, $regular, 'ราคาที่คุณพบ');
+        ThaiText::draw($im, 26, 80, 292, $muted, $regular, (string)($c['caption'] ?? 'ราคาที่คุณพบ'));
         $price = '฿' . number_format((float)$c['price']);
         ThaiText::draw($im, 104, 80, 436, $lime, $semi, $price);
 

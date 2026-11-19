@@ -89,6 +89,8 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <div class="mi-actions">
                     <a class="btn btn-lime" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>"><i class="fas fa-balance-scale" aria-hidden="true"></i> เช็กดีลรุ่นนี้</a>
                     <a class="btn btn-ghost" href="<?= $base ?>/compare/<?= rawurlencode((string) $product['slug']) ?>">เทียบกับรุ่นอื่น</a>
+                    <?php if (!empty($shareText)): ?><button type="button" class="btn btn-ghost" data-copy-text="<?= htmlspecialchars($shareText) ?>"><i class="fas fa-share-alt" aria-hidden="true"></i> <span>คัดลอกข้อความแชร์</span></button><?php endif; ?>
+                    <?php if (!empty($cardUrl)): ?><a class="btn btn-ghost" href="<?= htmlspecialchars($cardUrl) ?>" download="modinpect-price.png"><i class="fas fa-image" aria-hidden="true"></i> บันทึกการ์ดราคา</a><?php endif; ?>
                     <a class="btn btn-ghost" href="<?= $base ?>/price">ค้นหารุ่นอื่น</a>
                     <a class="btn btn-ghost" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
                 </div>

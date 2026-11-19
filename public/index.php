@@ -26,6 +26,7 @@ $router->get('/report/{slug}',[CommunityReportController::class,'form']);
 $router->post('/report/{slug}',[CommunityReportController::class,'submit']);
 $router->get('/price',[PriceController::class,'index']);
 $router->get('/price/{slug}',[PriceController::class,'show']);
+$router->get('/price/{slug}/card',[PriceController::class,'card']);
 $router->get('/deal-checker',[DealCheckerController::class,'form']);
 $router->get('/read-listing',[\App\Controllers\ListingReaderController::class,'form']);
 $router->post('/read-listing',[\App\Controllers\ListingReaderController::class,'read']);

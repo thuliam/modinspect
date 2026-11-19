@@ -144,6 +144,13 @@ jQuery(function ($) {
 // LS-22: copy-link and print buttons (glue only)
 $(function () {
     $(document).on('click', '[data-print]', function () { window.print(); });
+    $(document).on('click', '[data-copy-text]', function () {   // LS-24 C2: copies the text in the attribute (the share line of a product)
+        var $b = $(this), text = $b.attr('data-copy-text'), done = function () { $b.find('span').text('คัดลอกแล้ว'); };
+        if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done); return; }
+        var $t = $('<textarea>').val(text).appendTo('body').select();
+        try { if (document.execCommand('copy')) { done(); } } catch (e) { /* the text stays on the page */ }
+        $t.remove();
+    });
     $(document).on('click', '[data-copy-url]', function () {
         var $b = $(this), done = function () { $b.find('span').text('คัดลอกแล้ว'); };
         if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(window.location.href).then(done); return; }

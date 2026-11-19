@@ -93,5 +93,7 @@ $yn = static fn(?bool $b): string => $b === true ? 'มีระบุ' : 'ไ�
             <ol class="mb-0"><?php foreach ($r['questions'] as $q): ?><li><?= htmlspecialchars($q) ?></li><?php endforeach; ?></ol>
         </aside>
     </div>
+    <?php // LS-24 A3 ?>
+    <?php $neg = ($p && $v && ($v['label'] ?? '') !== 'insufficient' && $p['q1'] && $p['q3'] && $r['price'] !== null) ? \App\Services\Deal\Negotiation::plan($p['name'], (float) $r['price'], $p['q1'], $p['q3'], $p['median'], $p['samples']) : null; require ROOT_PATH . '/app/Views/components/negotiation.php'; ?>
     <?php endif; ?>
 </section>

@@ -27,6 +27,17 @@ final class PriceController extends Controller {
         $didYouMean=!$products && $q!=='' ? \App\Services\Search\DidYouMean::suggest($q,$names) : [];
         $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'sort'=>$sort,'pricedOnly'=>$pricedOnly,'specFilters'=>$specFilters,'specOptions'=>$specOptions,'suggestions'=>$products ? [] : $model->popular(6),'names'=>$names,'didYouMean'=>$didYouMean]);
     }
+    /** LS-24 C1: the price card of a model as a PNG (1200 x 630). Only for a model whose page shows a price, drawn from the same stored snapshot, cached per snapshot. */
+    public function card(string $slug): void {
+        $product=(new Product())->findBySlug($slug);
+        if(!$product || \App\Services\Deal\ShareText::forProduct($product,'x')===null || !\App\Services\Deal\ShareCard::available(ROOT_PATH.'/public/assets/fonts')){ http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบการ์ดราคา']); return; }
+        $key='product-card-'.preg_replace('/[^a-z0-9-]/','',strtolower((string)$product['slug'])).'-'.substr(md5((string)($product['last_calculated_at']??'').'|'.(string)$product['median'].'|'.(string)$product['valid_sample_size']),0,10);
+        $png=(new \App\Services\Http\FileCache(ROOT_PATH.'/storage/cache/http'))->remember($key,86400,static function() use($product):string {
+            return \App\Services\Deal\ShareCard::render(['name'=>(string)$product['full_name'],'price'=>(float)$product['median'],'caption'=>'ราคากลางมือสองที่พบ','label'=>'ตัวอย่าง '.(int)$product['valid_sample_size'].' ประกาศ','tone'=>'neutral','range'=>[(float)$product['q1'],(float)$product['q3']],'median'=>null],ROOT_PATH.'/public/assets/fonts',ROOT_PATH.'/public/assets/brand/modinpect-lockup-dark-480.png');
+        });
+        header('Content-Type: image/png'); header('Content-Length: '.strlen($png)); header('Cache-Control: public, max-age=3600'); header('Content-Disposition: inline; filename="modinpect-price.png"'); header('X-Robots-Tag: noindex');
+        echo $png;
+    }
     public function show(string $slug): void {
         $model=new Product(); $product=$model->findBySlug($slug);
         if (!$product) { http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบสินค้า']); return; }
@@ -38,8 +49,11 @@ final class PriceController extends Controller {
         // LS-19 C1/C2: share picture and structured data from the same stored snapshot the page shows (no price unless the page shows one)
         global $config; $base=(string)$config['base_url'];
         $ogImage=\App\Services\Seo\SeoService::productImage($base,(string)$product['slug'],ROOT_PATH.'/public');
+        // LS-24 C1: a product with a public price is shared as its own price card (needs GD with FreeType; otherwise the brand picture stays)
+        $cardUrl=(\App\Services\Deal\ShareText::forProduct($product,'x')!==null && \App\Services\Deal\ShareCard::available(ROOT_PATH.'/public/assets/fonts')) ? rtrim($base,'/').'/price/'.rawurlencode((string)$product['slug']).'/card' : null;
+        if($cardUrl!==null){ $ogImage=$cardUrl; }
         $jsonLd=\App\Services\Seo\SeoService::productJsonLd($product,\App\Services\Seo\SeoService::canonical($base,'/price/'.$product['slug']),$ogImage);
-        $this->view('price/show',['communityOn'=>\App\Services\Community\CommunityReports::enabled($config),'ogImage'=>$ogImage,'jsonLd'=>$jsonLd,'metaDescription'=>$meta,'title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'facts'=>\App\Services\Catalog\ProductFacts::rows($product,$model->referenceSpecs((int)$product['id']),(int)date('Y')),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'evidence'=>$model->evidence((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4)]);
+        $this->view('price/show',['shareText'=>\App\Services\Deal\ShareText::forProduct($product,\App\Services\Seo\SeoService::canonical($base,'/price/'.$product['slug'])),'cardUrl'=>$cardUrl,'communityOn'=>\App\Services\Community\CommunityReports::enabled($config),'ogImage'=>$ogImage,'jsonLd'=>$jsonLd,'metaDescription'=>$meta,'title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'facts'=>\App\Services\Catalog\ProductFacts::rows($product,$model->referenceSpecs((int)$product['id']),(int)date('Y')),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'evidence'=>$model->evidence((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4)]);
     }
 }
 
