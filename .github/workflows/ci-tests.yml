@@ -76,8 +76,9 @@ jobs:
           sed -i 's/^DB_PASSWORD=.*/DB_PASSWORD=ci-ephemeral-root/' .env.testing
           grep -E '^(DB_HOST|DB_DATABASE)=' .env.testing
 
-      - name: Fresh install rehearsal (schema, seed, every migration on an empty MariaDB database, twice)
-        # LS-17 D1: the deploy applies migrations to the host's MariaDB 10.6; this proves the repository still builds a database from nothing.
+      - name: Fresh install rehearsal (schema + migration data on an empty MariaDB database; development and production, each twice)
+        # LS-17 D1 / LS-19 A1: schema.sql is the full structure, migrations add their data; production takes only the catalog from seed.sql and must
+        # end with no public price. This proves the repository still builds a working database from nothing on the host's MariaDB 10.6.
         shell: bash
         env:
           MODINSPECT_ENV_FILE: .env.testing
@@ -85,6 +86,8 @@ jobs:
           set -euo pipefail
           php cli/rehearse_fresh_install.php modinspect_rehearsal
           php cli/rehearse_fresh_install.php modinspect_rehearsal
+          php cli/rehearse_fresh_install.php modinspect_rehearsal --production
+          php cli/rehearse_fresh_install.php modinspect_rehearsal --production
 
       - name: Bootstrap isolated test database
         shell: bash

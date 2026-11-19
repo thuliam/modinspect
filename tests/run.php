@@ -108,6 +108,7 @@ $commands = [
     ['label' => 'tests/ls16_review_fixes_test.php', 'args' => ['tests/ls16_review_fixes_test.php']],
     ['label' => 'tests/ls17_hardening_test.php', 'args' => ['tests/ls17_hardening_test.php']],
     ['label' => 'tests/ls18_select2_test.php', 'args' => ['tests/ls18_select2_test.php']],
+    ['label' => 'tests/fresh_install_schema_test.php', 'args' => ['tests/fresh_install_schema_test.php']],
     ['label' => 'tests/collection_category_needs_test.php', 'args' => ['tests/collection_category_needs_test.php']],
     ['label' => 'tests/pilot_mode_test.php', 'args' => ['tests/pilot_mode_test.php']],
     ['label' => 'tests/product_facts_test.php', 'args' => ['tests/product_facts_test.php']],

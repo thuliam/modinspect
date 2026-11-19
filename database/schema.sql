@@ -271,7 +271,8 @@ CREATE TABLE price_indices (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_index_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
   CONSTRAINT fk_index_variant FOREIGN KEY (product_variant_id) REFERENCES product_variants(id) ON DELETE CASCADE,
-  INDEX idx_index_latest (product_id, product_variant_id, price_type, last_calculated_at)
+  INDEX idx_index_latest (product_id, product_variant_id, price_type, last_calculated_at),
+  INDEX idx_index_hash (calculation_hash)
 ) ENGINE=InnoDB;
 
 CREATE TABLE price_snapshot_observations (
@@ -348,7 +349,8 @@ CREATE TABLE spec_builds (
   compatibility_notes TEXT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_build_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+  CONSTRAINT fk_build_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_spec_builds_member (member_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE spec_build_items (
@@ -401,6 +403,64 @@ CREATE TABLE audit_logs (
   INDEX idx_audit_entity (entity_type, entity_id)
 ) ENGINE=InnoDB;
 
+-- LS-19 A1: tables from migration 005 that schema.sql had lost (found by tests/fresh_install_schema_test.php)
+CREATE TABLE market_evidence (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  raw_observation_id BIGINT UNSIGNED NULL,
+  source_id BIGINT UNSIGNED NOT NULL,
+  evidence_level ENUM('A','B','C','D','E') NOT NULL DEFAULT 'C',
+  evidence_type ENUM('url','snippet','screenshot','page_capture','upload','fixture') NOT NULL DEFAULT 'url',
+  source_url_hash CHAR(64) NULL,
+  storage_path VARCHAR(255) NULL,
+  excerpt TEXT NULL,
+  content_hash CHAR(64) NULL,
+  captured_at DATETIME NOT NULL,
+  expires_at DATETIME NULL,
+  is_public TINYINT(1) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_evidence_raw FOREIGN KEY (raw_observation_id) REFERENCES raw_price_observations(id) ON DELETE SET NULL,
+  CONSTRAINT fk_evidence_source FOREIGN KEY (source_id) REFERENCES data_sources(id),
+  INDEX idx_evidence_source (source_id, captured_at),
+  INDEX idx_evidence_hash (content_hash)
+) ENGINE=InnoDB;
+
+CREATE TABLE extraction_runs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  raw_observation_id BIGINT UNSIGNED NOT NULL,
+  evidence_id BIGINT UNSIGNED NULL,
+  provider_name VARCHAR(120) NOT NULL,
+  model_name VARCHAR(120) NULL,
+  prompt_version VARCHAR(80) NULL,
+  schema_version VARCHAR(80) NOT NULL DEFAULT 'market_observation_v1',
+  extracted_data JSON NOT NULL,
+  confidence DECIMAL(6,4) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_extraction_raw FOREIGN KEY (raw_observation_id) REFERENCES raw_price_observations(id) ON DELETE CASCADE,
+  CONSTRAINT fk_extraction_evidence FOREIGN KEY (evidence_id) REFERENCES market_evidence(id) ON DELETE SET NULL,
+  INDEX idx_extraction_raw (raw_observation_id, created_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE observation_review_decisions (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  price_observation_id BIGINT UNSIGNED NULL,
+  raw_observation_id BIGINT UNSIGNED NULL,
+  extraction_run_id BIGINT UNSIGNED NULL,
+  lane ENUM('green','amber','red') NOT NULL,
+  decision ENUM('review_required','approved','edited','rejected','quarantined') NOT NULL,
+  reason_codes JSON NOT NULL,
+  ai_value JSON NULL,
+  rule_result JSON NULL,
+  human_value JSON NULL,
+  reviewer_id BIGINT UNSIGNED NULL,
+  notes TEXT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_review_observation FOREIGN KEY (price_observation_id) REFERENCES price_observations(id) ON DELETE SET NULL,
+  CONSTRAINT fk_review_raw FOREIGN KEY (raw_observation_id) REFERENCES raw_price_observations(id) ON DELETE SET NULL,
+  CONSTRAINT fk_review_extraction FOREIGN KEY (extraction_run_id) REFERENCES extraction_runs(id) ON DELETE SET NULL,
+  CONSTRAINT fk_review_user FOREIGN KEY (reviewer_id) REFERENCES users(id) ON DELETE SET NULL,
+  INDEX idx_review_lane_decision (lane, decision, created_at)
+) ENGINE=InnoDB;
+
 CREATE TABLE review_corrections (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   price_observation_id BIGINT UNSIGNED NOT NULL,
@@ -415,6 +475,7 @@ CREATE TABLE review_corrections (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uq_review_correction_field (price_observation_id, field_name),
   CONSTRAINT fk_review_corrections_observation FOREIGN KEY (price_observation_id) REFERENCES price_observations(id) ON DELETE CASCADE,
+  CONSTRAINT fk_review_corrections_decision FOREIGN KEY (review_decision_id) REFERENCES observation_review_decisions(id) ON DELETE SET NULL,
   CONSTRAINT fk_review_corrections_user FOREIGN KEY (corrected_by) REFERENCES users(id) ON DELETE SET NULL,
   INDEX idx_review_corrections_observation (price_observation_id, corrected_at)
 ) ENGINE=InnoDB;

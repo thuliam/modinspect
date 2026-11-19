@@ -50,9 +50,16 @@ GEMINI_API_KEY=            # leave empty: the zero-cost POC policy forbids paid 
 ## 4. Database
 
 1. Back up first: `mysqldump --single-transaction --routines <db> > modinspect-YYYYMMDD-HHMM.sql` (store it off the server).
-2. New database: import `database/schema.sql`, then apply each file in `database/migrations/` in order (the CI job "Fresh install rehearsal", `cli/rehearse_fresh_install.php`, proves this chain on an empty MariaDB 10.6 for every PR) with
-   `php cli/migrate.php database/migrations/<file>.sql` (already-applied migrations must be skipped: record which ones ran).
-3. Seed only what the product needs (`database/seed.sql` contains fixture rows: do **not** load fixtures or TEST/MOCK evidence into production).
+2. **Existing database** (the shared DEV, a host that already runs the app): apply only the migrations it has not had yet, in order, with
+   `php cli/migrate.php database/migrations/<file>.sql` (or phpMyAdmin), and record which ones ran.
+3. **New, empty database** (LS-19 A1): `database/schema.sql` is the full current structure (`tests/fresh_install_schema_test.php` keeps it complete), so
+   do NOT run the migrations whole on top of it (their CREATE/ALTER fail with "duplicate column"). The order is:
+   a. import `database/schema.sql`;
+   b. from `database/seed.sql` only the catalog rows (`product_categories`, `brands`, `products`, `product_aliases`), never its fixture prices, histories, demo shop or example sources;
+   c. the data statements (INSERT/UPDATE/DELETE) of every migration in order.
+   `cli/rehearse_fresh_install.php <name>_rehearsal --production` does exactly this on an empty local database and checks the result
+   (106 products, manufacturer specs, 8 categories, no public price); the CI job "Fresh install rehearsal" runs it on MariaDB 10.6 for every PR.
+   Copy that order for the host (or run the same steps from a database dump made by the rehearsal); do not improvise another one.
 4. Create the first admin with `php cli/create_admin_user.php` over SSH or a one-off script; the password is typed by the owner, never pasted into chat.
 5. Never point tests at production: the test guard refuses any database not named `modinspect_test` on 127.0.0.1.
 
