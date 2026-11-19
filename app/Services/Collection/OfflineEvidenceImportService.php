@@ -363,8 +363,16 @@ final class OfflineEvidenceImportService
                 'ingestion_note' => trim((string)($record['ingestion_note'] ?? '')) ?: null,
                 'capture_method' => strtolower(trim((string)($record['capture_method'] ?? ''))) ?: null,
                 'listing_attributes' => array_filter(\App\Services\Listing\ListingAttributes::parse($record)['values'], static fn($v) => $v !== null),
+                // LS-23 B3: box and receipt stated by the collector (1 or 0 only); they replace what the title text suggested, and an empty cell leaves it alone
+                'box_receipt' => array_filter(['has_box' => $this->flag01($record['has_box'] ?? null), 'has_receipt' => $this->flag01($record['has_receipt'] ?? null)], static fn($v) => $v !== null),
             ]
         );
+    }
+
+    private function flag01(mixed $v): ?int
+    {
+        $s = trim((string)$v);
+        return $s === '1' ? 1 : ($s === '0' ? 0 : null);
     }
 
     private function snippet(array $record, string $dataset, string $runId): string

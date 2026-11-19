@@ -167,6 +167,9 @@ final class CollectionPipeline
                 ]);
                 $observationId = (int)$this->db->lastInsertId();
                 $this->storeListingAttributes($observationId, (array)($candidate->rawMetadata['listing_attributes'] ?? []));
+                foreach ((array)($candidate->rawMetadata['box_receipt'] ?? []) as $col => $val) {   // LS-23 B3: only these two columns, never a name from the file
+                    if (in_array($col, ['has_box', 'has_receipt'], true)) { $this->db->prepare("UPDATE price_observations SET $col = :v WHERE id = :id")->execute(['v' => (int)$val, 'id' => $observationId]); }
+                }
             }
 
             $review = $this->db->prepare(

@@ -1,0 +1,155 @@
+{
+  "version": "intake-v1",
+  "note": "Machine-readable data contract for the files collectors send back (docs/DATA_CONTRACT.md). Column order is the order of the file. required=true means an empty cell rejects the row. Types: string, enum, url, price (whole baht 1..10000000), date (YYYY-MM-DD), datetime (YYYY-MM-DD HH:MM:SS), int (min/max), flag01 (1 or 0).",
+  "limits": { "max_rows_per_file": 300, "min_year": 2000, "max_year": 2100, "max_price": 10000000 },
+  "datasets": {
+    "A": {
+      "file": "A_used_listings.csv",
+      "title": "Used-market asking listings",
+      "price_kind": "asking",
+      "item_key": "source_item_id",
+      "columns": [
+        { "name": "capture_method", "required": true, "type": "enum", "values": ["owner_transcription"] },
+        { "name": "source_listing_url", "required": true, "type": "url", "owner_domains": true },
+        { "name": "source_item_id", "required": true, "type": "string", "max": 80, "unique": true },
+        { "name": "listing_title", "required": true, "type": "string", "max": 255, "pii_scan": true },
+        { "name": "asking_price", "required": true, "type": "price" },
+        { "name": "observed_at", "required": true, "type": "datetime" },
+        { "name": "condition_hint", "required": false, "type": "enum", "values": ["used", "like new", "new"] }
+      ],
+      "criteria": { "per_product": { "min_listings": 5, "min_sources": 2, "window_days": 45 } }
+    },
+    "A_extra": {
+      "file": "A_used_listings_extra.csv",
+      "title": "Optional listing facts, joined to A by source_item_id",
+      "join": { "column": "source_item_id", "to": "A" },
+      "columns": [
+        { "name": "source_item_id", "required": true, "type": "string", "max": 80, "unique": true },
+        { "name": "product_name_guess", "required": false, "type": "string", "max": 160 },
+        { "name": "warranty_remaining_months", "required": false, "type": "int", "min": 0, "max": 120 },
+        { "name": "has_box", "required": false, "type": "flag01" },
+        { "name": "has_receipt", "required": false, "type": "flag01" },
+        { "name": "usage_hint_months", "required": false, "type": "int", "min": 0, "max": 240 },
+        { "name": "province", "required": false, "type": "string", "max": 40, "provinces": true },
+        { "name": "posted_at", "required": false, "type": "date_or_datetime" },
+        { "name": "flag", "required": false, "type": "enum", "values": ["bundle", "repost", "negotiable", "wanted", "trade", "defective"] }
+      ]
+    },
+    "B": {
+      "file": "B_new_price_references.csv",
+      "title": "New-price references from retailers",
+      "price_kind": "new_reference",
+      "columns": [
+        { "name": "product_name", "required": true, "type": "string", "max": 255, "known_product": true },
+        { "name": "price_thb", "required": true, "type": "price" },
+        { "name": "source_url", "required": true, "type": "url" },
+        { "name": "checked_on", "required": true, "type": "date", "max_age_days": 14 },
+        { "name": "in_stock", "required": false, "type": "enum", "values": ["yes", "no"] },
+        { "name": "note", "required": false, "type": "string", "max": 200 }
+      ],
+      "criteria": { "per_target": { "min_rows": 1, "preferred_rows": 2 } }
+    },
+    "C": {
+      "file": "C_reference_specs.csv",
+      "title": "Manufacturer reference specs",
+      "unique_together": ["product_name", "spec_key"],
+      "columns": [
+        { "name": "product_name", "required": true, "type": "string", "max": 255, "known_product": true },
+        { "name": "spec_key", "required": true, "type": "enum", "values_ref": "spec_keys" },
+        { "name": "spec_value", "required": true, "type": "string", "max": 120 },
+        { "name": "unit", "required": false, "type": "string", "max": 12 },
+        { "name": "source_url", "required": true, "type": "url" },
+        { "name": "date_checked", "required": true, "type": "date" },
+        { "name": "review_status", "required": true, "type": "enum", "values": ["official_checked", "needs_variant_review"] },
+        { "name": "review_note", "required": false, "type": "string", "max": 500 }
+      ]
+    },
+    "D_products": {
+      "file": "D_new_products.csv",
+      "title": "Models missing from the catalog",
+      "columns": [
+        { "name": "category", "required": true, "type": "enum", "values": ["cpu", "gpu", "motherboard", "ram", "storage", "psu", "case", "cooling"] },
+        { "name": "brand", "required": true, "type": "string", "max": 80 },
+        { "name": "model_name", "required": true, "type": "string", "max": 160 },
+        { "name": "full_name", "required": true, "type": "string", "max": 255, "must_be_new": true },
+        { "name": "release_year", "required": false, "type": "year" },
+        { "name": "generation", "required": false, "type": "string", "max": 100 },
+        { "name": "official_url", "required": true, "type": "url" },
+        { "name": "market_note", "required": false, "type": "string", "max": 120 }
+      ]
+    },
+    "D_aliases": {
+      "file": "D_aliases.csv",
+      "title": "Names people use for a model",
+      "unique_together": ["alias_text"],
+      "columns": [
+        { "name": "product_name", "required": true, "type": "string", "max": 255 },
+        { "name": "alias_text", "required": true, "type": "string", "max": 255, "alias_unique": true },
+        { "name": "alias_kind", "required": false, "type": "enum", "values": ["shorthand", "typo", "thai_phonetic", "spacing", "marketing_name"] },
+        { "name": "evidence_url", "required": false, "type": "url" }
+      ],
+      "criteria": { "per_product": { "min_aliases": 4 } }
+    },
+    "E": {
+      "file": "E_condition_checks.csv",
+      "title": "Pre-purchase condition checks (draft for owner approval)",
+      "columns": [
+        { "name": "category", "required": true, "type": "enum", "values": ["cpu", "gpu", "motherboard", "ram", "storage", "psu", "case", "cooling"] },
+        { "name": "check_title_th", "required": true, "type": "string", "max": 60 },
+        { "name": "how_to_check_th", "required": true, "type": "string", "max": 600 },
+        { "name": "red_flag_th", "required": true, "type": "string", "max": 400 },
+        { "name": "severity", "required": true, "type": "enum", "values": ["must_check", "should_check", "nice_to_check"] },
+        { "name": "needs_tool", "required": false, "type": "enum", "values": ["none", "multimeter", "software", "another_pc"] },
+        { "name": "source_url", "required": false, "type": "url" }
+      ],
+      "criteria": { "per_category": { "min_checks": 6, "min_must_check": 3 } }
+    },
+    "F": {
+      "file": "F_sold_prices.csv",
+      "title": "Confirmed sold prices (review queue only, never a price on its own)",
+      "price_kind": "sold",
+      "item_key": "source_item_id",
+      "columns": [
+        { "name": "source_listing_url", "required": true, "type": "url", "owner_domains": true },
+        { "name": "source_item_id", "required": true, "type": "string", "max": 80, "unique": true },
+        { "name": "listing_title", "required": true, "type": "string", "max": 255, "pii_scan": true },
+        { "name": "sold_price", "required": true, "type": "price" },
+        { "name": "sold_confirmed_by", "required": true, "type": "enum", "values": ["seller_post", "buyer_post", "status_label"] },
+        { "name": "observed_at", "required": true, "type": "datetime" },
+        { "name": "asking_price_before", "required": false, "type": "price" },
+        { "name": "condition_hint", "required": false, "type": "enum", "values": ["used", "like new", "new"] }
+      ]
+    }
+  },
+  "spec_keys": {
+    "supported": {
+      "cpu": ["cores", "threads", "base_ghz", "boost_ghz", "l2_mb", "l3_mb", "socket", "memory_type"],
+      "gpu": ["vram_gb", "boost_mhz", "board_power_watt", "system_psu_recommendation_watt"],
+      "motherboard": ["socket", "memory_type", "form_factor"],
+      "ram": ["capacity_gb", "memory_type"],
+      "storage": ["capacity_gb", "form_factor"],
+      "psu": ["psu_capacity_watt", "form_factor"],
+      "case": ["max_gpu_length_mm", "max_cpu_cooler_height_mm", "form_factor"],
+      "cooling": ["cooler_height_mm"]
+    },
+    "proposed": {
+      "motherboard": ["chipset", "max_memory_gb", "memory_slots", "pcie_gen_x16", "m2_slots"],
+      "ram": ["speed_mhz", "cas_latency", "modules_in_kit"],
+      "storage": ["interface", "tbw", "read_mbps", "write_mbps"],
+      "psu": ["efficiency_rating", "modular"],
+      "cooling": ["cooler_type", "radiator_mm", "socket_support"],
+      "gpu": ["memory_type", "memory_bus_bit", "length_mm"],
+      "cpu": ["has_igpu", "release_date"]
+    },
+    "required_per_category": {
+      "cpu": ["cores", "threads", "base_ghz", "boost_ghz", "socket", "memory_type"],
+      "gpu": ["vram_gb", "board_power_watt"],
+      "motherboard": ["socket", "memory_type", "form_factor"],
+      "ram": ["capacity_gb", "memory_type", "speed_mhz"],
+      "storage": ["capacity_gb", "interface"],
+      "psu": ["psu_capacity_watt"],
+      "case": ["form_factor", "max_gpu_length_mm"],
+      "cooling": ["cooler_type", "cooler_height_mm"]
+    }
+  }
+}
