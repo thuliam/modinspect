@@ -46,6 +46,13 @@ ok_wl($call(static fn() => (new WatchController())->toggle())['code'] === 404, '
 $_POST = ['slug' => $prod['slug'], '_token' => Csrf::token()];
 $r = $call(static fn() => (new WatchController())->toggle());
 ok_wl($r['redirect'] === '/price/' . rawurlencode($prod['slug']) && str_starts_with((string)$_COOKIE[W::COOKIE], $prod['slug']), 'A valid toggle adds the model and returns to its page');
+// LS-26: removing from the list page returns to the list; only that fixed destination is accepted
+$_SERVER['REQUEST_METHOD'] = 'POST'; $_POST = ['slug' => $prod['slug'], '_token' => Csrf::token(), 'back' => 'watching'];
+$rb = $call(static fn() => (new WatchController())->toggle());
+ok_wl($rb['redirect'] === '/watching' && !str_contains((string)($_COOKIE[W::COOKIE] ?? ''), $prod['slug']), 'Removing from the list page goes back to the list and the model is gone');
+$_POST = ['slug' => $prod['slug'], '_token' => Csrf::token(), 'back' => 'https://evil.example/'];
+$re = $call(static fn() => (new WatchController())->toggle());
+ok_wl($re['redirect'] === '/price/' . rawurlencode($prod['slug']), 'Any other back value is ignored (no open redirect)');
 $_SERVER['REQUEST_METHOD'] = 'GET';
 $page = $call(static fn() => (new WatchController())->index());
 ok_wl($page['code'] === 200 && str_contains($page['body'], htmlspecialchars($prod['slug'])) && (str_contains($page['body'], 'ไม่ได้บอกว่าควรซื้อหรือรอ')), 'The list page shows the model');

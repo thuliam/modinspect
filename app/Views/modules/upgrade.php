@@ -13,7 +13,7 @@ $n = static fn(float $v): string => rtrim(rtrim(number_format($v, 1), '0'), '.')
     <form method="get" action="<?= $base ?>/upgrade" class="mi-filter-card">
         <label for="up-m">รุ่นที่ใช้อยู่ (ซีพียู การ์ดจอ หรือแรม)</label>
         <div class="mi-filter-row">
-            <input id="up-m" name="m" list="up-options" class="form-control" value="<?= htmlspecialchars($typed) ?>" maxlength="120" placeholder="เช่น Ryzen 5 3600, RTX 3060" autocomplete="off">
+            <input id="up-m" name="m" list="up-options" class="form-control" value="<?= htmlspecialchars($have ? (string) $have['full_name'] : $typed) ?>" maxlength="120" placeholder="เช่น Ryzen 5 3600, RTX 3060" autocomplete="off">
             <datalist id="up-options"><?php foreach ($options as $o): ?><option value="<?= htmlspecialchars($o['name']) ?>"><?php endforeach; ?></datalist>
             <button type="submit">ดูตัวเลือก</button>
         </div>
@@ -32,7 +32,7 @@ $n = static fn(float $v): string => rtrim(rtrim(number_format($v, 1), '0'), '.')
             <p class="mi-trend-note">เรียงตามราคามือสองจากน้อยไปมาก ไม่ใช่การจัดอันดับ</p>
             <div class="row">
             <?php foreach ($result['items'] as $it): $p = $it['product']; ?>
-                <div class="col-md-6 mb-3"><article class="card h-100"><div class="card-body">
+                <div class="col-md-6 mb-3"><article class="card h-100">
                     <h2 class="h5 mb-1"><a href="<?= $base ?>/price/<?= rawurlencode((string) $p['slug']) ?>"><?= htmlspecialchars((string) $p['full_name']) ?></a></h2>
                     <p class="mb-2"><strong><?= $baht($it['median']) ?></strong>
                         <?php if ($it['delta'] !== null): ?> <small class="text-muted"><?= $it['delta'] >= 0 ? 'มากกว่ารุ่นเดิม ' : 'น้อยกว่ารุ่นเดิม ' ?><?= $baht(abs((float) $it['delta'])) ?></small><?php endif; ?></p>
@@ -40,7 +40,7 @@ $n = static fn(float $v): string => rtrim(rtrim(number_format($v, 1), '0'), '.')
                         <?php foreach ($it['steps'] as $s): ?><li><?= htmlspecialchars($labels[$s['key']] ?? $s['key']) ?>: <?= $n($s['from']) ?> เป็น <?= $n($s['to']) ?></li><?php endforeach; ?>
                     </ul>
                     <?php if ($it['notes']): ?><p class="mb-1"><small class="text-muted">ควรเช็ก:</small></p><ul class="mb-0 pl-3"><?php foreach ($it['notes'] as $note): ?><li><small><?= htmlspecialchars($note) ?></small></li><?php endforeach; ?></ul><?php endif; ?>
-                </div></article></div>
+                </article></div>
             <?php endforeach; ?>
             </div>
             <?php if ($result['unpriced_hidden'] > 0): ?><p class="mi-trend-note">ยังมีอีก <?= (int) $result['unpriced_hidden'] ?> รุ่นที่สเปกมากกว่าแต่ยังไม่มีราคาที่ตรวจแล้ว จึงไม่แสดง</p><?php endif; ?>

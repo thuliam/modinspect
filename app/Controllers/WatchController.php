@@ -26,7 +26,8 @@ final class WatchController extends Controller
             $now = $priced ? (float)$p['median'] : null;
             $rows[] = ['product' => $p, 'then' => $w['median'], 'now' => $now, 'change' => WatchList::change($w['median'], $now)];
         }
-        $this->view('pages/watching', ['title' => 'รุ่นที่ติดตาม', 'metaDescription' => 'รายการรุ่นที่คุณติดตาม พร้อมราคามือสองที่ตรวจแล้วเทียบกับตอนที่เริ่มติดตาม', 'rows' => $rows]);
+        $flash = is_string($_SESSION['watch_flash'] ?? null) ? $_SESSION['watch_flash'] : null; unset($_SESSION['watch_flash']);
+        $this->view('pages/watching', ['flash' => $flash, 'title' => 'รุ่นที่ติดตาม', 'metaDescription' => 'รายการรุ่นที่คุณติดตาม พร้อมราคามือสองที่ตรวจแล้วเทียบกับตอนที่เริ่มติดตาม', 'rows' => $rows]);
     }
 
     public function toggle(): void
@@ -43,6 +44,7 @@ final class WatchController extends Controller
         }
         $_COOKIE[WatchList::COOKIE] = WatchList::serialize($r['list']);
         $_SESSION['watch_flash'] = $r['full'] ? 'ติดตามได้สูงสุด ' . WatchList::MAX . ' รุ่น เอารุ่นเก่าออกก่อน' : ($r['added'] ? 'เพิ่มในรายการที่ติดตามแล้ว' : 'เอาออกจากรายการที่ติดตามแล้ว');
-        $this->redirect('/price/' . rawurlencode((string)$p['slug']));
+        // LS-26: the list page can remove an entry and come back to itself; only that one fixed destination is accepted, never a given address
+        $this->redirect((($_POST['back'] ?? '') === 'watching') ? '/watching' : '/price/' . rawurlencode((string)$p['slug']));
     }
 }

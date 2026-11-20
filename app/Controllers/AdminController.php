@@ -438,6 +438,34 @@ final class AdminController extends Controller {
         }
         $this->redirect('/admin/product-aliases');
     }
+    /**
+     * LS-26: bulk alias import. Two steps on one endpoint and nothing kept between them: "check" shows what each line would do and writes nothing; "confirm" re-reads the
+     * same text, inserts only the lines that are new (one transaction), and audits the batch with the acting admin.
+     */
+    public function aliasImport(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/product-aliases'); }
+        global $config;
+        $db=Database::connection($config['db']);
+        $text=substr((string)($_POST['alias_lines'] ?? ''),0,200000);
+        $ids=[]; foreach($db->query("SELECT id,slug FROM products")->fetchAll(\PDO::FETCH_ASSOC) as $r){ $ids[strtolower((string)$r['slug'])]=(int)$r['id']; }
+        $existing=[]; foreach($db->query("SELECT normalized_alias,product_id FROM product_aliases")->fetchAll(\PDO::FETCH_ASSOC) as $r){ $existing[(string)$r['normalized_alias']]=(int)$r['product_id']; }
+        $plan=\App\Services\Catalog\AliasImport::plan($text,$ids,$existing);
+        if(($_POST['mode'] ?? '')==='confirm' && $plan['counts']['new']>0){
+            $db->beginTransaction();
+            try{
+                $stmt=$db->prepare("INSERT INTO product_aliases (product_id,alias_text,normalized_alias,source_note,confidence,created_at,updated_at) VALUES (:p,:a,:n,:s,100,NOW(),NOW())");
+                $added=0;
+                foreach($plan['rows'] as $r){ if($r['status']!=='new') continue; $stmt->execute(['p'=>$ids[$r['slug']],'a'=>$r['alias'],'n'=>$this->normalizeAlias($r['alias']),'s'=>$r['source'] ?? 'Bulk import']); $added++; }
+                $db->commit();
+            }catch(\Throwable $e){ if($db->inTransaction()) $db->rollBack(); $this->flash('danger','Alias import failed; nothing was saved.'); $this->redirect('/admin/product-aliases'); }
+            $this->audit('product_aliases_imported','product_alias',null,['added'=>$added,'skipped'=>array_sum($plan['counts'])-$added]);
+            $this->flash('success',"Imported {$added} aliases.");
+            $this->redirect('/admin/product-aliases');
+        }
+        $d=new Dashboard();
+        $this->render('aliases','Product Aliases',['canManage'=>$this->canManage(),'aliases'=>$d->aliases(),'products'=>$d->reviewProductOptions(),'import'=>$plan,'importText'=>$text]);
+    }
     public function articleSave(): void {
         if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/articles'); }
@@ -613,5 +641,5 @@ final class AdminController extends Controller {
         $slug=preg_replace('/[^a-z0-9ก-๙]+/iu','-',mb_strtolower(trim($value),'UTF-8')) ?? '';
         return trim($slug,'-');
     }
-    private function normalizeAlias(string $value): string { return preg_replace('/[^a-z0-9ก-๙]+/iu','',mb_strtolower($value,'UTF-8')) ?? ''; }
+    private function normalizeAlias(string $value): string { return \App\Services\Catalog\AliasImport::normalize($value); }
 }

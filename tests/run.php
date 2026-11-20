@@ -102,6 +102,8 @@ $commands = [
     ['label' => 'tests/glossary_test.php', 'args' => ['tests/glossary_test.php']],
     ['label' => 'tests/used_vs_new_test.php', 'args' => ['tests/used_vs_new_test.php']],
     ['label' => 'tests/upgrade_finder_test.php', 'args' => ['tests/upgrade_finder_test.php']],
+    ['label' => 'tests/alias_import_test.php', 'args' => ['tests/alias_import_test.php']],
+    ['label' => 'tests/migration_status_test.php', 'args' => ['tests/migration_status_test.php']],
     ['label' => 'tests/watch_list_test.php', 'args' => ['tests/watch_list_test.php']],
     ['label' => 'tests/publish_at_test.php', 'args' => ['tests/publish_at_test.php']],
     ['label' => 'tests/daily_pipeline_test.php', 'args' => ['tests/daily_pipeline_test.php']],

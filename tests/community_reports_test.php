@@ -165,5 +165,5 @@ ok_cr(str_contains($idx, "\$router->get('/admin/community-reports',[AdminControl
 $adm = $unix($root . '/app/Controllers/AdminController.php');
 ok_cr(str_contains($adm, "public function communityReports(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;") && str_contains($adm, "public function communityReportAction(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;\n        if(!Csrf::verify(\$_POST['_token']??null))"), 'Viewing the queue and deciding a report need the permission, and a decision needs a CSRF token');
 ok_cr(str_contains($unix($root . '/app/Views/admin/data-health.php'), 'Community reports') && str_contains($unix($root . '/cli/retention_purge.php'), '--community-days=N'), 'Data health shows the counts and the retention CLI has the option (S4)');
-ok_cr(str_contains($unix($root . '/app/Services/Seo/SeoService.php'), "'/account', '/report']"), 'robots.txt keeps the form out of search');
+ok_cr(str_contains($unix($root . '/app/Services/Seo/SeoService.php'), "'/account', '/report', "), 'robots.txt keeps the form out of search');
 echo "community_reports_test: PASS\n";

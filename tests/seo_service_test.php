@@ -11,7 +11,7 @@ ok_seo(S::canonical('https://example.org/app/', '/price/rtx-3070/?utm=x#a') === 
 ok_seo(S::canonical('https://example.org', '/') === 'https://example.org/', 'The home page canonical keeps a single slash');
 
 $robots = S::robotsTxt('https://example.org/app/');
-foreach (['/admin', '/login', '/deal-checker/result/'] as $d) { ok_seo(str_contains($robots, "Disallow: $d\n"), "robots.txt disallows $d"); }
+foreach (['/admin', '/login', '/deal-checker/result/', '/watch'] as $d) { ok_seo(str_contains($robots, "Disallow: $d\n"), "robots.txt disallows $d"); }
 ok_seo(str_contains($robots, "Sitemap: https://example.org/app/sitemap.xml\n") && str_starts_with($robots, "User-agent: *\n"), 'robots.txt points at the sitemap');
 
 $xml = S::sitemapXml('https://example.org', ['/', '/price', '/price/a&b', '/admin/products', '/login', '/price', '/deal-checker/result/abc']);
@@ -32,4 +32,6 @@ ok_seo(S::description('d', "a   b\n<c>x</c>") === 'a b x', 'Whitespace is collap
 $long = S::description('d', str_repeat('ก', 400));
 ok_seo(mb_strlen($long, 'UTF-8') === 160 && str_ends_with($long, '…'), 'Long Thai text is cut to 160 characters on a character boundary');
 
+$ctl = (string)file_get_contents(dirname(__DIR__) . '/app/Controllers/SeoController.php');
+ok_seo(str_contains($ctl, "'/upgrade'") && !str_contains($ctl, "'/watching'"), 'LS-26: the upgrade finder is in the sitemap, the personal watch list is not');
 echo "seo_service_test: PASS\n";
