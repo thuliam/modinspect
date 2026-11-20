@@ -82,6 +82,9 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/compare') ?>" href="<?= $base ?>/compare">เทียบรุ่น</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/condition-guide') ?>" href="<?= $base ?>/condition-guide">เช็กสภาพ</a></li>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/deal-checker') ?>" href="<?= $base ?>/deal-checker">Deal Checker</a></li>
+                <li class="nav-item"><a class="nav-link<?= $navCurrent('/read-listing') ?>" href="<?= $base ?>/read-listing">วางประกาศ</a></li>
+                <li class="nav-item"><a class="nav-link<?= $navCurrent('/blog') ?>" href="<?= $base ?>/blog">บทความ</a></li>
+                <?php if (!empty($config['community_forum']['enabled'])): ?><li class="nav-item"><a class="nav-link<?= $navCurrent('/community') ?>" href="<?= $base ?>/community">ชุมชน</a></li><?php endif; ?>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/build') ?>" href="<?= $base ?>/build">ประกอบคอม</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="cat-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">เพิ่มเติม</a>

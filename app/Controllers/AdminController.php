@@ -190,6 +190,22 @@ final class AdminController extends Controller {
         global $config; $key=(string)($config['community_reports']['hmac_key']??'');
         return new \App\Services\Community\CommunityReports(Database::connection($config['db']),strlen($key)>=32 ? $key : str_repeat('x',32));
     }
+    /** LS-24 M9: the forum moderation queue: items with open flags, and the actions on them. Same permission as the report queue. */
+    public function communityModeration(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        global $config;
+        try { $f=new \App\Services\Community\Forum(Database::connection($config['db'])); $queue=$f->queue(); $counts=$f->counts(); $ready=true; } catch(\PDOException) { $queue=[]; $counts=[]; $ready=false; }
+        $this->render('community-moderation','Community moderation',['queue'=>$queue,'counts'=>$counts,'ready'=>$ready,'featureOn'=>\App\Services\Community\Forum::enabled($config)]);
+    }
+    public function communityModerationAction(): void {
+        if(!$this->requirePermission('reports.moderate')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/community-moderation'); }
+        global $config; $f=new \App\Services\Community\Forum(Database::connection($config['db']));
+        $type=(string)($_POST['type']??''); $id=(int)($_POST['id']??0); $action=(string)($_POST['action']??'');
+        $r=$f->moderate((int)$this->user()['id'],$type,$id,$action);
+        $this->flash($r['ok']?'success':'danger',$r['ok']?'Done.':'Could not apply: '.($r['error']??'error'));
+        $this->redirect('/admin/community-moderation');
+    }
     public function communityReports(): void {
         if(!$this->requirePermission('reports.moderate')) return;
         global $config; $status=(string)($_GET['status']??'new'); if(!in_array($status,['new','accepted','rejected','spam','all'],true)){ $status='new'; }

@@ -60,4 +60,10 @@ ok_sf($ids(F::apply($more, [], 'cooling', ['ctype' => 'AIO'])) === [71] && $ids(
 ok_sf(F::options($more, [], 'psu') === ['watt' => ['550', '750']], 'PSU watt options sort numerically');
 ok_sf(isset(F::options($more, [], 'gpu')['chip']) && !in_array('', F::options($more, [], 'gpu')['chip'], true), 'GPU chip options exclude unknown');
 
+// LS-23 B5: a collected spec beats the guess from the name
+$a1 = F::attrs($p(80, 'ram', 'Mystery 16GB DDR4-2666'), ['speed_mhz' => '3200']);
+ok_sf($a1['speed'] === '3200', 'speed_mhz spec beats the speed in the name');
+ok_sf(F::attrs($p(81, 'storage', 'Drive 1TB'), ['interface' => 'NVMe PCIe 4.0'])['iface'] === 'NVMe' && F::attrs($p(82, 'psu', 'PSU'), ['psu_capacity_watt' => '850'])['watt'] === '850', 'interface and PSU watt specs are used');
+ok_sf(F::attrs($p(83, 'cooling', 'Noctua Air Tower AIO-compatible'), ['cooler_type' => 'aio'])['ctype'] === 'AIO', 'cooler_type spec beats the name');
+
 echo "spec_filter_test: PASS\n";

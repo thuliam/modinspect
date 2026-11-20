@@ -32,13 +32,17 @@ final class SpecFilter
         if (($cap === '' || !is_numeric($cap)) && preg_match('/(\d+(?:\.\d+)?)\s?(TB|GB)\b/i', $name, $m)) { $cap = (string)(int)round((float)$m[1] * (strtoupper($m[2]) === 'TB' ? 1000 : 1)); }
         if ($cap !== '' && is_numeric($cap)) { $a['cap'] = (string)(int)$cap; }
         if (preg_match('/\bDDR[345]-(\d{3,5})\b/i', $name, $m)) { $a['speed'] = $m[1]; }
-        // LS-22: facts read from the model name only when it says them outright; otherwise the model simply has no value
+        if (isset($specs['speed_mhz']) && ctype_digit(trim($specs['speed_mhz']))) { $a['speed'] = (string)(int)$specs['speed_mhz']; }   // LS-23: a collected spec beats the name
+        // LS-22: facts read from the model name only when it says them outright; otherwise the model simply has no value (LS-23: a collected spec is used first)
         if (preg_match('/\b(NVMe|SATA)\b/i', $name, $m)) { $a['iface'] = strtoupper($m[1]) === 'NVME' ? 'NVMe' : 'SATA'; } elseif (preg_match('/\bM\.2\b/i', $name)) { $a['iface'] = 'NVMe'; }
         if (($product['category_slug'] ?? '') === 'psu' && preg_match('/\b(\d{3,4})\s?W\b/i', $name, $m)) { $a['watt'] = (string)(int)$m[1]; }
         if (($product['category_slug'] ?? '') === 'gpu') {
             if (preg_match('/\b(NVIDIA|GeForce|RTX|GTX)\b/i', $name)) { $a['chip'] = 'NVIDIA'; } elseif (preg_match('/\b(AMD|Radeon|RX)\b/i', $name)) { $a['chip'] = 'AMD'; } elseif (preg_match('/\b(Intel|Arc)\b/i', $name)) { $a['chip'] = 'Intel'; }
         }
-        if (($product['category_slug'] ?? '') === 'cooling') {
+        if (isset($specs['interface']) && preg_match('/nvme|sata/i', $specs['interface'], $im)) { $a['iface'] = strtoupper($im[0]) === 'NVME' ? 'NVMe' : 'SATA'; }
+        if (isset($specs['psu_capacity_watt']) && ctype_digit(trim($specs['psu_capacity_watt']))) { $a['watt'] = (string)(int)$specs['psu_capacity_watt']; }
+        if (isset($specs['cooler_type']) && in_array(strtolower(trim($specs['cooler_type'])), ['air', 'aio'], true)) { $a['ctype'] = strtolower(trim($specs['cooler_type'])) === 'aio' ? 'AIO' : 'Air'; }
+        if (($product['category_slug'] ?? '') === 'cooling' && !isset($a['ctype'])) {
             if (preg_match('/\b(AIO|Liquid|Water)\b/i', $name)) { $a['ctype'] = 'AIO'; } elseif (preg_match('/\b(Air|Tower)\b/i', $name)) { $a['ctype'] = 'Air'; }
         }
         return $a;

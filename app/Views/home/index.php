@@ -167,7 +167,7 @@ while (count($featured) < 5 && $byCat) {
         <div class="mi-cta reveal">
             <div class="mi-cta-art"><img src="<?= $base ?>/assets/brand/cta-hardware.png" width="600" height="280" alt="" loading="lazy"></div>
             <div class="mi-cta-copy"><h2>เจอราคาประกาศแล้วไม่แน่ใจ?</h2><p>เปรียบเทียบราคาที่คุณเจอกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p></div>
-            <div class="mi-cta-act"><a class="btn btn-lime" href="<?= $base ?>/deal-checker"><i class="fas fa-balance-scale" aria-hidden="true"></i> เปิด Deal Checker</a><a class="btn btn-ghost" href="<?= $base ?>/price"><i class="fas fa-search" aria-hidden="true"></i> เลือกดูรุ่น</a><a class="btn btn-ghost" href="<?= $base ?>/compare"><i class="fas fa-columns" aria-hidden="true"></i> เทียบรุ่น</a></div>
+            <div class="mi-cta-act"><a class="btn btn-lime" href="<?= $base ?>/deal-checker"><i class="fas fa-balance-scale" aria-hidden="true"></i> เปิด Deal Checker</a><a class="btn btn-ghost" href="<?= $base ?>/read-listing"><i class="fas fa-paste" aria-hidden="true"></i> วางประกาศให้ระบบอ่าน</a><a class="btn btn-ghost" href="<?= $base ?>/price"><i class="fas fa-search" aria-hidden="true"></i> เลือกดูรุ่น</a><a class="btn btn-ghost" href="<?= $base ?>/compare"><i class="fas fa-columns" aria-hidden="true"></i> เทียบรุ่น</a></div>
         </div>
     </div>
 </section>

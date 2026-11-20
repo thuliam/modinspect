@@ -1,6 +1,15 @@
 ﻿# ModInspect Session Handoff
 
-## LATEST HANDOFF (2026-11-19, LS-21 done, LS-22 running). Read this first; everything below is history.
+## LATEST HANDOFF (2026-11-20, LS-24 done). Read this first; everything below is history.
+
+- **State:** `main` = `studio` was unified at `5957835` (2026-11-19, `checkpoint` and `backup` branches deleted, backup tip was `8607f80`). LS-22, LS-23 and LS-24 are on `studio` after that, pushed once at the end of LS-24. CI only runs on a pull request: open `studio` -> `main` to run it; merging is the owner's.
+- **LS-22/23/24 in one line each:** LS-22 price-index filters, Compare share/print, retention and CSP summary CLIs; LS-23 the data intake pipeline (`database/contracts/intake-v1.json`, `cli/intake_*`, `docs/DATA_CONTRACT.md`); LS-24 paste-a-listing reader, bargaining helper, share card/text, Blog, Community forum (closed), module switch runbook, preflight, retention for seller reports and forum, daily pipeline, review batch report. Details: `docs/PROJECT_STATUS.md`, `docs/DECISION_LOG.md` DL-111..DL-114.
+- **Closed behind switches (all OFF):** community reports, community forum, seller check (blacklist), public seller listings, member sign-in providers. How to open and close each, with tests: `docs/MODULE_SWITCHES_TH.md`.
+- **Not done:** M1 condition-check content (needs owner wording HG-4 and the data), M3 alias proposals and golden-set growth, upgrade finder, on-site watch list, post-purchase follow-up. Copy changes in `docs/VOICE_GUIDE_TH.md` are proposals waiting for the owner.
+- **Owner gates open:** apply or reject the voice guide lines, community rules and privacy wording, who moderates, retention periods, lawyer review (HG-14) and key (HG-18), HG-13 OAuth apps, brand name HG-5, Admin re-UAT G-2, credential rotation G-5, deploy target and host steps, migrations 022 to 027 on DEV and host, merge to `main`.
+- **Collection:** the owner is gathering files by the master prompt; `php cli/intake_validate.php <folder-or-zip>` then `php cli/intake_daily_run.php <folder>` (dry run first).
+
+## PREVIOUS HANDOFF (2026-11-19, LS-21 done, LS-22 running). History.
 
 - **Branch:** `studio` (PR #6). LS-21 is `4fae5de`, committed, **not pushed** (owner pushes). Latest CI on the PR (run 44523306461) was green. `dist/` is deployment-package output containing a copy of `.env`; it is git-ignored since LS-22.
 - **Tests:** `MODINSPECT_ENV_FILE=.env.testing APP_ENV=testing C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64\php.exe tests/run.php` (exit 0). Never run CLI against the DB without `MODINSPECT_ENV_FILE=.env.testing`.

@@ -147,4 +147,7 @@ $hasReferenceRange = $deal['result_label'] !== 'insufficient'
         <?php endif; ?>
     </div>
     <?php endif; ?>
+    <?php // LS-24 A3: bargaining help from the same stored band the page shows
+    $neg = $hasReferenceRange ? \App\Services\Deal\Negotiation::plan((string) $deal['full_name'], (float) $deal['user_price'], (float) $deal['suggested_price_min'], (float) $deal['suggested_price_max'], (float) ($deal['median'] ?? 0) ?: null, (int) ($deal['valid_sample_size'] ?? 0)) : null;
+    require ROOT_PATH . '/app/Views/components/negotiation.php'; ?>
 </section>

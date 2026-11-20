@@ -17,10 +17,10 @@ final class RetentionPurge
     public const MIN_HOURS = 1;
 
     /**
-     * @param array{deal_checks_days?:?int,builds_days?:?int,community_days?:?int,ratelimit_hours?:?int} $opts
+     * @param array{deal_checks_days?:?int,builds_days?:?int,community_days?:?int,seller_pending_days?:?int,forum_days?:?int,ratelimit_hours?:?int} $opts
      * @return array{apply:bool,results:array<string,array{period:int,unit:string,matched:int,deleted:int}>}
      */
-    public static function run(PDO $db, array $opts, string $cacheDir, bool $apply, ?int $now = null): array
+    public static function run(PDO $db, array $opts, string $cacheDir, bool $apply, ?int $now = null, ?string $evidenceDir = null): array
     {
         $now ??= time();
         $targets = [];
@@ -41,7 +41,19 @@ final class RetentionPurge
             $community = (int)$opts['community_days'];
             if ($community < self::MIN_DAYS) { throw new InvalidArgumentException('community_days must be at least ' . self::MIN_DAYS . ' days'); }
         }
-        if ($targets === [] && $hours === null && $community === null) { throw new InvalidArgumentException('Give at least one period; there is no default retention'); }
+        // LS-24 M6 (ADR-007 step 5, HG-14 sets the number): seller reports that were never verified (pending or rejected), counted from the day they were made, with their evidence files. Verified and disputed reports are never purged here.
+        $sellerPending = null;
+        if (($opts['seller_pending_days'] ?? null) !== null) {
+            $sellerPending = (int)$opts['seller_pending_days'];
+            if ($sellerPending < self::MIN_DAYS) { throw new InvalidArgumentException('seller_pending_days must be at least ' . self::MIN_DAYS . ' days'); }
+        }
+        // LS-24 M9: forum content that a moderator or three members' flags hid, counted from the day it was written. Visible content is never purged here.
+        $forum = null;
+        if (($opts['forum_days'] ?? null) !== null) {
+            $forum = (int)$opts['forum_days'];
+            if ($forum < self::MIN_DAYS) { throw new InvalidArgumentException('forum_days must be at least ' . self::MIN_DAYS . ' days'); }
+        }
+        if ($targets === [] && $hours === null && $community === null && $sellerPending === null && $forum === null) { throw new InvalidArgumentException('Give at least one period; there is no default retention'); }
 
         $tables = ['deal_checks' => 'deal_checks', 'builds' => 'spec_builds'];
         $results = [];
@@ -72,6 +84,26 @@ final class RetentionPurge
                     $deleted = $d->rowCount();
                 }
                 $results['community_reports'] = ['period' => $community, 'unit' => 'days', 'matched' => $matched, 'deleted' => $deleted];
+            }
+            if ($sellerPending !== null) {
+                $cut = date('Y-m-d H:i:s', $now - $sellerPending * 86400);
+                $ids = $db->prepare("SELECT id FROM seller_reports WHERE status IN ('pending','rejected') AND created_at < :cut"); $ids->execute(['cut' => $cut]); $ids = array_map('intval', $ids->fetchAll(PDO::FETCH_COLUMN));
+                $matched = count($ids); $deleted = 0;
+                if ($apply && $ids !== []) {
+                    $in = implode(',', $ids);
+                    if ($evidenceDir !== null) { foreach ($db->query("SELECT file_name FROM seller_report_evidence WHERE report_id IN ($in)")->fetchAll(PDO::FETCH_COLUMN) as $fn) { $p = rtrim($evidenceDir, '/\\') . '/' . basename((string)$fn); if (is_file($p)) { @unlink($p); } } }
+                    $deleted = $db->exec("DELETE FROM seller_reports WHERE id IN ($in)");
+                }
+                $results['seller_reports_unverified'] = ['period' => $sellerPending, 'unit' => 'days', 'matched' => $matched, 'deleted' => (int)$deleted];
+            }
+            if ($forum !== null) {
+                $cut = date('Y-m-d H:i:s', $now - $forum * 86400); $matched = 0; $deleted = 0;
+                foreach (['thread' => 'community_threads', 'post' => 'community_posts', 'review' => 'community_reviews'] as $type => $tbl) {
+                    $q = $db->prepare("SELECT id FROM $tbl WHERE status = 'hidden' AND created_at < :cut"); $q->execute(['cut' => $cut]); $ids = array_map('intval', $q->fetchAll(PDO::FETCH_COLUMN));
+                    $matched += count($ids);
+                    if ($apply && $ids !== []) { $in = implode(',', $ids); $db->exec("DELETE FROM community_flags WHERE target_type = '$type' AND target_id IN ($in)"); $db->exec("DELETE FROM community_votes WHERE target_type = '$type' AND target_id IN ($in)"); $deleted += (int)$db->exec("DELETE FROM $tbl WHERE id IN ($in)"); }
+                }
+                $results['forum_hidden'] = ['period' => $forum, 'unit' => 'days', 'matched' => $matched, 'deleted' => $deleted];
             }
             if ($hours !== null) {
                 $matched = 0;

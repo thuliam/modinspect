@@ -50,6 +50,14 @@ final class PriceSnapshotService
         return $snapshot;
     }
 
+    /** LS-23 C1: the snapshot recalculateProduct() WOULD store for today, without storing it (null below the minimum sample). Read-only. */
+    public function previewProduct(int $productId, string $priceType = 'asking'): ?array
+    {
+        $cohort = $this->buildCohort($productId, $priceType);
+        if (count($cohort['included']) < 3) { return null; }
+        return $this->calculateSnapshot($productId, $priceType, $cohort['included'], $cohort);
+    }
+
     public function reproduceSnapshot(int $snapshotId): array
     {
         $stmt = $this->db->prepare("SELECT * FROM price_indices WHERE id=:id LIMIT 1");

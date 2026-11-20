@@ -50,6 +50,21 @@ final class EnvPreflight
         $add('SELLER_CHECK', !$checkOn ? 'pass' : ($keyOk ? 'warn' : 'fail'), !$checkOn ? 'the seller check is off' : ($keyOk ? 'the seller check is ON: confirm the lawyer review (HG-14) is done' : 'SELLER_CHECK_ENABLED is on but SELLER_CHECK_HMAC_KEY is missing or shorter than 32 characters'));
         $add('SELLER_LISTINGS_PUBLIC', $truthy($val('SELLER_LISTINGS_PUBLIC')) ? 'warn' : 'pass', $truthy($val('SELLER_LISTINGS_PUBLIC')) ? 'approved seller listings are public: confirm HG-16 (marketplace decision)' : 'seller listings are not public');
 
+        // LS-24 M5/M6: the community switches. A switch on without its safeguard fails; on with it, the owner is reminded what must be approved first.
+        $repOn = $truthy($val('COMMUNITY_REPORTS_ENABLED')); $repKey = strlen($val('COMMUNITY_REPORTS_HMAC_KEY')) >= 32;
+        $add('COMMUNITY_REPORTS', !$repOn ? 'pass' : ($repKey ? 'warn' : 'fail'), !$repOn ? 'community reports are off' : ($repKey ? 'community reports are ON: confirm the privacy wording and who moderates (docs/COMMUNITY_REPORTS_PRIVACY_DRAFT_TH.md)' : 'COMMUNITY_REPORTS_ENABLED is on but COMMUNITY_REPORTS_HMAC_KEY is missing or shorter than 32 characters'));
+        $add('COMMUNITY_FORUM', $truthy($val('COMMUNITY_FORUM_ENABLED')) ? 'warn' : 'pass', $truthy($val('COMMUNITY_FORUM_ENABLED')) ? 'the community forum is ON: confirm the community rules, the privacy wording and who moderates' : 'the community forum is off');
+        // what the host must be able to do (ctx comes from the CLI on the host: loaded extensions and writable folders)
+        if (isset($ctx['extensions']) && is_array($ctx['extensions'])) {
+            $must = array_values(array_filter(['mbstring', 'pdo_mysql', 'json'], static fn(string $e): bool => empty($ctx['extensions'][$e])));
+            $add('PHP_EXTENSIONS', $must === [] ? 'pass' : 'fail', $must === [] ? 'the required PHP extensions are loaded' : 'enable the PHP extension(s): ' . implode(', ', $must));
+            $nice = array_values(array_filter(['gd_freetype' => 'GD with FreeType (share cards)', 'zip' => 'zip (batch intake from a zip file)'], static fn(string $label, string $k): bool => empty($ctx['extensions'][$k]), ARRAY_FILTER_USE_BOTH));
+            $add('PHP_OPTIONAL', $nice === [] ? 'pass' : 'warn', $nice === [] ? 'GD with FreeType and zip are available' : 'not available, the matching feature stays off: ' . implode(', ', $nice));
+        }
+        if (isset($ctx['writable']) && is_array($ctx['writable'])) {
+            $bad = array_keys(array_filter($ctx['writable'], static fn($ok): bool => !$ok));
+            $add('STORAGE_WRITABLE', $bad === [] ? 'pass' : 'fail', $bad === [] ? 'the folders the application writes to are writable' : 'make these folders writable by the web user: ' . implode(', ', $bad));
+        }
         $add('ENV_FILE_LOCATION', empty($ctx['public_env_exists']) ? 'pass' : 'fail', empty($ctx['public_env_exists']) ? 'no .env inside the web root' : 'an .env file is inside the web root; move it out');
         $mode = $ctx['file_mode'] ?? null;
         if ($mode !== null) {

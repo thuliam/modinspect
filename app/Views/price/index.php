@@ -53,11 +53,13 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
                 <label class="mr-2 mb-0" for="spec-speed_min"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS['speed']) ?></label>
                 <select id="spec-speed_min" name="speed_min" class="form-control h-auto mr-1" data-autosubmit data-width="110px" aria-label="ความเร็วต่ำสุด">
                     <option value="">ต่ำสุด</option>
+                    <?php if (!empty($specFilters['speed_min']) && !in_array($specFilters['speed_min'], $speedOpts, true)): ?><option value="<?= htmlspecialchars($specFilters['speed_min']) ?>" selected><?= htmlspecialchars($specFilters['speed_min']) ?></option><?php endif; ?>
                     <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_min'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
                 </select>
                 <span class="mr-1">–</span>
                 <select id="spec-speed_max" name="speed_max" class="form-control h-auto" data-autosubmit data-width="110px" aria-label="ความเร็วสูงสุด">
                     <option value="">สูงสุด</option>
+                    <?php if (!empty($specFilters['speed_max']) && !in_array($specFilters['speed_max'], $speedOpts, true)): ?><option value="<?= htmlspecialchars($specFilters['speed_max']) ?>" selected><?= htmlspecialchars($specFilters['speed_max']) ?></option><?php endif; ?>
                     <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_max'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
                 </select>
                 </div>

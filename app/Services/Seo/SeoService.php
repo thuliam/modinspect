@@ -108,4 +108,24 @@ Disallow: /
         if (mb_strlen($t, 'UTF-8') <= $max) { return $t; }
         return rtrim(mb_substr($t, 0, $max - 1, 'UTF-8')) . '…';
     }
+    /** LS-24 M8: schema.org Article data for a published article; JSON_HEX_TAG so it can never close the script tag it sits in */
+    public static function articleJsonLd(array $a, string $url, string $image, string $siteName = 'ModInspect'): string
+    {
+        $d = ['@context' => 'https://schema.org', '@type' => 'Article', 'headline' => mb_substr((string)($a['title'] ?? ''), 0, 110, 'UTF-8'), 'url' => $url, 'mainEntityOfPage' => $url, 'image' => $image,
+            'datePublished' => date('c', (int)strtotime((string)($a['published_at'] ?? 'now'))), 'dateModified' => date('c', (int)strtotime((string)($a['updated_at'] ?? $a['published_at'] ?? 'now'))),
+            'author' => ['@type' => 'Organization', 'name' => $siteName], 'publisher' => ['@type' => 'Organization', 'name' => $siteName], 'inLanguage' => 'th'];
+        return (string)json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
+    }
+
+    /** LS-24 M8: RSS 2.0 of the newest published articles (title, link, summary, date); every text field is XML-escaped @param list<array<string,mixed>> $items rows with title, url, summary, published_at */
+    public static function rssXml(string $siteTitle, string $siteUrl, string $description, array $items): string
+    {
+        $x = static fn(string $s): string => htmlspecialchars($s, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+        $out = ['<?xml version="1.0" encoding="UTF-8"?>', '<rss version="2.0"><channel>', '<title>' . $x($siteTitle) . '</title>', '<link>' . $x($siteUrl) . '</link>', '<description>' . $x($description) . '</description>', '<language>th</language>'];
+        foreach ($items as $i) {
+            $out[] = '<item><title>' . $x((string)$i['title']) . '</title><link>' . $x((string)$i['url']) . '</link><guid isPermaLink="true">' . $x((string)$i['url']) . '</guid><description>' . $x((string)$i['summary']) . '</description><pubDate>' . date('r', (int)strtotime((string)$i['published_at'])) . '</pubDate></item>';
+        }
+        $out[] = '</channel></rss>';
+        return implode("\n", $out) . "\n";
+    }
 }
