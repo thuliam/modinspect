@@ -100,8 +100,23 @@ final class SellerCheck
     /** @return list<array> open disputes with the contact email (admin only) */
     public function openDisputes(): array
     {
-        return $this->db->query("SELECT id, identifier_hash, explanation, contact_email, created_at, (SELECT MAX(identifier_last4) FROM seller_reports r WHERE r.identifier_hash = d.identifier_hash) last4
+        $rows = $this->db->query("SELECT id, identifier_hash, explanation, contact_email, created_at, (SELECT MAX(identifier_last4) FROM seller_reports r WHERE r.identifier_hash = d.identifier_hash) last4
             FROM seller_report_disputes d WHERE status = 'open' ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+        $now = new \DateTimeImmutable('now');
+        foreach ($rows as &$r) { $r += self::dueInfo((string)$r['created_at'], $now); }
+        return $rows;
+    }
+
+    /** LS-25: DRAFT response window for a dispute (the owner and the lawyer set the real one, HG-14); the admin queue shows age and whether it is past the window. Pure. */
+    public const DISPUTE_RESPONSE_DAYS = 14;
+
+    /** @return array{age_days:int,overdue:bool} */
+    public static function dueInfo(string $createdAt, \DateTimeImmutable $now): array
+    {
+        $c = \DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $createdAt);
+        if ($c === false) { return ['age_days' => 0, 'overdue' => false]; }
+        $days = max(0, (int)$c->diff($now)->format('%r%a'));
+        return ['age_days' => $days, 'overdue' => $days > self::DISPUTE_RESPONSE_DAYS];
     }
 
     /** @return array{ok:bool,error?:string} verified | rejected for a report; a rejection needs a reason */

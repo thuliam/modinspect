@@ -452,15 +452,16 @@ final class AdminController extends Controller {
             $this->flash('danger','Article requires title, slug, and body.');
             $this->redirect('/admin/articles');
         }
+        $pubAt=\App\Services\Blog\PublishAt::parse(isset($_POST['publish_at']) ? (string)$_POST['publish_at'] : null);   // LS-25: optional future publish time
         try{
             if($id){
-                $stmt=$db->prepare("UPDATE articles SET title=:title,slug=:slug,excerpt=:excerpt,body=:body,status=:status,published_at=CASE WHEN :status_pub='published' AND published_at IS NULL THEN NOW() WHEN :status_pub2='published' THEN published_at ELSE NULL END,updated_at=NOW() WHERE id=:id");
-                $stmt->execute(['title'=>$title,'slug'=>$slug,'excerpt'=>trim((string)($_POST['excerpt'] ?? '')) ?: null,'body'=>$body,'status'=>$status,'status_pub'=>$status,'status_pub2'=>$status,'id'=>$id]);
+                $stmt=$db->prepare("UPDATE articles SET title=:title,slug=:slug,excerpt=:excerpt,body=:body,status=:status,published_at=CASE WHEN :status_pub0='published' AND :pub_at0 IS NOT NULL THEN :pub_at1 WHEN :status_pub='published' AND published_at IS NULL THEN NOW() WHEN :status_pub2='published' THEN published_at ELSE NULL END,updated_at=NOW() WHERE id=:id");
+                $stmt->execute(['title'=>$title,'slug'=>$slug,'excerpt'=>trim((string)($_POST['excerpt'] ?? '')) ?: null,'body'=>$body,'status'=>$status,'status_pub'=>$status,'status_pub2'=>$status,'status_pub0'=>$status,'pub_at0'=>$pubAt,'pub_at1'=>$pubAt,'id'=>$id]);
                 $this->audit('article_updated','article',$id,['slug'=>$slug,'status'=>$status]);
                 $this->flash('success','Article updated.');
             } else {
-                $stmt=$db->prepare("INSERT INTO articles (author_id,title,slug,excerpt,body,status,published_at,created_at,updated_at) VALUES (:author_id,:title,:slug,:excerpt,:body,:status,CASE WHEN :status_pub='published' THEN NOW() ELSE NULL END,NOW(),NOW())");
-                $stmt->execute(['author_id'=>(int)$this->user()['id'],'title'=>$title,'slug'=>$slug,'excerpt'=>trim((string)($_POST['excerpt'] ?? '')) ?: null,'body'=>$body,'status'=>$status,'status_pub'=>$status]);
+                $stmt=$db->prepare("INSERT INTO articles (author_id,title,slug,excerpt,body,status,published_at,created_at,updated_at) VALUES (:author_id,:title,:slug,:excerpt,:body,:status,CASE WHEN :status_pub0='published' AND :pub_at0 IS NOT NULL THEN :pub_at1 WHEN :status_pub='published' THEN NOW() ELSE NULL END,NOW(),NOW())");
+                $stmt->execute(['author_id'=>(int)$this->user()['id'],'title'=>$title,'slug'=>$slug,'excerpt'=>trim((string)($_POST['excerpt'] ?? '')) ?: null,'body'=>$body,'status'=>$status,'status_pub'=>$status,'status_pub0'=>$status,'pub_at0'=>$pubAt,'pub_at1'=>$pubAt]);
                 $this->audit('article_created','article',(int)$db->lastInsertId(),['slug'=>$slug,'status'=>$status]);
                 $this->flash('success','Article created.');
             }

@@ -76,4 +76,8 @@ try {
 } finally {
     $db->rollBack();
 }
+// LS-25: dispute age against the (draft) response window
+$nowD = new DateTimeImmutable('2026-11-20 12:00:00');
+ok_c(C::dueInfo('2026-11-10 12:00:00', $nowD) === ['age_days' => 10, 'overdue' => false] && C::dueInfo('2026-11-05 11:00:00', $nowD)['overdue'] === true && C::dueInfo('2026-11-06 12:00:00', $nowD)['overdue'] === false, 'Overdue only after more than the window (14 days)');
+ok_c(C::dueInfo('garbage', $nowD) === ['age_days' => 0, 'overdue' => false] && C::dueInfo('2026-12-01 00:00:00', $nowD)['age_days'] === 0, 'An unreadable or future date is never overdue');
 echo "seller_check_test: PASS\n";

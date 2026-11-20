@@ -32,6 +32,18 @@ final class ModuleController extends Controller {
         $options=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'name'=>$p['full_name'],'category'=>$p['category_name']],$all);
         $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen),'unmatched'=>$unmatched,'pairs'=>\App\Services\Catalog\CompareTable::suggestPairs($all)]);
     }
+    /** LS-25 A6: upgrade finder. The model comes from the path or ?m=; unknown or unsupported categories get a plain explanation, never a guess. */
+    public function upgrade(string $slug=''): void {
+        $model=new Product();
+        $typed=$slug!=='' ? $slug : (is_string($_GET['m']??null) ? trim($_GET['m']) : '');
+        $all=$model->search();
+        $s=$typed!=='' ? \App\Services\Catalog\CompareTable::resolve($typed,$all) : null;
+        $base=null; foreach($all as $p){ if($s!==null && (string)$p['slug']===$s){ $base=$p; break; } }
+        $result=null;
+        if($base){ $result=\App\Services\Catalog\UpgradeFinder::find($base,$all,$model->specsFor(\App\Services\Catalog\UpgradeFinder::specKeys((string)$base['category_slug']),(string)$base['category_slug'])); }
+        $options=[]; foreach($all as $p){ if(\App\Services\Catalog\UpgradeFinder::supports((string)$p['category_slug'])){ $options[]=['slug'=>$p['slug'],'name'=>$p['full_name']]; } }
+        $this->view('modules/upgrade',['title'=>'อัปเกรดจากรุ่นที่มี','metaDescription'=>'เลือกรุ่นที่ใช้อยู่ แล้วดูรุ่นที่สเปกมากกว่าพร้อมราคามือสองที่ตรวจแล้ว และสิ่งที่ต้องเช็กก่อนซื้อ','have'=>$base,'result'=>$result,'typed'=>$typed,'options'=>$options]);
+    }
     public function build(string $slug=''): void {
         $result=$slug!=='' ? (new SpecBuild())->find($slug) : null;
         if($slug!=='' && !$result){ http_response_code(404);$this->view('errors/404',['title'=>'ไม่พบสเปก']);return; }

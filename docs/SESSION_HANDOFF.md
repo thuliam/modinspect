@@ -1,6 +1,8 @@
 ﻿# ModInspect Session Handoff
 
-## LATEST HANDOFF (2026-11-20, LS-24 done). Read this first; everything below is history.
+## LATEST HANDOFF (2026-11-20, LS-25 done on `studio`). Read this first; everything below is history.
+
+- **LS-25 (after PR #7 merged, `main` = `studio` = `8a3b96e` before it):** upgrade finder `/upgrade`, watch list `/watching`, post-purchase link, article Publish-at field, dispute age in the seller-report queue, one visual fix (community list). Details in `docs/PROJECT_STATUS.md` and DL-115. Open for the owner: voice-guide choices, M1 wording, M3 alias data, dispute window, opening any closed module. Test DB is rebuilt with `tests/bootstrap_test_db.php --fresh`.
 
 - **State:** `main` = `studio` was unified at `5957835` (2026-11-19, `checkpoint` and `backup` branches deleted, backup tip was `8607f80`). LS-22, LS-23 and LS-24 are on `studio` after that, pushed once at the end of LS-24. CI only runs on a pull request: open `studio` -> `main` to run it; merging is the owner's.
 - **LS-22/23/24 in one line each:** LS-22 price-index filters, Compare share/print, retention and CSP summary CLIs; LS-23 the data intake pipeline (`database/contracts/intake-v1.json`, `cli/intake_*`, `docs/DATA_CONTRACT.md`); LS-24 paste-a-listing reader, bargaining helper, share card/text, Blog, Community forum (closed), module switch runbook, preflight, retention for seller reports and forum, daily pipeline, review batch report. Details: `docs/PROJECT_STATUS.md`, `docs/DECISION_LOG.md` DL-111..DL-114.

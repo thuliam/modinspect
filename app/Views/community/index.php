@@ -14,7 +14,7 @@ $token = htmlspecialchars(\App\Core\Csrf::token());
     <?php if ($list['rows']): ?>
         <div class="card mi-table-card"><ul class="list-group list-group-flush">
         <?php foreach ($list['rows'] as $t): ?>
-            <li class="list-group-item">
+            <li class="list-group-item bg-transparent border-secondary">
                 <a href="<?= $base ?>/community/thread/<?= (int) $t['id'] ?>"><strong><?= htmlspecialchars((string) $t['title']) ?></strong></a>
                 <?php if ($t['status'] === 'locked'): ?><span class="badge">ปิดการตอบ</span><?php endif; ?><br>
                 <small class="text-muted"><?= htmlspecialchars($t['handle']) ?> · <?= $thDate($t['last_post_at'] ?? $t['created_at']) ?> · ตอบ <?= (int) $t['post_count'] ?> · มีประโยชน์ <?= (int) $t['helpful_count'] ?>

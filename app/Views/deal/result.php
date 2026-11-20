@@ -74,6 +74,7 @@ $hasReferenceRange = $deal['result_label'] !== 'insufficient'
                 <a class="button ghost" href="<?= $base ?>/deal-checker">เช็กดีลอื่น</a>
                 <?php if (!empty($cardUrl)): ?><a class="button ghost" href="<?= htmlspecialchars($cardUrl) ?>" download="modinpect-deal.png"><i class="fas fa-download mr-1" aria-hidden="true"></i>บันทึกเป็นภาพ</a><?php endif; ?>
                 <a class="button ghost" href="<?= $base ?>/compare/<?= rawurlencode($deal['slug']) ?>">เทียบกับรุ่นอื่น</a>
+                <?php global $config; if (\App\Services\Community\Forum::enabled($config)): ?><a class="button ghost" href="<?= $base ?>/price/<?= rawurlencode($deal['slug']) ?>#reviews">ซื้อแล้ว? เล่าให้คนอื่นฟัง</a><?php endif; ?>
                 <?php $dealGuideCat = strtolower((string) ($product['category_slug'] ?? '')); if (\App\Services\Catalog\ConditionGuide::for($dealGuideCat) !== null): ?><a class="button ghost" href="<?= $base ?>/condition-guide/<?= rawurlencode($dealGuideCat) ?>">คู่มือเช็กสภาพ</a><?php endif; ?>
             </div>
             <div class="mi-field mt-3">
