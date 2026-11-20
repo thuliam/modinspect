@@ -1,6 +1,8 @@
 ﻿# ModInspect Session Handoff
 
-## LATEST HANDOFF (2026-11-20, LS-25 done on `studio`). Read this first; everything below is history.
+## LATEST HANDOFF (2026-11-20, LS-26 done on branch `ls-26`). Read this first; everything below is history.
+
+- **LS-26 (after PR #8 merged, `main` = `studio` = `af47fe3` before it; work is on branch `ls-26`):** `/upgrade` checked on DEV data (read-only) and the double-padding card defect fixed (also `/watching`); `php cli/migration_status.php [from]` (read-only; DEV: 022 to 027 PENDING); bulk alias import in `/admin/product-aliases`; remove button on `/watching`; `/upgrade` in the sitemap, `/watch` disallowed. See DL-116 and the LS-26 paragraph in `docs/PROJECT_STATUS.md`. Not done: alias data, migrations on DEV, M1 content, cover images, OAuth, key, lawyer.
 
 - **LS-25 (after PR #7 merged, `main` = `studio` = `8a3b96e` before it):** upgrade finder `/upgrade`, watch list `/watching`, post-purchase link, article Publish-at field, dispute age in the seller-report queue, one visual fix (community list). Details in `docs/PROJECT_STATUS.md` and DL-115. Open for the owner: voice-guide choices, M1 wording, M3 alias data, dispute window, opening any closed module. Test DB is rebuilt with `tests/bootstrap_test_db.php --fresh`.
 

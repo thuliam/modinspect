@@ -99,6 +99,7 @@ $router->get('/admin/product-aliases',[AdminController::class,'aliases']);
 $router->get('/admin/product-aliases/data',[AdminController::class,'aliasesData']);
 $router->post('/admin/product-aliases/save',[AdminController::class,'aliasSave']);
 $router->post('/admin/product-aliases/delete',[AdminController::class,'aliasDelete']);
+$router->post('/admin/product-aliases/import',[AdminController::class,'aliasImport']);
 $router->get('/admin/price-observations',[AdminController::class,'observations']);
 $router->get('/admin/price-observations/data',[AdminController::class,'observationsData']);
 $router->get('/admin/review-queue',[AdminController::class,'review']);
