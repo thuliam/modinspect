@@ -1,6 +1,8 @@
 ﻿# ModInspect Session Handoff
 
-## LATEST HANDOFF (2026-11-20, LS-26 done on branch `ls-26`). Read this first; everything below is history.
+## LATEST HANDOFF (2026-11-20, LS-27 on `studio`). Read this first; everything below is history.
+
+- **LS-27 (on `studio`, after PR #9 merged, `main` = `studio` = `97d5e9c` before it; only branches left are `main`, `studio`, `office`):** triage of the external review: see DL-117 and the LS-27 paragraph in `docs/PROJECT_STATUS.md`. Fixed: Deal Checker consent wording (DRAFT), Build lead and sort label, Reader hint, home category buttons `aria-pressed`, alias import hints. Left alone on purpose: stats radar (DL-100), home tagline (voice guide), Select2/spec-builder loading.
 
 - **LS-26 (after PR #8 merged, `main` = `studio` = `af47fe3` before it; work is on branch `ls-26`):** `/upgrade` checked on DEV data (read-only) and the double-padding card defect fixed (also `/watching`); `php cli/migration_status.php [from]` (read-only; DEV: 022 to 027 PENDING); bulk alias import in `/admin/product-aliases`; remove button on `/watching`; `/upgrade` in the sitemap, `/watch` disallowed. See DL-116 and the LS-26 paragraph in `docs/PROJECT_STATUS.md`. Not done: alias data, migrations on DEV, M1 content, cover images, OAuth, key, lawyer.
 

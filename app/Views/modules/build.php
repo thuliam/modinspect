@@ -22,7 +22,7 @@ $thumb = static function (array $p, string $role) use ($base, $roleIcon): string
     <div class="mi-page-heading">
         <span class="eyebrow">จัดสเปกคอมมือสอง</span>
         <h1>จัดสเปกคอมมือสอง</h1>
-        <p class="lead"><?= $result ? 'สเปกที่บันทึกไว้ ราคาและค่าพลังคำนวณใหม่จากข้อมูลล่าสุดทุกครั้งที่เปิดหน้านี้' : 'เลือกทีละชิ้น ระบบกรองให้เหลือเฉพาะรุ่นที่ใช้ด้วยกันได้ และสรุปราคากับค่าพลังของสเปกให้ทันที ราคามือสองมาจากข้อมูลที่ผ่านการตรวจแล้วเท่านั้น' ?></p>
+        <p class="lead"><?= $result ? 'สเปกที่บันทึกไว้ ราคาและค่าพลังคำนวณใหม่จากข้อมูลล่าสุดทุกครั้งที่เปิดหน้านี้' : 'เลือกทีละชิ้น ระบบกรองรุ่นตามเงื่อนไขที่มีข้อมูล (บางข้อตรวจไม่ได้ ควรเช็กสเปกจริงก่อนซื้อ) และสรุปราคากับค่าพลังของสเปกให้ทันที ราคามือสองมาจากข้อมูลที่ผ่านการตรวจแล้วเท่านั้น' ?></p>
     </div>
     <?php foreach ($errors as $error): ?><div class="alert"><?= htmlspecialchars($error) ?></div><?php endforeach; ?>
     <?php if (!empty($recommendation)): ?><div class="notice mb-3"><?= htmlspecialchars($recommendation['notes']) ?></div><?php endif; ?>
@@ -140,7 +140,7 @@ $thumb = static function (array $p, string $role) use ($base, $roleIcon): string
                         <div class="form-row mb-3">
                             <div class="col-12 col-md-4 mb-2"><label class="sr-only" for="f-brand">ยี่ห้อ</label><select id="f-brand" class="form-control form-control-sm h-auto"><option value="">ทุกยี่ห้อ</option></select></div>
                             <div class="col-12 col-md-4 mb-2"><label class="sr-only" for="f-q">ค้นหา</label><input id="f-q" class="form-control form-control-sm h-auto" type="search" placeholder="ค้นหารุ่น" autocomplete="off"></div>
-                            <div class="col-12 col-md-4 mb-2"><label class="sr-only" for="f-sort">เรียงตาม</label><select id="f-sort" class="form-control form-control-sm h-auto"><option value="rel">แนะนำ (มีราคามือสองก่อน)</option><option value="asc">ราคาต่ำไปสูง</option><option value="desc">ราคาสูงไปต่ำ</option><option value="name">ชื่อ A-Z</option></select></div>
+                            <div class="col-12 col-md-4 mb-2"><label class="sr-only" for="f-sort">เรียงตาม</label><select id="f-sort" class="form-control form-control-sm h-auto"><option value="rel">มีราคามือสองก่อน</option><option value="asc">ราคาต่ำไปสูง</option><option value="desc">ราคาสูงไปต่ำ</option><option value="name">ชื่อ A-Z</option></select></div>
                         </div>
                         <div class="custom-control custom-checkbox mb-3"><input type="checkbox" class="custom-control-input" id="f-compat" checked><label class="custom-control-label" for="f-compat">แสดงเฉพาะรุ่นที่ใช้ด้วยกันได้</label></div>
                         <div class="row" id="part-grid">

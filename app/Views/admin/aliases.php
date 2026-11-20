@@ -29,7 +29,7 @@
         <?php if ($import): ?>
             <p class="mb-2"><?php foreach ($import['counts'] as $k => $v): if ($v > 0): ?><span class="badge badge-<?= $stClass[$k] ?> mr-1"><?= htmlspecialchars($k) ?> <?= (int) $v ?></span><?php endif; endforeach; ?><?= $import['truncated'] ? ' <span class="text-muted">only the first ' . \App\Services\Catalog\AliasImport::MAX_LINES . ' lines were read</span>' : '' ?></p>
             <div class="table-responsive mb-3"><table class="table table-sm mi-admin-table mb-0"><thead><tr><th>Line</th><th>Product</th><th>Alias</th><th>Result</th></tr></thead><tbody>
-            <?php foreach ($import['rows'] as $r): ?><tr><td><?= (int) $r['line'] ?></td><td><?= htmlspecialchars($r['slug']) ?></td><td><?= htmlspecialchars($r['alias']) ?></td><td><span class="badge badge-<?= $stClass[$r['status']] ?>"><?= htmlspecialchars($r['status']) ?></span></td></tr><?php endforeach; ?>
+            <?php foreach ($import['rows'] as $r): ?><tr><td><?= (int) $r['line'] ?></td><td><?= htmlspecialchars($r['slug']) ?></td><td><?= htmlspecialchars($r['alias']) ?></td><td><span class="badge badge-<?= $stClass[$r['status']] ?>"><?= htmlspecialchars($r['status']) ?></span> <small class="text-muted"><?= htmlspecialchars(\App\Services\Catalog\AliasImport::HINTS[$r['status']] ?? '') ?></small></td></tr><?php endforeach; ?>
             </tbody></table></div>
         <?php endif; ?>
         <button class="btn btn-secondary" type="submit" name="mode" value="check">Check only</button>

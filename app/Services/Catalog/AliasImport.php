@@ -13,6 +13,16 @@ final class AliasImport
     public const MAX_LINES = 500;
     public const MAX_ALIAS = 255;
 
+    /** what each verdict means and what to do, shown beside the verdict in the admin */
+    public const HINTS = [
+        'new' => 'Will be added on import',
+        'exists' => 'Already points to this product; skipped',
+        'conflict' => 'This alias already belongs to another product; skipped. Resolve it on that product first',
+        'unknown_product' => 'No product has this slug; check the slug on the product page',
+        'invalid' => 'Needs a slug and alias text; the alias is at most 255 characters',
+        'duplicate_in_file' => 'The same alias appears earlier in this paste; skipped',
+    ];
+
     public static function normalize(string $value): string
     {
         return preg_replace('/[^a-z0-9ก-๙]+/iu', '', mb_strtolower($value, 'UTF-8')) ?? '';
