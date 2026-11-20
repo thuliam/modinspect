@@ -10,7 +10,7 @@ $badge = ['pending' => 'badge-warning', 'verified' => 'badge-success', 'rejected
 <?php if ($disputes): ?>
 <div class="card mi-admin-card mb-3"><div class="card-header"><h2>คำโต้แย้งที่เปิดอยู่ (<?= count($disputes) ?>)</h2></div>
     <div class="table-responsive"><table class="table mi-admin-table mb-0"><thead><tr><th>ท้ายเลข</th><th>เหตุผล</th><th>อีเมล</th><th>ส่งเมื่อ</th><th></th></tr></thead><tbody>
-    <?php foreach ($disputes as $d): ?><tr><td><?= htmlspecialchars((string) ($d['last4'] ?? '-')) ?></td><td><?= htmlspecialchars((string) $d['explanation']) ?></td><td><?= htmlspecialchars((string) $d['contact_email']) ?></td><td><?= htmlspecialchars(substr((string) $d['created_at'], 0, 16)) ?></td>
+    <?php foreach ($disputes as $d): ?><tr><td><?= htmlspecialchars((string) ($d['last4'] ?? '-')) ?></td><td><?= htmlspecialchars((string) $d['explanation']) ?></td><td><?= htmlspecialchars((string) $d['contact_email']) ?></td><td><?= htmlspecialchars(substr((string) $d['created_at'], 0, 16)) ?><br><small class="<?= !empty($d['overdue']) ? 'text-danger' : 'text-muted' ?>"><?= (int) ($d['age_days'] ?? 0) ?> วัน<?= !empty($d['overdue']) ? ' · เกินกำหนดตอบ' : '' ?></small></td>
         <td><form method="post" action="<?= $base ?>/admin/seller-reports/action"><input type="hidden" name="_token" value="<?= $token ?>"><input type="hidden" name="dispute_id" value="<?= (int) $d['id'] ?>"><button class="btn btn-sm btn-outline-secondary" type="submit" name="decision" value="close_dispute">ปิดเรื่อง (หลังตัดสินรายงานแล้ว)</button></form></td></tr><?php endforeach; ?>
     </tbody></table></div></div>
 <?php endif; ?>

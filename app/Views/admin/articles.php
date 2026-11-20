@@ -10,6 +10,7 @@
             <div class="form-group col-md-4"><label>Title<input class="form-control" name="title" maxlength="255" required></label></div>
             <div class="form-group col-md-4"><label>Slug<input class="form-control" name="slug" maxlength="190" required></label></div>
             <div class="form-group col-md-4"><label>Status<select class="form-control" name="status"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select></label></div>
+            <div class="form-group col-md-4"><label>Publish at (optional)<input class="form-control" type="datetime-local" name="publish_at"></label><small class="form-text text-muted">Used only when Status is Published. Leave blank to publish now, or set a later time to hold it until then.</small></div>
         </div>
         <label>Excerpt<textarea class="form-control" name="excerpt" rows="2"></textarea></label>
         <label>Body<textarea class="form-control" name="body" rows="6" required></textarea></label>

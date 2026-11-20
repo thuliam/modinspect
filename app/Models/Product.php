@@ -118,6 +118,17 @@ final class Product
         $map = []; foreach ($rows as $r) { $map[(int)$r['product_id']][(string)$r['spec_key']] = (string)$r['spec_value']; }
         return $map;
     }
+    /** LS-25: spec values for the given keys across one category (one query), product id => key => value. */
+    public function specsFor(array $keys, string $categorySlug): array {
+        if ($keys === []) { return []; }
+        $in = implode(",", array_fill(0, count($keys), "?"));
+        try {
+            $st = $this->db->prepare("SELECT s.product_id, s.spec_key, s.spec_value FROM product_reference_specs s JOIN products p ON p.id=s.product_id JOIN product_categories c ON c.id=p.category_id WHERE c.slug=? AND p.is_active=1 AND s.spec_key IN ($in)");
+            $st->execute(array_merge([$categorySlug], array_values($keys)));
+        } catch (\PDOException $e) { return []; }
+        $map = []; foreach ($st->fetchAll() as $r) { $map[(int)$r["product_id"]][(string)$r["spec_key"]] = (string)$r["spec_value"]; }
+        return $map;
+    }
     public function referenceSpecs(int $productId): array {
         try {
             $stmt = $this->db->prepare("SELECT spec_key, spec_value, unit, source_url, date_checked, review_status FROM product_reference_specs WHERE product_id=:id ORDER BY id");

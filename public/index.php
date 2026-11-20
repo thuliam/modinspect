@@ -47,6 +47,10 @@ $router->get('/deal-checker/result/{uuid}/card',[DealCheckerController::class,'c
 $router->get('/methodology',[HomeController::class,'methodology']);
 $router->get('/compare/{slug}',[ModuleController::class,'compare']);
 $router->get('/compare',[ModuleController::class,'compare']);
+$router->get('/upgrade/{slug}',[ModuleController::class,'upgrade']);
+$router->get('/upgrade',[ModuleController::class,'upgrade']);
+$router->get('/watching',[\App\Controllers\WatchController::class,'index']);
+$router->post('/watch',[\App\Controllers\WatchController::class,'toggle']);
 $router->get('/build',[ModuleController::class,'build']);
 $router->post('/build/preview',[ModuleController::class,'buildPreview']);
 $router->post('/build',[ModuleController::class,'storeBuild']);
