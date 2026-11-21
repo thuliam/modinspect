@@ -30,6 +30,14 @@ for ($i = 0; $i < $length; $i++) {
     $char = $sql[$i];
     $prev = $i > 0 ? $sql[$i - 1] : '';
 
+    // A "-- ..." line comment (outside quotes) is skipped whole, so a ";" or an apostrophe inside a comment cannot split or open a quote.
+    if ($quote === null && $char === '-' && ($sql[$i + 1] ?? '') === '-' && in_array($sql[$i + 2] ?? "\n", [' ', "\t", "\r", "\n"], true)) {
+        $eol = strpos($sql, "\n", $i);
+        $i = $eol === false ? $length : $eol;
+        $buffer .= "\n";
+        continue;
+    }
+
     if (($char === "'" || $char === '"') && $prev !== '\\') {
         $quote = $quote === $char ? null : ($quote ?? $char);
     }
