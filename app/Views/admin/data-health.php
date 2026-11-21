@@ -56,3 +56,21 @@ ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/pric
     </div>
 </div>
 <?php endif; ?>
+<?php if (!empty($dealOutcomes) && $dealOutcomes['total'] > 0): // LS-29 B1: what visitors said they did after a Deal Checker result; a signal, never a market price ?>
+<?php $o = $dealOutcomes; $pd = $o['paid']; ?>
+<div class="card mi-admin-card mt-3">
+    <div class="card-header">Deal Checker outcomes</div>
+    <div class="card-body">
+        <p class="mb-2"><?= (int) $o['total'] ?> answers: <?= (int) $o['by_outcome']['bought'] ?> bought · <?= (int) $o['by_outcome']['negotiated'] ?> negotiated · <?= (int) $o['by_outcome']['passed'] ?> passed.
+            These are what visitors chose to tell us, so they lean towards people who came back. They are a signal for a person to read: they never set or change a price.</p>
+        <?php if ($pd['with_price'] > 0): ?>
+        <p class="mb-2"><?= (int) $pd['with_price'] ?> gave the price they paid: <?= (int) $pd['below_range'] ?> below the range shown to them, <?= (int) $pd['within_range'] ?> inside it, <?= (int) $pd['above_range'] ?> above it<?= $pd['no_range'] > 0 ? ', ' . (int) $pd['no_range'] . ' with no range to compare' : '' ?>.
+            <?php if ($pd['avg_below_asking_pct'] !== null): ?>On average they paid <?= number_format(abs($pd['avg_below_asking_pct']), 1) ?>% <?= $pd['avg_below_asking_pct'] >= 0 ? 'below' : 'above' ?> the price they had checked.<?php endif; ?></p>
+        <?php endif; ?>
+        <div class="table-responsive"><table class="table table-sm mi-admin-table mb-0">
+            <thead><tr><th>Result shown</th><th class="text-right">Bought</th><th class="text-right">Negotiated</th><th class="text-right">Passed</th></tr></thead>
+            <tbody><?php foreach ($o['by_label'] as $label => $c): ?><tr><td><?= htmlspecialchars((string) $label) ?></td><td class="text-right"><?= (int) ($c['bought'] ?? 0) ?></td><td class="text-right"><?= (int) ($c['negotiated'] ?? 0) ?></td><td class="text-right"><?= (int) ($c['passed'] ?? 0) ?></td></tr><?php endforeach; ?></tbody>
+        </table></div>
+    </div>
+</div>
+<?php endif; ?>
