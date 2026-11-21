@@ -29,7 +29,13 @@ final class Product
             $params += $extra['params'];
         }
         if ($category) { $sql .= " AND c.slug=:category"; $params['category'] = $category; }
-        $sql .= " ORDER BY p.is_popular DESC, p.full_name";
+        // LS-31: a model whose name, model name or alias IS the query comes first ("RTX 3060" before "RTX 3060 Ti"); the popularity order is unchanged inside each group
+        $exact = '';
+        if ($query !== '') {
+            $exact = "(p.full_name = :q_ex1 OR p.model_name = :q_ex2 OR EXISTS(SELECT 1 FROM product_aliases pe WHERE pe.product_id=p.id AND pe.alias_text = :q_ex3)) DESC, ";
+            $params['q_ex1'] = $params['q_ex2'] = $params['q_ex3'] = $query;
+        }
+        $sql .= " ORDER BY " . $exact . "p.is_popular DESC, p.full_name";
         $stmt=$this->db->prepare($sql); $stmt->execute($params); return $stmt->fetchAll();
     }
     /** Plain public counts for the home page: models listed, names recognised, models with an eligible price. No admin data. */

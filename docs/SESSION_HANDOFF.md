@@ -1,6 +1,6 @@
 ﻿# ModInspect Session Handoff (one page, rewritten 2026-11-21 at LS-30)
 
-Full history of every earlier handoff, unchanged: `docs/archive/SESSION_HANDOFF_HISTORY.md`. Detailed milestone status: `docs/PROJECT_STATUS.md`. Decisions: `docs/DECISION_LOG.md` (latest DL-120). Open owner decisions: `docs/OWNER_DECISION_PACK_LS28.md`.
+Full history of every earlier handoff, unchanged: `docs/archive/SESSION_HANDOFF_HISTORY.md`. Detailed milestone status: `docs/PROJECT_STATUS.md`. Decisions: `docs/DECISION_LOG.md` (latest DL-121). Open owner decisions: `docs/OWNER_DECISION_PACK_LS28.md`.
 
 ## Where things are
 - Repo `C:\laragon\www\modinspect`. Work only on branch `studio` (other branches: `main`, `office`). CI runs only on a pull request; merging to `main` is the owner's word, never mine.
@@ -20,6 +20,7 @@ Community reports, community forum, seller check, public seller listings, member
 ## Recent work
 - LS-28: alias audit, 49-query golden search set, post-purchase outcome card (migration 028), owner decision pack.
 - LS-29: guarded migration runner, pre-deploy report, outcome card on `/admin/data-health`, ARIA/keyboard and weight checks (`docs/reviews/ls29_quality_checks_2026-11-21.md`).
+- LS-31: closed modules walked through on the test DB (ContentGuard fixed), exact-name-first search, deploy-day sheet `docs/DEPLOY_DAY_SHEET_TH.md`, alias probe `cli/alias_search_probe.php`; see DL-121.
 - LS-30: A) migrations 022 to 028 on DEV; found and fixed a bug where `cli/migrate.php` split SQL at a `;` inside a `--` comment (`tests/migrate_splitter_test.php`). B) drafts for the lawyer, retention, moderators and OAuth in `docs/LS30_GATED_ITEMS_DRAFTS_TH.md`. C) this one-page handoff, Select2 and CSS cleanup (see PROJECT_STATUS LS-30).
 
 ## Owner gates still open

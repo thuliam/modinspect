@@ -20,7 +20,8 @@ final class ContentGuard
         'PHONE' => 'ห้ามใส่เบอร์โทร ลบเบอร์ออกแล้วลองใหม่',
         'EMAIL' => 'ห้ามใส่อีเมล ลบอีเมลออกแล้วลองใหม่',
         'LINE_ID' => 'ห้ามใส่ไลน์ไอดี ลบออกแล้วลองใหม่',
-        'LINK' => 'ห้ามแนบลิงก์ในกระทู้ เล่าเป็นข้อความแทน',
+        'SOCIAL' => 'ห้ามใส่ชื่อบัญชีโซเชียล ลบออกแล้วลองใหม่',
+        'LINK' =>'ห้ามแนบลิงก์ในกระทู้ เล่าเป็นข้อความแทน',
         'ACCOUNT_NUMBER' => 'ห้ามใส่เลขบัญชีหรือเลขที่คล้ายเลขบัญชี',
         'ACCUSATION' => 'ห้ามเรียกบุคคลว่าโกงหรือมิจฉาชีพ เล่าสิ่งที่เกิดขึ้นกับคุณแทน (เช่น ของเสียหลังซื้อกี่วัน ผู้ขายตอบกลับหรือไม่)',
         'SPAM' => 'ข้อความนี้ดูเป็นสแปม (ตัวอักษรซ้ำหรือยาวเกินจริง)',
@@ -37,9 +38,13 @@ final class ContentGuard
         $len = mb_strlen($t, 'UTF-8');
         if ($len < $min) { $e[] = 'TOO_SHORT'; }
         if ($len > $max) { $e[] = 'TOO_LONG'; }
-        if (CaptureMethod::hasPhoneNumber($t)) { $e[] = 'PHONE'; }
+        // LS-31: Thai digits and separators ("08-1234-5678", "๐๘๑ ๒๓๔") are read as digits before the phone check, so they cannot slip past it
+        $ascii = strtr($t, ['๐' => '0', '๑' => '1', '๒' => '2', '๓' => '3', '๔' => '4', '๕' => '5', '๖' => '6', '๗' => '7', '๘' => '8', '๙' => '9']);
+        $compact = (string)preg_replace('/(?<=\d)[\s\-.]+(?=\d)/', '', $ascii);
+        if (CaptureMethod::hasPhoneNumber($t) || CaptureMethod::hasPhoneNumber($ascii) || preg_match('/(?<!\d)0\d{8,9}(?!\d)|(?<![\d+])\+?66\d{8,9}(?!\d)/', $compact)) { $e[] = 'PHONE'; }
         if (preg_match('/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/', $t)) { $e[] = 'EMAIL'; }
-        if (preg_match('/(?:line\s*(?:id)?|ไลน์|ไลน)\s*[:：]\s*@?[A-Za-z0-9._\-]{4,}|(?:line\s*id|ไลน์ไอดี)\s*@?[A-Za-z0-9._\-]{4,}|(?<![\w.])@[A-Za-z0-9._]{4,}/iu', $t)) { $e[] = 'LINE_ID'; }
+        if (preg_match('/(?:line\s*(?:id)?|ไลน์|ไลน)\s*[:：]\s*@?[A-Za-z0-9._\-]{4,}|(?:line\s*id|ไลน์ไอดี)\s*@?[A-Za-z0-9._\-]{4,}|(?<![\w.])@[A-Za-z0-9._]{4,}|(?:ไลน์|ไลน)\s*(?:id|ไอดี)\s*[:：]?\s*@?[A-Za-z0-9._\-]{4,}/iu', $t)) { $e[] = 'LINE_ID'; }
+        if (preg_match('/(?:\big\b|instagram|ไอจี|\bfb\b|facebook|เฟส(?:บุ๊ก|บุ๊ค)?|tiktok|ติ๊กต๊อก|telegram|เทเลแกรม)\s*[:：]\s*@?[A-Za-z0-9._]{3,}/iu', $t)) { $e[] = 'SOCIAL'; }
         if (preg_match('#(?:https?://|www\.|line\.me|bit\.ly|\b[a-z0-9-]+\.(?:com|net|org|co\.th|in\.th|me|io|th)\b)#i', $t)) { $e[] = 'LINK'; }
         if (preg_match('/(?<!\d)\d{3}[\s-]?\d[\s-]?\d{5}[\s-]?\d(?!\d)|(?<!\d)\d{10,15}(?!\d)/', $t)) { $e[] = 'ACCOUNT_NUMBER'; }
         if (preg_match(self::ACCUSATION, $t)) { $e[] = 'ACCUSATION'; }

@@ -57,6 +57,13 @@ return [
     ['q' => 'แรม ddr4 16gb',       'must' => ['ram-ddr4-3200-16gb']],
     ['q' => 'ram ddr5 32gb',       'must' => ['ram-ddr5-5600-32gb']],
     ['q' => 'psu 850w',            'must' => ['psu-850w-gold']],
+    // LS-31 C2: the base model must come before the longer-named one when the visitor types exactly its name or alias (found by cli/alias_search_probe.php)
+    ['q' => 'rtx 3060',            'must' => ['nvidia-geforce-rtx-3060', 'nvidia-geforce-rtx-3060-ti'], 'top' => true],
+    ['q' => '3060',                'must' => ['nvidia-geforce-rtx-3060'], 'top' => true],
+    ['q' => 'rtx 4060',            'must' => ['nvidia-geforce-rtx-4060', 'nvidia-geforce-rtx-4060-ti'], 'top' => true],
+    ['q' => 'ryzen 7 5700x',       'must' => ['amd-ryzen-7-5700x', 'amd-ryzen-7-5700x3d'], 'top' => true],
+    ['q' => '5700x',               'must' => ['amd-ryzen-7-5700x'], 'top' => true],
+    ['q' => 'rtx 3060 ti',         'must' => ['nvidia-geforce-rtx-3060-ti'], 'top' => true],
     ['q' => 'rtx 0000',            'none' => true],
     ['q' => 'ryzen 99 9999x',      'none' => true],
     // nothing may match

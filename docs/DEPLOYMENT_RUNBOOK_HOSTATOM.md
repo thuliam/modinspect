@@ -103,7 +103,7 @@ The route that works without a shell:
 2. **Database (no shell, so no `cli/migrate.php`):** in DirectAdmin take a backup first (Backup and Restore, or phpMyAdmin Export), then in phpMyAdmin select
    the database and **Import** each file of `database/migrations/` that is not applied yet, in numeric order. The DEV database `thuliam_modinspect` was at
    migration **021** on 2026-11-18; migrations **022** (new-price references), **023** (members), **024** (listing facts, seller listings), **025**
-   (seller reports) and **026** (community reports; it also adds the low-quality evidence source `community_report`) are additive and have only been applied to the isolated test database. A page that needs a missing table says so (admin) or has no
+   (seller reports), **026** (community reports; it also adds the low-quality evidence source `community_report`), **027** (community forum) and **028** (deal outcomes) are additive. **Update 2026-11-21 (LS-30/31):** 022 to 028 were applied to the shared DEV database `thuliam_modinspect` and checked there; the HostAtom production database has none of them. The runner now ignores `;` inside `--` comments (028 stopped on one before), but phpMyAdmin import is a separate tool: if it complains on a file, send the exact message before editing anything. A page that needs a missing table says so (admin) or has no
    effect (public) instead of failing. Never import `database/seed.sql` or TEST/MOCK data into production.
 3. **Folders the app writes to** (create in File Manager, outside the document root, writable by the web user): `storage/cache/ratelimit`, `storage/cache/oauth`,
    `storage/uploads/listings`, `storage/uploads/reports`, `storage/logs`, `storage/import`. `.env` and `storage/` are created by the owner, never uploaded by the workflow.
@@ -125,6 +125,8 @@ MEMBER_FACEBOOK_APP_ID=             MEMBER_FACEBOOK_APP_SECRET=
 SELLER_CHECK_ENABLED=false          SELLER_CHECK_HMAC_KEY=
 # community reports (R-11): off until the owner approves the privacy wording; needs a key of 32+ characters (openssl rand -hex 32) before it can be switched on
 COMMUNITY_REPORTS_ENABLED=false     COMMUNITY_REPORTS_HMAC_KEY=
+# community forum (threads, replies, reviews): off until the community rules, the privacy wording and a moderator are settled; needs members (sign-in) to write
+COMMUNITY_FORUM_ENABLED=false
 # approved seller listings visible to everyone (HG-16)
 SELLER_LISTINGS_PUBLIC=false
 ```
@@ -161,7 +163,8 @@ means moving those into files first (tracked as follow-up), then a report-only t
 - [ ] Rights settled (photos, logos)
 - [ ] Production `.env` created on the server, DB user is not root
 - [ ] Backup taken, rollback owner named
-- [ ] Migrations 022 to 026 imported (phpMyAdmin) after the backup, or consciously left out
+- [ ] Migrations 022 to 028 imported (phpMyAdmin) after the backup, or consciously left out (LS-31: the list grew from 026 to 028; on a host with a shell use `php cli/migrate_pending.php --from=22` for the plan and `--apply` to run it)
+- [ ] `php cli/predeploy_report.php` gives PASS or PASS_WITH_WARNINGS on the machine that builds the package, and you have read the warnings
 - [ ] `storage/` folders from section 5b created and writable; `.env` has `SELLER_CHECK_ENABLED=false` unless HG-14 is done
 - [ ] First `plan` run read, `smoke_check` passes after `deploy`
 - [ ] Written go-ahead to deploy to modinspect.thuliamdev.com

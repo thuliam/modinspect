@@ -22,6 +22,11 @@ ok_cf2(G::check('การ์ดใช้ได้ 2 วันแล้วจอ
 ok_cf2(G::check('RTX 3070 ซื้อมา 8500 ใช้เล่นเกม 1440p ลื่นดี') === [] && G::check('ประกัน 6 เดือน ซื้อ 15 มกราคม') === [], 'Prices, dates and model numbers are not taken for an account number or a phone');
 ok_cf2(G::check('') === ['EMPTY'] && in_array('TOO_SHORT', G::check('ดี'), true) && in_array('TOO_LONG', G::check(str_repeat('ก', 1600)), true), 'Empty, short and long texts are refused');
 ok_cf2(count(G::messages(array_keys(G::MESSAGES))) === count(G::MESSAGES), 'Every code has a Thai message');
+// LS-31: contact details written around the old patterns (found in a walk-through of the forum)
+foreach (['โทร 08-1234-5678 ครับ' => 'PHONE', 'เบอร์ ๐๘๑๒๓๔๕๖๗๘ ครับ' => 'PHONE', 'โทร ๐๘-๑๒๓๔-๕๖๗๘ ครับ' => 'PHONE', 'ติดต่อ +66 81 234 5678 ครับ' => 'PHONE', 'แอดไลน์ id: abcd1234 ได้เลย' => 'LINE_ID', 'ไลน์ไอดี abcd1234 ครับ' => 'LINE_ID', 'ทัก ig: shop_9999 ได้ครับ' => 'SOCIAL', 'เฟส: somchai.k ครับผม' => 'SOCIAL'] as $text => $code) {
+    ok_cf2(in_array($code, G::check($text), true), "$code is refused for: $text " . json_encode(G::check($text)));
+}
+ok_cf2(G::check('ซื้อมา 12,500 บาท ใช้ 2 ปี การ์ดจอ RTX 3060 รุ่น 12GB ไลน์ผลิตภัณฑ์ใหม่ออกแล้ว') === [] && G::check('ราคา 6600 ถึง 7500 บาท ปี 2566 ได้ประกัน 0.5 ปี') === [], 'Prices, years and product line talk are still allowed');
 
 // ---- the forum on the test database ----
 global $config;
