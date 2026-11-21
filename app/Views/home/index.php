@@ -111,10 +111,10 @@ while (count($featured) < 5 && $byCat) {
     <div class="container">
         <div class="mi-head">
             <h2><i class="mi-slash"></i>รุ่นแนะนำ</h2>
-            <div class="mi-tabs" role="tablist" aria-label="หมวดสินค้า">
-                <button type="button" class="active" data-filter="all">ทั้งหมด</button>
+            <div class="mi-tabs" role="group" aria-label="หมวดสินค้า">
+                <button type="button" class="active" data-filter="all" aria-pressed="true">ทั้งหมด</button>
                 <?php foreach (array_unique(array_filter(array_column($featured, 'category_name'))) as $cn): ?>
-                    <button type="button" data-filter="<?= htmlspecialchars(strtolower($cn)) ?>"><?= htmlspecialchars($cn) ?></button>
+                    <button type="button" data-filter="<?= htmlspecialchars(strtolower($cn)) ?>" aria-pressed="false"><?= htmlspecialchars($cn) ?></button>
                 <?php endforeach; ?>
             </div>
             <a href="<?= $base ?>/price">ดูรุ่นเพิ่มเติม <i class="fas fa-arrow-right" aria-hidden="true"></i></a>

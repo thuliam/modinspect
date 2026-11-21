@@ -19,6 +19,7 @@ $yn = static fn(?bool $b): string => $b === true ? 'มีระบุ' : 'ไ�
             <div class="mi-field">
                 <label for="listing-text">ข้อความประกาศ</label>
                 <textarea id="listing-text" name="listing" rows="9" maxlength="3500" class="form-control" placeholder="วางข้อความทั้งโพสต์ที่นี่ เช่น: ขาย RTX 3070 Gigabyte Gaming OC ราคา 8,500 บาท ประกันเหลือ 6 เดือน มีกล่อง"><?= htmlspecialchars($r ? $text : '') ?></textarea>
+                <small class="form-text text-muted">ระบบอ่านเฉพาะรุ่น ราคา สภาพ และประกัน ไม่ต้องวางชื่อ ที่อยู่ หรือข้อมูลติดต่อของผู้ขาย</small>
             </div>
             <?php if ($r && ($r['price_confidence'] ?? '') !== 'high'): ?>
                 <div class="mi-field">

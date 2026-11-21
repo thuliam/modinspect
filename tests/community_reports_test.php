@@ -127,7 +127,7 @@ try {
     ok_cr($svc->createCandidate($admin, (int)$s2['id'], $now->modify('+2 days'))['error'] === 'CANDIDATE_CAP', 'But only one candidate per client per product per week');
     $s3 = $svc->submit($pid2, 'sold_price', $sold, '4.4.4.4', $now);
     ok_cr($s3['ok'] && $svc->moderate($admin, (int)$s3['id'], 'accepted')['ok'] && $svc->createCandidate($admin, (int)$s3['id'], $now)['ok'], 'The cap is per product');
-    ok_cr($svc->createCandidate($admin, (int)$s2['id'], $now->modify('+8 days'))['ok'], 'After a week the cap no longer applies');
+    ok_cr($svc->createCandidate($admin, (int)$s2['id'], (new DateTimeImmutable('now'))->modify('+8 days'))['ok'], 'After a week the cap no longer applies');   // LS-27: relative to the real clock: the candidate decisions above are stamped with the database clock, a fixed 2026-11-19 date made this fail from 2026-11-20 12:00
     // ---- retention (ADR-006 S4): only REJECTED and SPAM reports, counted from the decision day; new and accepted are never purged ----
     $oldDay = new DateTimeImmutable('-100 days'); $recent = new DateTimeImmutable('-10 days');
     $mk = static function (string $addr, string $spec, DateTimeImmutable $at, string $decision, string $note) use ($svc, $pid, $admin): int {

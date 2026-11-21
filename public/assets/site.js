@@ -77,7 +77,7 @@ jQuery(function ($) {
     /* featured tabs */
     $('.mi-tabs').on('click', 'button', function () {
         var f = $(this).data('filter');
-        $(this).addClass('active').siblings().removeClass('active');
+        $(this).addClass('active').attr('aria-pressed', 'true').siblings().removeClass('active').attr('aria-pressed', 'false');
         $('.mi-featured > [data-cat]').each(function () { $(this).toggle(f === 'all' || $(this).data('cat') === f); });
     });
 

@@ -74,7 +74,7 @@ $preProduct = is_string($_GET['product'] ?? null) ? $_GET['product'] : ''; $preP
 
             <label class="check consent-row">
                 <input type="checkbox" name="consent">
-                ยินยอมให้นำข้อมูลที่ไม่ระบุตัวตนไปปรับปรุงดัชนีราคา
+                ยินยอมให้ใช้ข้อมูลที่ไม่ระบุตัวตนนี้เพื่อศึกษาการใช้งาน ไม่มีผลต่อราคากลางที่แสดงบนเว็บ
             </label>
 
             <button type="submit" class="mi-submit">ประเมินตำแหน่งราคา</button>
