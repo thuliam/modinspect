@@ -2155,3 +2155,14 @@ CREATE TABLE community_flags (
   INDEX idx_flags_queue (status, created_at),
   CONSTRAINT fk_flag_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE deal_outcomes (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  deal_check_id BIGINT UNSIGNED NOT NULL,
+  outcome ENUM('bought','negotiated','passed') NOT NULL,
+  final_price DECIMAL(12,2) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_deal_outcome (deal_check_id),
+  CONSTRAINT fk_outcome_deal FOREIGN KEY (deal_check_id) REFERENCES deal_checks(id) ON DELETE CASCADE
+) ENGINE=InnoDB;

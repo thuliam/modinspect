@@ -18,5 +18,18 @@ final class DealCheck
         $stmt=$this->db->prepare("SELECT d.*,p.full_name,p.slug,pi.q1,pi.median,pi.q3,pi.sample_size,pi.confidence_label FROM deal_checks d JOIN products p ON p.id=d.product_id LEFT JOIN price_indices pi ON pi.id=(SELECT id FROM price_indices WHERE product_id=p.id ORDER BY last_calculated_at DESC LIMIT 1) WHERE d.uuid=:uuid");
         $stmt->execute(['uuid'=>$uuid]); return $stmt->fetch() ?: null;
     }
+    /** LS-28 B1: the saved outcome of a result, or null (also null when migration 028 is not applied yet, so the page still renders) */
+    public function outcomeFor(int $dealId): ?array {
+        try { $st=$this->db->prepare("SELECT outcome,final_price FROM deal_outcomes WHERE deal_check_id=:d"); $st->execute(['d'=>$dealId]); return $st->fetch() ?: null; }
+        catch (\PDOException $e) { return null; }
+    }
+    public function outcomeAvailable(): bool {
+        try { $this->db->query("SELECT 1 FROM deal_outcomes LIMIT 0"); return true; } catch (\PDOException $e) { return false; }
+    }
+    /** one row per result; saving again replaces it */
+    public function saveOutcome(int $dealId, string $outcome, ?float $finalPrice): void {
+        $st=$this->db->prepare("INSERT INTO deal_outcomes (deal_check_id,outcome,final_price) VALUES (:d,:o,:p) ON DUPLICATE KEY UPDATE outcome=VALUES(outcome),final_price=VALUES(final_price)");
+        $st->execute(['d'=>$dealId,'o'=>$outcome,'p'=>$finalPrice]);
+    }
 }
 

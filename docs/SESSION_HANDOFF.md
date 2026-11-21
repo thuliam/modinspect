@@ -1,6 +1,8 @@
 ﻿# ModInspect Session Handoff
 
-## LATEST HANDOFF (2026-11-20, LS-27 on `studio`). Read this first; everything below is history.
+## LATEST HANDOFF (2026-11-21, LS-28 on `studio`). Read this first; everything below is history.
+
+- **LS-28 (on `studio`, `main` = `444db6c` before it):** alias audit CLI, golden search set 49 queries, post-purchase outcome card with migration 028 (not run on DEV), 375/768 px overflow check, and `docs/OWNER_DECISION_PACK_LS28.md` with every open owner decision. See DL-118 and the LS-28 paragraph in `docs/PROJECT_STATUS.md`. Test DB is rebuilt with `tests/bootstrap_test_db.php --fresh` (it loads `modinspect.sql`, which now includes `deal_outcomes`). Nothing deployed, nothing written to DEV.
 
 - **LS-27 (on `studio`, after PR #9 merged, `main` = `studio` = `97d5e9c` before it; only branches left are `main`, `studio`, `office`):** triage of the external review: see DL-117 and the LS-27 paragraph in `docs/PROJECT_STATUS.md`. Fixed: Deal Checker consent wording (DRAFT), Build lead and sort label, Reader hint, home category buttons `aria-pressed`, alias import hints. Left alone on purpose: stats radar (DL-100), home tagline (voice guide), Select2/spec-builder loading.
 

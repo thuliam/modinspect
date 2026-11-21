@@ -108,6 +108,31 @@ $hasReferenceRange = $deal['result_label'] !== 'insufficient'
                 <p class="mi-hint"><?= htmlspecialchars($check['note']) ?></p>
             </div>
             <?php endif; ?>
+            <?php if (!empty($outcomeAvailable)): ?>
+            <div class="card" id="outcome">
+                <h2>หลังดูผลนี้ เกิดอะไรขึ้น</h2>
+                <?php if (!empty($outcomeFlash)): ?><p class="mi-hint" role="status"><?= htmlspecialchars($outcomeFlash) ?></p><?php endif; ?>
+                <?php if (!empty($outcomeSaved)): ?>
+                    <p>คุณบอกไว้ว่า <strong><?= htmlspecialchars(\App\Services\Deal\DealOutcome::OUTCOMES[$outcomeSaved['outcome']] ?? '') ?></strong><?php if ($outcomeSaved['final_price'] !== null): ?> ที่ ฿<?= number_format((float) $outcomeSaved['final_price']) ?><?php endif; ?> แก้ไขได้ด้านล่าง</p>
+                <?php endif; ?>
+                <form method="post" action="<?= htmlspecialchars($base ?? '') ?>/deal-checker/result/<?= rawurlencode((string) $deal['uuid']) ?>/outcome">
+                    <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
+                    <div class="form-group">
+                        <label for="outcome-choice">ผลที่เกิดขึ้น</label>
+                        <select class="form-control" id="outcome-choice" name="outcome" required>
+                            <option value="">เลือก</option>
+                            <?php foreach (\App\Services\Deal\DealOutcome::OUTCOMES as $k => $label): ?><option value="<?= $k ?>"<?= (($outcomeSaved['outcome'] ?? '') === $k) ? ' selected' : '' ?>><?= htmlspecialchars($label) ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="outcome-price">ราคาที่จ่ายจริง (บาท ไม่บังคับ)</label>
+                        <input class="form-control" id="outcome-price" name="final_price" inputmode="numeric" autocomplete="off" value="<?= $outcomeSaved && $outcomeSaved['final_price'] !== null ? (int) $outcomeSaved['final_price'] : '' ?>">
+                        <small class="form-text text-muted">ใช้เป็นสัญญาณประกอบเท่านั้น ไม่เปลี่ยนราคากลางที่แสดงบนเว็บ และไม่เก็บชื่อหรือข้อมูลติดต่อ</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
+                </form>
+            </div>
+            <?php endif; ?>
             <div class="card">
                 <h2>อ่านผลนี้อย่างไร</h2>
                 <p>ผลนี้เทียบตำแหน่งราคาที่คุณพบกับราคาประกาศมือสองที่ผ่านการตรวจสอบเท่านั้น ไม่ใช่ราคาปิดดีล และไม่ได้ประเมินสภาพ ประกัน อุปกรณ์ หรือบริการของผู้ขาย</p>

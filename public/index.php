@@ -44,6 +44,7 @@ $router->post('/read-listing',[\App\Controllers\ListingReaderController::class,'
 $router->post('/deal-checker',[DealCheckerController::class,'store']);
 $router->get('/deal-checker/result/{uuid}',[DealCheckerController::class,'result']);
 $router->get('/deal-checker/result/{uuid}/card',[DealCheckerController::class,'card']);
+$router->post('/deal-checker/result/{uuid}/outcome',[DealCheckerController::class,'outcome']);
 $router->get('/methodology',[HomeController::class,'methodology']);
 $router->get('/compare/{slug}',[ModuleController::class,'compare']);
 $router->get('/compare',[ModuleController::class,'compare']);
