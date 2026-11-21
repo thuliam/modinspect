@@ -275,10 +275,11 @@ final class AdminController extends Controller {
         $this->redirect('/admin/users');
     }
     public function dataHealth(): void {
+        global $config;
         if(!$this->requirePermission('snapshots.view')) return;
         // LS-21 (R-11): open community reports per product, an attention signal (never a vote); null on a database without the table
         try { $cr=$this->communityReportService(); $community=['counts'=>$cr->counts(),'products'=>$cr->productsNeedingAttention(5)]; } catch(\PDOException) { $community=null; }
-        $this->view('admin/data-health',['title'=>'Data health','report'=>(new \App\Services\Admin\DataHealthReport())->build(),'community'=>$community]);
+        $this->view('admin/data-health',['title'=>'Data health','report'=>(new \App\Services\Admin\DataHealthReport())->build(),'community'=>$community,'dealOutcomes'=>\App\Services\Admin\DealOutcomeReport::build(Database::connection($config['db']))]);
     }
     public function marketTrends(): void {
         if(!$this->requirePermission('snapshots.view')) return;
