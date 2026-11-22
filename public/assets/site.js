@@ -46,7 +46,7 @@ jQuery(function ($) {
     }
 
     /* reveals */
-    var $rev = $('.reveal');
+    var $rev = $('.reveal, .mi-sec');   // LS-41: home sections get the same flag, CSS stages their parts
     if ('IntersectionObserver' in window) {
         var rio = new IntersectionObserver(function (entries) {
             entries.forEach(function (en) { if (en.isIntersecting) { $(en.target).addClass('in'); rio.unobserve(en.target); } });
@@ -54,17 +54,18 @@ jQuery(function ($) {
         $rev.each(function () { rio.observe(this); });
     } else { $rev.addClass('in'); }
 
-    /* count-up (a changing number is not travel, so calm mode keeps it) */
+    /* decode (LS-41, after the number scramble on kyma.framer.ai): the figure starts as noise and settles into the real number from left to right; the markup already holds the real number,
+       so without script or while the observer waits, it reads correctly. A changing number is not travel, so calm mode keeps it. */
     function runCount(el) {
-        var end = parseInt(el.getAttribute('data-count'), 10) || 0, t0 = null, dur = 1600;
-        if (end === 0) { el.textContent = '0'; return; }
+        var end = String(parseInt(el.getAttribute('data-count'), 10) || 0), t0 = null, dur = 1500, noise = '0123456789#%/+<>';
+        if (end === '0') { el.textContent = '0'; return; }
         function tick(t) {
             if (t0 === null) { t0 = t; }
-            var p = Math.min(1, (t - t0) / dur);
-            el.textContent = String(Math.round(end * (1 - Math.pow(1 - p, 4))));
+            var p = Math.min(1, (t - t0) / dur), settled = Math.floor(p * (end.length + 1)), out = end.slice(0, settled);
+            while (out.length < end.length) { out += noise.charAt(Math.floor(Math.random() * noise.length)); }
+            el.textContent = p < 1 ? out : end;
             if (p < 1) { requestAnimationFrame(tick); }
         }
-        el.textContent = '0';
         requestAnimationFrame(tick);
     }
     if ('IntersectionObserver' in window) {

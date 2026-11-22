@@ -87,10 +87,10 @@ while (count($featured) < 5 && $byCat) {
 <section class="mi-strip-wrap" aria-label="ข้อมูลในระบบ">
     <div class="container">
         <ul class="mi-strip list-unstyled">
-            <li><b><?= (int) $counts['models'] ?></b><span>รุ่นในฐานข้อมูล</span></li>
-            <li><b><?= (int) $counts['aliases'] ?></b><span>ชื่อเรียกที่ระบบรู้จัก</span></li>
-            <li><b><?= (int) $counts['categories'] ?></b><span>หมวดสินค้า</span></li>
-            <li><b><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีช่วงราคาอ้างอิง</span></li>
+            <li><b data-count="<?= (int) $counts['models'] ?>"><?= (int) $counts['models'] ?></b><span>รุ่นในฐานข้อมูล</span></li>
+            <li><b data-count="<?= (int) $counts['aliases'] ?>"><?= (int) $counts['aliases'] ?></b><span>ชื่อเรียกที่ระบบรู้จัก</span></li>
+            <li><b data-count="<?= (int) $counts['categories'] ?>"><?= (int) $counts['categories'] ?></b><span>หมวดสินค้า</span></li>
+            <li><b data-count="<?= (int) $counts['priced'] ?>"><?= (int) $counts['priced'] ?></b><span>รุ่นที่มีช่วงราคาอ้างอิง</span></li>
         </ul>
         <p class="mi-note">ตัวเลขนับจากฐานข้อมูลจริง ไม่ปัดขึ้น รุ่นที่ยังไม่มีข้อมูลที่ผ่านการตรวจสอบพอจะไม่แสดงราคา</p>
     </div>
