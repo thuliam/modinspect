@@ -17,6 +17,13 @@ final class PriceList
         return !empty($p['median']) && (int)($p['valid_sample_size'] ?? 0) > 0 && (int)($p['accepted_observation_count'] ?? 0) > 0;
     }
 
+    /** LS-51: a budget in baht. Only models with a public price (the one isPriced rule) can be inside one, so setting a budget also hides unpriced models; the median is the figure compared. 0 means no limit on that side. @param list<array> $products @return list<array> */
+    public static function withinBudget(array $products, int $min, int $max): array
+    {
+        if ($min <= 0 && $max <= 0) { return $products; }
+        return array_values(array_filter($products, static fn(array $p): bool => self::isPriced($p) && ($min <= 0 || (float)$p['median'] >= $min) && ($max <= 0 || (float)$p['median'] <= $max)));
+    }
+
     /** @param list<array> $products @return list<array> */
     public static function apply(array $products, string $sort, bool $pricedOnly): array
     {

@@ -25,7 +25,7 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
             </select>
             <button type="submit">ค้นหา</button>
         </div>
-        <?php $keep = array_filter(['sort' => $sort ?? '', 'priced' => !empty($pricedOnly) ? '1' : '']); ?>
+        <?php $minPrice = (int) ($minPrice ?? 0); $maxPrice = (int) ($maxPrice ?? 0); $keep = array_filter(['sort' => $sort ?? '', 'priced' => !empty($pricedOnly) ? '1' : '', 'min' => $minPrice ?: '', 'max' => $maxPrice ?: '']); ?>
         <?php // LS-47: category filter as a dock (icon above its label, RGB tiles, macOS-style bounce on hover); same icons as the main menu
         $catIcons = ['cpu' => 'fa-microchip', 'gpu' => 'fa-tv', 'motherboard' => 'fa-project-diagram', 'ram' => 'fa-memory', 'storage' => 'fa-hdd', 'psu' => 'fa-plug', 'case' => 'fa-server', 'cooling' => 'fa-fan']; $catI = 0; ?>
         <nav class="mi-cat-dock" aria-label="Quick category filters">
@@ -69,6 +69,24 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
             <?php if ($specFilters): ?><a class="btn btn-ghost btn-sm mb-2" href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $category]) + $keep)) ?>">ล้างตัวกรอง</a><?php endif; ?>
         </div>
         <?php endif; ?>
+        <?php // LS-51: budget first: a range in baht and one-tap bands; only models with a public price can match, so a budget hides unpriced models
+        $bands = [[0, 3000, 'ไม่เกิน ฿3,000'], [3000, 6000, '฿3,000–6,000'], [6000, 10000, '฿6,000–10,000'], [10000, 20000, '฿10,000–20,000'], [20000, 0, '฿20,000 ขึ้นไป']];
+        $bandBase = array_filter(['q' => $q, 'category' => $category, 'sort' => $sort ?? '', 'priced' => !empty($pricedOnly) ? '1' : '']); ?>
+        <div class="mi-budget mt-3">
+            <div class="mi-budget-row">
+                <label class="mi-budget-lbl" for="price-min">งบประมาณ (บาท)</label>
+                <input id="price-min" class="mi-budget-in" name="min" type="number" inputmode="numeric" min="0" max="10000000" step="100" placeholder="ต่ำสุด" value="<?= $minPrice ?: '' ?>">
+                <span aria-hidden="true">–</span>
+                <input id="price-max" class="mi-budget-in" name="max" type="number" inputmode="numeric" min="0" max="10000000" step="100" placeholder="สูงสุด" aria-label="งบสูงสุด (บาท)" value="<?= $maxPrice ?: '' ?>">
+                <button type="submit" class="btn btn-ghost btn-sm">ใช้งบนี้</button>
+            </div>
+            <div class="mi-budget-chips" aria-label="ช่วงงบยอดนิยม">
+                <?php foreach ($bands as [$bMin, $bMax, $bLabel]): $on = $minPrice === $bMin && $maxPrice === $bMax; ?>
+                    <a class="mi-budget-chip<?= $on ? ' active' : '' ?>"<?= $on ? ' aria-current="true"' : '' ?> href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query($bandBase + array_filter(['min' => $bMin ?: '', 'max' => $bMax ?: '']))) ?>"><?= $bLabel ?></a>
+                <?php endforeach; ?>
+                <?php if ($minPrice || $maxPrice): ?><a class="mi-budget-chip" href="<?= $base ?>/price<?= $bandBase ? '?' . htmlspecialchars(http_build_query($bandBase)) : '' ?>">ล้างงบ</a><?php endif; ?>
+            </div>
+        </div>
         <div class="form-inline mt-3">
             <label class="mr-2 mb-0" for="price-sort">เรียงตาม</label>
             <select id="price-sort" name="sort" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="240px">

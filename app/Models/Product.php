@@ -85,6 +85,27 @@ final class Product
         return $stmt->fetchAll();
     }
     /**
+     * LS-51: neighbouring models by performance: same category, nearest overall published score (InnoReviews inno_score) first, the model itself excluded. Empty when this model has no score or the table is missing. Reference only.
+     * @return list<array> search() rows plus inno and inno_diff
+     */
+    public function similarByScore(array $product, int $limit = 4): array {
+        try {
+            $st = $this->db->prepare("SELECT s.product_id, s.score_value FROM product_benchmark_scores s JOIN products p ON p.id = s.product_id WHERE s.source_key = 'innoreviews' AND s.metric_key = 'inno_score' AND p.is_active = 1 AND p.category_id = :c");
+            $st->execute(['c' => (int)$product['category_id']]);
+            $scores = $st->fetchAll(\PDO::FETCH_KEY_PAIR);
+        } catch (\PDOException) { return []; }
+        $mine = $scores[(int)$product['id']] ?? null;
+        if ($mine === null) { return []; }
+        $out = [];
+        foreach ($this->search('', (string)($product['category_slug'] ?? '')) as $p) {
+            $id = (int)$p['id'];
+            if ($id === (int)$product['id'] || !isset($scores[$id])) { continue; }
+            $p['inno'] = (float)$scores[$id]; $p['inno_diff'] = (float)$scores[$id] - (float)$mine; $out[] = $p;
+        }
+        usort($out, static fn(array $a, array $b): int => abs($a['inno_diff']) <=> abs($b['inno_diff']));
+        return array_slice($out, 0, $limit);
+    }
+    /**
      * Neighbouring models with an eligible price: same category, nearest median to $refPrice first (own model excluded).
      * Each row gets 'same_brand' so the view can say why it is related.
      */

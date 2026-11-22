@@ -89,17 +89,22 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <?php else: ?>
                     <p class="mi-sum-empty"><i class="fas fa-info-circle" aria-hidden="true"></i> ข้อมูลที่ผ่านการตรวจสอบยังไม่พอ จึงไม่แสดงช่วงราคา ระบบไม่สร้างราคาตลาดปลอม</p>
                 <?php endif; ?>
-                <div class="mi-actions">
-                    <a class="btn btn-lime" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>"><i class="fas fa-balance-scale" aria-hidden="true"></i> เช็กดีลรุ่นนี้</a>
-                    <a class="btn btn-ghost" href="<?= $base ?>/compare/<?= rawurlencode((string) $product['slug']) ?>">เทียบกับรุ่นอื่น</a>
-                    <?php if (\App\Services\Catalog\UpgradeFinder::supports((string) ($product['category_slug'] ?? ''))): ?><a class="btn btn-ghost" href="<?= $base ?>/upgrade/<?= rawurlencode((string) $product['slug']) ?>">ใช้รุ่นนี้อยู่ ขยับไปรุ่นไหน</a><?php endif; ?>
-                    <?php $wl = \App\Services\Catalog\WatchList::parse(is_string($_COOKIE[\App\Services\Catalog\WatchList::COOKIE] ?? null) ? $_COOKIE[\App\Services\Catalog\WatchList::COOKIE] : null); $watching = \App\Services\Catalog\WatchList::has($wl, (string) $product['slug']); $wFlash = $_SESSION['watch_flash'] ?? null; unset($_SESSION['watch_flash']); ?>
-                    <form method="post" action="<?= $base ?>/watch" class="d-inline"><input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>"><input type="hidden" name="slug" value="<?= htmlspecialchars((string) $product['slug']) ?>"><button class="btn btn-ghost" type="submit"><i class="<?= $watching ? 'fas' : 'far' ?> fa-star" aria-hidden="true"></i> <?= $watching ? 'เลิกติดตามรุ่นนี้' : 'ติดตามรุ่นนี้' ?></button></form>
-                    <?php if ($wl || $wFlash): ?><small class="text-muted align-self-center"><?= $wFlash ? htmlspecialchars((string) $wFlash) . ' · ' : '' ?><a href="<?= $base ?>/watching">รุ่นที่ติดตาม (<?= count($wl) ?>)</a></small><?php endif; ?>
-                    <?php if (!empty($shareText)): ?><button type="button" class="btn btn-ghost" data-copy-text="<?= htmlspecialchars($shareText) ?>"><i class="fas fa-share-alt" aria-hidden="true"></i> <span>คัดลอกข้อความแชร์</span></button><?php endif; ?>
-                    <?php if (!empty($cardUrl)): ?><a class="btn btn-ghost" href="<?= htmlspecialchars($cardUrl) ?>" download="modinpect-price.png"><i class="fas fa-image" aria-hidden="true"></i> บันทึกการ์ดราคา</a><?php endif; ?>
-                    <a class="btn btn-ghost" href="<?= $base ?>/price">ค้นหารุ่นอื่น</a>
-                    <a class="btn btn-ghost" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
+                <?php // LS-51: the actions as one primary button and a dock (icon tile, label under it, springy hover) instead of a crowded row of buttons; the watch form sits outside the dock (the button points at it with form="") so the dock items stay direct siblings
+                $wl = \App\Services\Catalog\WatchList::parse(is_string($_COOKIE[\App\Services\Catalog\WatchList::COOKIE] ?? null) ? $_COOKIE[\App\Services\Catalog\WatchList::COOKIE] : null); $watching = \App\Services\Catalog\WatchList::has($wl, (string) $product['slug']); $wFlash = $_SESSION['watch_flash'] ?? null; unset($_SESSION['watch_flash']);
+                $dockH = 0; ?>
+                <div class="mi-act">
+                    <a class="btn btn-lime mi-act-main" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>"><i class="fas fa-balance-scale" aria-hidden="true"></i> เช็กดีลรุ่นนี้</a>
+                    <form id="watch-form" method="post" action="<?= $base ?>/watch" hidden><input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>"><input type="hidden" name="slug" value="<?= htmlspecialchars((string) $product['slug']) ?>"></form>
+                    <div class="mi-cat-dock mi-act-dock" role="group" aria-label="เครื่องมือของรุ่นนี้">
+                        <a class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" href="<?= $base ?>/compare/<?= rawurlencode((string) $product['slug']) ?>"><span class="mi-cat-ico"><i class="fas fa-columns" aria-hidden="true"></i></span><span class="mi-cat-lbl">เทียบรุ่น</span></a>
+                        <?php if (\App\Services\Catalog\UpgradeFinder::supports((string) ($product['category_slug'] ?? ''))): ?><a class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" href="<?= $base ?>/upgrade/<?= rawurlencode((string) $product['slug']) ?>"><span class="mi-cat-ico"><i class="fas fa-level-up-alt" aria-hidden="true"></i></span><span class="mi-cat-lbl">อัปเกรด</span></a><?php endif; ?>
+                        <button class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" type="submit" form="watch-form"><span class="mi-cat-ico"><i class="<?= $watching ? 'fas' : 'far' ?> fa-star" aria-hidden="true"></i></span><span class="mi-cat-lbl"><?= $watching ? 'เลิกติดตาม' : 'ติดตาม' ?></span></button>
+                        <?php if (!empty($shareText)): ?><button class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" type="button" data-copy-text="<?= htmlspecialchars($shareText) ?>"><span class="mi-cat-ico"><i class="fas fa-share-alt" aria-hidden="true"></i></span><span class="mi-cat-lbl"><span>แชร์</span></span></button><?php endif; ?>
+                        <?php if (!empty($cardUrl)): ?><a class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" href="<?= htmlspecialchars($cardUrl) ?>" download="modinpect-price.png"><span class="mi-cat-ico"><i class="fas fa-image" aria-hidden="true"></i></span><span class="mi-cat-lbl">การ์ดราคา</span></a><?php endif; ?>
+                        <a class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" href="<?= $base ?>/price"><span class="mi-cat-ico"><i class="fas fa-search" aria-hidden="true"></i></span><span class="mi-cat-lbl">รุ่นอื่น</span></a>
+                        <a class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" href="<?= $base ?>/methodology"><span class="mi-cat-ico"><i class="fas fa-book" aria-hidden="true"></i></span><span class="mi-cat-lbl">วิธีคำนวณ</span></a>
+                    </div>
+                    <?php if ($wl || $wFlash): ?><small class="text-muted"><?= $wFlash ? htmlspecialchars((string) $wFlash) . ' · ' : '' ?><a href="<?= $base ?>/watching">รุ่นที่ติดตาม (<?= count($wl) ?>)</a></small><?php endif; ?>
                 </div>
             </div>
         </div>
@@ -187,8 +192,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
 
         <?php require ROOT_PATH . '/app/Views/components/evidence-explorer.php'; ?>
         <div class="row mt-4">
-        <div class="col-12<?= !empty($similar) ? ' col-lg-6' : '' ?> mb-4">
-        <section class="card mi-history-card mt-0 h-100" id="sec-trend" data-icon="fa-chart-line" data-nav="<?= !empty($similar) ? 'แนวโน้มและรุ่นใกล้เคียง' : 'แนวโน้ม' ?>">
+        <?php $hasSim = !empty($similar) || !empty($similarPerf); ?>
+        <div class="col-12<?= $hasSim ? ' col-lg-6' : '' ?> mb-4">
+        <section class="card mi-history-card mt-0 h-100" id="sec-trend" data-icon="fa-chart-line" data-nav="<?= $hasSim ? 'แนวโน้มและรุ่นใกล้เคียง' : 'แนวโน้ม' ?>">
             <div class="mi-section-head compact">
                 <div>
                     <span class="eyebrow">ประวัติราคา</span>
@@ -206,11 +212,20 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             <?php endif; ?>
         </section>
         </div>
-        <?php if (!empty($similar)): ?>
+        <?php if ($hasSim): ?>
         <div class="col-12 col-lg-6 mb-4">
         <section class="card mi-history-card mt-0 h-100" id="sec-similar">
-            <div class="mi-section-head compact"><div><span class="eyebrow">เทียบรุ่นใกล้เคียง</span><h2>รุ่นอื่นที่ราคาใกล้กัน</h2></div></div>
-            <?php $ref = (float)($product['median'] ?? 0); require ROOT_PATH . '/app/Views/components/similar-products.php'; ?>
+            <?php $ref = (float)($product['median'] ?? 0); $twoSim = !empty($similar) && !empty($similarPerf); $myInno = null; foreach ($benchmarks ?? [] as $bm) { if ($bm['metric_key'] === 'inno_score') { $myInno = (float) $bm['score_value']; } } ?>
+            <div class="mi-section-head compact"><div><span class="eyebrow">เทียบรุ่นใกล้เคียง</span><h2>รุ่นอื่นที่ใกล้เคียง</h2></div>
+                <?php if ($twoSim): ?><ul class="nav mi-sim-tabs" role="tablist">
+                    <li class="nav-item"><a class="nav-link active" id="sim-price-tab" data-toggle="pill" href="#sim-price" role="tab" aria-controls="sim-price" aria-selected="true">ราคาใกล้กัน</a></li>
+                    <li class="nav-item"><a class="nav-link" id="sim-perf-tab" data-toggle="pill" href="#sim-perf" role="tab" aria-controls="sim-perf" aria-selected="false">ประสิทธิภาพใกล้กัน</a></li>
+                </ul><?php endif; ?>
+            </div>
+            <div class="tab-content">
+                <?php if (!empty($similar)): ?><div class="tab-pane fade show active" id="sim-price" role="tabpanel" aria-labelledby="sim-price-tab"><?php if (!$twoSim): ?><p class="mi-trend-note">เรียงตามราคากลางที่ใกล้กับรุ่นนี้</p><?php endif; require ROOT_PATH . '/app/Views/components/similar-products.php'; ?></div><?php endif; ?>
+                <?php if (!empty($similarPerf)): ?><div class="tab-pane fade<?= $twoSim ? '' : ' show active' ?>" id="sim-perf" role="tabpanel" aria-labelledby="sim-perf-tab"><?php if (!$twoSim): ?><p class="mi-trend-note">เรียงตามคะแนนรวมที่ใกล้กับรุ่นนี้</p><?php endif; require ROOT_PATH . '/app/Views/components/similar-perf.php'; ?></div><?php endif; ?>
+            </div>
         </section>
         </div>
         <?php endif; ?>

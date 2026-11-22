@@ -22,10 +22,13 @@ final class PriceController extends Controller {
             $products=\App\Services\Catalog\SpecFilter::apply($products,$specMap,$category,$specFilters);
         }
         $products=\App\Services\Catalog\PriceList::apply($products,$sort,$pricedOnly);
+        // LS-51: a budget in baht (min and max, either may be empty); only models with a public price can be inside it
+        $minPrice=max(0,min(10000000,(int)preg_replace('/\D/','',self::queryString('min')))); $maxPrice=max(0,min(10000000,(int)preg_replace('/\D/','',self::queryString('max'))));
+        $products=\App\Services\Catalog\PriceList::withinBudget($products,$minPrice,$maxPrice);
         // F-7: the names feed the browser's own autocomplete; when nothing was found, a typo-tolerant "did you mean" (suggestion only, results are never changed)
         $names=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'full_name'=>$p['full_name']],$catalog);
         $didYouMean=!$products && $q!=='' ? \App\Services\Search\DidYouMean::suggest($q,$names) : [];
-        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'sort'=>$sort,'pricedOnly'=>$pricedOnly,'specFilters'=>$specFilters,'specOptions'=>$specOptions,'suggestions'=>$products ? [] : $model->popular(6),'names'=>$names,'didYouMean'=>$didYouMean]);
+        $this->view('price/index',['title'=>'ดัชนีราคา','products'=>$products,'q'=>$q,'category'=>$category,'sort'=>$sort,'pricedOnly'=>$pricedOnly,'minPrice'=>$minPrice,'maxPrice'=>$maxPrice,'specFilters'=>$specFilters,'specOptions'=>$specOptions,'suggestions'=>$products ? [] : $model->popular(6),'names'=>$names,'didYouMean'=>$didYouMean]);
     }
     /** LS-24 C1: the price card of a model as a PNG (1200 x 630). Only for a model whose page shows a price, drawn from the same stored snapshot, cached per snapshot. */
     public function card(string $slug): void {
@@ -55,7 +58,7 @@ final class PriceController extends Controller {
         $jsonLd=\App\Services\Seo\SeoService::productJsonLd($product,\App\Services\Seo\SeoService::canonical($base,'/price/'.$product['slug']),$ogImage);
         $cm=[]; if(\App\Services\Community\Forum::enabled($config)){ try { $fm=new \App\Services\Community\Forum(\App\Core\Database::connection($config['db'])); $cm=['cm_on'=>true,'cm_summary'=>$fm->reviewSummary((int)$product['id']),'cm_reviews'=>$fm->reviews((int)$product['id']),'cm_member'=>(new \App\Services\Member\MemberAuth(\App\Core\Database::connection($config['db'])))->current(),'cm_flash'=>(function(){ $f=$_SESSION['community_flash']??null; unset($_SESSION['community_flash']); return is_string($f)?$f:null; })()]; } catch(\PDOException $e) { $cm=[]; } }
         $uvn=\App\Services\Catalog\UsedVsNew::compare(!empty($product['median']) && (int)($product['accepted_observation_count']??0)>0 ? (float)$product['median'] : null, $model->latestNewPrice((int)$product['id']));
-        $this->view('price/show',$cm+['uvn'=>$uvn,'shareText'=>\App\Services\Deal\ShareText::forProduct($product,\App\Services\Seo\SeoService::canonical($base,'/price/'.$product['slug'])),'cardUrl'=>$cardUrl,'communityOn'=>\App\Services\Community\CommunityReports::enabled($config),'ogImage'=>$ogImage,'jsonLd'=>$jsonLd,'metaDescription'=>$meta,'title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'facts'=>\App\Services\Catalog\ProductFacts::rows($product,$model->referenceSpecs((int)$product['id']),(int)date('Y')),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'evidence'=>$model->evidence((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'benchmarks'=>$model->benchmarks((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4)]);
+        $this->view('price/show',$cm+['uvn'=>$uvn,'shareText'=>\App\Services\Deal\ShareText::forProduct($product,\App\Services\Seo\SeoService::canonical($base,'/price/'.$product['slug'])),'cardUrl'=>$cardUrl,'communityOn'=>\App\Services\Community\CommunityReports::enabled($config),'ogImage'=>$ogImage,'jsonLd'=>$jsonLd,'metaDescription'=>$meta,'title'=>$product['full_name'],'product'=>$product,'history'=>$model->history((int)$product['id']),'facts'=>\App\Services\Catalog\ProductFacts::rows($product,$model->referenceSpecs((int)$product['id']),(int)date('Y')),'evidence_grades'=>$model->evidenceGrades((int)$product['id']),'evidence'=>$model->evidence((int)$product['id']),'trend'=>$model->trend((int)$product['id']),'benchmarks'=>$model->benchmarks((int)$product['id']),'similar'=>$model->similar($product,(float)($product['median']??0),4),'similarPerf'=>$model->similarByScore($product,4)]);
     }
 }
 

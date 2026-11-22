@@ -896,3 +896,26 @@ body.mi .mi-admin-table tbody tr:not(.mi-cmp-group):hover { background: rgba(187
 
 /* LS-49: the hero picture fades into the page instead of ending in a visible rectangle (owner: the edge still shows). Written as an override at the end of the file so the hero RGB layer rules above stay untouched: the picture and its light stage share one soft mask on all four sides; the mode switch sits outside the mask. */
 body.mi .mi-rgb-orig, body.mi .mi-rgb-stage { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%); mask-composite: intersect; }
+
+/* LS-51: (1) a Select2 box keeps its pill shape when it opens: only the border and ring change, the list opens below as a separate rounded panel; (2) the /price budget row; (3) the product page actions as one primary button plus the dock; (4) the two lists of similar models switch with pills. */
+body.mi .select2-container--default.select2-container--open.select2-container--below .select2-selection--single, body.mi .select2-container--default.select2-container--open.select2-container--above .select2-selection--single { border-radius: var(--ci-r-pill); }
+body.mi .select2-container--default .select2-dropdown { margin-top: 6px; margin-bottom: 6px; border: 1px solid var(--ci-border-active); border-radius: 16px; overflow: hidden; background: var(--ci-surface); box-shadow: 0 16px 40px rgba(0, 0, 0, .45); }
+body.mi .select2-container--default .select2-search--dropdown .select2-search__field { border: 1px solid var(--ci-border-active); border-radius: 12px; background: var(--ci-search); color: var(--ci-text); }
+body.mi .select2-container--default .select2-results__option--highlighted[aria-selected] { background: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi .mi-budget-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+body.mi .mi-budget-lbl { margin: 0 4px 0 0; }
+body.mi input.mi-budget-in { width: 150px; min-height: 48px; }
+body.mi .mi-budget-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+body.mi .mi-budget-chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); background: var(--ci-search); color: var(--ci-text-2); font-size: 14px; transition: border-color .2s, color .2s, background-color .2s; }
+body.mi .mi-budget-chip:hover { border-color: var(--ci-primary); color: var(--ci-text); }
+body.mi .mi-budget-chip.active { border-color: var(--ci-primary); color: var(--ci-text); background: rgba(187, 242, 70, .1); }
+body.mi .mi-act { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 16px; }
+body.mi .mi-act-main { min-height: 52px; padding: 0 28px; border-radius: var(--ci-r-pill); font-size: 1.05rem; }
+body.mi .mi-act-dock { margin: 0; width: 100%; }
+body.mi button.mi-cat-item { border: 0; background: transparent; cursor: pointer; font-family: inherit; }
+body.mi .mi-act-dock .mi-cat-item { min-width: 60px; }
+body.mi .mi-sim-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+body.mi .mi-sim-tabs .nav-link { padding: 6px 14px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-text-2); font-size: 14px; }
+body.mi .mi-sim-tabs .nav-link:hover { color: var(--ci-text); border-color: var(--ci-primary); }
+body.mi .mi-sim-tabs .nav-link.active { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); font-weight: 600; }body.mi #sec-similar .mi-section-head { flex-wrap: wrap; gap: 12px; align-items: flex-start; }
+body.mi #sec-similar .mi-section-head h2 { white-space: nowrap; }
