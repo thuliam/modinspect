@@ -61,12 +61,13 @@ while (count($featured) < 5 && $byCat) {
             <div class="col-lg-5 mi-hero-copy">
                 <h1 class="reveal">เช็กราคา<br><em>อุปกรณ์ IT มือสอง</em></h1>
                 <p class="mi-sub reveal" style="--d:100ms">ค้นหา <i>•</i> เทียบ <i>•</i> ตรวจสอบที่มา <i>•</i> ตัดสินใจได้คุ้มกว่า</p>
-                <form class="mi-search reveal" style="--d:200ms" action="<?= $base ?>/price" method="get">
+                <form class="mi-search mi-ask reveal" style="--d:200ms" action="<?= $base ?>/price" method="get">
                     <label class="sr-only" for="home-search">ค้นหารุ่นสินค้า</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-search" aria-hidden="true"></i></span></div>
-                        <input id="home-search" class="form-control" name="q" placeholder="ค้นหา เช่น Ryzen 7 5700X3D หรือ RTX 3070" required>
-                        <div class="input-group-append"><button class="btn btn-lime" type="submit">เช็กราคา</button></div>
+                    <?php // LS-39: search bar in the style of the 21st.dev "AI chat input": a frosted pill, a round action button at the end, a soft grow on focus ?>
+                    <div class="mi-ask-bar">
+                        <i class="fas fa-search mi-ask-ico" aria-hidden="true"></i>
+                        <input id="home-search" class="mi-ask-input" name="q" type="search" autocomplete="off" placeholder="ค้นหา เช่น Ryzen 7 5700X3D หรือ RTX 3070" required>
+                        <button class="mi-ask-go" type="submit" aria-label="เช็กราคา" title="เช็กราคา"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
                     </div>
                 </form>
                 <div class="mi-chips reveal" style="--d:300ms" aria-label="Search examples">
@@ -115,11 +116,12 @@ while (count($featured) < 5 && $byCat) {
         <div class="col-lg-9">
             <h2 id="h-deal">ราคาที่คุณเจอ แพงไปหรือเปล่า</h2>
             <p class="mi-lead">ใส่ราคาประกาศที่เจอ แล้วเทียบกับช่วงราคาตลาดอย่างเป็นกลาง ไม่ตัดสินผู้ขาย และไม่แทนการตรวจสภาพจริง</p>
-            <form class="mi-deal-inline" action="<?= $base ?>/deal-checker" method="get">
+            <form class="mi-deal-inline mi-ask" action="<?= $base ?>/deal-checker" method="get">
                 <label for="home-price">ราคาที่พบ (บาท)</label>
-                <div class="input-group">
-                    <input id="home-price" class="form-control" name="user_price" type="number" inputmode="numeric" min="1" max="10000000" step="1" placeholder="เช่น 7900" required>
-                    <div class="input-group-append"><button class="btn btn-lime" type="submit">เปิด Deal Checker</button></div>
+                <div class="mi-ask-bar">
+                    <span class="mi-ask-ico" aria-hidden="true">฿</span>
+                    <input id="home-price" class="mi-ask-input" name="user_price" type="number" inputmode="numeric" min="1" max="10000000" step="1" placeholder="เช่น 7900" required>
+                    <button class="mi-ask-go" type="submit" aria-label="เปิด Deal Checker" title="เปิด Deal Checker"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
                 </div>
             </form>
             <p class="mi-note"><a href="<?= $base ?>/read-listing">หรือวางประกาศทั้งข้อความให้ระบบอ่านรุ่นและราคา <i class="fas fa-arrow-right" aria-hidden="true"></i></a></p>

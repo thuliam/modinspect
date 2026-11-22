@@ -717,3 +717,18 @@ body.mi .mi-wave-rev { animation-direction: reverse; }
 @keyframes miWaveSlide { to { transform: translateX(-50%); } }
 @media (max-width: 767.98px) { body.mi .mi-wave:nth-child(n+3) { display: none; } body.mi .mi-waves { opacity: .4; } }
 @media (prefers-reduced-motion: reduce) { body.mi .mi-wave { animation: none; } }
+
+/* LS-39: search bars in the style of the 21st.dev "AI chat input" (frosted pill, round action button at the end, a soft grow on focus), built from CI tokens. Used for the home search and the home price box. The global input rule needs !important to be overridden here. */
+body.mi .mi-search > .mi-ask-bar, body.mi .mi-deal-inline .mi-ask-bar { display: flex; flex-direction: row; align-items: center; gap: 12px; height: 60px; padding: 0 8px 0 22px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); background: rgba(23, 31, 46, .72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .06); transition: height .35s cubic-bezier(.3, 1.4, .5, 1), border-color .2s, box-shadow .2s; }
+body.mi .mi-search > .mi-ask-bar:focus-within, body.mi .mi-deal-inline .mi-ask-bar:focus-within { height: 68px; border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow), 0 12px 34px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .06); }
+body.mi .mi-ask-ico { flex: 0 0 auto; color: var(--ci-text-2); font-size: 16px; font-weight: 600; }
+body.mi .mi-ask-bar .mi-ask-input { flex: 1 1 auto; min-width: 0; height: 100%; padding: 0; border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; color: var(--ci-text); font-size: 1.05rem; outline: 0; -moz-appearance: textfield; }
+body.mi .mi-ask-bar .mi-ask-input::-webkit-outer-spin-button, body.mi .mi-ask-bar .mi-ask-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+body.mi .mi-ask-bar .mi-ask-input::-webkit-search-cancel-button { -webkit-appearance: none; }
+body.mi .mi-ask-bar .mi-ask-go { display: grid; place-items: center; flex: 0 0 auto; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: var(--ci-primary); color: var(--ci-on-primary); transition: transform .2s cubic-bezier(.3, 1.4, .5, 1), box-shadow .2s; }
+body.mi .mi-ask-bar .mi-ask-go:hover { transform: scale(1.08); box-shadow: 0 0 0 4px var(--ci-border-glow); }
+body.mi .mi-ask-bar .mi-ask-go:active { transform: scale(.96); }
+body.mi .mi-ask-bar .mi-ask-go:focus-visible { outline: 2px solid var(--ci-text); outline-offset: 3px; }
+body.mi .mi-deal-inline { max-width: 36rem; }
+@media (max-width: 575.98px) { body.mi .mi-search > .mi-ask-bar, body.mi .mi-deal-inline .mi-ask-bar { height: 56px; padding-left: 16px; } body.mi .mi-search > .mi-ask-bar:focus-within, body.mi .mi-deal-inline .mi-ask-bar:focus-within { height: 62px; } }
+@media (prefers-reduced-motion: reduce) { body.mi .mi-ask-bar, body.mi .mi-ask-bar .mi-ask-go { transition: none; } body.mi .mi-ask-bar:focus-within { height: 60px; } }
