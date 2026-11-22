@@ -1,5 +1,5 @@
 <?php /** @var list<array{label:string,value:string,source:?string,checked:?string,note:?string}> $facts rows from ProductFacts::rows */ ?>
-<section class="card mi-facts-card h-100" id="sec-specs" data-nav="<?= empty($benchmarks) ? 'สเปก' : 'สเปกและผลทดสอบ' ?>" aria-labelledby="mi-facts-title">
+<section class="card mi-facts-card h-100" id="sec-specs" data-icon="fa-microchip" data-nav="<?= empty($benchmarks) ? 'สเปก' : 'สเปกและผลทดสอบ' ?>" aria-labelledby="mi-facts-title">
     <div class="mi-section-head compact"><div><span class="eyebrow">ข้อมูลรุ่น</span><h2 id="mi-facts-title">สเปกและอายุรุ่น</h2></div></div>
     <?php if (!empty($facts)): ?>
         <dl class="mi-context-list">

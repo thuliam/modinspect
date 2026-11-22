@@ -7,7 +7,7 @@
 use App\Services\Community\Forum;
 $token = htmlspecialchars(\App\Core\Csrf::token()); $back = '/price/' . rawurlencode((string) $product['slug']);
 ?>
-<section class="card mi-result-panel mt-4" id="reviews" data-nav="รีวิวผู้ซื้อ">
+<section class="card mi-result-panel mt-4" id="reviews" data-nav="รีวิวผู้ซื้อ" data-icon="fa-comments">
     <span class="eyebrow">ซื้อแล้วเป็นไง</span>
     <h2 class="h4">ประสบการณ์ของคนที่ซื้อรุ่นนี้มือสอง</h2>
     <?php if ($cm_flash): ?><div class="alert alert-info" role="status"><?= htmlspecialchars($cm_flash) ?></div><?php endif; ?>

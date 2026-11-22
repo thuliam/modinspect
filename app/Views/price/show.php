@@ -54,7 +54,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
     require_once ROOT_PATH . '/app/Views/components/hw-art.php';
     $artType = match (strtolower(trim((string) ($product['category_name'] ?? '')))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' };
     ?>
-    <header class="mi-product-hero row align-items-stretch" id="sec-price" data-nav="ราคา">
+    <header class="mi-product-hero row align-items-stretch" id="sec-price" data-nav="ราคา" data-icon="fa-tag">
         <div class="col-lg-6 mb-3">
             <div class="mi-gallery">
                 <span class="mi-gallery-badge"><i class="fas fa-<?= $hasMarketSnapshot ? 'chart-line' : 'info-circle' ?>" aria-hidden="true"></i> <?= $hasMarketSnapshot ? 'มีข้อมูลราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span>
@@ -135,7 +135,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
     <?php endif; ?>
 
     <?php if (!$hasMarketSnapshot): ?>
-        <div class="row" id="sec-market" data-nav="ข้อมูลตลาด">
+        <div class="row" id="sec-market" data-nav="ข้อมูลตลาด" data-icon="fa-chart-bar">
             <div class="col-12 col-lg-6 mb-4"><article class="card mi-product-summary-card h-100">
                 <h2>ข้อมูลสินค้า</h2>
                 <dl class="mi-context-list">
@@ -161,7 +161,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             </aside></div>
         </div>
     <?php else: ?>
-        <div class="row" id="sec-market" data-nav="ข้อมูลตลาด">
+        <div class="row" id="sec-market" data-nav="ข้อมูลตลาด" data-icon="fa-chart-bar">
             <div class="col-12 col-lg-6 mb-4"><aside class="card mi-confidence-card h-100">
                 <span class="confidence-badge confidence-<?= htmlspecialchars($confidenceClass) ?>">
                     <?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?>
@@ -188,7 +188,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <?php require ROOT_PATH . '/app/Views/components/evidence-explorer.php'; ?>
         <div class="row mt-4">
         <div class="col-12<?= !empty($similar) ? ' col-lg-6' : '' ?> mb-4">
-        <section class="card mi-history-card mt-0 h-100" id="sec-trend" data-nav="<?= !empty($similar) ? 'แนวโน้มและรุ่นใกล้เคียง' : 'แนวโน้ม' ?>">
+        <section class="card mi-history-card mt-0 h-100" id="sec-trend" data-icon="fa-chart-line" data-nav="<?= !empty($similar) ? 'แนวโน้มและรุ่นใกล้เคียง' : 'แนวโน้ม' ?>">
             <div class="mi-section-head compact">
                 <div>
                     <span class="eyebrow">ประวัติราคา</span>

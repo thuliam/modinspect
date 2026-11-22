@@ -99,7 +99,8 @@ jQuery(function ($) {
     var $pnav = $('#product-nav');
     if ($pnav.length) {
         $('main [data-nav][id]').each(function () {
-            $('<a class="nav-link">').attr('href', '#' + this.id).text($(this).attr('data-nav')).appendTo($pnav);
+            var t = $(this).attr('data-nav');   // LS-35: icon dock; the label is the tooltip and the accessible name
+            $('<a class="nav-link">').attr({ href: '#' + this.id, 'data-title': t, 'aria-label': t }).append($('<span class="mi-dock-ico">').append($('<i class="fas" aria-hidden="true">').addClass($(this).attr('data-icon') || 'fa-circle'))).appendTo($pnav);
         });
         if ($pnav.children().length > 2) {
             $pnav.prop('hidden', false);

@@ -3,7 +3,7 @@
 if (!$uvn) { return; }
 $safeUrl = preg_match('#^https?://#i', $uvn['source_url']) === 1 ? $uvn['source_url'] : '';
 ?>
-<section class="card mi-result-panel mt-4" id="used-vs-new" data-nav="เทียบกับของใหม่">
+<section class="card mi-result-panel mt-4" id="used-vs-new" data-nav="เทียบกับของใหม่" data-icon="fa-exchange-alt">
     <span class="eyebrow">มือสองเทียบของใหม่</span>
     <h2 class="h5">
         <?php if ($uvn['direction'] === 'cheaper'): ?>ราคากลางมือสอง ฿<?= number_format($uvn['used']) ?> ต่ำกว่าของใหม่ ฿<?= number_format($uvn['new']) ?> ประมาณ <?= (int) $uvn['diff_percent'] ?>%

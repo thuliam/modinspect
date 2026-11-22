@@ -559,12 +559,27 @@ body.mi .mi-builder .mi-radar-box { position: relative; height: 260px; }
    The public theme maps it to the secondary text token (about 7:1 on the card surface). Bootstrap sets it with !important, so this must too. */
 body.mi .text-muted { color: var(--ci-text-2) !important; }
 
-/* LS-19 B1: product page jump bar (Bootstrap .nav + scrollspy). Sticks under the 72 px site header; scrolls sideways on phones instead of wrapping. */
-body.mi .mi-section-nav { position: sticky; top: 72px; z-index: 15; flex-wrap: nowrap; overflow-x: auto; gap: 4px; margin: 0 0 16px; padding: 8px 0; background: var(--ci-canvas); border-bottom: 1px solid var(--ci-border); scrollbar-width: none; }
-body.mi .mi-section-nav .nav-link { white-space: nowrap; min-height: 40px; display: inline-flex; align-items: center; padding: 6px 14px; border-radius: var(--ci-r-pill); color: var(--ci-text-2); }
-body.mi .mi-section-nav .nav-link:hover { color: var(--ci-text); background: var(--ci-elevated); }
-body.mi .mi-section-nav .nav-link.active, body.mi .mi-section-nav.nav-pills .nav-link.active { color: var(--ci-on-primary); background: var(--ci-primary); font-weight: 600; }
-html { scroll-padding-top: 140px; }
+/* LS-19 B1 / LS-35: product page jump bar as an icon dock (layout idea from the 21st.dev floating dock; Bootstrap .nav + scrollspy, no script of its own). A floating pill under the 72 px site header; the
+   label of each icon is its tooltip. Where there is motion and a pointer, the hovered icon grows and its neighbours grow a little (a stepped version of the dock's distance curve); phones and
+   reduced-motion readers get the plain dock. */
+body.mi .mi-section-nav { position: sticky; top: 84px; z-index: 15; display: flex; width: fit-content; max-width: 100%; margin: 0 auto 24px; padding: 8px 14px; gap: 14px; align-items: center; flex-wrap: nowrap; overflow-x: auto; background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-lg); box-shadow: 0 8px 24px rgba(0, 0, 0, .35); scrollbar-width: none; }
+body.mi .mi-section-nav .nav-link { position: relative; flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border-radius: var(--ci-r-pill); background: transparent; color: var(--ci-text-2); }
+body.mi .mi-dock-ico { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--ci-r-pill); background: var(--ci-elevated); font-size: 16px; transition: transform .2s cubic-bezier(.3, 1.4, .5, 1), background .2s, color .2s; }
+body.mi .mi-section-nav .nav-link:hover, body.mi .mi-section-nav .nav-link:focus { background: transparent; color: var(--ci-text); }
+body.mi .mi-section-nav .nav-link.active, body.mi .mi-section-nav.nav-pills .nav-link.active { background: transparent; color: var(--ci-on-primary); }
+body.mi .mi-section-nav .nav-link.active .mi-dock-ico { background: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi .mi-section-nav .nav-link:focus-visible .mi-dock-ico { outline: 2px solid var(--ci-primary); outline-offset: 2px; }
+@media (hover: hover) {
+    body.mi .mi-section-nav { overflow: visible; }
+    body.mi .mi-section-nav .nav-link::after { content: attr(data-title); position: absolute; top: calc(100% + 26px); left: 50%; transform: translate(-50%, -4px); padding: 2px 8px; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); background: var(--ci-elevated); color: var(--ci-text); font-size: 12px; line-height: 20px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; }
+    body.mi .mi-section-nav .nav-link:hover::after, body.mi .mi-section-nav .nav-link:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    body.mi .mi-section-nav .nav-link:hover .mi-dock-ico, body.mi .mi-section-nav .nav-link:focus-visible .mi-dock-ico { transform: scale(1.55); }
+    body.mi .mi-section-nav .nav-link:hover + .nav-link .mi-dock-ico, body.mi .mi-section-nav .nav-link:has(+ .nav-link:hover) .mi-dock-ico { transform: scale(1.22); }
+    body.mi .mi-section-nav .nav-link:hover + .nav-link + .nav-link .mi-dock-ico, body.mi .mi-section-nav .nav-link:has(+ .nav-link + .nav-link:hover) .mi-dock-ico { transform: scale(1.08); }
+}
+html { scroll-padding-top: 160px; }
 html.motion-full { scroll-behavior: smooth; }
 
 /* LS-21: compare table group headers (Bootstrap collapse toggles); the chevron shows the state */
