@@ -991,3 +991,10 @@ body.mi:not(.is-home)::after { inset: -12%; background: radial-gradient(ellipse 
 html.motion-full body.mi:not(.is-home)::after { animation: miBackdrop 26s ease-in-out infinite alternate; will-change: transform; }
 @keyframes miBackdrop { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 2%, 0) scale(1.06); } }
 @media print { body.mi:not(.is-home)::before, body.mi:not(.is-home)::after { display: none; } }
+
+/* LS-58: the condition guide category cards: the label bar has equal padding top and bottom and a fixed height so the arrow sits on its centre line; cards without a picture show their icon in a lime outlined tile (the CPU tile of the picture cards) instead of a bare glyph; icons match the menu and the dock. The closing-band buttons put a gap between icon and text. */
+body.mi .mi-cats .mi-cat strong { display: flex; align-items: center; min-height: 56px; padding: 0 64px 0 18px; }
+body.mi .mi-cats .mi-go { right: 10px; bottom: 8px; width: 40px; height: 40px; border: 1px solid var(--ci-border-active); background: rgba(187, 242, 70, .08); }
+body.mi .mi-cats .mi-cat-art > i { display: grid; place-items: center; width: 72px; height: 72px; border: 1px solid rgba(187, 242, 70, .45); border-radius: 18px; background: rgba(187, 242, 70, .08); font-size: 30px; transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); }
+body.mi .mi-cats .mi-cat:hover .mi-cat-art > i { transform: scale(1.08); }
+body.mi .mi-cta-act .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
