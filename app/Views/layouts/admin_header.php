@@ -82,9 +82,12 @@ try {
     $pendingReviews = (int) Database::connection($config['db'])->query("SELECT COUNT(*) FROM price_observations WHERE verified_status='pending'")->fetchColumn();
 } catch (\Throwable $e) { $pendingReviews = 0; }
 $userInitial = htmlspecialchars(strtoupper(substr((string) ($authUser['name'] ?? 'A'), 0, 1)));
+$lang = \App\Core\Lang::current();
+$backQuery = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_QUERY) ?? '');
+$langBack = $requestPath . ($backQuery !== '' ? '?' . $backQuery : '');
 ?>
 <!doctype html>
-<html lang="th">
+<html lang="<?= $lang ?>">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
@@ -109,19 +112,20 @@ $userInitial = htmlspecialchars(strtoupper(substr((string) ($authUser['name'] ??
     <div class="dx-backdrop" aria-hidden="true"></div>
     <aside class="dx-sidebar d-flex flex-column" id="adminSidebarNav">
         <div class="dx-brand d-flex align-items-center justify-content-between">
-            <a class="dx-logo d-flex align-items-center" href="<?= $base ?>/admin" aria-label="ModInspect Admin dashboard"><span class="dx-mark"><i class="fas fa-search"></i></span><span class="dx-wordmark">ModInspect</span></a>
-            <button type="button" class="dx-close d-lg-none" aria-label="Close sidebar"><i class="fas fa-times"></i></button>
+            <a class="dx-logo d-flex align-items-center" href="<?= $base ?>/admin" aria-label="<?= htmlspecialchars(t('header.logo_aria')) ?>"><span class="dx-mark"><i class="fas fa-search"></i></span><span class="dx-wordmark">ModInspect</span></a>
+            <button type="button" class="dx-close d-lg-none" aria-label="<?= htmlspecialchars(t('header.close_sidebar')) ?>"><i class="fas fa-times"></i></button>
         </div>
         <nav class="dx-nav flex-grow-1" aria-label="Main navigation">
             <?php foreach($groups as $group => $links): ?>
                 <?php $visibleLinks=array_values(array_filter($links, fn($link) => $authz->can($authUser, $link['permission']))); ?>
                 <?php if(!$visibleLinks) continue; ?>
                 <div class="dx-group">
-                    <p class="dx-group-label"><?= htmlspecialchars($group) ?></p>
+                    <p class="dx-group-label"><?= htmlspecialchars(t('navg.' . \App\Core\Lang::slug($group))) ?></p>
                     <?php foreach($visibleLinks as $link): ?>
-                        <a class="dx-link <?= $isActive($link['paths']) ?>" href="<?= $base.htmlspecialchars($link['href']) ?>" title="<?= htmlspecialchars($link['label']) ?>">
+                        <?php $navLabel = t('nav.' . \App\Core\Lang::slug($link['label'])); ?>
+                        <a class="dx-link <?= $isActive($link['paths']) ?>" href="<?= $base.htmlspecialchars($link['href']) ?>" title="<?= htmlspecialchars($navLabel) ?>">
                             <i class="fas fa-fw <?= htmlspecialchars($link['icon']) ?>"></i>
-                            <span class="flex-grow-1"><?= htmlspecialchars($link['label']) ?></span>
+                            <span class="flex-grow-1"><?= htmlspecialchars($navLabel) ?></span>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -131,31 +135,39 @@ $userInitial = htmlspecialchars(strtoupper(substr((string) ($authUser['name'] ??
     <div class="dx-column d-flex flex-column flex-grow-1 overflow-hidden">
         <header class="dx-header">
             <div class="d-flex align-items-center h-100">
-                <button type="button" class="dx-icon-btn d-lg-none mr-2 js-nav-open" aria-label="Open sidebar"><i class="fas fa-bars"></i></button>
-                <button type="button" class="dx-icon-btn d-none d-lg-flex mr-2 js-sidebar-toggle" aria-label="Collapse or expand sidebar"><i class="fas fa-columns"></i></button>
+                <button type="button" class="dx-icon-btn d-lg-none mr-2 js-nav-open" aria-label="<?= htmlspecialchars(t('header.open_sidebar')) ?>"><i class="fas fa-bars"></i></button>
+                <button type="button" class="dx-icon-btn d-none d-lg-flex mr-2 js-sidebar-toggle" aria-label="<?= htmlspecialchars(t('header.toggle_sidebar')) ?>"><i class="fas fa-columns"></i></button>
                 <div class="flex-grow-1 dx-search-wrap">
                     <label class="dx-search mb-0">
                         <i class="fas fa-search"></i>
-                        <input type="text" id="dxSearch" class="flex-grow-1" placeholder="Search admin pages..." autocomplete="off" aria-label="Search admin pages">
+                        <input type="text" id="dxSearch" class="flex-grow-1" placeholder="<?= htmlspecialchars(t('header.search_placeholder')) ?>" autocomplete="off" aria-label="<?= htmlspecialchars(t('header.search_aria')) ?>">
                         <kbd class="d-none d-sm-inline">Ctrl K</kbd>
                     </label>
                 </div>
                 <div class="d-flex align-items-center ml-3">
-                    <button type="button" class="dx-icon-btn d-none d-md-flex mr-2" id="dxFullscreen" aria-label="Toggle fullscreen"><i class="fas fa-expand"></i></button>
-                    <button type="button" id="dxThemeToggle" class="dx-icon-btn mr-2" aria-label="Toggle light or dark theme" aria-pressed="false"><i class="fas fa-moon"></i></button>
-                    <a class="dx-icon-btn position-relative mr-2" href="<?= $base ?>/admin/review-queue" aria-label="Review queue"><i class="fas fa-bell"></i><?php if ($pendingReviews > 0): ?><span class="dx-dot" title="<?= $pendingReviews ?> observations pending review"></span><?php endif; ?></a>
+                    <form method="post" action="<?= $base ?>/lang" class="mr-2 mb-0" aria-label="<?= htmlspecialchars(t('lang.label')) ?>">
+                        <input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
+                        <input type="hidden" name="back" value="<?= htmlspecialchars($langBack) ?>">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="submit" name="lang" value="th" class="btn <?= $lang === 'th' ? 'btn-primary' : 'btn-light border' ?>" aria-pressed="<?= $lang === 'th' ? 'true' : 'false' ?>" title="<?= htmlspecialchars(t('lang.switch_to_th', [], 'th')) ?>"><?= htmlspecialchars(t('lang.th')) ?></button>
+                            <button type="submit" name="lang" value="en" class="btn <?= $lang === 'en' ? 'btn-primary' : 'btn-light border' ?>" aria-pressed="<?= $lang === 'en' ? 'true' : 'false' ?>" title="<?= htmlspecialchars(t('lang.switch_to_en')) ?>"><?= htmlspecialchars(t('lang.en')) ?></button>
+                        </div>
+                    </form>
+                    <button type="button" class="dx-icon-btn d-none d-md-flex mr-2" id="dxFullscreen" aria-label="<?= htmlspecialchars(t('header.fullscreen')) ?>"><i class="fas fa-expand"></i></button>
+                    <button type="button" id="dxThemeToggle" class="dx-icon-btn mr-2" aria-label="<?= htmlspecialchars(t('header.theme')) ?>" aria-pressed="false"><i class="fas fa-moon"></i></button>
+                    <a class="dx-icon-btn position-relative mr-2" href="<?= $base ?>/admin/review-queue" aria-label="<?= htmlspecialchars(t('header.review_queue_aria')) ?>"><i class="fas fa-bell"></i><?php if ($pendingReviews > 0): ?><span class="dx-dot" title="<?= htmlspecialchars(t('header.pending_title', ['n' => $pendingReviews])) ?>"></span><?php endif; ?></a>
                     <div class="dropdown">
                         <button class="dx-user dropdown-toggle-split" type="button" id="adminUserMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="dx-avatar"><?= $userInitial ?></span>
-                            <span class="d-none d-md-block text-left"><span class="dx-user-name"><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></span><span class="dx-user-role"><i class="fas fa-shield-alt"></i><?= htmlspecialchars($authUser['role'] ?? 'admin') ?></span></span>
+                            <span class="d-none d-md-block text-left"><span class="dx-user-name"><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></span><span class="dx-user-role"><i class="fas fa-shield-alt"></i><?= htmlspecialchars(t('role.' . ($authUser['role'] ?? 'admin'))) ?></span></span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right dx-user-menu" aria-labelledby="adminUserMenu">
                             <div class="dx-user-head"><strong><?= htmlspecialchars($authUser['name'] ?? 'Admin') ?></strong><small><?= htmlspecialchars($authUser['email'] ?? '') ?></small></div>
-                            <a class="dropdown-item" href="<?= $base ?>/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt fa-fw mr-2"></i>Public site</a>
+                            <a class="dropdown-item" href="<?= $base ?>/" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt fa-fw mr-2"></i><?= htmlspecialchars(t('header.public_site')) ?></a>
                             <div class="dropdown-divider"></div>
                             <form method="post" action="<?= $base ?>/logout" class="m-0">
                                 <input type="hidden" name="_token" value="<?= htmlspecialchars(Csrf::token()) ?>">
-                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-power-off fa-fw mr-2"></i>Logout</button>
+                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-power-off fa-fw mr-2"></i><?= htmlspecialchars(t('header.logout')) ?></button>
                             </form>
                         </div>
                     </div>
@@ -167,7 +179,7 @@ $userInitial = htmlspecialchars(strtoupper(substr((string) ($authUser['name'] ??
                 <?php $flash=$_SESSION['flash']; unset($_SESSION['flash']); ?>
                 <div class="alert alert-<?= htmlspecialchars((string)($flash['type'] ?? 'info')) ?> alert-dismissible fade show" role="alert">
                     <?= htmlspecialchars((string)($flash['message'] ?? '')) ?>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="<?= htmlspecialchars(t('common.close')) ?>"><span aria-hidden="true">&times;</span></button>
                 </div>
             <?php endif; ?>
             <div class="dx-page">

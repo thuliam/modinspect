@@ -1,7 +1,7 @@
             </div>
             <footer class="dx-footer">
                 <span>&copy; <?= date('Y') ?> ModInspect Admin</span>
-                <span>Designed &amp; developed by <a href="https://datadropx.net" target="_blank" rel="noopener">DataDropX</a> (DropX Admin template)</span>
+                <span><?= htmlspecialchars(t('footer.designed_by')) ?> <a href="https://datadropx.net" target="_blank" rel="noopener">DataDropX</a> <?= htmlspecialchars(t('footer.template')) ?></span>
             </footer>
         </main>
     </div>

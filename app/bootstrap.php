@@ -24,6 +24,7 @@ spl_autoload_register(function (string $class): void {
     $file = ROOT_PATH . '/app/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
     if (is_file($file)) require $file;
 });
+require ROOT_PATH . '/app/Core/helpers.php';
 
 $config = require ROOT_PATH . '/config/app.php';
 date_default_timezone_set('Asia/Bangkok');

@@ -116,6 +116,7 @@ $router->get('/admin/review/{id}',[AdminController::class,'reviewDetail']);
 $router->get('/admin/review-analytics',[AdminController::class,'reviewAnalytics']);
 $router->get('/admin/market-trends',[AdminController::class,'marketTrends']);
 $router->get('/admin/unresolved-listings',[AdminController::class,'unresolved']);
+$router->post('/lang',[\App\Controllers\LangController::class,'set']);
 $router->get('/admin/users',[AdminController::class,'users']);
 // LS-14 Module 7: visitor accounts (Google, Microsoft, Facebook)
 $router->get('/account/login',[\App\Controllers\AccountController::class,'login']);

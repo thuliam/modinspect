@@ -136,6 +136,7 @@ $commands = [
     ['label' => 'tests/member_http_test.php', 'args' => ['tests/member_http_test.php']],
     ['label' => 'tests/member_identity_trust_test.php', 'args' => ['tests/member_identity_trust_test.php']],
     ['label' => 'tests/admin_member_trust_test.php', 'args' => ['tests/admin_member_trust_test.php']],
+    ['label' => 'tests/lang_test.php', 'args' => ['tests/lang_test.php']],
     ['label' => 'tests/seller_listing_test.php', 'args' => ['tests/seller_listing_test.php']],
     ['label' => 'tests/seller_controller_test.php', 'args' => ['tests/seller_controller_test.php']],
     ['label' => 'tests/import_listing_attributes_test.php', 'args' => ['tests/import_listing_attributes_test.php']],

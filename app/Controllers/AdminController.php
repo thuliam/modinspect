@@ -154,7 +154,7 @@ final class AdminController extends Controller {
     }
     public function newPriceAction(): void {
         if(!$this->requirePermission('products.manage')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/new-prices'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/new-prices'); }
         global $config; $svc=new \App\Services\Admin\NewPriceReferences(Database::connection($config['db']));
         $actor=(int)$this->user()['id'];
         $messages=['PRODUCT_NOT_FOUND'=>'ไม่พบสินค้านี้','INVALID_PRICE'=>'ราคาต้องมากกว่า 0 และไม่เกิน 10,000,000 บาท','INVALID_URL'=>'ลิงก์ร้านต้องขึ้นต้นด้วย http:// หรือ https://','INVALID_DATE'=>'วันที่ตรวจต้องเป็นวันที่จริง ไม่เกินวันนี้','NOT_FOUND'=>'ไม่พบรายการนี้'];
@@ -174,7 +174,7 @@ final class AdminController extends Controller {
     }
     public function sellerListingAction(): void {
         if(!$this->requirePermission('listings.moderate')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/seller-listings'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/seller-listings'); }
         global $config;
         $r=(new \App\Services\Listing\SellerListings(Database::connection($config['db'])))->moderate((int)$this->user()['id'],(int)($_POST['id']??0),(string)($_POST['decision']??''),(string)($_POST['note']??''));
         $this->flash($r['ok']?'success':'danger',$r['ok']?'บันทึกผลการตรวจแล้ว':(['NOTE_REQUIRED'=>'การไม่ผ่านต้องมีเหตุผล','BAD_STATE'=>'ประกาศนี้ไม่ได้อยู่ในสถานะรอตรวจ','BAD_ACTION'=>'คำสั่งไม่ถูกต้อง'][$r['error']]??'บันทึกไม่สำเร็จ'));
@@ -199,7 +199,7 @@ final class AdminController extends Controller {
     }
     public function communityModerationAction(): void {
         if(!$this->requirePermission('reports.moderate')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/community-moderation'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/community-moderation'); }
         global $config; $f=new \App\Services\Community\Forum(Database::connection($config['db']));
         $type=(string)($_POST['type']??''); $id=(int)($_POST['id']??0); $action=(string)($_POST['action']??'');
         $r=$f->moderate((int)$this->user()['id'],$type,$id,$action);
@@ -216,7 +216,7 @@ final class AdminController extends Controller {
     }
     public function communityReportAction(): void {
         if(!$this->requirePermission('reports.moderate')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/community-reports'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/community-reports'); }
         $svc=$this->communityReportService(); $actor=(int)$this->user()['id']; $id=(int)($_POST['id']??0); $decision=(string)($_POST['decision']??'');
         $backStatus=(string)($_POST['status']??'new'); if(!in_array($backStatus,['new','accepted','rejected','spam','all'],true)){ $backStatus='new'; }   // read once (a second read of a missing key warns and gives '')
         $back='/admin/community-reports?status='.rawurlencode($backStatus);
@@ -233,62 +233,62 @@ final class AdminController extends Controller {
         $status=(string)($_GET['status']??'received'); if(!in_array($status,['received','in_progress','completed','rejected'],true)){ $status='received'; }
         try { $svc=new \App\Services\Member\PrivacyRequests($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb())); $rows=$svc->queue($status); $counts=$svc->counts(); $ready=true; }
         catch(\PDOException) { $rows=[]; $counts=[]; $ready=false; }
-        $this->render('privacy-requests','Privacy requests',['rows'=>$rows,'counts'=>$counts,'status'=>$status,'ready'=>$ready]);
+        $this->render('privacy-requests',t('pr.title'),['rows'=>$rows,'counts'=>$counts,'status'=>$status,'ready'=>$ready]);
     }
     public function privacyRequestAction(): void {
         if(!$this->requirePermission('privacy.handle')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/privacy-requests'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/privacy-requests'); }
         $back=(string)($_POST['status']??'received'); if(!in_array($back,['received','in_progress','completed','rejected'],true)){ $back='received'; }
         $svc=new \App\Services\Member\PrivacyRequests($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
         $to=(string)($_POST['to']??''); $note=is_string($_POST['note']??null)?$_POST['note']:'';
-        if(in_array($to,['completed','rejected'],true) && trim($note)==='') { $this->flash('danger','ต้องมีบันทึกการตอบกลับเมื่อปิดคำขอ'); $this->redirect('/admin/privacy-requests?status='.rawurlencode($back)); }
-        try { $svc->transition((int)($_POST['id']??0),$to,(int)$this->user()['id'],$note); $this->flash('success','บันทึกแล้ว'); }
-        catch(\RuntimeException $e) { $this->flash('danger',['NOT_FOUND'=>'ไม่พบคำขอ','ILLEGAL_TRANSITION'=>'เปลี่ยนสถานะนี้ไม่ได้ (อาจมีคนเปลี่ยนไปแล้ว)'][$e->getMessage()]??'ทำรายการไม่สำเร็จ'); }
+        if(in_array($to,['completed','rejected'],true) && trim($note)==='') { $this->flash('danger',t('pr.flash.note_required')); $this->redirect('/admin/privacy-requests?status='.rawurlencode($back)); }
+        try { $svc->transition((int)($_POST['id']??0),$to,(int)$this->user()['id'],$note); $this->flash('success',t('pr.flash.saved')); }
+        catch(\RuntimeException $e) { $this->flash('danger',['NOT_FOUND'=>t('pr.flash.not_found'),'ILLEGAL_TRANSITION'=>t('pr.flash.illegal')][$e->getMessage()]??t('common.fail')); }
         $this->redirect('/admin/privacy-requests?status='.rawurlencode($back));
     }
     public function legalDocuments(): void {
         if(!$this->requirePermission('legal.manage')) return;
         try { $svc=new \App\Services\Member\LegalDocuments($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb())); $rows=$svc->all(); $docView=isset($_GET['view'])?$svc->find((int)$_GET['view']):null; $ready=true; }
         catch(\PDOException) { $rows=[]; $docView=null; $ready=false; }
-        $this->render('legal-documents','Legal documents',['rows'=>$rows,'docView'=>$docView,'ready'=>$ready,'types'=>\App\Services\Member\LegalDocuments::TYPES]);
+        $this->render('legal-documents',t('ld.title'),['rows'=>$rows,'docView'=>$docView,'ready'=>$ready,'types'=>\App\Services\Member\LegalDocuments::TYPES]);
     }
     public function legalDocumentCreate(): void {
         if(!$this->requirePermission('legal.manage')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/legal-documents'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/legal-documents'); }
         $svc=new \App\Services\Member\LegalDocuments($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
         $str=static fn(string $k): string => is_string($_POST[$k]??null)?trim($_POST[$k]):'';
-        if($str('version')===''||$str('title')===''||$str('body')==='') { $this->flash('danger','ต้องกรอกเวอร์ชัน ชื่อเอกสาร และเนื้อหา'); $this->redirect('/admin/legal-documents'); }
-        try { $id=$svc->createDraft($str('doc_type'),$str('version'),$str('title'),$str('body')); $this->flash('success','บันทึกเป็นฉบับร่าง #'.$id.' แล้ว ยังไม่เผยแพร่'); }
-        catch(\InvalidArgumentException) { $this->flash('danger','ประเภทเอกสารไม่ถูกต้อง'); }
-        catch(\PDOException) { $this->flash('danger','เวอร์ชันนี้ของเอกสารประเภทนี้มีอยู่แล้ว'); }
+        if($str('version')===''||$str('title')===''||$str('body')==='') { $this->flash('danger',t('ld.flash.fields')); $this->redirect('/admin/legal-documents'); }
+        try { $id=$svc->createDraft($str('doc_type'),$str('version'),$str('title'),$str('body')); $this->flash('success',t('ld.flash.draft_saved',['id'=>$id])); }
+        catch(\InvalidArgumentException) { $this->flash('danger',t('ld.flash.bad_type')); }
+        catch(\PDOException) { $this->flash('danger',t('ld.flash.dup')); }
         $this->redirect('/admin/legal-documents');
     }
     public function legalDocumentPublish(): void {
         if(!$this->requirePermission('legal.manage')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/legal-documents'); }
-        if(($_POST['confirm']??'')!=='1') { $this->flash('danger','ต้องติ๊กยืนยันว่าเจ้าของและทนายอนุมัติข้อความแล้ว'); $this->redirect('/admin/legal-documents'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/legal-documents'); }
+        if(($_POST['confirm']??'')!=='1') { $this->flash('danger',t('ld.flash.confirm_required')); $this->redirect('/admin/legal-documents'); }
         $svc=new \App\Services\Member\LegalDocuments($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
-        try { $svc->publish((int)($_POST['id']??0),(int)$this->user()['id']); $this->flash('success','เผยแพร่แล้ว เวอร์ชันก่อนหน้าของประเภทนี้ถูกยกเลิก สมาชิกต้องยอมรับใหม่'); }
-        catch(\RuntimeException $e) { $this->flash('danger',['NOT_A_DRAFT'=>'เผยแพร่ได้เฉพาะฉบับร่าง','EMPTY_BODY'=>'เอกสารไม่มีเนื้อหา'][$e->getMessage()]??'ทำรายการไม่สำเร็จ'); }
+        try { $svc->publish((int)($_POST['id']??0),(int)$this->user()['id']); $this->flash('success',t('ld.flash.published')); }
+        catch(\RuntimeException $e) { $this->flash('danger',['NOT_A_DRAFT'=>t('ld.flash.not_draft'),'EMPTY_BODY'=>t('ld.flash.empty_body')][$e->getMessage()]??t('common.fail')); }
         $this->redirect('/admin/legal-documents');
     }
     public function memberCapabilities(): void {
         if(!$this->requirePermission('members.manage')) return;
         try { $svc=new \App\Services\Member\MemberCapabilities($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb())); $rows=$svc->holders(); $ready=true; }
         catch(\PDOException) { $rows=[]; $ready=false; }
-        $this->render('member-capabilities','Member capabilities',['rows'=>$rows,'ready'=>$ready,'allowed'=>\App\Services\Member\MemberCapabilities::ALLOWED]);
+        $this->render('member-capabilities',t('mc.title'),['rows'=>$rows,'ready'=>$ready,'allowed'=>\App\Services\Member\MemberCapabilities::ALLOWED]);
     }
     public function memberCapabilityAction(): void {
         if(!$this->requirePermission('members.manage')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/member-capabilities'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/member-capabilities'); }
         $svc=new \App\Services\Member\MemberCapabilities($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
         $member=(int)($_POST['member_id']??0); $cap=is_string($_POST['capability']??null)?$_POST['capability']:''; $do=(string)($_POST['do']??'');
-        if(!$svc->memberExists($member)) { $this->flash('danger','ไม่พบสมาชิกรหัสนี้'); $this->redirect('/admin/member-capabilities'); }
+        if(!$svc->memberExists($member)) { $this->flash('danger',t('mc.flash.not_found')); $this->redirect('/admin/member-capabilities'); }
         try {
-            if($do==='grant') { $svc->grant($member,$cap,(int)$this->user()['id']); $this->flash('success','ให้สิทธิ์แล้ว'); }
-            elseif($do==='revoke') { $svc->revoke($member,$cap,(int)$this->user()['id']); $this->flash('success','ถอนสิทธิ์แล้ว (เก็บประวัติไว้)'); }
-            else { $this->flash('danger','คำสั่งไม่ถูกต้อง'); }
-        } catch(\InvalidArgumentException) { $this->flash('danger','ชนิดสิทธิ์ไม่ถูกต้อง'); }
+            if($do==='grant') { $svc->grant($member,$cap,(int)$this->user()['id']); $this->flash('success',t('mc.flash.granted')); }
+            elseif($do==='revoke') { $svc->revoke($member,$cap,(int)$this->user()['id']); $this->flash('success',t('mc.flash.revoked')); }
+            else { $this->flash('danger',t('mc.flash.bad_action')); }
+        } catch(\InvalidArgumentException) { $this->flash('danger',t('mc.flash.bad_cap')); }
         $this->redirect('/admin/member-capabilities');
     }
     public function sellerReports(): void {
@@ -302,7 +302,7 @@ final class AdminController extends Controller {
     }
     public function sellerReportAction(): void {
         if(!$this->requirePermission('reports.moderate')) return;
-        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/seller-reports'); }
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/seller-reports'); }
         global $config;
         $svc=new \App\Services\Listing\SellerCheck(Database::connection($config['db']),(string)($config['seller_check']['hmac_key']??''));
         $decision=(string)($_POST['decision']??''); $actor=(int)$this->user()['id'];

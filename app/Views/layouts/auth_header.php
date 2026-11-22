@@ -2,7 +2,7 @@
 $base = $config['base_url'];
 ?>
 <!doctype html>
-<html lang="th">
+<html lang="<?= \App\Core\Lang::current() ?>">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
