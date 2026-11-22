@@ -519,6 +519,43 @@ final class AdminController extends Controller {
         }
         $this->redirect('/admin/articles');
     }
+    /** LS-60: add, list and delete in-game FPS results (CPU/GPU pages); same validation as cli/game_fps_import.php */
+    public function gameFpsPage(): void {
+        if(!$this->requirePermission('products.view')) return;
+        global $config; $db=Database::connection($config['db']);
+        $has=\App\Services\Catalog\GameFpsImport::tableExists($db);
+        $rows=$has ? $db->query("SELECT r.id,r.game_key,r.resolution,r.quality,r.avg_fps,r.low1_fps,r.paired_part,r.source_name,r.source_url,r.sponsor_name,p.full_name FROM game_fps_results r JOIN products p ON p.id=r.product_id ORDER BY r.id DESC LIMIT 200")->fetchAll() : [];
+        $this->render('game-fps','Game FPS',['has_table'=>$has,'rows'=>$rows,'products'=>$has ? \App\Services\Catalog\GameFpsImport::products($db) : [],'can_manage'=>$this->canManage()]);
+    }
+    public function gameFpsSave(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/game-fps'); }
+        global $config; $db=Database::connection($config['db']);
+        if(!\App\Services\Catalog\GameFpsImport::tableExists($db)) { $this->flash('danger','Migration 031 is not applied on this database.'); $this->redirect('/admin/game-fps'); }
+        $pid=(int)($_POST['product_id'] ?? 0);
+        $known=array_map('intval',array_column(\App\Services\Catalog\GameFpsImport::products($db),'id'));
+        $c=\App\Services\Catalog\GameFpsImport::clean($_POST);
+        if(!in_array($pid,$known,true)) { $this->flash('danger','Choose a CPU or GPU model.'); }
+        elseif($c['data']===null) { $this->flash('danger','Not saved: '.$c['error']); }
+        else {
+            \App\Services\Catalog\GameFpsImport::store($db,$pid,$c['data']);
+            $this->audit('game_fps_saved','product',$pid,['game'=>$c['data']['game_key'],'resolution'=>$c['data']['resolution'],'sponsor'=>$c['data']['sponsor_name']]);
+            $this->flash('success','Result saved.');
+        }
+        $this->redirect('/admin/game-fps');
+    }
+    public function gameFpsDelete(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/game-fps'); }
+        $id=filter_input(INPUT_POST,'result_id',FILTER_VALIDATE_INT);
+        if($id){
+            global $config;
+            Database::connection($config['db'])->prepare("DELETE FROM game_fps_results WHERE id=:id")->execute(['id'=>$id]);
+            $this->audit('game_fps_deleted','game_fps_result',(int)$id,[]);
+            $this->flash('success','Result deleted.');
+        }
+        $this->redirect('/admin/game-fps');
+    }
     public function importDryRun(): void { $this->handleImport(true); }
     public function importConfirm(): void { $this->handleImport(false); }
     private function reviewFilters(): array {

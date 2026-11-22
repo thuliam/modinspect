@@ -7,6 +7,6 @@
   <?php if($authz->can($user,'snapshots.view')): ?><a href="<?= $base ?>/admin/price-indices">Price Index</a><?php endif; ?>
   <?php if($authz->can($user,'sources.view')): ?><a href="<?= $base ?>/admin/sources">Sources</a><?php endif; ?>
   <?php if($authz->can($user,'collection.jobs.view')): ?><a href="<?= $base ?>/admin/collector-jobs">Imports</a><?php endif; ?>
-  <?php if($authz->can($user,'products.view')): ?><a href="<?= $base ?>/admin/articles">Articles</a><?php endif; ?>
+  <?php if($authz->can($user,'products.view')): ?><a href="<?= $base ?>/admin/articles">Articles</a><a href="<?= $base ?>/admin/game-fps">Game FPS</a><?php endif; ?>
   <?php if($authz->can($user,'audit.view')): ?><a href="<?= $base ?>/admin/audit-logs">Audit</a><?php endif; ?>
 </nav>
