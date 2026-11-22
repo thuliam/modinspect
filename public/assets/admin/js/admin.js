@@ -178,6 +178,7 @@
         form.find('[name=excerpt]').val(data.excerpt || '');
         form.find('[name=body]').val(data.body || '');
         form.find('[name=status]').val(data.status || 'draft');
+        form.find('[name=category]').val(data.category || '');
         $('#article-form-title').text('Edit Article');
         $('html, body').animate({ scrollTop: form.offset().top - 90 }, 200);
     });

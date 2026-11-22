@@ -954,3 +954,15 @@ body.mi .mi-side:hover, body.mi .mi-side:focus-within { scrollbar-color: var(--c
 
 /* LS-54: every scrolling box on the public site (Select2 lists, the builder parts card, the dock, tables) uses the brand scrollbar, not only the page and the filter sidebar. */
 body.mi *, body.mi .select2-results__options { scrollbar-width: thin; scrollbar-color: var(--ci-border-active) transparent; }
+
+/* LS-55: the blog reuses the /price sidebar for article categories: a vertical list with an icon, the name and a count; the active one is a filled lime row. */
+body.mi .mi-side-title { margin: 0 0 12px; color: var(--ci-text-2); font-size: 13px; }
+body.mi .mi-blog-cat { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--ci-r-pill); color: var(--ci-text); transition: background .2s, color .2s; }
+body.mi .mi-blog-cat i { width: 18px; text-align: center; color: var(--ci-text-2); }
+body.mi .mi-blog-cat span { flex: 1 1 auto; }
+body.mi .mi-blog-cat em { color: var(--ci-text-2); font-family: var(--mb-mono); font-size: 12px; font-style: normal; }
+body.mi .mi-blog-cat:hover { background: rgba(255, 255, 255, .06); text-decoration: none; color: var(--ci-text); }
+body.mi .mi-blog-cat.active { background: var(--ci-primary); color: var(--ci-on-primary); font-weight: 600; }
+body.mi .mi-blog-cat.active i, body.mi .mi-blog-cat.active em { color: var(--ci-on-primary); }
+body.mi .mi-blog-tag { display: inline-block; margin-right: 8px; padding: 2px 10px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-primary); font-size: 12px; }
+body.mi .mi-side-plain { overflow: visible; max-height: none; }

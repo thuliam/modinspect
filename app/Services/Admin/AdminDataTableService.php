@@ -223,7 +223,7 @@ final class AdminDataTableService
         $this->addSearch($where, $params, ['a.title', 'a.slug', 'a.excerpt'], $req['search']);
         $from = "FROM articles a LEFT JOIN users u ON u.id=a.author_id";
         $columns = ['a.title', 'a.slug', 'a.status', 'u.name', 'a.published_at', 'a.updated_at', 'a.id'];
-        $sql = "SELECT a.id,a.title,a.slug,a.excerpt,a.body,a.status,a.published_at,a.updated_at,u.name author_name $from WHERE " . implode(' AND ', $where) . ' ORDER BY ' . $this->orderSql($req, $columns, 'a.id DESC') . ' LIMIT :limit OFFSET :offset';
+        $sql = "SELECT a.id,a.title,a.slug,a.excerpt," . (\App\Services\Blog\ArticleCategory::columnExists($this->db) ? 'a.category,' : '') . "a.body,a.status,a.published_at,a.updated_at,u.name author_name $from WHERE " . implode(' AND ', $where) . ' ORDER BY ' . $this->orderSql($req, $columns, 'a.id DESC') . ' LIMIT :limit OFFSET :offset';
         $rows = $this->pagedRows($sql, $params, $req);
         $total = $this->count("SELECT COUNT(*) FROM articles a", []);
         $filtered = $this->count("SELECT COUNT(*) $from WHERE " . implode(' AND ', $where), $params);

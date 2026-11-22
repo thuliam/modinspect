@@ -467,6 +467,12 @@ final class AdminController extends Controller {
         $d=new Dashboard();
         $this->render('aliases','Product Aliases',['canManage'=>$this->canManage(),'aliases'=>$d->aliases(),'products'=>$d->reviewProductOptions(),'import'=>$plan,'importText'=>$text]);
     }
+    /** LS-55: the optional category of an article, written only when the database has the column (migration 030) */
+    private function saveArticleCategory(\PDO $db,int $id): void {
+        if($id<1 || !\App\Services\Blog\ArticleCategory::columnExists($db)) return;
+        $db->prepare('UPDATE articles SET category=:c WHERE id=:id')->execute(['c'=>\App\Services\Blog\ArticleCategory::normalize($_POST['category'] ?? null),'id'=>$id]);
+    }
+
     public function articleSave(): void {
         if(!$this->requirePermission('products.manage')) return;
         if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect('/admin/articles'); }
@@ -486,11 +492,13 @@ final class AdminController extends Controller {
             if($id){
                 $stmt=$db->prepare("UPDATE articles SET title=:title,slug=:slug,excerpt=:excerpt,body=:body,status=:status,published_at=CASE WHEN :status_pub0='published' AND :pub_at0 IS NOT NULL THEN :pub_at1 WHEN :status_pub='published' AND published_at IS NULL THEN NOW() WHEN :status_pub2='published' THEN published_at ELSE NULL END,updated_at=NOW() WHERE id=:id");
                 $stmt->execute(['title'=>$title,'slug'=>$slug,'excerpt'=>trim((string)($_POST['excerpt'] ?? '')) ?: null,'body'=>$body,'status'=>$status,'status_pub'=>$status,'status_pub2'=>$status,'status_pub0'=>$status,'pub_at0'=>$pubAt,'pub_at1'=>$pubAt,'id'=>$id]);
+                $this->saveArticleCategory($db,(int)$id);
                 $this->audit('article_updated','article',$id,['slug'=>$slug,'status'=>$status]);
                 $this->flash('success','Article updated.');
             } else {
                 $stmt=$db->prepare("INSERT INTO articles (author_id,title,slug,excerpt,body,status,published_at,created_at,updated_at) VALUES (:author_id,:title,:slug,:excerpt,:body,:status,CASE WHEN :status_pub0='published' AND :pub_at0 IS NOT NULL THEN :pub_at1 WHEN :status_pub='published' THEN NOW() ELSE NULL END,NOW(),NOW())");
                 $stmt->execute(['author_id'=>(int)$this->user()['id'],'title'=>$title,'slug'=>$slug,'excerpt'=>trim((string)($_POST['excerpt'] ?? '')) ?: null,'body'=>$body,'status'=>$status,'status_pub'=>$status,'status_pub0'=>$status,'pub_at0'=>$pubAt,'pub_at1'=>$pubAt]);
+                $this->saveArticleCategory($db,(int)$db->lastInsertId());
                 $this->audit('article_created','article',(int)$db->lastInsertId(),['slug'=>$slug,'status'=>$status]);
                 $this->flash('success','Article created.');
             }

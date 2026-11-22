@@ -12,6 +12,7 @@
             <div class="form-group col-md-4"><label>Status<select class="form-control" name="status"><option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option></select></label></div>
             <div class="form-group col-md-4"><label>Publish at (optional)<input class="form-control" type="datetime-local" name="publish_at"></label><small class="form-text text-muted">Used only when Status is Published. Leave blank to publish now, or set a later time to hold it until then.</small></div>
         </div>
+        <div class="form-row"><div class="form-group col-md-4"><label>Category<select class="form-control" name="category"><option value="">General</option><?php foreach (\App\Services\Blog\ArticleCategory::LABELS as $cv => $cl): ?><option value="<?= $cv ?>"><?= $cl ?></option><?php endforeach; ?></select></label><small class="form-text text-muted">Shown in the blog sidebar. Needs migration 030 on the database.</small></div></div>
         <label>Excerpt<textarea class="form-control" name="excerpt" rows="2"></textarea></label>
         <label>Body<textarea class="form-control" name="body" rows="6" required></textarea></label>
         <button class="btn btn-primary mt-2" type="submit">Save Article</button>

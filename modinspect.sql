@@ -33,6 +33,7 @@ CREATE TABLE `articles` (
   `title` varchar(255) NOT NULL,
   `slug` varchar(190) NOT NULL,
   `excerpt` text DEFAULT NULL,
+  `category` varchar(20) DEFAULT NULL,
   `body` longtext NOT NULL,
   `status` enum('draft','published','archived') NOT NULL DEFAULT 'draft',
   `published_at` datetime DEFAULT NULL,
