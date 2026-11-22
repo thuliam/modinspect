@@ -801,3 +801,14 @@ body.mi .mi-top:hover { background: var(--ci-primary); color: var(--ci-on-primar
 body.mi .mi-top:focus-visible { outline: 2px solid var(--ci-primary); outline-offset: 3px; }
 @media (max-width: 575.98px) { body.mi .mi-top { right: 16px; bottom: 16px; } }
 @media (prefers-reduced-motion: reduce) { body.mi .mi-top { transition: opacity .01s, visibility .01s; transform: none; } }
+/* LS-44: (1) the old ".mi-head h2" is a flex row (icon + title) with a 12 px gap, which turned every word of a split title into a flex item and spread the words apart; titles in the numbered sections are plain blocks. (2) Calm mode (the OS asks for reduced motion, or the visitor pressed the footer toggle to "ลดลง") keeps the fades the site always allowed in that mode: section titles, rows and the nine cards fade in by opacity only, no travel, no blur, no scale; full mode keeps the rise and the blur-in. */
+body.mi .mi-sec h2, body.mi .mi-sec .mi-head h2 { display: block; }
+html.motion-calm body.mi .mi-sec:not(.in) h2:not(.mi-lit) .mi-w, html.motion-calm body.mi .mi-sec:not(.in) .mi-rail, html.motion-calm body.mi .mi-sec:not(.in) .mi-lead, html.motion-calm body.mi .mi-sec:not(.in) .mi-note, html.motion-calm body.mi .mi-sec:not(.in) .mi-deal-inline,
+html.motion-calm body.mi .mi-sec:not(.in) .mi-tabs, html.motion-calm body.mi .mi-sec:not(.in) .mi-table li, html.motion-calm body.mi .mi-sec:not(.in) .mi-principles > div, html.motion-calm body.mi .mi-sec:not(.in) .mi-timeline li,
+html.motion-calm body.mi .mi-sec:not(.in) .mi-faq-item, html.motion-calm body.mi .mi-sec:not(.in) .mi-featured > div, html.motion-calm body.mi .mi-sec:not(.in) .mi-brand-row { opacity: 0; }
+html.motion-calm body.mi .mi-sec h2:not(.mi-lit) .mi-w { transition: opacity .6s ease calc(var(--w) * 50ms + 150ms); }
+html.motion-calm body.mi .mi-sec .mi-rail, html.motion-calm body.mi .mi-sec .mi-lead, html.motion-calm body.mi .mi-sec .mi-note, html.motion-calm body.mi .mi-sec .mi-deal-inline, html.motion-calm body.mi .mi-sec .mi-tabs,
+html.motion-calm body.mi .mi-sec .mi-table li, html.motion-calm body.mi .mi-sec .mi-principles > div, html.motion-calm body.mi .mi-sec .mi-timeline li, html.motion-calm body.mi .mi-sec .mi-faq-item,
+html.motion-calm body.mi .mi-sec .mi-featured > div, html.motion-calm body.mi .mi-sec .mi-brand-row { transition: opacity .7s ease calc(var(--i, 0) * 80ms + 150ms); }
+html.motion-calm body.mi .mi-sec h2.mi-lit .mi-w { opacity: .2; transition: opacity .3s linear; }
+html.motion-calm body.mi .mi-sec h2.mi-lit .mi-w.lit { opacity: 1; }
