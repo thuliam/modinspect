@@ -557,6 +557,8 @@ CREATE TABLE price_trend_points (
   q1 DECIMAL(12,2) NOT NULL,
   median DECIMAL(12,2) NOT NULL,
   q3 DECIMAL(12,2) NOT NULL,
+  low_price DECIMAL(12,2) NULL,
+  high_price DECIMAL(12,2) NULL,
   sample_size INT UNSIGNED NOT NULL,
   built_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_trend (product_id, period_type, period_start),
@@ -853,4 +855,22 @@ CREATE TABLE deal_outcomes (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uq_deal_outcome (deal_check_id),
   CONSTRAINT fk_outcome_deal FOREIGN KEY (deal_check_id) REFERENCES deal_checks(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE product_benchmark_scores (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  source_key VARCHAR(40) NOT NULL,
+  metric_key VARCHAR(40) NOT NULL,
+  score_value DECIMAL(8,2) NOT NULL,
+  scale_note VARCHAR(120) NOT NULL,
+  source_name VARCHAR(80) NOT NULL,
+  source_url VARCHAR(500) NOT NULL,
+  license_note VARCHAR(80) NOT NULL,
+  source_updated_on DATE NULL,
+  retrieved_on DATE NOT NULL,
+  imported_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_bench_score (product_id, source_key, metric_key),
+  INDEX idx_bench_product (product_id),
+  CONSTRAINT fk_bench_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;

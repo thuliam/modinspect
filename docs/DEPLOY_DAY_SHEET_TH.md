@@ -16,7 +16,7 @@
 | 2 | ผม | รัน `php cli/predeploy_report.php` ต้องได้ PASS หรือ PASS_WITH_WARNINGS แล้วส่งคำเตือนให้พี่อ่าน | ไม่แก้อะไร |
 | 3 | พี่ | สำรองฐานข้อมูลใน DirectAdmin หรือ phpMyAdmin แล้วเก็บไฟล์ไว้นอกเซิร์ฟเวอร์ | - |
 | 4 | พี่ | สร้างโฟลเดอร์ `storage/cache/ratelimit`, `storage/cache/oauth`, `storage/uploads/listings`, `storage/uploads/reports`, `storage/logs`, `storage/import` นอก document root และให้เขียนได้ | ลบโฟลเดอร์ใหม่ |
-| 5 | พี่ | Import migration 022–028 ตามลำดับเลขใน phpMyAdmin หลังสำรองแล้ว (ทุกไฟล์เป็นแบบเพิ่ม ไม่ลบข้อมูล) | ไม่ต้อง restore ปกติ เพราะโค้ดเดิมใช้กับ schema ใหม่ได้ (runbook ข้อ 9) |
+| 5 | พี่ | Import migration 022–029 ตามลำดับเลขใน phpMyAdmin หลังสำรองแล้ว (ทุกไฟล์เป็นแบบเพิ่ม ไม่ลบข้อมูล) | ไม่ต้อง restore ปกติ เพราะโค้ดเดิมใช้กับ schema ใหม่ได้ (runbook ข้อ 9) |
 | 6 | พี่ | รัน workflow `ModInspect FTPS Deploy (manual)` ด้วย mode = plan อ่านรายการที่จะอัปโหลด | ไม่เขียนอะไรลงโฮสต์ |
 | 7 | พี่ | รันอีกครั้ง mode = deploy, confirm = DEPLOY | รันซ้ำด้วย ref เป็น tag ก่อนหน้า |
 | 8 | ผม/พี่ | `php cli/smoke_check.php https://modinspect.thuliamdev.com` ต้อง exit 0 แล้วเปิดหน้าแรก ราคา สินค้า Deal Checker ในเบราว์เซอร์ทั้งจอใหญ่และมือถือ | ย้อนด้วยข้อ 7 |

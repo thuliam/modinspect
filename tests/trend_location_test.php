@@ -29,7 +29,7 @@ ob_start();
 require dirname(__DIR__) . '/app/Views/components/trend-chart.php';
 $html = (string)ob_get_clean();
 // LS-19 D1: the chart is drawn by public/assets/mi-charts.js from a JSON data block (no inline script)
-assert_tl(str_contains($html, '<canvas') && str_contains($html, 'data-chart="trend"') && preg_match('#<script type="application/json" id="(trend[0-9a-f]+)-data">\[\{#', $html) === 1 && str_contains((string)file_get_contents(dirname(__DIR__) . '/public/assets/mi-charts.js'), 'new Chart('), 'Chart.js canvas, data block and init missing');
+assert_tl(str_contains($html, '<canvas') && str_contains($html, 'data-chart="candles"') && preg_match('#<script type="application/json" id="(trend[0-9a-f]+)-data">\[\{#', $html) === 1 && str_contains((string)file_get_contents(dirname(__DIR__) . '/public/assets/mi-charts.js'), 'new Chart('), 'Chart.js canvas, data block and init missing');
 assert_tl(substr_count($html, '"med":') === 3, 'Chart data must carry one point per month');
 assert_tl(str_contains($html, '+24.6%'), 'Chart change versus first month must be computed from the buckets');
 
@@ -37,7 +37,7 @@ $trend = [$trend[0]];
 ob_start();
 require dirname(__DIR__) . '/app/Views/components/trend-chart.php';
 $single = (string)ob_get_clean();
-assert_tl(str_contains($single, 'ยังบอกแนวโน้มไม่ได้') && !str_contains($single, '<canvas'), 'One month must not draw a trend chart');
+assert_tl(str_contains($single, 'ยังบอกแนวโน้มไม่ได้') && str_contains($single, '<canvas') && !str_contains($single, 'ราคากลางเปลี่ยน'), 'One month draws a single candle but states no trend');
 
 // Schema: the two additive tables exist and the location log has no personal-data columns
 global $config;

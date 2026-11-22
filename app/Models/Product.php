@@ -66,10 +66,23 @@ final class Product
         $stmt=$this->db->prepare($this->select . " WHERE p.id=:id LIMIT 1");
         $stmt->execute(['id'=>$id]); return $stmt->fetch() ?: null;
     }
-    /** Monthly trend buckets (>=3 approved samples per month), oldest first. Derived by cli/price_trend_build.php. */
+    /** LS-32 A: published benchmark scores for the model (reference only, never a price input). Empty when migration 029 has not been applied yet. */
+    public function benchmarks(int $id): array {
+        try {
+            $stmt=$this->db->prepare("SELECT metric_key, score_value, scale_note, source_name, source_url, license_note, source_updated_on FROM product_benchmark_scores WHERE product_id=:id");
+            $stmt->execute(['id'=>$id]); return $stmt->fetchAll();
+        } catch (\PDOException) { return []; }
+    }
+    /** Monthly trend buckets (>=3 approved samples per month), oldest first. Derived by cli/price_trend_build.php. low_price/high_price (migration 029) are the wicks of the candle chart; older databases fall back to the quartiles only. */
     public function trend(int $id): array {
-        $stmt=$this->db->prepare("SELECT period_start, q1, median, q3, sample_size FROM price_trend_points WHERE product_id=:id ORDER BY period_start");
-        $stmt->execute(['id'=>$id]); return $stmt->fetchAll();
+        try {
+            $stmt=$this->db->prepare("SELECT period_start, q1, median, q3, low_price, high_price, sample_size FROM price_trend_points WHERE product_id=:id ORDER BY period_start");
+            $stmt->execute(['id'=>$id]);
+        } catch (\PDOException) {
+            $stmt=$this->db->prepare("SELECT period_start, q1, median, q3, sample_size FROM price_trend_points WHERE product_id=:id ORDER BY period_start");
+            $stmt->execute(['id'=>$id]);
+        }
+        return $stmt->fetchAll();
     }
     /**
      * Neighbouring models with an eligible price: same category, nearest median to $refPrice first (own model excluded).

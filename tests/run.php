@@ -113,6 +113,7 @@ $commands = [
     ['label' => 'tests/deal_outcome_report_test.php', 'args' => ['tests/deal_outcome_report_test.php']],
     ['label' => 'tests/migrate_splitter_test.php', 'args' => ['tests/migrate_splitter_test.php']],
     ['label' => 'tests/search_exact_first_test.php', 'args' => ['tests/search_exact_first_test.php']],
+    ['label' => 'tests/benchmark_scores_test.php', 'args' => ['tests/benchmark_scores_test.php']],
     ['label' => 'tests/publish_at_test.php', 'args' => ['tests/publish_at_test.php']],
     ['label' => 'tests/daily_pipeline_test.php', 'args' => ['tests/daily_pipeline_test.php']],
     ['label' => 'tests/review_batch_report_test.php', 'args' => ['tests/review_batch_report_test.php']],

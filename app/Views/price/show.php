@@ -105,7 +105,7 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
     <?php // LS-19 B1: section jump bar, built by site.js from the data-nav sections below (Bootstrap scrollspy marks where the reader is) ?>
     <nav id="product-nav" class="nav mi-section-nav" aria-label="ไปยังส่วนของหน้านี้" hidden></nav>
 
-    <?php $facts = $facts ?? []; require ROOT_PATH . '/app/Views/components/product-facts.php'; ?>
+    <?php $facts = $facts ?? []; require ROOT_PATH . '/app/Views/components/product-facts.php'; require ROOT_PATH . '/app/Views/components/benchmark-scores.php'; ?>
     <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): ?>
         <p class="mi-trend-note"><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>">ดูคู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></a></p>
     <?php endif; ?>

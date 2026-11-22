@@ -163,7 +163,7 @@ means moving those into files first (tracked as follow-up), then a report-only t
 - [ ] Rights settled (photos, logos)
 - [ ] Production `.env` created on the server, DB user is not root
 - [ ] Backup taken, rollback owner named
-- [ ] Migrations 022 to 028 imported (phpMyAdmin) after the backup, or consciously left out (LS-31: the list grew from 026 to 028; on a host with a shell use `php cli/migrate_pending.php --from=22` for the plan and `--apply` to run it)
+- [ ] Migrations 022 to 029 imported (phpMyAdmin) after the backup, or consciously left out (LS-31: the list grew from 026 to 028; on a host with a shell use `php cli/migrate_pending.php --from=22` for the plan and `--apply` to run it)
 - [ ] `php cli/predeploy_report.php` gives PASS or PASS_WITH_WARNINGS on the machine that builds the package, and you have read the warnings
 - [ ] `storage/` folders from section 5b created and writable; `.env` has `SELLER_CHECK_ENABLED=false` unless HG-14 is done
 - [ ] First `plan` run read, `smoke_check` passes after `deploy`

@@ -31,14 +31,14 @@ foreach ($rows as $r) { $groups[(int)$r['product_id']][$r['period']][] = (float)
 
 $db->beginTransaction();
 $db->exec('DELETE FROM price_trend_points');
-$ins = $db->prepare('INSERT INTO price_trend_points (product_id,period_start,period_type,q1,median,q3,sample_size) VALUES (?,?,\'month\',?,?,?,?)');
+$ins = $db->prepare('INSERT INTO price_trend_points (product_id,period_start,period_type,q1,median,q3,low_price,high_price,sample_size) VALUES (?,?,\'month\',?,?,?,?,?,?)');
 $points = 0; $products = 0;
 foreach ($groups as $pid => $periods) {
     $kept = 0;
     foreach ($periods as $period => $prices) {
         if (count($prices) < $min) { continue; }
         sort($prices);
-        $ins->execute([$pid, $period, round(quantile($prices, .25), 2), round(quantile($prices, .5), 2), round(quantile($prices, .75), 2), count($prices)]);
+        $ins->execute([$pid, $period, round(quantile($prices, .25), 2), round(quantile($prices, .5), 2), round(quantile($prices, .75), 2), min($prices), max($prices), count($prices)]);
         $points++; $kept++;
     }
     if ($kept >= 1) { $products++; }

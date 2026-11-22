@@ -12,14 +12,14 @@ $lastMed = (float)$trend[$n - 1]['median'];
 $delta = $firstMed > 0 ? ($lastMed - $firstMed) / $firstMed * 100 : 0;
 ?>
 <div class="mi-trend">
-    <?php if ($n > 1): $chartId = 'trend' . bin2hex(random_bytes(4)); ?>
-    <div class="mi-trend-canvas"><canvas id="<?= $chartId ?>" data-chart="trend" data-source="<?= $chartId ?>-data" role="img" aria-label="กราฟราคากลางรายเดือน แถบสีคือช่วงราคาส่วนกลาง"></canvas></div>
+    <?php if ($n >= 1): $chartId = 'trend' . bin2hex(random_bytes(4)); ?>
+    <div class="mi-trend-canvas"><canvas id="<?= $chartId ?>" data-chart="candles" data-source="<?= $chartId ?>-data" role="img" aria-label="กราฟแท่งราคารายเดือน แท่งคือช่วงราคาส่วนกลาง (Q1 ถึง Q3) เส้นบางคือราคาต่ำสุดถึงสูงสุด จุดคือราคากลาง"></canvas></div>
     <?php if (empty($GLOBALS['mi_chartjs_loaded'])): $GLOBALS['mi_chartjs_loaded'] = true; ?>
         <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
         <script src="<?= $base ?>/assets/mi-charts.js?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/mi-charts.js') ?>" defer></script>
     <?php endif; ?>
     <?php // LS-19 D1: data block (not run), drawn by mi-charts.js ?>
-    <script type="application/json" id="<?= $chartId ?>-data"><?= json_encode(array_map(static fn($r) => ['m' => $label($r['period_start']), 'q1' => (float)$r['q1'], 'med' => (float)$r['median'], 'q3' => (float)$r['q3'], 'n' => (int)$r['sample_size']], $trend), 259) ?></script>
+    <script type="application/json" id="<?= $chartId ?>-data"><?= json_encode(array_map(static fn($r) => ['m' => $label($r['period_start']), 'q1' => (float)$r['q1'], 'med' => (float)$r['median'], 'q3' => (float)$r['q3'], 'lo' => isset($r['low_price']) ? (float)$r['low_price'] : null, 'hi' => isset($r['high_price']) ? (float)$r['high_price'] : null, 'n' => (int)$r['sample_size']], $trend), 259) ?></script>
     <?php endif; ?>
     <ul class="mi-trend-table">
         <?php foreach ($trend as $r): ?>
@@ -29,6 +29,6 @@ $delta = $firstMed > 0 ? ($lastMed - $firstMed) / $firstMed * 100 : 0;
     <?php if ($n > 1): ?>
         <p class="mi-trend-note">ราคากลางเปลี่ยน <?= $delta >= 0 ? '+' : '' ?><?= number_format($delta, 1) ?>% จาก <?= $label($trend[0]['period_start']) ?> ถึง <?= $label($trend[$n - 1]['period_start']) ?> นับเฉพาะเดือนที่มีตัวอย่างอย่างน้อย 3 รายการ และเป็นราคาประกาศ ไม่ใช่ราคาปิดดีล</p>
     <?php else: ?>
-        <p class="mi-trend-note">ตอนนี้มีเพียงหนึ่งเดือนที่มีตัวอย่างพอ ยังบอกแนวโน้มไม่ได้ ระบบจะวาดเส้นเมื่อมีข้อมูลจากเดือนอื่นเพิ่มเติม</p>
+        <p class="mi-trend-note">ตอนนี้มีเพียงหนึ่งเดือนที่มีตัวอย่างพอ จึงเห็นเป็นแท่งเดียว ยังบอกแนวโน้มไม่ได้ ระบบจะต่อแท่งเมื่อมีข้อมูลจากเดือนอื่นเพิ่มเติม</p>
     <?php endif; ?>
 </div>
