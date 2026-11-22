@@ -998,3 +998,23 @@ body.mi .mi-cats .mi-go { right: 10px; bottom: 8px; width: 40px; height: 40px; b
 body.mi .mi-cats .mi-cat-art > i { display: grid; place-items: center; width: 72px; height: 72px; border: 1px solid rgba(187, 242, 70, .45); border-radius: 18px; background: rgba(187, 242, 70, .08); font-size: 30px; transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); }
 body.mi .mi-cats .mi-cat:hover .mi-cat-art > i { transform: scale(1.08); }
 body.mi .mi-cta-act .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* LS-59: product page: the dock holds the deal check too (its tile gets the lime ring), dock labels are white, the condition-guide link is a card, and the in-game FPS panel. */
+body.mi .mi-act-dock .mi-cat-item, body.mi button.mi-cat-item { color: var(--ci-text); }
+body.mi .mi-cat-item-main .mi-cat-ico { outline: 2px solid var(--ci-primary); outline-offset: 3px; }
+body.mi .mi-guide-card { display: flex; flex-direction: row; align-items: center; gap: 16px; padding: 18px 22px; color: var(--ci-text); text-decoration: none; transition: border-color .2s, background-color .2s, transform .25s cubic-bezier(.3, 1.4, .5, 1); }
+body.mi .mi-guide-card:hover, body.mi .mi-guide-card:focus-visible { border-color: var(--ci-primary); background: rgba(187, 242, 70, .06); color: var(--ci-text); text-decoration: none; transform: translateY(-2px); }
+body.mi .mi-guide-ico { display: grid; flex: 0 0 auto; place-items: center; width: 52px; height: 52px; border: 2px solid var(--ci-primary); border-radius: 14px; color: var(--ci-primary); font-size: 22px; }
+body.mi .mi-guide-txt { display: flex; flex: 1 1 auto; flex-direction: column; gap: 2px; min-width: 0; }
+body.mi .mi-guide-txt strong { font-size: 1.1rem; line-height: 1.3; }
+body.mi .mi-guide-txt small { color: var(--ci-text-2); font-size: .9rem; }
+body.mi .mi-guide-go { display: grid; flex: 0 0 auto; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ci-primary); color: var(--ci-on-primary); transition: transform .25s; }
+body.mi .mi-guide-card:hover .mi-guide-go { transform: translateX(4px); }
+body.mi .mi-fps-empty { color: var(--ci-text-2); }
+body.mi .mi-fps-games { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+body.mi .mi-fps-games li { padding: 6px 14px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-text-2); font-size: 14px; }
+body.mi .mi-fps-games i { margin-right: 4px; color: var(--ci-primary); }
+body.mi .mi-fps-list .mi-stat { grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr) 6.5rem; }
+body.mi .mi-fps-list .mi-stat-l small, body.mi .mi-fps-list .mi-stat-v small { display: block; color: var(--ci-text-2); font-size: 12px; font-weight: 400; }
+body.mi .mi-fps-list .mi-stat-v small:first-child { display: inline; margin-left: 2px; }
+@media (max-width: 575.98px) { body.mi .mi-fps-list .mi-stat { grid-template-columns: 7rem minmax(0, 1fr) 4.5rem; } }

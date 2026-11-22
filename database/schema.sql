@@ -876,3 +876,24 @@ CREATE TABLE product_benchmark_scores (
   INDEX idx_bench_product (product_id),
   CONSTRAINT fk_bench_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+CREATE TABLE game_fps_results (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  game_key VARCHAR(20) NOT NULL,
+  resolution VARCHAR(10) NOT NULL,
+  quality VARCHAR(30) NOT NULL,
+  avg_fps DECIMAL(6,1) NOT NULL,
+  low1_fps DECIMAL(6,1) NULL,
+  paired_part VARCHAR(120) NOT NULL,
+  source_name VARCHAR(80) NOT NULL,
+  source_url VARCHAR(500) NOT NULL,
+  license_note VARCHAR(80) NOT NULL,
+  sponsor_name VARCHAR(80) NULL,
+  tested_on DATE NULL,
+  retrieved_on DATE NOT NULL,
+  imported_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_game_fps (product_id, game_key, resolution, quality, paired_part),
+  INDEX idx_game_fps_product (product_id),
+  CONSTRAINT fk_game_fps_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;

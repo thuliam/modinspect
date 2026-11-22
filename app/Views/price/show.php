@@ -93,9 +93,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 $wl = \App\Services\Catalog\WatchList::parse(is_string($_COOKIE[\App\Services\Catalog\WatchList::COOKIE] ?? null) ? $_COOKIE[\App\Services\Catalog\WatchList::COOKIE] : null); $watching = \App\Services\Catalog\WatchList::has($wl, (string) $product['slug']); $wFlash = $_SESSION['watch_flash'] ?? null; unset($_SESSION['watch_flash']);
                 $dockH = 0; ?>
                 <div class="mi-act">
-                    <a class="btn btn-lime mi-act-main" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>"><i class="fas fa-balance-scale" aria-hidden="true"></i> เช็กดีลรุ่นนี้</a>
                     <form id="watch-form" method="post" action="<?= $base ?>/watch" hidden><input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>"><input type="hidden" name="slug" value="<?= htmlspecialchars((string) $product['slug']) ?>"></form>
                     <div class="mi-cat-dock mi-act-dock" role="group" aria-label="เครื่องมือของรุ่นนี้">
+                        <a class="mi-cat-item mi-cat-item-main" style="--h:<?= $dockH++ * 45 ?>" href="<?= $base ?>/deal-checker?product=<?= (int) $product['id'] ?>"><span class="mi-cat-ico"><i class="fas fa-balance-scale" aria-hidden="true"></i></span><span class="mi-cat-lbl">เช็กดีล</span></a>
                         <a class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" href="<?= $base ?>/compare/<?= rawurlencode((string) $product['slug']) ?>"><span class="mi-cat-ico"><i class="fas fa-columns" aria-hidden="true"></i></span><span class="mi-cat-lbl">เทียบรุ่น</span></a>
                         <?php if (\App\Services\Catalog\UpgradeFinder::supports((string) ($product['category_slug'] ?? ''))): ?><a class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" href="<?= $base ?>/upgrade/<?= rawurlencode((string) $product['slug']) ?>"><span class="mi-cat-ico"><i class="fas fa-level-up-alt" aria-hidden="true"></i></span><span class="mi-cat-lbl">อัปเกรด</span></a><?php endif; ?>
                         <button class="mi-cat-item" style="--h:<?= $dockH++ * 45 ?>" type="submit" form="watch-form"><span class="mi-cat-ico"><i class="<?= $watching ? 'fas' : 'far' ?> fa-star" aria-hidden="true"></i></span><span class="mi-cat-lbl"><?= $watching ? 'เลิกติดตาม' : 'ติดตาม' ?></span></button>
@@ -131,8 +131,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
             <?php endif; ?>
         </div><?php endif; ?>
     </div>
-    <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): ?>
-        <p class="mi-trend-note"><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>">ดูคู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></a></p>
+    <?php $gameFps = $gameFps ?? null; require ROOT_PATH . '/app/Views/components/game-fps.php'; // LS-59 ?>
+    <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): // LS-59: the guide link as a card, not a loose text line ?>
+        <a class="card mi-guide-card mb-4" href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>"><span class="mi-guide-ico"><i class="fas fa-clipboard-check" aria-hidden="true"></i></span><span class="mi-guide-txt"><strong>คู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></strong><small>ดูอะไร ทดสอบอะไร ถามผู้ขายอะไร ก่อนโอนเงิน</small></span><span class="mi-guide-go"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></a>
     <?php endif; ?>
 
     <?php if (!empty($communityOn)): // LS-21 (R-11): only when the owner has switched community reports on ?>
