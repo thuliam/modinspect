@@ -155,6 +155,9 @@ $router->get('/admin/articles',[AdminController::class,'articlesOperational']);
 $router->get('/admin/articles/data',[AdminController::class,'articlesData']);
 $router->post('/admin/articles/save',[AdminController::class,'articleSave']);
 $router->post('/admin/articles/archive',[AdminController::class,'articleArchive']);
+$router->get('/admin/game-fps',[AdminController::class,'gameFpsPage']);
+$router->post('/admin/game-fps/save',[AdminController::class,'gameFpsSave']);
+$router->post('/admin/game-fps/delete',[AdminController::class,'gameFpsDelete']);
 $router->get('/admin/audit-logs',[AdminController::class,'audits']);
 $router->get('/admin/audit-logs/data',[AdminController::class,'auditsData']);
 
