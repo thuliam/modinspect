@@ -18,6 +18,7 @@ ok_cr($r !== null && count($r['series']) === 2 && count($r['labels']) === 5, 'Tw
 ok_cr($r['series'][0]['color'] !== $r['series'][1]['color'] && $r['series'][0]['values'][0] === 40.0, 'Each model has its own colour and its own values in axis order');
 
 $r = CompareRadar::build([$gpu('A', $full), $gpu('B', ['inno_score' => 10.0]), $gpu('C', $full)]);
+ok_cr($r !== null && count($r['models']) === 3 && $r['models'][1]['scored'] === false && $r['models'][1]['name'] === 'B', 'Every chosen model is listed, the one without scores flagged so the page can say why it is not drawn');
 ok_cr($r !== null && $r['missing'] === ['B'] && count($r['series']) === 2 && $r['series'][1]['color'] === CompareRadar::COLORS[2], 'A model without three scores is named as missing and the colour stays tied to its Compare position');
 
 $partial = $full; unset($partial['score_memory'], $partial['score_efficiency']);

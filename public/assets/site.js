@@ -1,24 +1,9 @@
 /* Public site behaviour (jQuery 3.7.1 + Bootstrap 4 bundle are loaded before this file; no network calls).
    Bootstrap handles the navbar collapse and the category dropdown. This file adds:
    - scroll reveal (CSS draws it; this flips a class), count-up numbers, header state
-   - featured-grid category tabs, motion toggle (full / calm). Calm = OS asks for reduced motion: fades only. */
+   - featured-grid category tabs. Motion mode (full, or calm = the OS asks for reduced motion: fades only) is set in <head> by mi-motion-init.js; there is no visitor toggle (LS-46). */
 jQuery(function ($) {
     var $root = $(document.documentElement), $win = $(window);
-    var full = function () { return $root.hasClass('motion-full'); };
-
-    /* motion toggle */
-    var $toggle = $('#motion-toggle');
-    function paintToggle() {
-        $toggle.text(full() ? 'เอฟเฟกต์: เต็ม' : 'เอฟเฟกต์: ลดลง').attr('aria-pressed', full() ? 'true' : 'false')
-            .attr('title', full() ? 'กดเพื่อลดการเคลื่อนไหว' : 'กดเพื่อเปิดเอฟเฟกต์เต็ม');
-    }
-    $toggle.on('click', function () {
-        var next = full() ? 'calm' : 'full';
-        $root.removeClass('motion-full motion-calm').addClass('motion-' + next);
-        try { localStorage.setItem('mi-motion', next); } catch (e) { /* storage may be blocked */ }
-        paintToggle();
-    });
-    paintToggle();
 
     /* header state */
     var $header = $('.site-header');
@@ -56,7 +41,7 @@ jQuery(function ($) {
 
     /* LS-43 heading motion, after kyma.framer.ai: titles are split into words (Intl.Segmenter knows Thai word boundaries; a letter split would tear Thai vowel and tone marks off their base),
        the hero title rises word by word on load, section titles rise word by word when their section scrolls in, and the long statement of section 02 lights up word by word as it is scrolled
-       through. The split is always done; CSS animates it only in full-motion mode, so the motion toggle in the footer works without a reload. */
+       through. The split is always done; CSS animates it only in full-motion mode, so the motion mode needs no reload. */
     (function () {
         var seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter('th', { granularity: 'word' }) : null;
         function parts(t) { return seg ? Array.from(seg.segment(t), function (x) { return x.segment; }) : t.split(/(\s+)/); }

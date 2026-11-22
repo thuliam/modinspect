@@ -27,7 +27,7 @@ $mark = static function (?string $m): string {
     $parts = explode(':', $m, 2); $up = $parts[0] === 'max'; $pct = isset($parts[1]) ? (float) $parts[1] : null;
     $txt = $up ? 'สูงสุดในแถวนี้' : 'ต่ำสุดในแถวนี้';
     $val = $pct !== null ? ($up ? '+' : '−') . number_format(abs($pct), 1) . '%' : '';
-    return ' <span class="mi-delta ' . ($up ? 'mi-delta-up' : 'mi-delta-down') . '" title="' . $txt . ($val !== '' ? ' (' . $val . ' เทียบกับอีกปลายของแถว)' : '') . '"><i class="fas fa-caret-' . ($up ? 'up' : 'down') . '" aria-hidden="true"></i>' . $val . '<span class="sr-only"> ' . $txt . '</span></span>';
+    return ' <span class="mi-delta ' . ($up ? 'mi-delta-up' : 'mi-delta-down') . '" title="' . $txt . ($val !== '' ? ' (' . $val . ' เทียบกับอีกปลายของแถว)' : '') . '"><i class="fas ' . ($up ? 'fa-caret-up' : 'fa-caret-down') . '" aria-hidden="true"></i>' . $val . '<span class="sr-only"> ' . $txt . '</span></span>';
 };
 $cell = static function (array $cell): string {
     if ($cell['value'] === null) { return '<span class="text-muted">ไม่มีข้อมูล</span>'; }
@@ -122,7 +122,12 @@ $cell = static function (array $cell): string {
                 <script src="<?= $base ?>/assets/mi-charts.js?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/mi-charts.js') ?>" defer></script>
             <?php endif; ?>
             <script type="application/json" id="<?= $rid ?>-data"><?= json_encode(['labels' => $radar['labels'], 'series' => $radar['series']], 271) ?></script>
-            <p class="mi-trend-note mb-0">คะแนนบรรณาธิการ 0-100 จาก InnoReviews (CC BY 4.0) ไม่ใช่ผลวัดดิบ และไม่ใช่การจัดอันดับของ ModInspect แต่ละสีคือหนึ่งรุ่น สีตรงกับจุดบนการ์ดด้านบน<?php if (!empty($radar['missing'])): ?> · ยังไม่มีคะแนนของ <?= htmlspecialchars(implode(', ', $radar['missing'])) ?> จึงไม่อยู่ในกราฟ<?php endif; ?></p>
+            <ul class="mi-radar-models list-unstyled" aria-label="รุ่นที่เลือก">
+                <?php foreach ($radar['models'] as $rm): ?>
+                    <li class="<?= $rm['scored'] ? '' : 'is-missing' ?>"><span class="mi-cmp-dot" style="--c:<?= $rm['color'] ?>" aria-hidden="true"></span><?= htmlspecialchars($rm['name']) ?><?php if (!$rm['scored']): ?> <em>ไม่มีคะแนนที่ตรงรุ่น</em><?php endif; ?></li>
+                <?php endforeach; ?>
+            </ul>
+            <p class="mi-trend-note mb-0">คะแนนบรรณาธิการ 0-100 จาก InnoReviews (CC BY 4.0) ไม่ใช่ผลวัดดิบ และไม่ใช่การจัดอันดับของ ModInspect แต่ละสีคือหนึ่งรุ่น สีตรงกับจุดบนการ์ดด้านบน<?php if (!empty($radar['missing'])): ?> · รุ่นที่ไม่มีคะแนนที่ตรงกัน (เช่น แหล่งข้อมูลแยกรุ่น 8GB และ 16GB แต่ในระบบยังไม่ระบุขนาด) จะไม่ถูกเดาและไม่อยู่ในกราฟ<?php endif; ?></p>
         </section>
     <?php endif; ?>
     <?php // LS-22: a plain statement of what differs (labels only, no verdict), plus copy-link and print; both are hidden on paper ?>

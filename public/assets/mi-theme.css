@@ -824,3 +824,37 @@ body.mi .mi-radar-wrap { position: relative; height: 460px; margin: 4px 0 12px; 
 html.motion-full body.mi #sec-bench .mi-stat-bar .progress-bar { transition: width 1.3s cubic-bezier(.2, .7, .2, 1) calc(var(--i, 0) * 90ms + 250ms); }
 html.motion-full body.mi #sec-bench:not(.in) .mi-stat-bar .progress-bar { width: 0 !important; }
 html.motion-full body.mi .container.page h1 .mi-w { display: inline-block; animation: miWordRise .8s cubic-bezier(.2, .7, .2, 1) calc(var(--w) * 80ms + 100ms) both; }
+/* LS-46: checkboxes across the public site in one design, lime (after the 21st.dev "colors checkbox": a rounded square, a coloured fill with a drawn tick when checked, a soft ring on focus). Native boxes and the Bootstrap custom-control boxes look the same. */
+body.mi input[type=checkbox]:not(.custom-control-input) { -webkit-appearance: none; appearance: none; flex: 0 0 auto; display: inline-grid; place-content: center; width: 20px !important; min-width: 20px; height: 20px !important; min-height: 20px !important; margin: 0 8px 0 0; padding: 0 !important; vertical-align: -4px; border: 1.5px solid var(--ci-border-active); border-radius: 6px; background: var(--ci-search); cursor: pointer; transition: background-color .15s, border-color .15s, box-shadow .15s; }
+body.mi input[type=checkbox]:not(.custom-control-input)::before { content: ""; width: 11px; height: 11px; background: var(--ci-on-primary); clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0, 43% 62%); transform: scale(0); transition: transform .18s cubic-bezier(.3, 1.4, .5, 1); }
+body.mi input[type=checkbox]:not(.custom-control-input):hover { border-color: var(--ci-primary); }
+body.mi input[type=checkbox]:not(.custom-control-input):checked { background: var(--ci-primary); border-color: var(--ci-primary); }
+body.mi input[type=checkbox]:not(.custom-control-input):checked::before { transform: scale(1); }
+body.mi input[type=checkbox]:not(.custom-control-input):focus-visible { outline: 0; box-shadow: 0 0 0 3px var(--ci-border-glow); }
+body.mi input[type=checkbox]:disabled { opacity: .5; cursor: not-allowed; }
+body.mi .custom-checkbox.custom-control { padding-left: 1.9rem; min-height: 1.5rem; }
+body.mi .custom-checkbox .custom-control-label::before, body.mi .custom-checkbox .custom-control-label::after { left: 0; top: .1rem; width: 20px; height: 20px; border-radius: 6px; }
+body.mi .custom-checkbox .custom-control-label::before { background-color: var(--ci-search); border: 1.5px solid var(--ci-border-active); box-shadow: none; transition: background-color .15s, border-color .15s, box-shadow .15s; }
+body.mi .custom-checkbox .custom-control-label:hover::before { border-color: var(--ci-primary); }
+body.mi .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before { background-color: var(--ci-primary); border-color: var(--ci-primary); }
+body.mi .custom-checkbox .custom-control-input:checked ~ .custom-control-label::after { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3e%3cpath fill='none' stroke='%230a0d14' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6.4l2.3 2.3 4.7-5'/%3e%3c/svg%3e"); background-size: 12px 12px; }
+body.mi .custom-checkbox .custom-control-input:focus-visible ~ .custom-control-label::before { box-shadow: 0 0 0 3px var(--ci-border-glow); border-color: var(--ci-primary); }
+body.mi .custom-checkbox .custom-control-input:disabled ~ .custom-control-label { opacity: .5; }
+/* Compare: the model chips under the radar, one colour dot each; a model with no matching score is muted and says why */
+body.mi .mi-cmp-dot { background: var(--c, currentColor); }
+body.mi .mi-radar-models { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 12px; padding: 0; }
+body.mi .mi-radar-models li { display: inline-flex; align-items: center; color: var(--ci-text); font-size: 14px; }
+body.mi .mi-radar-models li.is-missing { color: var(--ci-text-2); }
+body.mi .mi-radar-models li.is-missing .mi-cmp-dot { background: transparent; border: 1.5px dashed var(--c); }
+body.mi .mi-radar-models em { margin-left: 8px; font-style: normal; font-size: 12px; color: var(--ci-text-2); }
+
+/* LS-46: one control family across the public site (UX review: only home had the pill fields). Single-line fields and selects are pills like the home search; textareas keep the soft radius; the ask bar applies to every .mi-ask block, not only on home; Select2 boxes match the field height and radius. */
+body.mi select, body.mi .form-control:not(textarea), body.mi input:not([type=checkbox]):not([type=radio]):not([type=hidden]):not([type=submit]):not([type=button]):not([type=file]) { border-radius: var(--ci-r-pill); padding-left: 20px; padding-right: 20px; }
+body.mi textarea, body.mi textarea.form-control { border-radius: var(--ci-r-md); }
+body.mi .select2-container--default .select2-selection--single { min-height: 48px; border-radius: var(--ci-r-pill); background: var(--ci-search); border-color: var(--ci-border-active); }
+body.mi .select2-container--default .select2-selection--single .select2-selection__rendered { padding-left: 20px; }
+body.mi .select2-container--default.select2-container--focus .select2-selection--single, body.mi .select2-container--default.select2-container--open .select2-selection--single { border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow); }
+body.mi .mi-ask-bar { display: flex; flex-direction: row; align-items: center; gap: 12px; height: 60px; padding: 0 8px 0 22px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); background: rgba(23, 31, 46, .72); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .06); transition: height .35s cubic-bezier(.3, 1.4, .5, 1), border-color .2s, box-shadow .2s; }
+body.mi .mi-ask-bar:focus-within { height: 68px; border-color: var(--ci-primary); box-shadow: 0 0 0 3px var(--ci-border-glow), 0 12px 34px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .06); }
+body.mi .custom-checkbox .custom-control-label { min-height: 24px; padding-top: 0; cursor: pointer; }
+body.mi .mi-cta .btn-ghost { white-space: nowrap; }body.mi .mi-filter-card .custom-checkbox.custom-control { margin-left: 16px; }

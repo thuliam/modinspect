@@ -24,7 +24,7 @@
                 new Chart(cv, {
                     type: 'radar',
                     data: { labels: rows.labels, datasets: rows.series.map(function (s) { return { label: s.name, data: s.values, borderColor: s.color, backgroundColor: s.color + '2e', borderWidth: 2, pointRadius: 3, pointBackgroundColor: s.color, pointBorderColor: '#0a0d14', pointHoverRadius: 5 }; }) },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, padding: 16 } }, tooltip: { callbacks: { label: function (x) { return x.dataset.label + ': ' + x.formattedValue + ' / 100'; } } } },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: rows.series.length === 1, position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, padding: 16 } }, tooltip: { callbacks: { label: function (x) { return x.dataset.label + ': ' + x.formattedValue + ' / 100'; } } } },
                         scales: { r: { min: 0, max: axisMax, ticks: { display: false, stepSize: axisMax / 4 }, grid: { color: 'rgba(148,163,184,.2)' }, angleLines: { color: 'rgba(148,163,184,.2)' }, pointLabels: { font: { size: 13 }, callback: function (l, i) { return one ? [l, String(rows.series[0].values[i])] : l; } } } } }
                 });
             } else if (cv.getAttribute('data-chart') === 'candles') {

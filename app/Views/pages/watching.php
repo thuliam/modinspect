@@ -34,3 +34,4 @@ $baht = static fn(float $v): string => '฿' . number_format($v); ?>
         <p class="mi-trend-note">ลูกศรบอกทิศทางของราคากลางเท่านั้น ไม่ได้บอกว่าควรซื้อหรือรอ</p>
     <?php endif; ?>
 </section>
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-46: every page ends with a next step ?>

@@ -15,7 +15,7 @@ final class CompareRadar
 
     /**
      * @param list<array{product:array,scores?:list<array>}> $items chosen models in Compare order
-     * @return array{labels:list<string>,series:list<array{name:string,color:string,values:list<float>}>,missing:list<string>}|null
+     * @return array{labels:list<string>,series:list<array{name:string,color:string,values:list<float>}>,missing:list<string>,models:list<array{name:string,color:string,scored:bool}>}|null
      */
     public static function build(array $items): ?array
     {
@@ -46,6 +46,10 @@ final class CompareRadar
         foreach ($scored as $i => $m) {
             $series[] = ['name' => $m['name'], 'color' => self::COLORS[$i % 4], 'values' => array_map(static fn(string $k): float => $m['vals'][$k], array_keys($axes))];
         }
-        return ['labels' => array_values($axes), 'series' => $series, 'missing' => $missing];
+        $models = [];
+        foreach (array_slice($items, 0, 4, true) as $i => $it) {
+            $models[] = ['name' => (string)($it['product']['full_name'] ?? ''), 'color' => self::COLORS[(int)$i % 4], 'scored' => isset($scored[(int)$i])];
+        }
+        return ['labels' => array_values($axes), 'series' => $series, 'missing' => $missing, 'models' => $models];
     }
 }

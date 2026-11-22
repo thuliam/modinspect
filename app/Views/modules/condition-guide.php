@@ -55,3 +55,4 @@
     <p class="mi-trend-note"><?= htmlspecialchars($guide['note']) ?></p>
 <?php endif; ?>
 </section>
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-46: every page ends with a next step ?>

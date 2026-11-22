@@ -11,11 +11,12 @@ $link = static fn(array $extra): string => '?' . http_build_query(array_filter($
         <h1>เรื่องเล่าและคู่มือจากตลาดคอมมือสอง</h1>
         <p class="lead">วิธีดูของ วิธีอ่านราคา และสิ่งที่ควรถามก่อนจ่ายเงิน เขียนด้วยตัวเลขจริงจากข้อมูลที่ตรวจแล้ว</p>
     </div>
-    <form class="mi-filter-card" method="get" action="<?= $base ?>/blog">
-        <label for="blog-q">ค้นหาบทความ</label>
-        <div class="mi-filter-row">
-            <input id="blog-q" name="q" type="search" class="form-control" value="<?= htmlspecialchars($q) ?>" maxlength="80" placeholder="เช่น การ์ดจอขุด, ต่อรองราคา">
-            <button type="submit">ค้นหา</button>
+    <form class="mi-ask mb-4" method="get" action="<?= $base ?>/blog" role="search">
+        <label class="sr-only" for="blog-q">ค้นหาบทความ</label>
+        <div class="mi-ask-bar">
+            <i class="fas fa-search mi-ask-ico" aria-hidden="true"></i>
+            <input id="blog-q" class="mi-ask-input" name="q" type="search" autocomplete="off" value="<?= htmlspecialchars($q) ?>" maxlength="80" placeholder="ค้นหาบทความ เช่น การ์ดจอขุด, ต่อรองราคา">
+            <button class="mi-ask-go" type="submit" aria-label="ค้นหา" title="ค้นหา"><i class="fas fa-arrow-right" aria-hidden="true"></i></button>
         </div>
     </form>
     <?php if (!$rows): ?>
@@ -39,3 +40,4 @@ $link = static fn(array $extra): string => '?' . http_build_query(array_filter($
         <?php endif; ?>
     <?php endif; ?>
 </section>
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-46: every page ends with a next step ?>

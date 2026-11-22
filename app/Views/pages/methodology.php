@@ -36,3 +36,4 @@ if ($mi_logos): ?>
     </div>
 </section>
 <?php endif; ?>
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-46: every page ends with a next step ?>

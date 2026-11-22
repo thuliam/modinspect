@@ -42,7 +42,6 @@
         </div>
         <div class="footer-copy">
             <span>© <?= date('Y') ?> modinpect</span>
-            <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false">เอฟเฟกต์การเคลื่อนไหว</button>
         </div>
     </div>
 </footer>
