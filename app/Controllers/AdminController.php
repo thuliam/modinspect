@@ -226,6 +226,71 @@ final class AdminController extends Controller {
         $this->flash($r['ok']?'success':'danger',$r['ok']?($decision==='candidate'?'ส่งเข้าคิวตรวจราคาแล้ว (รอผู้ตรวจอนุมัติ ยังไม่กระทบราคา)':'บันทึกผลการตรวจแล้ว'):($errors[$r['error']??'']??'ทำรายการไม่สำเร็จ'));
         $this->redirect($back);
     }
+    /** Marketplace P1-A: member trust admin. Admin-only on purpose (privacy.handle, legal.manage, members.manage exist only through the admin wildcard); every action is audited with the admin's id. */
+    private function trustDb(): PDO { global $config; return Database::connection($config['db']); }
+    public function privacyRequests(): void {
+        if(!$this->requirePermission('privacy.handle')) return;
+        $status=(string)($_GET['status']??'received'); if(!in_array($status,['received','in_progress','completed','rejected'],true)){ $status='received'; }
+        try { $svc=new \App\Services\Member\PrivacyRequests($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb())); $rows=$svc->queue($status); $counts=$svc->counts(); $ready=true; }
+        catch(\PDOException) { $rows=[]; $counts=[]; $ready=false; }
+        $this->render('privacy-requests','Privacy requests',['rows'=>$rows,'counts'=>$counts,'status'=>$status,'ready'=>$ready]);
+    }
+    public function privacyRequestAction(): void {
+        if(!$this->requirePermission('privacy.handle')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/privacy-requests'); }
+        $back=(string)($_POST['status']??'received'); if(!in_array($back,['received','in_progress','completed','rejected'],true)){ $back='received'; }
+        $svc=new \App\Services\Member\PrivacyRequests($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
+        $to=(string)($_POST['to']??''); $note=is_string($_POST['note']??null)?$_POST['note']:'';
+        if(in_array($to,['completed','rejected'],true) && trim($note)==='') { $this->flash('danger','ต้องมีบันทึกการตอบกลับเมื่อปิดคำขอ'); $this->redirect('/admin/privacy-requests?status='.rawurlencode($back)); }
+        try { $svc->transition((int)($_POST['id']??0),$to,(int)$this->user()['id'],$note); $this->flash('success','บันทึกแล้ว'); }
+        catch(\RuntimeException $e) { $this->flash('danger',['NOT_FOUND'=>'ไม่พบคำขอ','ILLEGAL_TRANSITION'=>'เปลี่ยนสถานะนี้ไม่ได้ (อาจมีคนเปลี่ยนไปแล้ว)'][$e->getMessage()]??'ทำรายการไม่สำเร็จ'); }
+        $this->redirect('/admin/privacy-requests?status='.rawurlencode($back));
+    }
+    public function legalDocuments(): void {
+        if(!$this->requirePermission('legal.manage')) return;
+        try { $svc=new \App\Services\Member\LegalDocuments($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb())); $rows=$svc->all(); $docView=isset($_GET['view'])?$svc->find((int)$_GET['view']):null; $ready=true; }
+        catch(\PDOException) { $rows=[]; $docView=null; $ready=false; }
+        $this->render('legal-documents','Legal documents',['rows'=>$rows,'docView'=>$docView,'ready'=>$ready,'types'=>\App\Services\Member\LegalDocuments::TYPES]);
+    }
+    public function legalDocumentCreate(): void {
+        if(!$this->requirePermission('legal.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/legal-documents'); }
+        $svc=new \App\Services\Member\LegalDocuments($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
+        $str=static fn(string $k): string => is_string($_POST[$k]??null)?trim($_POST[$k]):'';
+        if($str('version')===''||$str('title')===''||$str('body')==='') { $this->flash('danger','ต้องกรอกเวอร์ชัน ชื่อเอกสาร และเนื้อหา'); $this->redirect('/admin/legal-documents'); }
+        try { $id=$svc->createDraft($str('doc_type'),$str('version'),$str('title'),$str('body')); $this->flash('success','บันทึกเป็นฉบับร่าง #'.$id.' แล้ว ยังไม่เผยแพร่'); }
+        catch(\InvalidArgumentException) { $this->flash('danger','ประเภทเอกสารไม่ถูกต้อง'); }
+        catch(\PDOException) { $this->flash('danger','เวอร์ชันนี้ของเอกสารประเภทนี้มีอยู่แล้ว'); }
+        $this->redirect('/admin/legal-documents');
+    }
+    public function legalDocumentPublish(): void {
+        if(!$this->requirePermission('legal.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/legal-documents'); }
+        if(($_POST['confirm']??'')!=='1') { $this->flash('danger','ต้องติ๊กยืนยันว่าเจ้าของและทนายอนุมัติข้อความแล้ว'); $this->redirect('/admin/legal-documents'); }
+        $svc=new \App\Services\Member\LegalDocuments($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
+        try { $svc->publish((int)($_POST['id']??0),(int)$this->user()['id']); $this->flash('success','เผยแพร่แล้ว เวอร์ชันก่อนหน้าของประเภทนี้ถูกยกเลิก สมาชิกต้องยอมรับใหม่'); }
+        catch(\RuntimeException $e) { $this->flash('danger',['NOT_A_DRAFT'=>'เผยแพร่ได้เฉพาะฉบับร่าง','EMPTY_BODY'=>'เอกสารไม่มีเนื้อหา'][$e->getMessage()]??'ทำรายการไม่สำเร็จ'); }
+        $this->redirect('/admin/legal-documents');
+    }
+    public function memberCapabilities(): void {
+        if(!$this->requirePermission('members.manage')) return;
+        try { $svc=new \App\Services\Member\MemberCapabilities($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb())); $rows=$svc->holders(); $ready=true; }
+        catch(\PDOException) { $rows=[]; $ready=false; }
+        $this->render('member-capabilities','Member capabilities',['rows'=>$rows,'ready'=>$ready,'allowed'=>\App\Services\Member\MemberCapabilities::ALLOWED]);
+    }
+    public function memberCapabilityAction(): void {
+        if(!$this->requirePermission('members.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/admin/member-capabilities'); }
+        $svc=new \App\Services\Member\MemberCapabilities($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
+        $member=(int)($_POST['member_id']??0); $cap=is_string($_POST['capability']??null)?$_POST['capability']:''; $do=(string)($_POST['do']??'');
+        if(!$svc->memberExists($member)) { $this->flash('danger','ไม่พบสมาชิกรหัสนี้'); $this->redirect('/admin/member-capabilities'); }
+        try {
+            if($do==='grant') { $svc->grant($member,$cap,(int)$this->user()['id']); $this->flash('success','ให้สิทธิ์แล้ว'); }
+            elseif($do==='revoke') { $svc->revoke($member,$cap,(int)$this->user()['id']); $this->flash('success','ถอนสิทธิ์แล้ว (เก็บประวัติไว้)'); }
+            else { $this->flash('danger','คำสั่งไม่ถูกต้อง'); }
+        } catch(\InvalidArgumentException) { $this->flash('danger','ชนิดสิทธิ์ไม่ถูกต้อง'); }
+        $this->redirect('/admin/member-capabilities');
+    }
     public function sellerReports(): void {
         if(!$this->requirePermission('reports.moderate')) return;
         $svc=$this->sellerCheckService();

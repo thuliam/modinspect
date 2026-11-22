@@ -8,8 +8,12 @@ use App\Core\Csrf;
 use App\Core\Database;
 use App\Services\Http\RateLimiter;
 use App\Services\Member\CurlOAuthHttp;
+use App\Services\Member\LegalDocuments;
+use App\Services\Member\MemberAudit;
 use App\Services\Member\MemberAuth;
+use App\Services\Member\MemberPreferences;
 use App\Services\Member\OAuthProvider;
+use App\Services\Member\PrivacyRequests;
 use App\Services\Member\ProviderRegistry;
 
 /** LS-14 Module 7 (OD-4): visitor accounts. Sign-in through Google, Microsoft or Facebook only; providers without keys in .env are not offered. */
@@ -60,7 +64,13 @@ final class AccountController extends Controller
     {
         $m = $this->auth()->current();
         if (!$m) { $this->redirect('/account/login'); }
-        $this->view('account/profile', ['title' => 'บัญชีของฉัน', 'member' => $m, 'builds' => $this->auth()->builds((int)$m['id'])]);
+        $db = $this->db(); $id = (int)$m['id'];
+        $this->view('account/profile', ['title' => 'บัญชีของฉัน', 'member' => $m, 'builds' => $this->auth()->builds($id),
+            'prefs' => (new MemberPreferences($db, new MemberAudit($db)))->get($id),
+            'requests' => (new PrivacyRequests($db, new MemberAudit($db)))->forMember($id),
+            'pendingLegal' => (new LegalDocuments($db, new MemberAudit($db)))->pendingFor($id),
+            'acceptances' => (new LegalDocuments($db, new MemberAudit($db)))->acceptances($id),
+            'notice' => $this->takeNotice()]);
     }
 
     public function logout(): void
@@ -69,10 +79,45 @@ final class AccountController extends Controller
         $this->redirect('/');
     }
 
+    /** Marketplace P1-A: display name and notification choices. Marketing is opt-in: only an explicit checked box turns it on. */
+    public function preferences(): void
+    {
+        $m = $this->memberOrBounce();
+        $db = $this->db(); $audit = new MemberAudit($db); $prefs = new MemberPreferences($db, $audit);
+        $ok = true;
+        if (isset($_POST['display_name']) && is_string($_POST['display_name'])) { $ok = $prefs->saveDisplayName((int)$m['id'], $_POST['display_name']); }
+        $locale = is_string($_POST['locale'] ?? null) && in_array($_POST['locale'], MemberPreferences::LOCALES, true) ? $_POST['locale'] : 'th';
+        $prefs->save((int)$m['id'], (($_POST['notify_transactional'] ?? '') === '1'), (($_POST['notify_marketing'] ?? '') === '1'), $locale);
+        $_SESSION['member_notice'] = $ok ? 'บันทึกการตั้งค่าแล้ว' : 'ชื่อที่แสดงต้องมี 1-60 ตัวอักษร การตั้งค่าอื่นบันทึกแล้ว';
+        $this->redirect('/account');
+    }
+
+    /** Marketplace P1-A: a data-subject request goes into the queue for a person to handle. It deletes nothing by itself. */
+    public function privacyRequest(): void
+    {
+        $m = $this->memberOrBounce();
+        $type = is_string($_POST['request_type'] ?? null) ? $_POST['request_type'] : '';
+        if (!in_array($type, PrivacyRequests::TYPES, true)) { $_SESSION['member_notice'] = 'ประเภทคำขอไม่ถูกต้อง'; $this->redirect('/account'); }
+        $db = $this->db();
+        (new PrivacyRequests($db, new MemberAudit($db)))->open((int)$m['id'], $type, is_string($_POST['detail'] ?? null) ? $_POST['detail'] : '');
+        $_SESSION['member_notice'] = 'ส่งคำขอแล้ว ทีมงานจะตรวจสอบ';
+        $this->redirect('/account');
+    }
+
+    public function acceptLegal(): void
+    {
+        $m = $this->memberOrBounce();
+        $db = $this->db();
+        $ok = (new LegalDocuments($db, new MemberAudit($db)))->accept((int)$m['id'], (int)($_POST['document_id'] ?? 0));
+        $_SESSION['member_notice'] = $ok ? 'บันทึกการยอมรับแล้ว' : 'เอกสารนี้ไม่ได้เปิดใช้งาน';
+        $this->redirect('/account');
+    }
+
     public function delete(): void
     {
         $m = $this->auth()->current();
         if (!$m || !Csrf::verify($_POST['_token'] ?? null) || ($_POST['confirm'] ?? '') !== '1') { $this->redirect('/account'); }
+        $db = $this->db(); (new MemberAudit($db))->record(null, 'member', (int)$m['id'], 'account.deleted', 'member', (int)$m['id']);
         $this->auth()->deleteAccount((int)$m['id']);
         $this->redirect('/?account=deleted');
     }
@@ -84,6 +129,19 @@ final class AccountController extends Controller
         $m = $config['members'] ?? [];
         return ProviderRegistry::fromConfig($m, new CurlOAuthHttp(), ROOT_PATH . '/storage/cache/oauth', (string)($m['facebook_graph_version'] ?? 'v19.0'));
     }
+
+    private function db(): \PDO { global $config; return Database::connection($config['db']); }
+
+    /** a signed-in member and a valid CSRF token, or a redirect */
+    private function memberOrBounce(): array
+    {
+        $m = $this->auth()->current();
+        if (!$m) { $this->redirect('/account/login'); }
+        if (!Csrf::verify($_POST['_token'] ?? null)) { $this->redirect('/account'); }
+        return $m;
+    }
+
+    private function takeNotice(): ?string { $n = $_SESSION['member_notice'] ?? null; unset($_SESSION['member_notice']); return is_string($n) ? $n : null; }
 
     private function auth(): MemberAuth { global $config; return new MemberAuth(Database::connection($config['db']), new \App\Services\Listing\ListingPhotoStore(ROOT_PATH . '/storage/uploads/listings')); }
 

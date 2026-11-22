@@ -43,6 +43,11 @@ $groups = [
         ['label' => 'Seller listings', 'icon' => 'fa-shopping-bag', 'href' => '/admin/seller-listings', 'permission' => 'listings.moderate', 'paths' => ['/admin/seller-listings']],
         ['label' => 'New-price refs', 'icon' => 'fa-tag', 'href' => '/admin/new-prices', 'permission' => 'products.manage', 'paths' => ['/admin/new-prices']],
     ],
+    'MEMBERS' => [
+        ['label' => 'Privacy requests', 'icon' => 'fa-user-shield', 'href' => '/admin/privacy-requests', 'permission' => 'privacy.handle', 'paths' => ['/admin/privacy-requests']],
+        ['label' => 'Legal documents', 'icon' => 'fa-file-signature', 'href' => '/admin/legal-documents', 'permission' => 'legal.manage', 'paths' => ['/admin/legal-documents']],
+        ['label' => 'Member capabilities', 'icon' => 'fa-id-badge', 'href' => '/admin/member-capabilities', 'permission' => 'members.manage', 'paths' => ['/admin/member-capabilities']],
+    ],
     'COLLECTION' => [
         ['label' => 'Sources', 'icon' => 'fa-rss', 'href' => '/admin/sources', 'permission' => 'sources.view', 'paths' => ['/admin/sources']],
         ['label' => 'Owner intake', 'icon' => 'fa-upload', 'href' => '/admin/intake', 'permission' => 'products.manage', 'paths' => ['/admin/intake']],

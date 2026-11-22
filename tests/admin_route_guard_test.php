@@ -33,7 +33,7 @@ $methodBody = static function (string $class, string $method) use ($root): ?stri
 
 $matrix = (string)file_get_contents($root . '/app/Services/Auth/AuthorizationService.php');
 // permissions that exist only through the admin wildcard on purpose; anything else must be listed for a non-admin role (a typo fails here)
-$adminOnly = ['audit.view', 'products.manage', 'users.manage'];
+$adminOnly = ['audit.view', 'products.manage', 'users.manage', 'privacy.handle', 'legal.manage', 'members.manage'];
 // a handler may delegate to private helpers of the same controller: follow `$this->helper(` up to 2 levels for the guard calls
 $collect = static function (string $class, string $body, int $depth) use (&$collect, $methodBody): string {
     $all = $body;
