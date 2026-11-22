@@ -8,7 +8,7 @@ $order = array_flip(array_keys($labels));
 usort($benchmarks, static fn(array $a, array $b): int => ($order[$a["metric_key"]] ?? 99) <=> ($order[$b["metric_key"]] ?? 99));
 $first = $benchmarks[0];
 ?>
-<section class="card mi-facts-card" id="sec-bench" data-nav="ผลทดสอบ" aria-labelledby="mi-bench-title">
+<section class="card mi-facts-card" id="sec-bench" aria-labelledby="mi-bench-title">
     <div class="mi-section-head compact"><div><span class="eyebrow">ข้อมูลอ้างอิง</span><h2 id="mi-bench-title">คะแนนประสิทธิภาพจากผู้ทดสอบ</h2></div></div>
     <dl class="mi-context-list">
         <?php foreach ($benchmarks as $b): ?>

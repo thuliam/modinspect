@@ -47,6 +47,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <span><?= htmlspecialchars($product['brand_name']) ?></span>
     </nav>
 
+    <?php // LS-19 B1 / LS-33: section jump bar at the top of the page, built by site.js from the data-nav sections below (Bootstrap scrollspy marks where the reader is) ?>
+    <nav id="product-nav" class="nav nav-pills mi-section-nav" aria-label="ไปยังส่วนของหน้านี้" hidden></nav>
+
     <?php
     require_once ROOT_PATH . '/app/Views/components/hw-art.php';
     $artType = match (strtolower(trim((string) ($product['category_name'] ?? '')))) { 'cpu' => 'cpu', 'gpu' => 'gpu', 'ram' => 'ram', default => 'ssd' };
@@ -102,10 +105,27 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         </div>
     </header>
 
-    <?php // LS-19 B1: section jump bar, built by site.js from the data-nav sections below (Bootstrap scrollspy marks where the reader is) ?>
-    <nav id="product-nav" class="nav mi-section-nav" aria-label="ไปยังส่วนของหน้านี้" hidden></nav>
-
-    <?php $facts = $facts ?? []; require ROOT_PATH . '/app/Views/components/product-facts.php'; require ROOT_PATH . '/app/Views/components/benchmark-scores.php'; ?>
+    <?php // LS-33: specs and benchmark scores sit side by side (Bootstrap grid); the benchmark column only exists when scores exist, otherwise the specs take the full width ?>
+    <?php $facts = $facts ?? []; $hasBench = !empty($benchmarks); ?>
+    <?php $hasSide = $hasBench || $hasMarketSnapshot; ?>
+    <div class="row">
+        <div class="col-12<?= $hasSide ? ' col-lg-6' : '' ?> mb-4"><?php require ROOT_PATH . '/app/Views/components/product-facts.php'; ?></div>
+        <?php if ($hasSide): ?><div class="col-12 col-lg-6 mb-4">
+            <?php if ($hasBench): ?><div class="mb-4"><?php require ROOT_PATH . '/app/Views/components/benchmark-scores.php'; ?></div><?php endif; ?>
+            <?php if ($hasMarketSnapshot): ?>
+            <form class="card mi-deal-cta mt-0" action="<?= $base ?>/deal-checker" method="get">
+                <h2>เจอราคาประกาศของรุ่นนี้?</h2>
+                <p>ใส่ราคาที่คุณเจอเพื่อดูว่าอยู่ต่ำกว่า อยู่ในช่วง หรือสูงกว่าช่วงราคาที่พบ</p>
+                <input type="hidden" name="product" value="<?= (int) $product['id'] ?>">
+                <label for="detail-user-price">ราคาที่พบ (บาท)</label>
+                <div class="mi-inline-form">
+                    <input id="detail-user-price" name="user_price" inputmode="numeric" placeholder="เช่น 7900">
+                    <button type="submit">เปิด Deal Checker</button>
+                </div>
+            </form>
+            <?php endif; ?>
+        </div><?php endif; ?>
+    </div>
     <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): ?>
         <p class="mi-trend-note"><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>">ดูคู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></a></p>
     <?php endif; ?>
@@ -115,8 +135,8 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
     <?php endif; ?>
 
     <?php if (!$hasMarketSnapshot): ?>
-        <div class="mi-detail-grid no-data-detail" id="sec-market" data-nav="ข้อมูลตลาด">
-            <article class="card mi-product-summary-card">
+        <div class="row" id="sec-market" data-nav="ข้อมูลตลาด">
+            <div class="col-12 col-lg-6 mb-4"><article class="card mi-product-summary-card h-100">
                 <h2>ข้อมูลสินค้า</h2>
                 <dl class="mi-context-list">
                     <div><dt>หมวดหมู่</dt><dd><?= htmlspecialchars($product['category_name'] ?? '-') ?></dd></div>
@@ -125,9 +145,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                     <div><dt>เจเนอเรชัน/บริบท</dt><dd><?= htmlspecialchars($product['generation'] ?? '-') ?></dd></div>
                     <div><dt>สเปกย่อ</dt><dd><?= htmlspecialchars($product['spec_summary'] ?? '-') ?></dd></div>
                 </dl>
-            </article>
+            </article></div>
 
-            <aside class="mi-empty-state product-empty">
+            <div class="col-12 col-lg-6 mb-4"><aside class="mi-empty-state product-empty h-100">
                 <span class="price-status-badge">ยังไม่มีราคาตลาด</span>
                 <h2>ข้อมูลตลาดยังไม่เพียงพอ</h2>
                 <p>ModInspect ยังไม่มีข้อมูลที่ผ่านการตรวจสอบมากพอสำหรับรุ่นนี้ จึงไม่สร้างช่วงราคาหรือราคากลางให้ดูเหมือนเป็นราคาตลาดจริง</p>
@@ -138,13 +158,11 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                     <a class="button ghost" href="<?= $base ?>/price">ค้นหารุ่นอื่น</a>
                     <a class="button ghost" href="<?= $base ?>/methodology">อ่านวิธีคำนวณ</a>
                 </div>
-            </aside>
+            </aside></div>
         </div>
     <?php else: ?>
-        <div class="mi-detail-grid mi-detail-single" id="sec-market" data-nav="ข้อมูลตลาด">
-
-
-            <aside class="card mi-confidence-card">
+        <div class="row" id="sec-market" data-nav="ข้อมูลตลาด">
+            <div class="col-12 col-lg-6 mb-4"><aside class="card mi-confidence-card h-100">
                 <span class="confidence-badge confidence-<?= htmlspecialchars($confidenceClass) ?>">
                     <?= htmlspecialchars(mi_public_confidence_label($product['confidence_label'] ?? null)) ?>
                 </span>
@@ -156,30 +174,21 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                     <div><dt>ความสดของข้อมูล</dt><dd><?= number_format((float) ($product['fresh_sample_ratio'] ?? 0), 1) ?>%</dd></div>
                     <div><dt>ประเภทข้อมูล</dt><dd>ราคาประกาศ</dd></div>
                 </dl>
-            </aside>
-        </div>
+            </aside></div>
 
-        <div class="mi-secondary-grid">
-            <form class="card mi-deal-cta" action="<?= $base ?>/deal-checker" method="get">
-                <h2>เจอราคาประกาศของรุ่นนี้?</h2>
-                <p>ใส่ราคาที่คุณเจอเพื่อดูว่าอยู่ต่ำกว่า อยู่ในช่วง หรือสูงกว่าช่วงราคาที่พบ</p>
-                <input type="hidden" name="product" value="<?= (int) $product['id'] ?>">
-                <label for="detail-user-price">ราคาที่พบ (บาท)</label>
-                <div class="mi-inline-form">
-                    <input id="detail-user-price" name="user_price" inputmode="numeric" placeholder="เช่น 7900">
-                    <button type="submit">เปิด Deal Checker</button>
-                </div>
-            </form>
-
-            <article class="card mi-method-card">
+            <div class="col-12 col-lg-6 mb-4">
+            <article class="card mi-method-card h-100">
                 <h2>เข้าใจข้อมูลนี้</h2>
                 <p>ช่วงราคาที่พบช่วยให้เห็นกรอบตลาดโดยประมาณ ส่วนความน่าเชื่อถือบอกคุณภาพของข้อมูล ไม่ใช่คำตัดสินว่าดีลนั้นดีหรือไม่ดี</p>
                 <a class="button ghost" href="<?= $base ?>/methodology">อ่านวิธีคำนวณ</a>
             </article>
+            </div>
         </div>
 
         <?php require ROOT_PATH . '/app/Views/components/evidence-explorer.php'; ?>
-        <section class="card mi-history-card" id="sec-trend" data-nav="แนวโน้ม">
+        <div class="row mt-4">
+        <div class="col-12<?= !empty($similar) ? ' col-lg-6' : '' ?> mb-4">
+        <section class="card mi-history-card mt-0 h-100" id="sec-trend" data-nav="<?= !empty($similar) ? 'แนวโน้มและรุ่นใกล้เคียง' : 'แนวโน้ม' ?>">
             <div class="mi-section-head compact">
                 <div>
                     <span class="eyebrow">ประวัติราคา</span>
@@ -196,12 +205,16 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 </div>
             <?php endif; ?>
         </section>
+        </div>
         <?php if (!empty($similar)): ?>
-        <section class="card mi-history-card" id="sec-similar" data-nav="รุ่นใกล้เคียง">
+        <div class="col-12 col-lg-6 mb-4">
+        <section class="card mi-history-card mt-0 h-100" id="sec-similar">
             <div class="mi-section-head compact"><div><span class="eyebrow">เทียบรุ่นใกล้เคียง</span><h2>รุ่นอื่นที่ราคาใกล้กัน</h2></div></div>
             <?php $ref = (float)($product['median'] ?? 0); require ROOT_PATH . '/app/Views/components/similar-products.php'; ?>
         </section>
+        </div>
         <?php endif; ?>
+        </div>
     <?php endif; ?>
     <section class="mi-trust" aria-label="อ่านราคานี้อย่างไร">
         <button class="btn btn-ghost align-self-start" type="button" data-toggle="collapse" data-target="#howToRead" aria-expanded="false" aria-controls="howToRead"><i class="fas fa-book mr-2" aria-hidden="true"></i>อ่านราคานี้อย่างไร</button>

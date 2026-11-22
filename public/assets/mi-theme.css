@@ -563,7 +563,7 @@ body.mi .text-muted { color: var(--ci-text-2) !important; }
 body.mi .mi-section-nav { position: sticky; top: 72px; z-index: 15; flex-wrap: nowrap; overflow-x: auto; gap: 4px; margin: 0 0 16px; padding: 8px 0; background: var(--ci-canvas); border-bottom: 1px solid var(--ci-border); scrollbar-width: none; }
 body.mi .mi-section-nav .nav-link { white-space: nowrap; min-height: 40px; display: inline-flex; align-items: center; padding: 6px 14px; border-radius: var(--ci-r-pill); color: var(--ci-text-2); }
 body.mi .mi-section-nav .nav-link:hover { color: var(--ci-text); background: var(--ci-elevated); }
-body.mi .mi-section-nav .nav-link.active { color: var(--ci-primary); background: var(--ci-elevated); }
+body.mi .mi-section-nav .nav-link.active, body.mi .mi-section-nav.nav-pills .nav-link.active { color: var(--ci-on-primary); background: var(--ci-primary); font-weight: 600; }
 html { scroll-padding-top: 140px; }
 html.motion-full { scroll-behavior: smooth; }
 

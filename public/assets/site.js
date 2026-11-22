@@ -103,7 +103,10 @@ jQuery(function ($) {
         });
         if ($pnav.children().length > 2) {
             $pnav.prop('hidden', false);
-            $('body').scrollspy({ target: '#product-nav', offset: 160 });
+            $('body').scrollspy({ target: '#product-nav', offset: 200 });
+            /* the spy marks nothing until the first section reaches its offset; at the very top of the page the first link is the current one */
+            var firstActive = function () { if (!$pnav.find('.active').length) { $pnav.children().first().addClass('active'); } };
+            firstActive(); $(window).on('scroll', firstActive);
         }
     }
 

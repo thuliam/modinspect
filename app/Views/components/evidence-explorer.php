@@ -10,7 +10,7 @@ $reasonLabels = [
 $gradeLabels = ['owner_text' => 'ข้อความที่ทีมงานรวบรวม (ไม่มีลิงก์ต้นทาง)', 'other' => 'แหล่งข้อมูลอื่น'];
 $collapseId = 'evidence' . (int) $evidence['snapshot_id'];
 ?>
-<section class="card mi-history-card mi-evidence" id="sec-evidence" data-nav="หลักฐาน" aria-label="หลักฐานที่ใช้คำนวณราคา">
+<section class="card mi-history-card mi-evidence mt-0" id="sec-evidence" data-nav="หลักฐาน" aria-label="หลักฐานที่ใช้คำนวณราคา">
     <div class="mi-section-head compact">
         <div><span class="eyebrow">หลักฐาน</span><h2>ราคานี้มาจากอะไร</h2></div>
     </div>

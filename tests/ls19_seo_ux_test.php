@@ -36,9 +36,9 @@ ok_l19(str_contains($header, '<script type="application/ld+json"><?= $jsonLd ?><
 
 // ---- B1-B4 ----
 $show = (string)file_get_contents($root . '/app/Views/price/show.php');
-ok_l19(str_contains($show, '<nav id="product-nav" class="nav mi-section-nav"') && substr_count($show, 'data-nav="') >= 4, 'The product page has the jump bar and labelled sections');
+ok_l19(str_contains($show, '<nav id="product-nav" class="nav nav-pills mi-section-nav"') && substr_count($show, 'data-nav="') >= 4, 'The product page has the jump bar and labelled sections');
 $site = (string)file_get_contents($root . '/public/assets/site.js');
-ok_l19(str_contains($site, "\$('body').scrollspy({ target: '#product-nav', offset: 160 });") && str_contains($site, "\$('main [data-nav][id]')"), 'The bar is built from the sections present and marked by Bootstrap scrollspy');
+ok_l19(str_contains($site, "\$('body').scrollspy({ target: '#product-nav', offset: 200 });") && str_contains($site, "\$('main [data-nav][id]')"), 'The bar is built from the sections present and marked by Bootstrap scrollspy');
 ok_l19(str_contains($site, "if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey || \$(e.target).is('input, textarea, select, [contenteditable], .select2-search__field'))"), '"/" never fires while typing or with a modifier');
 $guide = (string)file_get_contents($root . '/app/Views/modules/condition-guide.php');
 ok_l19(str_contains($guide, 'class="custom-control-input"') && str_contains($guide, '<button type="reset"') && !preg_match('/\bon[a-z]+="/i', $guide) && !str_contains($guide, 'method="post"'), 'The guide checklist is a plain form: checkboxes, a native reset, no inline handler, nothing posted');
