@@ -7,7 +7,9 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
         <p class="lead">ค้นหาชิ้นส่วนคอมทั้ง 8 หมวด แล้วดูช่วงราคาที่พบ ราคากลาง ความน่าเชื่อถือ และข้อมูลล่าสุดเมื่อมีข้อมูลที่ผ่านการตรวจสอบพอ</p>
     </div>
 
-    <form class="mi-filter-card" action="<?= $base ?>/price" method="get">
+    <div class="row mi-price-layout">
+    <aside class="col-lg-3 mi-side" aria-label="ตัวกรอง">
+    <form class="mi-filter-card mi-filter-side" action="<?= $base ?>/price" method="get">
         <label for="price-search">ค้นหารุ่นสินค้า</label>
         <div class="mi-filter-row">
             <?php // LS-20: Select2 in tags mode (model names as suggestions, any text allowed); choosing or typing applies the search at once (data-autosubmit)
@@ -17,14 +19,18 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
                 <?php if ($q !== '' && !$qKnown): ?><option value="<?= htmlspecialchars($q) ?>" selected><?= htmlspecialchars($q) ?></option><?php endif; ?>
                 <?php foreach ($names ?? [] as $n): ?><option value="<?= htmlspecialchars($n['full_name']) ?>"<?= (string) $n['full_name'] === $q ? ' selected' : '' ?>><?= htmlspecialchars($n['full_name']) ?></option><?php endforeach; ?>
             </select>
+            <div class="d-lg-none">
             <select name="category" aria-label="หมวดหมู่สินค้า">
                 <option value="">ทุกหมวด</option>
                 <?php foreach ($categories as $value => $label): ?>
                     <option value="<?= $value ?>" <?= $category === $value ? 'selected' : '' ?>><?= $label ?></option>
                 <?php endforeach; ?>
             </select>
+            </div>
             <button type="submit">ค้นหา</button>
         </div>
+        <button class="btn btn-ghost btn-sm btn-block d-lg-none mt-3" type="button" data-toggle="collapse" data-target="#mi-filters" aria-expanded="false" aria-controls="mi-filters"><i class="fas fa-sliders-h" aria-hidden="true"></i> ตัวกรองเพิ่มเติม</button>
+        <div id="mi-filters" class="collapse d-lg-block">
         <?php $minPrice = (int) ($minPrice ?? 0); $maxPrice = (int) ($maxPrice ?? 0); $keep = array_filter(['sort' => $sort ?? '', 'priced' => !empty($pricedOnly) ? '1' : '', 'min' => $minPrice ?: '', 'max' => $maxPrice ?: '']); ?>
         <?php // LS-47: category filter as a dock (icon above its label, RGB tiles, macOS-style bounce on hover); same icons as the main menu
         $catIcons = ['cpu' => 'fa-microchip', 'gpu' => 'fa-tv', 'motherboard' => 'fa-project-diagram', 'ram' => 'fa-memory', 'storage' => 'fa-hdd', 'psu' => 'fa-plug', 'case' => 'fa-server', 'cooling' => 'fa-fan']; $catI = 0; ?>
@@ -38,11 +44,11 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
         $specOptions = $specOptions ?? []; $specFilters = $specFilters ?? [];
         $speedOpts = $specOptions['speed'] ?? []; ?>
         <?php if ($specOptions): ?>
-        <div class="form-inline mt-3" aria-label="ตัวกรองเฉพาะหมวด">
+        <div class="mi-side-group mt-3" aria-label="ตัวกรองเฉพาะหมวด">
             <?php foreach ($specOptions as $key => $values): if ($key === 'speed') { continue; } ?>
-                <div class="d-flex align-items-center mr-3 mb-2">
-                <label class="mr-2 mb-0" for="spec-<?= $key ?>"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS[$key] ?? $key) ?></label>
-                <select id="spec-<?= $key ?>" name="<?= $key ?>" class="form-control h-auto" data-autosubmit data-width="150px">
+                <div class="mi-side-field">
+                <label for="spec-<?= $key ?>"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS[$key] ?? $key) ?></label>
+                <select id="spec-<?= $key ?>" name="<?= $key ?>" class="form-control h-auto" data-autosubmit data-width="100%">
                     <option value="">ทั้งหมด</option>
                     <?php foreach ($values as $v): $text = in_array($key, ['cap'], true) ? ((int) $v >= 1000 ? ((int) $v / 1000) . ' TB' : $v . ' GB') : ($key === 'vram' ? $v . ' GB' : ($key === 'watt' ? $v . ' W' : $v)); ?>
                         <option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters[$key] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($text) ?></option>
@@ -51,22 +57,21 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
                 </div>
             <?php endforeach; ?>
             <?php if ($speedOpts): ?>
-                <div class="d-flex align-items-center mr-3 mb-2">
-                <label class="mr-2 mb-0" for="spec-speed_min"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS['speed']) ?></label>
-                <select id="spec-speed_min" name="speed_min" class="form-control h-auto mr-1" data-autosubmit data-width="110px" aria-label="ความเร็วต่ำสุด">
+                <div class="mi-side-field">
+                <label for="spec-speed_min"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS['speed']) ?></label>
+                <select id="spec-speed_min" name="speed_min" class="form-control h-auto" data-autosubmit data-width="100%" aria-label="ความเร็วต่ำสุด">
                     <option value="">ต่ำสุด</option>
                     <?php if (!empty($specFilters['speed_min']) && !in_array($specFilters['speed_min'], $speedOpts, true)): ?><option value="<?= htmlspecialchars($specFilters['speed_min']) ?>" selected><?= htmlspecialchars($specFilters['speed_min']) ?></option><?php endif; ?>
                     <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_min'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
                 </select>
-                <span class="mr-1">–</span>
-                <select id="spec-speed_max" name="speed_max" class="form-control h-auto" data-autosubmit data-width="110px" aria-label="ความเร็วสูงสุด">
+                                <select id="spec-speed_max" name="speed_max" class="form-control h-auto" data-autosubmit data-width="100%" aria-label="ความเร็วสูงสุด">
                     <option value="">สูงสุด</option>
                     <?php if (!empty($specFilters['speed_max']) && !in_array($specFilters['speed_max'], $speedOpts, true)): ?><option value="<?= htmlspecialchars($specFilters['speed_max']) ?>" selected><?= htmlspecialchars($specFilters['speed_max']) ?></option><?php endif; ?>
                     <?php foreach ($speedOpts as $v): ?><option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters['speed_max'] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($v) ?></option><?php endforeach; ?>
                 </select>
                 </div>
             <?php endif; ?>
-            <?php if ($specFilters): ?><a class="btn btn-ghost btn-sm mb-2" href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $category]) + $keep)) ?>">ล้างตัวกรอง</a><?php endif; ?>
+            <?php if ($specFilters): ?><a class="btn btn-ghost btn-sm btn-block" href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $category]) + $keep)) ?>">ล้างตัวกรอง</a><?php endif; ?>
         </div>
         <?php endif; ?>
         <?php // LS-51: budget first: a range in baht and one-tap bands; only models with a public price can match, so a budget hides unpriced models
@@ -87,19 +92,24 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
                 <?php if ($minPrice || $maxPrice): ?><a class="mi-budget-chip" href="<?= $base ?>/price<?= $bandBase ? '?' . htmlspecialchars(http_build_query($bandBase)) : '' ?>">ล้างงบ</a><?php endif; ?>
             </div>
         </div>
-        <div class="form-inline mt-3">
-            <label class="mr-2 mb-0" for="price-sort">เรียงตาม</label>
-            <select id="price-sort" name="sort" class="form-control h-auto mr-3 mb-2 mb-sm-0" data-autosubmit data-width="240px">
+        <div class="mi-side-group mt-3">
+            <div class="mi-side-field">
+            <label for="price-sort">เรียงตาม</label>
+            <select id="price-sort" name="sort" class="form-control h-auto" data-autosubmit data-width="100%">
                 <?php foreach (\App\Services\Catalog\PriceList::SORTS as $value => $label): ?>
                     <option value="<?= htmlspecialchars($value) ?>"<?= ($sort ?? '') === $value ? ' selected' : '' ?>><?= htmlspecialchars($label) ?></option>
                 <?php endforeach; ?>
             </select>
+            </div>
             <div class="custom-control custom-checkbox">
                 <input type="checkbox" class="custom-control-input" id="price-priced" name="priced" value="1"<?= !empty($pricedOnly) ? ' checked' : '' ?> data-autosubmit>
                 <label class="custom-control-label" for="price-priced">เฉพาะรุ่นที่มีช่วงราคาแล้ว</label>
             </div>
         </div>
+        </div>
     </form>
+    </aside>
+    <div class="col-lg-9 mi-main">
 
     <div class="mi-result-summary" role="status" aria-live="polite">
         <strong>พบ <?= count($products) ?> รุ่น<?php $pricedCount = count(array_filter($products, static fn(array $p): bool => !empty($p['median']) && (int) ($p['valid_sample_size'] ?? 0) > 0 && (int) ($p['accepted_observation_count'] ?? 0) > 0)); ?><?= $products ? ' · มีช่วงราคา ' . $pricedCount . ' รุ่น' : '' ?></strong>
@@ -107,7 +117,7 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
     </div>
 
     <?php if ($products): ?>
-        <?php $mi_list_heading = 'รุ่นที่มีราคาตลาดแล้ว'; require ROOT_PATH . '/app/Views/components/product-list.php'; ?>
+        <?php $mi_list_heading = 'รุ่นที่มีราคาตลาดแล้ว'; $mi_group_by_category = true; require ROOT_PATH . '/app/Views/components/product-list.php'; ?>
     <?php else: ?>
         <div class="mi-empty-state">
             <h2>ไม่พบสินค้าที่ค้นหา</h2>
@@ -140,4 +150,6 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
             </div>
         </div>
     <?php endif; ?>
+    </div>
+    </div>
 </section>
