@@ -29,7 +29,7 @@ jQuery(function ($) {
     if (!$('body').hasClass('is-home')) {
         var late = [];
         ['.mi-page-heading', '.mi-product-hero', '.mi-filter-card', '.mi-card-grid > *', '.mi-compact-list li', '.mi-product-summary-card',
-            '.mi-price-answer-card', '.mi-method-card', '.mi-history-card', '.mi-confidence-card', '.mi-deal-cta', '.mi-empty-state', 'main fieldset'
+            '.mi-price-answer-card', '.mi-cmp-card', '.mi-radar-card', '.mi-table-card', '.mi-method-card', '.mi-history-card', '.mi-confidence-card', '.mi-deal-cta', '.mi-empty-state', 'main fieldset'
         ].forEach(function (sel) {
             $('main ' + sel).each(function (i) {
                 var el = this;
@@ -46,7 +46,7 @@ jQuery(function ($) {
     }
 
     /* reveals */
-    var $rev = $('.reveal, .mi-sec');   // LS-41: home sections get the same flag, CSS stages their parts
+    var $rev = $('.reveal, .mi-sec, #sec-bench');   // LS-41: home sections get the same flag, CSS stages their parts
     if ('IntersectionObserver' in window) {
         var rio = new IntersectionObserver(function (entries) {
             entries.forEach(function (en) { if (en.isIntersecting) { $(en.target).addClass('in'); rio.unobserve(en.target); } });
@@ -75,7 +75,7 @@ jQuery(function ($) {
                 });
             })(el);
         }
-        $('.mi-hero h1, .mi-sec h2').each(function () { split(this); });
+        $('.mi-hero h1, .mi-sec h2, .container.page h1').each(function () { split(this); });
         var $lit = $('#about h2').addClass('mi-lit'), ticking = false;
         function light() {
             ticking = false;
@@ -93,7 +93,7 @@ jQuery(function ($) {
         if (!$b.length) { return; }
         function show() { $b.toggleClass('show', document.documentElement.scrollHeight > window.innerHeight * 2.5 && window.scrollY > Math.max(600, window.innerHeight)); }
         $(window).on('scroll resize', show); show();
-        $b.on('click', function () { window.scrollTo({ top: 0, behavior: $('html').hasClass('motion-full') ? 'smooth' : 'auto' }); $('#main').trigger('focus'); });
+        $b.on('click', function () { window.scrollTo({ top: 0, behavior: $('html').hasClass('motion-full') ? 'smooth' : 'auto' }); var m = document.getElementById('main'); if (m) { m.focus({ preventScroll: true }); } });
     })();
     /* decode (LS-41, after the number scramble on kyma.framer.ai): the figure starts as noise and settles into the real number from left to right; the markup already holds the real number,
        so without script or while the observer waits, it reads correctly. A changing number is not travel, so calm mode keeps it. */
@@ -116,6 +116,25 @@ jQuery(function ($) {
         $('[data-count]').each(function () { cio.observe(this); });
     }
 
+    /* LS-45 score run-up: a benchmark figure counts up from 0 to its published value when its card scrolls in (the markup already holds the real value) */
+    function runScore(el) {
+        var end = parseFloat(el.getAttribute('data-score')), t0 = null, dur = 1300;
+        if (isNaN(end) || end <= 0) { return; }
+        function tick(t) {
+            if (t0 === null) { t0 = t; }
+            var p = Math.min(1, (t - t0) / dur);
+            el.textContent = (end * (1 - Math.pow(1 - p, 4))).toFixed(1).replace(/\.0$/, '');
+            if (p < 1) { requestAnimationFrame(tick); }
+        }
+        el.textContent = '0';
+        requestAnimationFrame(tick);
+    }
+    if ('IntersectionObserver' in window) {
+        var sio = new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) { if (en.isIntersecting) { runScore(en.target); sio.unobserve(en.target); } });
+        }, { threshold: 0.6 });
+        $('[data-score]').each(function () { sio.observe(this); });
+    }
     /* featured tabs */
     $('.mi-tabs').on('click', 'button', function () {
         var f = $(this).data('filter');

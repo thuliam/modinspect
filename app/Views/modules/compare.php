@@ -9,6 +9,7 @@ $hasNote = false;
 foreach ($table['rows'] as $r) { foreach ($r['cells'] as $c) { if (!empty($c['note'])) { $hasNote = true; } } }
 $diff = []; $same = [];
 foreach ($table['rows'] as $r) { if ($r['differs']) { $diff[] = $r; } else { $same[] = $r; } }
+$palette = \App\Services\Benchmark\CompareRadar::COLORS;
 $pricedCols = array_values(array_filter($cols, static fn(array $c): bool => $c['priced']));
 $lowMedian = $pricedCols ? min(array_column($pricedCols, 'median')) : null;
 // ▲ highest / ▼ lowest value of a row (only when two or more cells are plain numbers with at most a unit, and they differ). It says which value is larger, not which is better.
@@ -16,10 +17,18 @@ $extremes = static function (array $values): array {
     $nums = [];
     foreach ($values as $i => $v) { if ($v !== null && preg_match('/^\s*(\d[\d,]*(?:\.\d+)?)\s?[A-Za-z%]*\s*$/', (string)$v, $m)) { $nums[$i] = (float)str_replace(',', '', $m[1]); } }
     if (count($nums) < 2 || max($nums) === min($nums)) { return []; }
-    $out = []; foreach ($nums as $i => $n) { if ($n === max($nums)) { $out[$i] = 'max'; } elseif ($n === min($nums)) { $out[$i] = 'min'; } }
+    $hi = max($nums); $lo = min($nums);
+    $out = []; foreach ($nums as $i => $n) { if ($n === $hi) { $out[$i] = 'max' . ($lo > 0 ? ':' . round(($hi - $lo) / $lo * 100, 1) : ''); } elseif ($n === $lo) { $out[$i] = 'min' . ($hi > 0 ? ':' . round(($lo - $hi) / $hi * 100, 1) : ''); } }
     return $out;
 };
-$mark = static fn(?string $m): string => $m === 'max' ? ' <span class="badge badge-pill mi-cmp-mark" title="สูงสุดในแถวนี้"><i class="fas fa-arrow-up text-success" aria-hidden="true"></i><span class="sr-only">สูงสุดในแถวนี้</span></span>' : ($m === 'min' ? ' <span class="badge badge-pill mi-cmp-mark" title="ต่ำสุดในแถวนี้"><i class="fas fa-arrow-down text-danger" aria-hidden="true"></i><span class="sr-only">ต่ำสุดในแถวนี้</span></span>' : '');
+$mark = static function (?string $m): string {
+    // LS-45: pill after the 21st.dev "badge delta": a small outlined box, a filled triangle and the percentage against the other end of the row. Direction only, never "better".
+    if ($m === null || $m === '') { return ''; }
+    $parts = explode(':', $m, 2); $up = $parts[0] === 'max'; $pct = isset($parts[1]) ? (float) $parts[1] : null;
+    $txt = $up ? 'สูงสุดในแถวนี้' : 'ต่ำสุดในแถวนี้';
+    $val = $pct !== null ? ($up ? '+' : '−') . number_format(abs($pct), 1) . '%' : '';
+    return ' <span class="mi-delta ' . ($up ? 'mi-delta-up' : 'mi-delta-down') . '" title="' . $txt . ($val !== '' ? ' (' . $val . ' เทียบกับอีกปลายของแถว)' : '') . '"><i class="fas fa-caret-' . ($up ? 'up' : 'down') . '" aria-hidden="true"></i>' . $val . '<span class="sr-only"> ' . $txt . '</span></span>';
+};
 $cell = static function (array $cell): string {
     if ($cell['value'] === null) { return '<span class="text-muted">ไม่มีข้อมูล</span>'; }
     $o = htmlspecialchars($cell['value']);
@@ -88,10 +97,10 @@ $cell = static function (array $cell): string {
         <?php endif; ?>
     <?php endif; ?>
     <div class="row mb-4">
-        <?php foreach ($cols as $c): ?>
+        <?php foreach ($cols as $ci => $c): ?>
             <div class="col-md-<?= (int) (12 / max(2, count($cols))) ?> col-6 mb-3">
-                <div class="card h-100"><div class="card-body">
-                    <span class="mi-trend-note"><?= htmlspecialchars($c['category']) ?></span>
+                <div class="card h-100 mi-cmp-card" style="--i:<?= $ci ?>"><div class="card-body">
+                    <span class="mi-trend-note"><span class="mi-cmp-dot" style="background:<?= $palette[$ci % 4] ?>" aria-hidden="true"></span><?= htmlspecialchars($c['category']) ?></span>
                     <h2 class="h6 mb-2"><a href="<?= $base ?>/price/<?= htmlspecialchars($c['slug']) ?>"><?= htmlspecialchars($c['name']) ?></a></h2>
                     <?php if ($c['priced']): ?>
                         <p class="h4 mb-1">฿<?= number_format($c['median']) ?></p>
@@ -104,11 +113,23 @@ $cell = static function (array $cell): string {
             </div>
         <?php endforeach; ?>
     </div>
+    <?php if (!empty($radar)): $rid = 'cmpradar' . bin2hex(random_bytes(4)); ?>
+        <section class="card mi-radar-card mb-4" aria-labelledby="<?= $rid ?>-t">
+            <div class="mi-section-head compact"><div><span class="eyebrow">ข้อมูลอ้างอิง</span><h2 id="<?= $rid ?>-t">คะแนนประสิทธิภาพซ้อนกัน</h2></div></div>
+            <div class="mi-radar-wrap"><canvas id="<?= $rid ?>" data-chart="radar-multi" data-source="<?= $rid ?>-data" role="img" aria-label="เรดาร์คะแนนเปรียบเทียบ <?= htmlspecialchars(implode(', ', array_column($radar['series'], 'name'))) ?>"></canvas></div>
+            <?php if (empty($GLOBALS['mi_chartjs_loaded'])): $GLOBALS['mi_chartjs_loaded'] = true; ?>
+                <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
+                <script src="<?= $base ?>/assets/mi-charts.js?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/mi-charts.js') ?>" defer></script>
+            <?php endif; ?>
+            <script type="application/json" id="<?= $rid ?>-data"><?= json_encode(['labels' => $radar['labels'], 'series' => $radar['series']], 271) ?></script>
+            <p class="mi-trend-note mb-0">คะแนนบรรณาธิการ 0-100 จาก InnoReviews (CC BY 4.0) ไม่ใช่ผลวัดดิบ และไม่ใช่การจัดอันดับของ ModInspect แต่ละสีคือหนึ่งรุ่น สีตรงกับจุดบนการ์ดด้านบน<?php if (!empty($radar['missing'])): ?> · ยังไม่มีคะแนนของ <?= htmlspecialchars(implode(', ', $radar['missing'])) ?> จึงไม่อยู่ในกราฟ<?php endif; ?></p>
+        </section>
+    <?php endif; ?>
     <?php // LS-22: a plain statement of what differs (labels only, no verdict), plus copy-link and print; both are hidden on paper ?>
     <?php $diffLabels = array_slice(array_map(static fn(array $r): string => (string) $r['label'], $diff), 0, 6); ?>
     <?php if ($diffLabels): ?><p class="mb-2"><strong>ที่ต่างกันระหว่างรุ่นที่เลือก:</strong> <?= htmlspecialchars(implode(', ', $diffLabels)) ?><?= count($diff) > 6 ? ' และอีก ' . (count($diff) - 6) . ' รายการ' : '' ?></p><?php endif; ?>
     <p class="d-print-none mb-2"><button type="button" class="btn btn-ghost btn-sm" data-copy-url><i class="fas fa-link mr-1" aria-hidden="true"></i><span>คัดลอกลิงก์เปรียบเทียบ</span></button> <button type="button" class="btn btn-ghost btn-sm" data-print><i class="fas fa-print mr-1" aria-hidden="true"></i>พิมพ์</button></p>
-    <p class="mi-trend-note">ต่างกัน <?= count($diff) ?> รายการ · เหมือนกัน <?= count($same) ?> รายการ · กดหัวข้อเพื่อพับ/ขยายกลุ่ม · <span class="badge badge-pill"><i class="fas fa-arrow-up text-success" aria-hidden="true"></i></span> ค่าสูงสุดในแถว <span class="badge badge-pill"><i class="fas fa-arrow-down text-danger" aria-hidden="true"></i></span> ค่าต่ำสุดในแถว · สีบอกทิศทางของตัวเลขเท่านั้น ไม่ได้บอกว่ารุ่นไหนดีกว่า (เช่น TDP สูงไม่ได้แปลว่าดี)</p>
+    <p class="mi-trend-note">ต่างกัน <?= count($diff) ?> รายการ · เหมือนกัน <?= count($same) ?> รายการ · กดหัวข้อเพื่อพับ/ขยายกลุ่ม · <span class="mi-delta mi-delta-up"><i class="fas fa-caret-up" aria-hidden="true"></i>+%</span> ค่าสูงสุดในแถว <span class="mi-delta mi-delta-down"><i class="fas fa-caret-down" aria-hidden="true"></i>−%</span> ค่าต่ำสุดในแถว (ตัวเลขคือส่วนต่างจากปลายอีกด้านของแถว) · สีบอกทิศทางของตัวเลขเท่านั้น ไม่ได้บอกว่ารุ่นไหนดีกว่า (เช่น TDP สูงไม่ได้แปลว่าดี)</p>
     <div class="card mi-table-card table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
             <thead>

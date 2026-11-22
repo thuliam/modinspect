@@ -812,3 +812,15 @@ html.motion-calm body.mi .mi-sec .mi-table li, html.motion-calm body.mi .mi-sec 
 html.motion-calm body.mi .mi-sec .mi-featured > div, html.motion-calm body.mi .mi-sec .mi-brand-row { transition: opacity .7s ease calc(var(--i, 0) * 80ms + 150ms); }
 html.motion-calm body.mi .mi-sec h2.mi-lit .mi-w { opacity: .2; transition: opacity .3s linear; }
 html.motion-calm body.mi .mi-sec h2.mi-lit .mi-w.lit { opacity: 1; }
+
+/* LS-45: Compare and product pages. Badge-delta pill (after the 21st.dev badge delta: outlined box, filled triangle, percentage), the stacked radar, model colour dots, score bars that run up when their card scrolls in, and the same title rise as the home page. Motion only in full mode. */
+body.mi .mi-delta { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; padding: 1px 8px; border: 1px solid; border-radius: 6px; font-size: 12px; font-weight: 600; line-height: 20px; font-variant-numeric: tabular-nums; vertical-align: middle; white-space: nowrap; }
+body.mi .mi-delta-up { color: #4ade80; background: rgba(74, 222, 128, .1); border-color: rgba(74, 222, 128, .35); }
+body.mi .mi-delta-down { color: #f87171; background: rgba(248, 113, 113, .1); border-color: rgba(248, 113, 113, .35); }
+body.mi .mi-delta .fas { font-size: 14px; }
+body.mi .mi-cmp-dot { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 50%; vertical-align: baseline; }
+body.mi .mi-radar-wrap { position: relative; height: 460px; margin: 4px 0 12px; }
+@media (max-width: 575.98px) { body.mi .mi-radar-wrap { height: 320px; } }
+html.motion-full body.mi #sec-bench .mi-stat-bar .progress-bar { transition: width 1.3s cubic-bezier(.2, .7, .2, 1) calc(var(--i, 0) * 90ms + 250ms); }
+html.motion-full body.mi #sec-bench:not(.in) .mi-stat-bar .progress-bar { width: 0 !important; }
+html.motion-full body.mi .container.page h1 .mi-w { display: inline-block; animation: miWordRise .8s cubic-bezier(.2, .7, .2, 1) calc(var(--w) * 80ms + 100ms) both; }

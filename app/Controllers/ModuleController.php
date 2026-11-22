@@ -27,10 +27,10 @@ final class ModuleController extends Controller {
             if(isset($chosen[$s])){ continue; }
             $p=$bySlug[$s] ?? null; if(!$p){ $unmatched[]=$typed; continue; }
             $chosen[$s]=true;
-            $items[]=['product'=>$p,'facts'=>\App\Services\Catalog\ProductFacts::rows($p,$model->referenceSpecs((int)$p['id']),(int)date('Y'))];
+            $items[]=['product'=>$p,'scores'=>$model->benchmarks((int)$p['id']),'facts'=>\App\Services\Catalog\ProductFacts::rows($p,$model->referenceSpecs((int)$p['id']),(int)date('Y'))];
         }
         $options=array_map(static fn(array $p):array=>['slug'=>$p['slug'],'name'=>$p['full_name'],'category'=>$p['category_name']],$all);
-        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen),'unmatched'=>$unmatched,'pairs'=>\App\Services\Catalog\CompareTable::suggestPairs($all)]);
+        $this->view('modules/compare',['title'=>'เปรียบเทียบสินค้า','table'=>\App\Services\Catalog\CompareTable::build($items),'options'=>$options,'chosen'=>array_keys($chosen),'unmatched'=>$unmatched,'pairs'=>\App\Services\Catalog\CompareTable::suggestPairs($all),'radar'=>\App\Services\Benchmark\CompareRadar::build($items)]);
     }
     /** LS-25 A6: upgrade finder. The model comes from the path or ?m=; unknown or unsupported categories get a plain explanation, never a guess. */
     public function upgrade(string $slug=''): void {

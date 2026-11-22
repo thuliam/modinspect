@@ -14,19 +14,19 @@ $first = $benchmarks[0];
     $fmt = static fn(float $v): string => rtrim(rtrim(number_format($v, 1), '0'), '.');
     $radar = []; foreach ($benchmarks as $b) { if ($b['metric_key'] !== 'inno_score') { $radar[] = ['l' => $labels[$b['metric_key']] ?? $b['metric_key'], 'v' => (float)$b['score_value']]; } }
     if (count($radar) >= 3): $radarId = 'bench' . bin2hex(random_bytes(4)); ?>
-        <div class="mi-stat-radar"><canvas id="<?= $radarId ?>" data-chart="radar" data-source="<?= $radarId ?>-data" role="img" aria-label="เรดาร์คะแนน <?= htmlspecialchars(implode(', ', array_map(static fn($r) => $r['l'] . ' ' . $fmt($r['v']), $radar))) ?>"></canvas></div>
+        <div class="mi-stat-radar"><canvas id="<?= $radarId ?>" data-chart="radar-multi" data-source="<?= $radarId ?>-data" role="img" aria-label="เรดาร์คะแนน <?= htmlspecialchars(implode(', ', array_map(static fn($r) => $r['l'] . ' ' . $fmt($r['v']), $radar))) ?>"></canvas></div>
         <?php if (empty($GLOBALS['mi_chartjs_loaded'])): $GLOBALS['mi_chartjs_loaded'] = true; ?>
             <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>
             <script src="<?= $base ?>/assets/mi-charts.js?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/mi-charts.js') ?>" defer></script>
         <?php endif; ?>
-        <script type="application/json" id="<?= $radarId ?>-data"><?= json_encode($radar, 271) ?></script>
+        <script type="application/json" id="<?= $radarId ?>-data"><?= json_encode(['labels' => array_column($radar, 'l'), 'series' => [['name' => 'InnoReviews', 'color' => '#bbf246', 'values' => array_column($radar, 'v')]]], 271) ?></script>
     <?php endif; ?>
     <ul class="list-unstyled mi-stats">
-        <?php foreach ($benchmarks as $b): $v = max(0.0, min(100.0, (float)$b['score_value'])); $name = $labels[$b['metric_key']] ?? $b['metric_key']; ?>
-            <li class="mi-stat<?= $b['metric_key'] === 'inno_score' ? ' mi-stat-main' : '' ?>">
+        <?php foreach ($benchmarks as $bi => $b): $v = max(0.0, min(100.0, (float)$b['score_value'])); $name = $labels[$b['metric_key']] ?? $b['metric_key']; ?>
+            <li class="mi-stat<?= $b['metric_key'] === 'inno_score' ? ' mi-stat-main' : '' ?>" style="--i:<?= (int) $bi ?>">
                 <span class="mi-stat-l"><?= htmlspecialchars($name) ?></span>
                 <div class="progress mi-stat-bar"><div class="progress-bar" role="progressbar" style="width: <?= $fmt($v) ?>%" aria-valuenow="<?= $fmt($v) ?>" aria-valuemin="0" aria-valuemax="100" aria-label="<?= htmlspecialchars($name) ?>"></div></div>
-                <b class="mi-stat-v"><?= $fmt($v) ?></b>
+                <b class="mi-stat-v" data-score="<?= $fmt($v) ?>"><?= $fmt($v) ?></b>
             </li>
         <?php endforeach; ?>
     </ul>

@@ -5,8 +5,10 @@
         if (typeof Chart === 'undefined') { return; }
         var css = getComputedStyle(document.body), c = (css.getPropertyValue('--ci-primary') || '#bbf246').trim();
         Chart.defaults.color = (css.getPropertyValue('--ci-text-2') || '#94a3b8').trim();
+        Chart.defaults.font.family = css.fontFamily;   // the CI faces, not the Chart.js default
         Chart.defaults.borderColor = (css.getPropertyValue('--ci-border') || '#334155').trim();
-        Array.prototype.forEach.call(document.querySelectorAll('canvas[data-chart]:not([data-drawn])'), function (cv) {
+        Chart.defaults.animation = document.documentElement.classList.contains('motion-calm') ? { duration: 0 } : { duration: 1200, easing: 'easeOutQuart' };
+        function build(cv) {
             var src = document.getElementById(cv.getAttribute('data-source')), rows;
             try { rows = JSON.parse(src ? src.textContent : '[]'); } catch (e) { return; }
             cv.setAttribute('data-drawn', '1');
@@ -15,6 +17,15 @@
                     type: 'radar',
                     data: { labels: rows.map(function (a) { return a.l; }), datasets: [{ data: rows.map(function (a) { return a.v; }), borderColor: c, backgroundColor: c + '33', borderWidth: 2, pointRadius: 3 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 100, ticks: { display: false, stepSize: 25 }, pointLabels: { font: { size: 13 } } } } }
+                });
+            } else if (cv.getAttribute('data-chart') === 'radar-multi') {
+                // LS-45: radar after the 21st.dev radar chart: polygon grid, one translucent shape per series (they overlap), a dot legend, the value under each axis label when there is one series
+                var one = rows.series.length === 1, top = Math.max.apply(null, [].concat.apply([], rows.series.map(function (s) { return s.values; }))), axisMax = Math.min(100, Math.ceil((top + 8) / 10) * 10);   // the grid ends just above the highest score so the shapes use the space; the scale is still points out of 100
+                new Chart(cv, {
+                    type: 'radar',
+                    data: { labels: rows.labels, datasets: rows.series.map(function (s) { return { label: s.name, data: s.values, borderColor: s.color, backgroundColor: s.color + '2e', borderWidth: 2, pointRadius: 3, pointBackgroundColor: s.color, pointBorderColor: '#0a0d14', pointHoverRadius: 5 }; }) },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', boxWidth: 8, padding: 16 } }, tooltip: { callbacks: { label: function (x) { return x.dataset.label + ': ' + x.formattedValue + ' / 100'; } } } },
+                        scales: { r: { min: 0, max: axisMax, ticks: { display: false, stepSize: axisMax / 4 }, grid: { color: 'rgba(148,163,184,.2)' }, angleLines: { color: 'rgba(148,163,184,.2)' }, pointLabels: { font: { size: 13 }, callback: function (l, i) { return one ? [l, String(rows.series[0].values[i])] : l; } } } } }
                 });
             } else if (cv.getAttribute('data-chart') === 'candles') {
                 // LS-32 B: one candle per month. Body = Q1 to Q3 (green when the median rose, red when it fell, accent for the first month), thin wick = lowest to highest asking
@@ -38,7 +49,13 @@
                 new Chart(cv, { type: 'line', data: { labels: rows.map(function (r) { return r.t; }), datasets: [{ data: rows.map(function (r) { return r.m; }), borderColor: hc, backgroundColor: hc, borderWidth: 2, pointRadius: 4, tension: .2 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (x) { return '฿' + Math.round(x.parsed.y).toLocaleString() + ' · ' + rows[x.dataIndex].n + ' samples'; } } } }, scales: { y: { ticks: { callback: function (v) { return '฿' + Number(v).toLocaleString(); } } } } } });
             }
-        });
+        }
+        // LS-45: a chart is built when it scrolls into view, so its drawing animation is seen
+        var cvs = Array.prototype.slice.call(document.querySelectorAll('canvas[data-chart]:not([data-drawn])'));
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); build(e.target); } }); }, { threshold: 0.2 });
+            cvs.forEach(function (cv) { io.observe(cv); });
+        } else { cvs.forEach(build); }
     }
     if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', draw); } else { draw(); }
 })();
