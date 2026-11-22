@@ -30,7 +30,9 @@ ok_cx(str_contains($read('app/Views/listing/reader.php'), 'ไม่ต้อง
 
 // F05: a group of toggle buttons, with the pressed state in the markup and kept by the script
 $home = $read('app/Views/home/index.php');
-ok_cx(!str_contains($home, 'role="tablist"') && str_contains($home, 'class="mi-tabs" role="group"') && substr_count($home, 'aria-pressed=') === 2, 'The category filter is a button group with aria-pressed (all, and each category)');
+// only the category group is counted: other toggle groups on the page (the hero light modes) carry their own aria-pressed
+preg_match('#<div class="mi-tabs" role="group".*?</div>#s', $home, $tabs);
+ok_cx(!str_contains($home, 'role="tablist"') && isset($tabs[0]) && substr_count($tabs[0], 'aria-pressed=') === 2, 'The category filter is a button group with aria-pressed (all, and each category)');
 ok_cx(str_contains($read('public/assets/site.js'), "attr('aria-pressed', 'true')") && str_contains($read('public/assets/site.js'), "attr('aria-pressed', 'false')"), 'The script moves aria-pressed with the active button');
 
 // F07: every verdict the plan can give has a hint
