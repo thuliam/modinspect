@@ -732,3 +732,18 @@ body.mi .mi-ask-bar .mi-ask-go:focus-visible { outline: 2px solid var(--ci-text)
 body.mi .mi-deal-inline { max-width: 36rem; }
 @media (max-width: 575.98px) { body.mi .mi-search > .mi-ask-bar, body.mi .mi-deal-inline .mi-ask-bar { height: 56px; padding-left: 16px; } body.mi .mi-search > .mi-ask-bar:focus-within, body.mi .mi-deal-inline .mi-ask-bar:focus-within { height: 62px; } }
 @media (prefers-reduced-motion: reduce) { body.mi .mi-ask-bar, body.mi .mi-ask-bar .mi-ask-go { transition: none; } body.mi .mi-ask-bar:focus-within { height: 60px; } }
+
+/* LS-40: brand wall as two drifting rows of chips (the "supported models" strip idea from factory.com), CSS only. Each row is its list twice so the loop has no seam; the speed follows the number of chips; the ends fade out; it pauses on hover and keyboard focus; with reduced motion it is the plain wrapped grid. */
+body.mi .mi-brands-marquee { display: flex; flex-direction: column; gap: 12px; overflow: hidden; padding: 4px 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+body.mi .mi-brand-row { display: flex; width: max-content; animation: miBrandDrift calc(var(--n) * 6s) linear infinite; }
+body.mi .mi-brand-row-rev { animation-direction: reverse; }
+body.mi .mi-brand-track { display: flex; flex: 0 0 auto; gap: 12px; padding-right: 12px; }
+body.mi .mi-brands-marquee .mi-brand-tile { flex: 0 0 auto; width: 168px; }
+body.mi .mi-brands-marquee:hover .mi-brand-row, body.mi .mi-brands-marquee:focus-within .mi-brand-row { animation-play-state: paused; }
+@keyframes miBrandDrift { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+    body.mi .mi-brands-marquee { -webkit-mask-image: none; mask-image: none; }
+    body.mi .mi-brand-row { width: auto; animation: none; }
+    body.mi .mi-brand-track { flex-wrap: wrap; }
+    body.mi .mi-brand-track[aria-hidden="true"] { display: none; }
+}

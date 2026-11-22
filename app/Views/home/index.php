@@ -192,9 +192,19 @@ while (count($featured) < 5 && $byCat) {
         <div class="col-lg-3 mi-rail"><span class="mi-idx">[07]</span><span class="mi-rail-name">ยี่ห้อ</span></div>
         <div class="col-lg-9">
             <h2 id="h-brands">ยี่ห้อที่มีในระบบ</h2>
-            <div class="mi-brands">
-                <?php foreach ($brands ?? [] as $b): ?>
-                    <a class="mi-brand-tile" href="<?= $base ?>/price?q=<?= rawurlencode($b) ?>" aria-label="ดูรุ่นของ <?= $b ?>"><?= mi_brand_logo($b, $base, 28) ?></a>
+            <?php // LS-40: the brand wall as two rows of chips that drift in opposite directions (after the "supported models" strip on factory.com): CSS only, each row is its list twice so the loop has no seam, the copy is hidden from assistive technology and the keyboard, motion pauses on hover and focus and stops with reduced motion ?>
+            <?php $brandList = array_values($brands ?? []); $half = (int) ceil(count($brandList) / 2); $brandRows = [array_slice($brandList, 0, $half), array_slice($brandList, $half)]; ?>
+            <div class="mi-brands mi-brands-marquee" role="list" aria-label="ยี่ห้อที่มีในระบบ">
+                <?php foreach ($brandRows as $ri => $row): if (!$row) { continue; } ?>
+                    <div class="mi-brand-row<?= $ri % 2 ? ' mi-brand-row-rev' : '' ?>" style="--n:<?= count($row) ?>">
+                        <?php foreach ([0, 1] as $copy): ?>
+                            <div class="mi-brand-track"<?= $copy ? ' aria-hidden="true"' : '' ?>>
+                                <?php foreach ($row as $b): ?>
+                                    <a class="mi-brand-tile" role="<?= $copy ? 'presentation' : 'listitem' ?>"<?= $copy ? ' tabindex="-1"' : '' ?> href="<?= $base ?>/price?q=<?= rawurlencode($b) ?>" aria-label="ดูรุ่นของ <?= $b ?>"><?= mi_brand_logo($b, $base, 28) ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endforeach; ?>
             </div>
             <p class="mi-note">เครื่องหมายการค้าเป็นของเจ้าของแต่ละราย ใช้เพื่อระบุยี่ห้อของสินค้าเท่านั้น ไม่ได้หมายถึงการรับรองหรือความเกี่ยวข้อง</p>
