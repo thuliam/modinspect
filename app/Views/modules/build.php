@@ -89,7 +89,7 @@ $thumb = static function (array $p, string $role) use ($base, $roleIcon): string
                         <select id="spec-preset" class="form-control h-auto" name="preset"><?php foreach (['saving' => 'ประหยัด', 'balanced' => 'สมดุล', 'full' => 'ใช้งบเต็มที่'] as $v => $l): ?><option value="<?= $v ?>"<?= (($old['preset'] ?? 'balanced') === $v) ? ' selected' : '' ?>><?= $l ?></option><?php endforeach; ?></select>
                     </div>
                     <div class="form-group col-12 col-md-4 mb-2">
-                        <button type="submit" name="action" value="recommend" class="btn btn-block btn-ghost"><i class="fas fa-magic mr-1" aria-hidden="true"></i> แนะนำสเปกให้</button>
+                        <button type="submit" name="action" value="recommend" class="btn btn-block btn-lime"><i class="fas fa-magic mr-1" aria-hidden="true"></i> แนะนำสเปกให้</button>
                     </div>
                 </div>
                 </div>
@@ -181,3 +181,5 @@ $thumb = static function (array $p, string $role) use ($base, $roleIcon): string
     <script type="application/json" id="mi-build-config"><?= json_encode(['mode' => 'live', 'previewUrl' => $base . '/build/preview', 'initial' => (object) $initial], JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES) ?></script>
 <?php endif; ?>
 </section>
+
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-56: every tool page ends with a next step ?>

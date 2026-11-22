@@ -65,7 +65,7 @@ $cell = static function (array $cell): string {
         <p class="mi-note" role="alert"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> ไม่พบรุ่นที่ตรงกับ “<?= htmlspecialchars(implode('”, “', array_map(static fn(string $u): string => mb_substr($u, 0, 60), $unmatched))) ?>” หรือมีหลายรุ่นที่ตรงกัน ลองเลือกจากรายการที่ขึ้นมาตอนพิมพ์</p>
     <?php endif; ?>
     <div class="d-flex align-items-center">
-        <button type="submit" class="btn btn-primary flex-grow-1">เปรียบเทียบ</button>
+        <button type="submit" class="btn btn-lime"><i class="fas fa-balance-scale" aria-hidden="true"></i> เปรียบเทียบ</button>
         <?php if ($chosen): ?><a class="btn btn-ghost ml-3" href="<?= $base ?>/compare">ล้างทั้งหมด</a><?php endif; ?>
     </div>
 </form>
@@ -181,7 +181,7 @@ $cell = static function (array $cell): string {
             </tbody>
             <?php if ($diff): ?>
             <tbody><?= $group('cmp-diff', 'สเปกที่ต่างกัน', count($diff), true, $span) ?></tbody>
-            <tbody id="cmp-diff" class="collapse show"><?php $specRows($diff, ' <span class="badge badge-warning">ต่างกัน</span>'); ?></tbody>
+            <tbody id="cmp-diff" class="collapse show"><?php $specRows($diff, ' <span class="mi-delta mi-delta-diff">ต่างกัน</span>'); ?></tbody>
             <?php endif; ?>
             <?php if ($same): ?>
             <tbody><?= $group('cmp-same', 'สเปกที่เหมือนกัน', count($same), !$diff, $span) ?></tbody>
@@ -198,3 +198,5 @@ $cell = static function (array $cell): string {
     <p class="mi-trend-note">ราคาเป็นราคาประกาศขายจากข้อมูลที่ตรวจแล้ว ไม่ใช่ราคาที่ขายได้จริง ตารางนี้ไม่ได้จัดอันดับ ไม่มีคะแนนเบนช์มาร์ก เพราะยังไม่มีแหล่งข้อมูลที่ได้รับอนุญาตให้นำมาแสดง</p>
 <?php endif; ?>
 </section>
+
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-56: every tool page ends with a next step ?>

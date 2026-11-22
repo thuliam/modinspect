@@ -12,6 +12,7 @@
             <div class="form-group col-md-4"><label><?= htmlspecialchars(t('v.status')) ?><select class="form-control" name="status"><option value="draft"><?= htmlspecialchars(t('v.draft')) ?></option><option value="published"><?= htmlspecialchars(t('v.published')) ?></option><option value="archived"><?= htmlspecialchars(t('v.archived')) ?></option></select></label></div>
             <div class="form-group col-md-4"><label><?= htmlspecialchars(t('v.publish_at_optional')) ?><input class="form-control" type="datetime-local" name="publish_at"></label><small class="form-text text-muted"><?= htmlspecialchars(t('v.used_only_when_status_is_published_l')) ?></small></div>
         </div>
+        <div class="form-row"><div class="form-group col-md-4"><label><?= htmlspecialchars(t('v.category')) ?><select class="form-control" name="category"><option value=""><?= htmlspecialchars(t('misc.general')) ?></option><?php foreach (\App\Services\Blog\ArticleCategory::LABELS as $cv => $cl): ?><option value="<?= $cv ?>"><?= $cl ?></option><?php endforeach; ?></select></label><small class="form-text text-muted"><?= htmlspecialchars(t('misc.article_category_hint')) ?></small></div></div>
         <label><?= htmlspecialchars(t('v.excerpt')) ?><textarea class="form-control" name="excerpt" rows="2"></textarea></label>
         <label><?= htmlspecialchars(t('v.body')) ?><textarea class="form-control" name="body" rows="6" required></textarea></label>
         <button class="btn btn-primary mt-2" type="submit"><?= htmlspecialchars(t('v.save_article')) ?></button>

@@ -22,8 +22,11 @@ final class BlogController extends Controller
         global $config; $base = (string)$config['base_url'];
         $q = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
         $page = is_string($_GET['page'] ?? null) && ctype_digit($_GET['page']) ? min((int)$_GET['page'], self::MAX_PAGE) : 1;
-        $list = (new Blog())->page($page, 9, $q);
-        $this->view('blog/index', ['title' => 'บทความ', 'metaDescription' => 'บทความเรื่องการซื้อขายคอมมือสอง ราคาตลาด และวิธีตรวจของ จาก ModInspect', 'q' => $q, 'list' => $list, 'canonical' => SeoService::canonical($base, '/blog')]);
+        $cat = \App\Services\Blog\ArticleCategory::filter($_GET['cat'] ?? null);
+        $blog = new Blog();
+        $list = $blog->page($page, 9, $q, $cat);
+        $catCounts = $blog->categoryCounts($q);
+        $this->view('blog/index', ['title' => 'บทความ', 'metaDescription' => 'บทความเรื่องการซื้อขายคอมมือสอง ราคาตลาด และวิธีตรวจของ จาก ModInspect', 'q' => $q, 'list' => $list, 'cat' => $cat, 'catCounts' => $catCounts, 'canonical' => SeoService::canonical($base, '/blog')]);
     }
 
     public function show(string $slug): void

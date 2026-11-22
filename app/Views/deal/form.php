@@ -42,7 +42,7 @@ $preProduct = is_string($_GET['product'] ?? null) ? $_GET['product'] : ''; $preP
 
                         <div class="mi-field">
                 <label for="deal-price">ราคาที่พบ (บาท)</label>
-                <input id="deal-price" type="number" name="user_price" min="1" max="10000000" step="1" value="<?= htmlspecialchars($prePrice) ?>" placeholder="เช่น 7900" required>
+                <div class="mi-ask-bar"><span class="mi-ask-ico" aria-hidden="true">฿</span><input id="deal-price" class="mi-ask-input" type="number" inputmode="numeric" name="user_price" min="1" max="10000000" step="1" value="<?= htmlspecialchars($prePrice) ?>" placeholder="เช่น 7900" required></div>
                 <small class="mi-hint">ใส่ราคาที่ผู้ขายประกาศ ไม่ใช่ราคาที่ตกลงกันแล้ว</small>
             </div>
 
@@ -66,22 +66,19 @@ $preProduct = is_string($_GET['product'] ?? null) ? $_GET['product'] : ''; $preP
             <fieldset class="mi-check-fieldset">
                 <legend>หลักฐานและอุปกรณ์ที่มี</legend>
                 <div class="mi-checks">
-                <label class="check"><input type="checkbox" name="has_box"> มีกล่อง</label>
-                <label class="check"><input type="checkbox" name="has_receipt"> มีใบเสร็จ</label>
-                <label class="check"><input type="checkbox" name="has_benchmark"> มีผลทดสอบ</label>
+                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="deal-box" name="has_box"><label class="custom-control-label" for="deal-box">มีกล่อง</label></div>
+                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="deal-receipt" name="has_receipt"><label class="custom-control-label" for="deal-receipt">มีใบเสร็จ</label></div>
+                <div class="custom-control custom-checkbox"><input type="checkbox" class="custom-control-input" id="deal-bench" name="has_benchmark"><label class="custom-control-label" for="deal-bench">มีผลทดสอบ</label></div>
                 </div>
             </fieldset>
 
-            <label class="check consent-row">
-                <input type="checkbox" name="consent">
-                ยินยอมให้ใช้ข้อมูลที่ไม่ระบุตัวตนนี้เพื่อศึกษาการใช้งาน ไม่มีผลต่อราคากลางที่แสดงบนเว็บ
-            </label>
+            <div class="custom-control custom-checkbox consent-row"><input type="checkbox" class="custom-control-input" id="deal-consent" name="consent"><label class="custom-control-label" for="deal-consent">ยินยอมให้ใช้ข้อมูลที่ไม่ระบุตัวตนนี้เพื่อศึกษาการใช้งาน ไม่มีผลต่อราคากลางที่แสดงบนเว็บ</label></div>
 
-            <button type="submit" class="mi-submit">ประเมินตำแหน่งราคา</button>
+            <button type="submit" class="btn btn-lime btn-block mi-submit">ประเมินตำแหน่งราคา</button>
         </form>
 
         <aside class="mi-deal-help">
-            <div class="card">
+            <div class="card mi-help-card">
                 <h2>ผลลัพธ์จะบอกอะไร</h2>
                 <ul>
                     <li>ต่ำกว่าช่วงราคาที่พบ (เล็กน้อย พอสมควร หรือมาก)</li>
@@ -98,3 +95,5 @@ $preProduct = is_string($_GET['product'] ?? null) ? $_GET['product'] : ''; $preP
         </aside>
     </div>
 </section>
+
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-56: every tool page ends with a next step ?>

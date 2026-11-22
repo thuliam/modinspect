@@ -8,7 +8,7 @@ $token = htmlspecialchars(\App\Core\Csrf::token());
 ?>
 <?= mi_page_header($base, [htmlspecialchars(t('pr.crumb_members')), htmlspecialchars(t('mc.crumb'))], htmlspecialchars(t('mc.title')), htmlspecialchars(t('mc.desc')), '') ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning"><?= htmlspecialchars(t('common.not_ready_pre')) ?> <code>php cli/migrate.php database/migrations/031_member_identity_trust.sql</code> <?= htmlspecialchars(t('common.not_ready_post')) ?></div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('common.not_ready_pre')) ?> <code>php cli/migrate.php database/migrations/032_member_identity_trust.sql</code> <?= htmlspecialchars(t('common.not_ready_post')) ?></div>
 <?php else: ?>
     <div class="card mi-admin-card mb-3"><div class="card-header"><h2><?= htmlspecialchars(t('mc.grant_h')) ?></h2></div><div class="card-body">
         <form class="form-inline" method="post" action="<?= $base ?>/admin/member-capabilities/action">

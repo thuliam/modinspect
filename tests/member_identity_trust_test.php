@@ -17,7 +17,7 @@ use App\Services\Member\MemberPreferences;
 use App\Services\Member\PrivacyRequests;
 
 /**
- * Marketplace P1-A (migration 031) on the ISOLATED test database, rolled back: preferences (marketing is opt-in), versioned legal documents (a draft or
+ * Marketplace P1-A (migration 032) on the ISOLATED test database, rolled back: preferences (marketing is opt-in), versioned legal documents (a draft or
  * retired version cannot be accepted, publishing retires the old version, an empty body cannot be published), the privacy request queue (no duplicates, legal
  * state machine, a request outlives the member), capabilities (allowlist, revoke keeps history, a disabled member has none), the audit trail, and the three
  * /account POST actions (need a member and a CSRF token; one member cannot touch another's data). Synthetic data only.

@@ -9,7 +9,7 @@ $badge = ['draft' => 'badge-warning', 'published' => 'badge-success', 'retired' 
 ?>
 <?= mi_page_header($base, [htmlspecialchars(t('pr.crumb_members')), htmlspecialchars(t('ld.crumb'))], htmlspecialchars(t('ld.title')), htmlspecialchars(t('ld.desc')), '') ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning"><?= htmlspecialchars(t('common.not_ready_pre')) ?> <code>php cli/migrate.php database/migrations/031_member_identity_trust.sql</code> <?= htmlspecialchars(t('common.not_ready_post')) ?></div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('common.not_ready_pre')) ?> <code>php cli/migrate.php database/migrations/032_member_identity_trust.sql</code> <?= htmlspecialchars(t('common.not_ready_post')) ?></div>
 <?php else: ?>
     <?php if ($docView): ?>
         <div class="card mi-admin-card mb-3"><div class="card-header"><h2><?= htmlspecialchars((string) $docView['title']) ?> · <?= htmlspecialchars((string) $docView['version']) ?></h2></div>

@@ -14,7 +14,7 @@ jQuery(function ($) {
     if (!$('body').hasClass('is-home')) {
         var late = [];
         ['.mi-page-heading', '.mi-product-hero', '.mi-filter-card', '.mi-card-grid > *', '.mi-compact-list li', '.mi-product-summary-card',
-            '.mi-price-answer-card', '.mi-cmp-card', '.mi-radar-card', '.mi-table-card', '.mi-method-card', '.mi-history-card', '.mi-confidence-card', '.mi-deal-cta', '.mi-empty-state', 'main fieldset'
+            '.mi-price-answer-card', '.mi-cmp-card', '.mi-radar-card', '.mi-table-card', '.mi-method-card', '.mi-history-card', '.mi-confidence-card', '.mi-deal-cta', '.mi-empty-state', '.mi-deal-form', '.mi-result-panel', '.mi-deal-help > *', '.mi-ask', '.mi-up-card', '.mi-builder .card', 'main fieldset'
         ].forEach(function (sel) {
             $('main ' + sel).each(function (i) {
                 var el = this;

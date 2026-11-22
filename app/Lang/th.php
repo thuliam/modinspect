@@ -337,5 +337,7 @@ return [
     'st.calibrating' => 'กำลังปรับเทียบ',
     'st.live_sample_insufficient' => 'ตัวอย่างจริงยังไม่พอ',
     'st.fixture_baseline' => 'เกณฑ์พื้นฐานจากข้อมูลทดสอบ',
+    'misc.general' => 'ทั่วไป',
+    'misc.article_category_hint' => 'แสดงในแถบด้านข้างของบล็อก ต้องลง migration 030 ในฐานข้อมูลก่อน',
     'misc.articles_module_desc' => 'จัดการบทความและคู่มือการซื้อที่มีอยู่เดิม ขอบเขตของ CMS ไม่เปลี่ยนในการสร้างใหม่ครั้งนี้',
 ];

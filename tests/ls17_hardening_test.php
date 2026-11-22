@@ -62,5 +62,5 @@ ok_l17(str_contains($theme, 'body.mi table tbody th {') && !preg_match('/part-op
 ok_l17(!str_contains((string)file_get_contents($root . '/app/Views/components/range-answer.php'), '>ช่วงราคาที่พบ (Q1–Q3)<'), 'The visible price label says "ช่วงราคาที่พบบ่อย", Q1–Q3 only in the tooltip');
 $nf = (string)file_get_contents($root . '/app/Views/errors/404.php');
 ok_l17(str_contains($nf, 'action="<?= $base ?>/price"') && str_contains($nf, '/deal-checker'), 'The 404 page offers a search and a way on');
-ok_l17(count(\App\Services\Catalog\ConditionGuide::categories()) === 8 && str_contains((string)file_get_contents($root . '/app/Views/modules/condition-guide.php'), "'cooling' => ['icon' => 'fa-snowflake']"), 'The guide covers the eight /build categories, each with a picture or icon');
+ok_l17(count(\App\Services\Catalog\ConditionGuide::categories()) === 8 && str_contains((string)file_get_contents($root . '/app/Views/modules/condition-guide.php'), "'cooling' => ['icon' => 'fa-fan']"), 'The guide covers the eight /build categories, each with a picture or icon');
 echo "ls17_hardening_test (B): PASS\n";

@@ -954,3 +954,67 @@ body.mi .mi-side:hover, body.mi .mi-side:focus-within { scrollbar-color: var(--c
 
 /* LS-54: every scrolling box on the public site (Select2 lists, the builder parts card, the dock, tables) uses the brand scrollbar, not only the page and the filter sidebar. */
 body.mi *, body.mi .select2-results__options { scrollbar-width: thin; scrollbar-color: var(--ci-border-active) transparent; }
+
+/* LS-55: the blog reuses the /price sidebar for article categories: a vertical list with an icon, the name and a count; the active one is a filled lime row. */
+body.mi .mi-side-title { margin: 0 0 12px; color: var(--ci-text-2); font-size: 13px; }
+body.mi .mi-blog-cat { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--ci-r-pill); color: var(--ci-text); transition: background .2s, color .2s; }
+body.mi .mi-blog-cat i { width: 18px; text-align: center; color: var(--ci-text-2); }
+body.mi .mi-blog-cat span { flex: 1 1 auto; }
+body.mi .mi-blog-cat em { color: var(--ci-text-2); font-family: var(--mb-mono); font-size: 12px; font-style: normal; }
+body.mi .mi-blog-cat:hover { background: rgba(255, 255, 255, .06); text-decoration: none; color: var(--ci-text); }
+body.mi .mi-blog-cat.active { background: var(--ci-primary); color: var(--ci-on-primary); font-weight: 600; }
+body.mi .mi-blog-cat.active i, body.mi .mi-blog-cat.active em { color: var(--ci-on-primary); }
+body.mi .mi-blog-tag { display: inline-block; margin-right: 8px; padding: 2px 10px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-primary); font-size: 12px; }
+body.mi .mi-side-plain { overflow: visible; max-height: none; }
+
+/* LS-56: the Tools pages in the home language: the compare table as hairline rows (no admin card, no hover fill), the "differs" mark as a quiet amber pill like the other delta pills, the Deal Checker and reader panels as the same hairline surface as the /price filter, and the upgrade cards on the same surface. Buttons are the lime pill, fields the pill/ask bar. */
+body.mi .mi-table-card { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+body.mi .mi-table-card .table { background: transparent; color: var(--ci-text); }
+body.mi .mi-table-card .table th, body.mi .mi-table-card .table td { padding: 14px 12px; border-top: 1px solid var(--ci-border); border-bottom: 0; background: transparent; vertical-align: middle; }
+body.mi .mi-table-card .table thead th { border-top: 0; border-bottom: 1px solid var(--ci-border-active); color: var(--ci-text-2); font-weight: 500; }
+body.mi .mi-table-card .table tbody th[scope=row] { color: var(--ci-text-2); font-weight: 500; }
+body.mi .mi-table-card .table.table-hover tbody tr:hover { background: var(--ci-surface); color: var(--ci-text); }
+body.mi .mi-cmp-group th { background: transparent; border-top: 1px solid var(--ci-border-active); }
+body.mi .mi-delta-diff { color: #fbbf24; background: rgba(251, 191, 36, .1); border-color: rgba(251, 191, 36, .35); }
+body.mi .mi-deal-form, body.mi .mi-help-card, body.mi .mi-up-card, body.mi .mi-result-panel { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-lg); box-shadow: none; }
+body.mi .mi-deal-form .mi-ask-bar { height: 52px; box-shadow: none; }
+body.mi .mi-deal-form .mi-ask-bar:focus-within { height: 52px; box-shadow: 0 0 0 3px var(--ci-border-glow); }
+body.mi .mi-deal-form textarea.form-control { border-radius: var(--ci-r-lg); padding: 16px 20px; }
+body.mi .mi-deal-form .custom-checkbox { margin: 8px 0; }
+body.mi .mi-deal-form .mi-checks { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+body.mi .mi-up-card .mi-delta { margin-left: 0; }
+
+/* LS-57: a backdrop for the inner pages (the home sections already carry a dot texture and guide lines; the other pages were one flat black plane). Two fixed layers behind the content: ::before a dot texture and quiet vertical guide lines that fade out toward the bottom, ::after three soft glows (lime top right as on the hero, a cyan and a magenta from the RGB dock hues) that drift slowly in full-motion mode. Only transform is animated; calm mode and print show the still version. */
+body.mi:not(.is-home)::before, body.mi:not(.is-home)::after { content: ""; position: fixed; z-index: -1; pointer-events: none; }
+body.mi:not(.is-home)::before { inset: 0; background-image: radial-gradient(rgba(255, 255, 255, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px); background-size: 22px 22px, 25% 100%; -webkit-mask-image: linear-gradient(180deg, #000 0, #000 45%, rgba(0, 0, 0, .35) 100%); mask-image: linear-gradient(180deg, #000 0, #000 45%, rgba(0, 0, 0, .35) 100%); }
+body.mi:not(.is-home)::after { inset: -12%; background: radial-gradient(ellipse 42% 38% at 86% 8%, rgba(187, 242, 70, .17), transparent 70%), radial-gradient(ellipse 36% 34% at 6% 42%, rgba(34, 211, 238, .08), transparent 70%), radial-gradient(ellipse 40% 34% at 72% 96%, rgba(232, 121, 249, .08), transparent 70%); }
+html.motion-full body.mi:not(.is-home)::after { animation: miBackdrop 26s ease-in-out infinite alternate; will-change: transform; }
+@keyframes miBackdrop { from { transform: translate3d(-2%, -1%, 0) scale(1); } to { transform: translate3d(2%, 2%, 0) scale(1.06); } }
+@media print { body.mi:not(.is-home)::before, body.mi:not(.is-home)::after { display: none; } }
+
+/* LS-58: the condition guide category cards: the label bar has equal padding top and bottom and a fixed height so the arrow sits on its centre line; cards without a picture show their icon in a lime outlined tile (the CPU tile of the picture cards) instead of a bare glyph; icons match the menu and the dock. The closing-band buttons put a gap between icon and text. */
+body.mi .mi-cats .mi-cat strong { display: flex; align-items: center; min-height: 56px; padding: 0 64px 0 18px; }
+body.mi .mi-cats .mi-go { right: 10px; bottom: 8px; width: 40px; height: 40px; border: 1px solid var(--ci-border-active); background: rgba(187, 242, 70, .08); }
+body.mi .mi-cats .mi-cat-art > i { display: grid; place-items: center; width: 72px; height: 72px; border: 1px solid rgba(187, 242, 70, .45); border-radius: 18px; background: rgba(187, 242, 70, .08); font-size: 30px; transition: transform .35s cubic-bezier(.3, 1.4, .5, 1); }
+body.mi .mi-cats .mi-cat:hover .mi-cat-art > i { transform: scale(1.08); }
+body.mi .mi-cta-act .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* LS-59: product page: the dock holds the deal check too (its tile gets the lime ring), dock labels are white, the condition-guide link is a card, and the in-game FPS panel. */
+body.mi .mi-act-dock .mi-cat-item, body.mi button.mi-cat-item { color: var(--ci-text); }
+body.mi .mi-cat-item-main .mi-cat-ico { outline: 2px solid var(--ci-primary); outline-offset: 3px; }
+body.mi .mi-guide-card { display: flex; flex-direction: row; align-items: center; gap: 16px; padding: 18px 22px; color: var(--ci-text); text-decoration: none; transition: border-color .2s, background-color .2s, transform .25s cubic-bezier(.3, 1.4, .5, 1); }
+body.mi .mi-guide-card:hover, body.mi .mi-guide-card:focus-visible { border-color: var(--ci-primary); background: rgba(187, 242, 70, .06); color: var(--ci-text); text-decoration: none; transform: translateY(-2px); }
+body.mi .mi-guide-ico { display: grid; flex: 0 0 auto; place-items: center; width: 52px; height: 52px; border: 2px solid var(--ci-primary); border-radius: 14px; color: var(--ci-primary); font-size: 22px; }
+body.mi .mi-guide-txt { display: flex; flex: 1 1 auto; flex-direction: column; gap: 2px; min-width: 0; }
+body.mi .mi-guide-txt strong { font-size: 1.1rem; line-height: 1.3; }
+body.mi .mi-guide-txt small { color: var(--ci-text-2); font-size: .9rem; }
+body.mi .mi-guide-go { display: grid; flex: 0 0 auto; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ci-primary); color: var(--ci-on-primary); transition: transform .25s; }
+body.mi .mi-guide-card:hover .mi-guide-go { transform: translateX(4px); }
+body.mi .mi-fps-empty { color: var(--ci-text-2); }
+body.mi .mi-fps-games { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+body.mi .mi-fps-games li { padding: 6px 14px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-text-2); font-size: 14px; }
+body.mi .mi-fps-games i { margin-right: 4px; color: var(--ci-primary); }
+body.mi .mi-fps-list .mi-stat { grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr) 6.5rem; }
+body.mi .mi-fps-list .mi-stat-l small, body.mi .mi-fps-list .mi-stat-v small { display: block; color: var(--ci-text-2); font-size: 12px; font-weight: 400; }
+body.mi .mi-fps-list .mi-stat-v small:first-child { display: inline; margin-left: 2px; }
+@media (max-width: 575.98px) { body.mi .mi-fps-list .mi-stat { grid-template-columns: 7rem minmax(0, 1fr) 4.5rem; } }

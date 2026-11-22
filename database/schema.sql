@@ -374,7 +374,9 @@ CREATE TABLE articles (
   id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   author_id BIGINT UNSIGNED NULL,
   title VARCHAR(255) NOT NULL, slug VARCHAR(190) NOT NULL UNIQUE,
-  excerpt TEXT NULL, body LONGTEXT NOT NULL,
+  excerpt TEXT NULL,
+  category VARCHAR(20) NULL,
+  body LONGTEXT NOT NULL,
   status ENUM('draft','published','archived') NOT NULL DEFAULT 'draft',
   published_at DATETIME NULL, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -875,7 +877,7 @@ CREATE TABLE product_benchmark_scores (
   CONSTRAINT fk_bench_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Marketplace P1-A (migration 031)
+-- Marketplace P1-A (migration 032)
 
 CREATE TABLE member_preferences (
   member_id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
@@ -952,4 +954,25 @@ CREATE TABLE member_audit_events (
   INDEX idx_member_audit_member (member_id, created_at),
   INDEX idx_member_audit_action (action, created_at),
   CONSTRAINT fk_member_audit_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE game_fps_results (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  game_key VARCHAR(20) NOT NULL,
+  resolution VARCHAR(10) NOT NULL,
+  quality VARCHAR(30) NOT NULL,
+  avg_fps DECIMAL(6,1) NOT NULL,
+  low1_fps DECIMAL(6,1) NULL,
+  paired_part VARCHAR(120) NOT NULL,
+  source_name VARCHAR(80) NOT NULL,
+  source_url VARCHAR(500) NOT NULL,
+  license_note VARCHAR(80) NOT NULL,
+  sponsor_name VARCHAR(80) NULL,
+  tested_on DATE NULL,
+  retrieved_on DATE NOT NULL,
+  imported_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_game_fps (product_id, game_key, resolution, quality, paired_part),
+  INDEX idx_game_fps_product (product_id),
+  CONSTRAINT fk_game_fps_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;

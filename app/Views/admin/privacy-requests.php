@@ -9,7 +9,7 @@ $badge = ['received' => 'badge-warning', 'in_progress' => 'badge-info', 'complet
 ?>
 <?= mi_page_header($base, [htmlspecialchars(t('pr.crumb_members')), htmlspecialchars(t('pr.crumb'))], htmlspecialchars(t('pr.title')), htmlspecialchars(t('pr.desc')), '') ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning"><?= htmlspecialchars(t('common.not_ready_pre')) ?> <code>php cli/migrate.php database/migrations/031_member_identity_trust.sql</code> <?= htmlspecialchars(t('common.not_ready_post')) ?></div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('common.not_ready_pre')) ?> <code>php cli/migrate.php database/migrations/032_member_identity_trust.sql</code> <?= htmlspecialchars(t('common.not_ready_post')) ?></div>
 <?php else: ?>
     <div class="card mi-admin-card mb-3"><div class="card-body">
         <form class="form-inline" method="get" action="<?= $base ?>/admin/privacy-requests">

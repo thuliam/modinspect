@@ -8,7 +8,7 @@
     <p class="lead">เลือกหมวดสินค้าเพื่อดูสิ่งที่ควรดู ควรทดสอบ ควรถาม และควรระวัง</p>
     <?php // LS-16 U-3: the same category cards as the home page (picture for the four with one, an icon for the rest), so the guide looks like the rest of the site
     require_once ROOT_PATH . '/app/Views/components/hw-art.php';
-    $guideArt = ['cpu' => ['art' => 'cpu'], 'gpu' => ['art' => 'gpu'], 'ram' => ['art' => 'ram'], 'storage' => ['art' => 'ssd'], 'psu' => ['icon' => 'fa-bolt'], 'motherboard' => ['icon' => 'fa-server'], 'case' => ['icon' => 'fa-box'], 'cooling' => ['icon' => 'fa-snowflake']]; ?>
+    $guideArt = ['cpu' => ['art' => 'cpu'], 'gpu' => ['art' => 'gpu'], 'ram' => ['art' => 'ram'], 'storage' => ['art' => 'ssd'], 'psu' => ['icon' => 'fa-plug'], 'motherboard' => ['icon' => 'fa-project-diagram'], 'case' => ['icon' => 'fa-server'], 'cooling' => ['icon' => 'fa-fan']]; ?>
     <div class="row mi-cats">
         <?php foreach ($categories as $i => $c): $a = $guideArt[$c['slug']] ?? ['icon' => 'fa-clipboard-check']; ?>
             <div class="col-6 col-md-4 col-xl-3 mb-3">
@@ -48,8 +48,8 @@
                     <li><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars($c['slug']) ?>"><?= htmlspecialchars($c['name']) ?></a></li>
                 <?php endforeach; ?>
             </ul>
-            <a class="button" href="<?= $base ?>/deal-checker">เปิด Deal Checker</a>
-            <a class="button ghost mt-2" href="<?= $base ?>/price?category=<?= rawurlencode($guide['slug']) ?>">ดูราคา <?= htmlspecialchars($guide['name']) ?> มือสอง</a>
+            <a class="btn btn-lime btn-block" href="<?= $base ?>/deal-checker">เปิด Deal Checker</a>
+            <a class="btn btn-ghost btn-block mt-2" href="<?= $base ?>/price?category=<?= rawurlencode($guide['slug']) ?>">ดูราคา <?= htmlspecialchars($guide['name']) ?> มือสอง</a>
         </aside>
     </div>
     <p class="mi-trend-note"><?= htmlspecialchars($guide['note']) ?></p>

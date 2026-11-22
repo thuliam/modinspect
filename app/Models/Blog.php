@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Database;
+use App\Services\Blog\ArticleCategory;
 use PDO;
 
 /**
@@ -22,17 +23,35 @@ final class Blog
     }
 
     /** @return array{rows:list<array<string,mixed>>,total:int,pages:int,page:int} */
-    public function page(int $page, int $perPage = 9, string $q = ''): array
+    public function page(int $page, int $perPage = 9, string $q = '', ?string $cat = null): array
     {
         $page = max(1, $page); $perPage = max(1, min(30, $perPage));
         $where = self::LIVE; $params = [];
         $q = mb_substr(trim($q), 0, 80, 'UTF-8');
         if ($q !== '') { $where .= ' AND (title LIKE :q OR excerpt LIKE :q2 OR body LIKE :q3)'; $params = ['q' => "%$q%", 'q2' => "%$q%", 'q3' => "%$q%"]; }
+        $hasCat = ArticleCategory::columnExists($this->db);
+        if ($hasCat && $cat !== null) {
+            if ($cat === ArticleCategory::GENERAL) { $where .= ' AND category IS NULL'; } else { $where .= ' AND category = :cat'; $params['cat'] = $cat; }
+        }
         $c = $this->db->prepare("SELECT COUNT(*) FROM articles WHERE $where"); $c->execute($params); $total = (int)$c->fetchColumn();
         $pages = max(1, (int)ceil($total / $perPage)); $page = min($page, $pages);
-        $s = $this->db->prepare("SELECT id, title, slug, excerpt, LEFT(body, 700) body_head, CHAR_LENGTH(body) body_len, published_at, updated_at FROM articles WHERE $where ORDER BY published_at DESC, id DESC LIMIT $perPage OFFSET " . (($page - 1) * $perPage));
+        $s = $this->db->prepare("SELECT id, title, slug, excerpt, " . ($hasCat ? 'category, ' : '') . "LEFT(body, 700) body_head, CHAR_LENGTH(body) body_len, published_at, updated_at FROM articles WHERE $where ORDER BY published_at DESC, id DESC LIMIT $perPage OFFSET " . (($page - 1) * $perPage));
         $s->execute($params);
         return ['rows' => $s->fetchAll(PDO::FETCH_ASSOC), 'total' => $total, 'pages' => $pages, 'page' => $page];
+    }
+
+    /** @return array<string,int> live articles per category slug ("general" for none); empty when the database has no category column yet */
+    public function categoryCounts(string $q = ''): array
+    {
+        if (!ArticleCategory::columnExists($this->db)) { return []; }
+        $where = self::LIVE; $params = [];
+        $q = mb_substr(trim($q), 0, 80, 'UTF-8');
+        if ($q !== '') { $where .= ' AND (title LIKE :q OR excerpt LIKE :q2 OR body LIKE :q3)'; $params = ['q' => "%$q%", 'q2' => "%$q%", 'q3' => "%$q%"]; }
+        $s = $this->db->prepare("SELECT COALESCE(category, 'general') c, COUNT(*) n FROM articles WHERE $where GROUP BY c");
+        $s->execute($params);
+        $out = [];
+        foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) { $out[(string) $r['c']] = (int) $r['n']; }
+        return $out;
     }
 
     public function findBySlug(string $slug): ?array

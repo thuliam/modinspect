@@ -73,6 +73,13 @@ final class Product
             $stmt->execute(['id'=>$id]); return $stmt->fetchAll();
         } catch (\PDOException) { return []; }
     }
+    /** LS-59: published in-game frame rates of a CPU/GPU (migration 031); an older database without the table returns none */
+    public function gameFps(int $id): array {
+        try {
+            $stmt=$this->db->prepare("SELECT game_key, resolution, quality, avg_fps, low1_fps, paired_part, source_name, source_url, license_note, sponsor_name, tested_on FROM game_fps_results WHERE product_id=:id");
+            $stmt->execute(['id'=>$id]); return $stmt->fetchAll();
+        } catch (\PDOException) { return []; }
+    }
     /** Monthly trend buckets (>=3 approved samples per month), oldest first. Derived by cli/price_trend_build.php. low_price/high_price (migration 029) are the wicks of the candle chart; older databases fall back to the quartiles only. */
     public function trend(int $id): array {
         try {
