@@ -947,3 +947,7 @@ body.mi .mi-cat-head h2 { margin: 0; font-size: 22px; line-height: 1.2; }
 body.mi .mi-cat-head-ico { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--ci-primary); color: var(--ci-on-primary); font-size: 16px; }
 body.mi .mi-cat-head-n { margin-left: auto; color: var(--ci-text-2); font-family: var(--mb-mono); font-size: 13px; }
 body.mi .mi-price-layout .mi-result-summary { flex-wrap: wrap; gap: 4px 16px; margin-bottom: 20px; }
+
+/* LS-53: scrollbars in the brand: a thin track in the surface colour and a thumb that turns lime on hover, for the page and for the filter sidebar. */
+html, body.mi .mi-side, body.mi .mi-cat-dock { scrollbar-width: thin; scrollbar-color: var(--ci-border-active) transparent; }
+body.mi .mi-side:hover, body.mi .mi-side:focus-within { scrollbar-color: var(--ci-primary) transparent; }
