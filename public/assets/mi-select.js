@@ -9,7 +9,7 @@ jQuery(function ($) {
         var $modal = $s.closest('.modal');
         var tags = $s.is('[data-combo]');   // suggestions plus any typed text (search boxes, free values); the typed text is submitted as the value
         return $.extend({
-            language: 'th',
+            language: document.documentElement.lang === 'en' ? 'en' : 'th',   // Select2 ships English built in; Thai comes from th.js
             width: $s.data('width') || '100%',
             minimumResultsForSearch: (tags || $s.find('option').length > 8) ? 0 : Infinity,
             tags: tags,

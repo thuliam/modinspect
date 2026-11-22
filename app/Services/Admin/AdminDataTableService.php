@@ -327,32 +327,36 @@ final class AdminDataTableService
             LEFT JOIN market_evidence e ON e.raw_observation_id=r.id";
     }
 
+    /** a text of the tables in the chosen language (app/Lang, keys tbl.*) */
+    private function x(string $key, array $params = []): string { return \App\Core\Lang::t($key, $params); }
+
     private function productRow(array $row, string $base): array
     {
-        $market = ((int)$row['approved_count'] > 0) ? 'Approved observations' : (((int)$row['pending_count'] > 0) ? 'Pending review' : 'No accepted market data');
-        $status = (int)$row['is_active'] === 1 ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-secondary">Inactive</span>';
-        $toggle = (int)$row['is_active'] === 1 ? 'Deactivate' : 'Activate';
+        $market = ((int)$row['approved_count'] > 0) ? $this->x('tbl.approved_obs') : (((int)$row['pending_count'] > 0) ? $this->x('tbl.pending_review') : $this->x('tbl.no_market'));
+        $status = (int)$row['is_active'] === 1 ? '<span class="badge badge-success">' . $this->x('tbl.active') . '</span>' : '<span class="badge badge-secondary">' . $this->x('tbl.inactive') . '</span>';
+        $toggle = (int)$row['is_active'] === 1 ? $this->x('tbl.deactivate') : $this->x('tbl.activate');
+        $toggleConfirm = (int)$row['is_active'] === 1 ? $this->x('tbl.deactivate_confirm') : $this->x('tbl.activate_confirm');
         return [
             $this->rowTitle($row['full_name'], $row['slug']),
             $this->h($row['brand']),
             $this->h($row['category']),
             $this->h($this->short($row['spec_summary'] ?: $row['generation'] ?: $row['model_name'] ?: '-', 90)),
-            '<span class="mi-row-title">' . $this->h($market) . '</span><span class="mi-row-subtitle">Pending ' . (int)$row['pending_count'] . ' / Approved ' . (int)$row['approved_count'] . '</span>',
+            '<span class="mi-row-title">' . $this->h($market) . '</span><span class="mi-row-subtitle">' . $this->h($this->x('tbl.pending_n', ['n' => (int)$row['pending_count'], 'm' => (int)$row['approved_count']])) . '</span>',
             $status,
-            '<button class="btn btn-sm btn-outline-primary js-product-edit" type="button" data-product=\'' . $this->h($this->json($row)) . '\'>Edit</button> <form method="post" action="' . $base . '/admin/products/toggle" class="d-inline js-confirm-form" data-confirm="' . $toggle . ' this product?"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="product_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-secondary">' . $toggle . '</button></form>',
+            '<button class="btn btn-sm btn-outline-primary js-product-edit" type="button" data-product=\'' . $this->h($this->json($row)) . '\'>' . $this->x('tbl.edit') . '</button> <form method="post" action="' . $base . '/admin/products/toggle" class="d-inline js-confirm-form" data-confirm="' . $this->h($toggleConfirm) . '"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="product_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-secondary">' . $toggle . '</button></form>',
         ];
     }
 
     private function aliasRow(array $row, string $base): array
     {
         return [
-            $this->rowTitle($row['alias_text'], 'Alias #' . (int)$row['id']),
+            $this->rowTitle($row['alias_text'], $this->x('tbl.alias_n', ['n' => (int)$row['id']])),
             $this->h($row['full_name']) . ($row['variant_name'] ? '<small>' . $this->h($row['variant_name']) . '</small>' : ''),
             '<code>' . $this->h($row['normalized_alias']) . '</code>',
             number_format((float)$row['confidence'], 0) . '%',
-            $this->h($row['source_note'] ?: 'Manual'),
-            '<span class="badge badge-success">Active</span>',
-            '<button class="btn btn-sm btn-outline-primary js-alias-edit" type="button" data-alias=\'' . $this->h($this->json($row)) . '\'>Edit</button> <form method="post" action="' . $base . '/admin/product-aliases/delete" class="d-inline js-confirm-form" data-confirm="Delete this alias?"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="alias_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-danger">Delete</button></form>',
+            $this->h($row['source_note'] ?: $this->x('tbl.manual')),
+            '<span class="badge badge-success">' . $this->x('tbl.active') . '</span>',
+            '<button class="btn btn-sm btn-outline-primary js-alias-edit" type="button" data-alias=\'' . $this->h($this->json($row)) . '\'>' . $this->x('tbl.edit') . '</button> <form method="post" action="' . $base . '/admin/product-aliases/delete" class="d-inline js-confirm-form" data-confirm="' . $this->h($this->x('tbl.delete_alias_confirm')) . '"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="alias_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-danger">' . $this->x('tbl.delete') . '</button></form>',
         ];
     }
 
@@ -360,16 +364,16 @@ final class AdminDataTableService
     {
         $quality = $this->provenance->classify($row);
         return [
-            '#' . (int)$row['id'] . '<small>Raw #' . (int)($row['raw_observation_id'] ?? 0) . '</small>',
+            '#' . (int)$row['id'] . '<small>' . $this->h($this->x('tbl.raw_n', ['n' => (int)($row['raw_observation_id'] ?? 0)])) . '</small>',
             $this->rowTitle($row['full_name'], $this->short($row['raw_title'] ?? '-', 90)),
             '<span class="mi-dataset-' . strtolower((string)$row['dataset_label']) . '">' . $this->h($row['dataset_label']) . '</span>',
-            '<span class="badge badge-light">' . $this->h($quality['quality']) . '</span>',
-            $this->h($row['price_type'] ?? 'asking'),
+            '<span class="badge badge-light">' . $this->h(\App\Core\Lang::status((string)$quality['quality'])) . '</span>',
+            $this->h(\App\Core\Lang::status((string)($row['price_type'] ?? 'asking'))),
             '<strong>&#3647;' . number_format((float)$row['display_price']) . '</strong>',
             $this->h($row['source_name'] ?? '-') . '<small>' . $this->h($row['source_key'] ?? '') . '</small>',
-            '<span class="mi-status-badge mi-status-' . $this->h($row['verified_status']) . '">' . $this->h($row['verified_status']) . '</span>',
+            '<span class="mi-status-badge mi-status-' . $this->h($row['verified_status']) . '">' . $this->h(\App\Core\Lang::status((string)$row['verified_status'])) . '</span>',
             $this->h($row['observed_at'] ?? '-'),
-            '<a class="btn btn-sm btn-primary" href="' . $base . '/admin/review/' . (int)$row['id'] . '">Detail</a>',
+            '<a class="btn btn-sm btn-primary" href="' . $base . '/admin/review/' . (int)$row['id'] . '">' . $this->x('tbl.detail') . '</a>',
         ];
     }
 
@@ -377,14 +381,14 @@ final class AdminDataTableService
     {
         $lane = strtolower((string)($row['lane'] ?? 'unknown'));
         $quality = (string)($row['provenance_quality']['quality'] ?? 'GENERIC_SOURCE');
-        $priceType = (string)($row['price_type'] ?? 'asking') === 'sold' ? 'Sold / Final Price' : 'Listing / Asking Price';
+        $priceType = (string)($row['price_type'] ?? 'asking') === 'sold' ? $this->x('v.sold_final_price') : $this->x('v.listing_asking_price');
         $detail = $base . '/admin/review/' . (int)$row['id'] . '?return_to=' . rawurlencode($returnPath);
         return '<article class="review-queue-item mi-dt-review-card">'
-            . '<div class="review-id-block"><span class="review-id">#' . (int)$row['id'] . '</span><span class="dataset-badge dataset-' . strtolower((string)$row['dataset_label']) . '">' . $this->h($row['dataset_label']) . '</span><small>' . $this->h($row['verified_status']) . '</small><small>' . $this->h($row['review_purpose'] ?? '') . '</small></div>'
-            . '<div class="review-main-block"><h2>' . $this->h($row['full_name']) . '</h2><p>' . $this->h($this->short($row['display_title'] ?? $row['raw_title'] ?? '-', 130)) . '</p><small>Source: ' . $this->h($row['source_name'] ?? 'unknown source') . '</small></div>'
+            . '<div class="review-id-block"><span class="review-id">#' . (int)$row['id'] . '</span><span class="dataset-badge dataset-' . strtolower((string)$row['dataset_label']) . '">' . $this->h($row['dataset_label']) . '</span><small>' . $this->h(\App\Core\Lang::status((string)$row['verified_status'])) . '</small><small>' . $this->h($row['review_purpose'] ?? '') . '</small></div>'
+            . '<div class="review-main-block"><h2>' . $this->h($row['full_name']) . '</h2><p>' . $this->h($this->short($row['display_title'] ?? $row['raw_title'] ?? '-', 130)) . '</p><small>' . $this->h($this->x('tbl.source_label')) . $this->h($row['source_name'] ?? $this->x('v.unknown_source')) . '</small></div>'
             . '<div class="review-price-block"><b>&#3647;' . number_format((float)$row['display_price']) . '</b><small>' . $this->h($priceType) . '</small></div>'
-            . '<div class="review-lane-block"><span class="lane-badge lane-' . $this->h($lane) . '">' . $this->h(strtoupper($lane)) . '</span><small>' . $this->h(str_replace('_', ' ', $quality)) . '</small><small>' . $this->h($row['observed_at'] ?? '-') . '</small></div>'
-            . '<a class="btn btn-primary review-open" href="' . $this->h($detail) . '"><i class="fas fa-search mr-2"></i>Review</a>'
+            . '<div class="review-lane-block"><span class="lane-badge lane-' . $this->h($lane) . '">' . $this->h(strtoupper($lane)) . '</span><small>' . $this->h(\App\Core\Lang::status($quality)) . '</small><small>' . $this->h($row['observed_at'] ?? '-') . '</small></div>'
+            . '<a class="btn btn-primary review-open" href="' . $this->h($detail) . '"><i class="fas fa-search mr-2"></i>' . $this->x('tbl.review') . '</a>'
             . '</article>';
     }
 
@@ -394,34 +398,34 @@ final class AdminDataTableService
         return [
             $this->rowTitle($row['full_name'], ($row['category'] ?? '-') . ' / ' . ($row['brand'] ?? '-')),
             $this->h($row['price_type'] ?? '-'),
-            $hasSnapshot ? '&#3647;' . number_format((float)$row['q1']) . ' to &#3647;' . number_format((float)$row['q3']) : 'Insufficient reviewed data',
+            $hasSnapshot ? '&#3647;' . number_format((float)$row['q1']) . $this->h($this->x('tbl.to')) . '&#3647;' . number_format((float)$row['q3']) : $this->x('tbl.insufficient'),
             $hasSnapshot ? '<strong>&#3647;' . number_format((float)$row['median']) . '</strong>' : '-',
             (int)($row['valid_sample_size'] ?? 0),
-            '<span class="badge badge-light">' . $this->h(strtoupper((string)($row['confidence_label'] ?? 'insufficient'))) . '</span><small>Score ' . number_format((float)($row['confidence_score'] ?? 0), 2) . '</small>',
+            '<span class="badge badge-light">' . $this->h(mb_strtoupper(\App\Core\Lang::status((string)($row['confidence_label'] ?? 'insufficient')))) . '</span><small>' . $this->h($this->x('tbl.score', ['n' => number_format((float)($row['confidence_score'] ?? 0), 2)])) . '</small>',
             // fresh_sample_ratio is already a percentage (0-100, see SnapshotConfidenceService); do not multiply again.
             number_format((float)($row['fresh_sample_ratio'] ?? 0), 1) . '%',
-            '<span class="badge badge-light">' . $this->h($row['provenance_status'] ?? 'legacy_unavailable') . '</span>',
+            '<span class="badge badge-light">' . $this->h(\App\Core\Lang::status((string)($row['provenance_status'] ?? 'legacy_unavailable'))) . '</span>',
             $this->h($row['last_calculated_at'] ?? '-'),
-            '<a class="btn btn-sm btn-outline-primary" href="' . $base . '/price/' . $this->h($row['slug'] ?? '') . '" target="_blank" rel="noopener">Public</a>'
-                . ($hasSnapshot && !empty($row['snapshot_id']) ? ' <a class="btn btn-sm btn-outline-secondary" href="' . $base . '/admin/snapshots/' . (int)$row['snapshot_id'] . '">Evidence</a>' : ''),
+            '<a class="btn btn-sm btn-outline-primary" href="' . $base . '/price/' . $this->h($row['slug'] ?? '') . '" target="_blank" rel="noopener">' . $this->x('tbl.public') . '</a>'
+                . ($hasSnapshot && !empty($row['snapshot_id']) ? ' <a class="btn btn-sm btn-outline-secondary" href="' . $base . '/admin/snapshots/' . (int)$row['snapshot_id'] . '">' . $this->x('tbl.evidence') . '</a>' : ''),
         ];
     }
 
     private function sourceRow(array $row, string $base, bool $canControl): array
     {
         $enabled = (int)$row['is_active'] === 1 && (int)$row['is_paused'] === 0;
-        $controls = '<button class="btn btn-sm btn-outline-secondary disabled-control" type="button" disabled>Controls unavailable</button>';
+        $controls = '<button class="btn btn-sm btn-outline-secondary disabled-control" type="button" disabled>' . $this->x('tbl.controls_unavailable') . '</button>';
         if ($canControl) {
-            $primary = (int)$row['is_active'] === 0 ? '<button class="btn btn-sm btn-success" name="action" value="enable">Enable</button>' : ((int)$row['is_paused'] === 1 ? '<button class="btn btn-sm btn-primary" name="action" value="resume">Resume</button>' : '<button class="btn btn-sm btn-outline-secondary" name="action" value="pause">Pause</button>');
-            $controls = '<form method="post" action="' . $base . '/admin/sources/action" class="source-actions"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="source_id" value="' . (int)$row['id'] . '"><input name="reason" maxlength="255" placeholder="Reason / incident note" value="Admin UI action">' . $primary . ' <button class="btn btn-sm btn-danger" name="action" value="disable">Disable</button> <button class="btn btn-sm btn-outline-secondary" name="action" value="incident">Incident</button></form>';
+            $primary = (int)$row['is_active'] === 0 ? '<button class="btn btn-sm btn-success" name="action" value="enable">' . $this->x('tbl.enable') . '</button>' : ((int)$row['is_paused'] === 1 ? '<button class="btn btn-sm btn-primary" name="action" value="resume">' . $this->x('tbl.resume') . '</button>' : '<button class="btn btn-sm btn-outline-secondary" name="action" value="pause">' . $this->x('tbl.pause') . '</button>');
+            $controls = '<form method="post" action="' . $base . '/admin/sources/action" class="source-actions"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="source_id" value="' . (int)$row['id'] . '"><input name="reason" maxlength="255" placeholder="' . $this->h($this->x('tbl.reason_ph')) . '" value="Admin UI action">' . $primary . ' <button class="btn btn-sm btn-danger" name="action" value="disable">' . $this->x('tbl.disable') . '</button> <button class="btn btn-sm btn-outline-secondary" name="action" value="incident">' . $this->x('tbl.incident') . '</button></form>';
         }
         return [
-            $this->rowTitle($row['name'], $row['domain'] ?: 'User supplied data'),
+            $this->rowTitle($row['name'], $row['domain'] ?: $this->x('tbl.user_supplied')),
             $this->h($row['source_key']),
-            '<span class="badge ' . ($enabled ? 'badge-success' : 'badge-secondary') . '">' . ($enabled ? 'Enabled' : 'Paused/Disabled') . '</span>',
+            '<span class="badge ' . ($enabled ? 'badge-success' : 'badge-secondary') . '">' . ($enabled ? $this->x('tbl.enabled') : $this->x('tbl.paused_disabled')) . '</span>',
             $this->h($row['allowed_collection_method'] ?? $row['access_method'] ?? '-'),
-            '<span class="badge badge-light">' . $this->h($row['health_status']) . '</span>',
-            '<small>Success ' . $this->h($row['last_success'] ?? 'Never') . '</small><small>Failure ' . $this->h($row['last_failure'] ?? 'Never') . '</small>',
+            '<span class="badge badge-light">' . $this->h(\App\Core\Lang::status((string)$row['health_status'])) . '</span>',
+            '<small>' . $this->h($this->x('tbl.success_at', ['t' => (string)($row['last_success'] ?? $this->x('tbl.never'))])) . '</small><small>' . $this->h($this->x('tbl.failure_at', ['t' => (string)($row['last_failure'] ?? $this->x('tbl.never'))])) . '</small>',
             (int)$row['unresolved_incidents'],
             $controls,
         ];
@@ -429,16 +433,16 @@ final class AdminDataTableService
 
     private function jobRow(array $row, string $base, bool $canRequeue): array
     {
-        $action = '<button class="btn btn-sm btn-outline-secondary disabled-control" type="button" disabled>Unavailable</button>';
+        $action = '<button class="btn btn-sm btn-outline-secondary disabled-control" type="button" disabled>' . $this->x('tbl.unavailable') . '</button>';
         if (($row['status'] ?? '') === 'failed' && $canRequeue) {
-            $action = '<form method="post" action="' . $base . '/admin/collector-jobs/requeue"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="job_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-primary">Requeue</button></form>';
+            $action = '<form method="post" action="' . $base . '/admin/collector-jobs/requeue"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="job_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-primary">' . $this->x('tbl.requeue') . '</button></form>';
         }
         return [
             '#' . (int)$row['id'] . '<small>' . $this->h($row['job_type']) . '</small><small>' . $this->h($row['run_id'] ?? '') . '</small>',
             $this->h($row['full_name'] ?? $row['query_text'] ?? '-'),
             $this->h($row['source_name']) . '<small>' . $this->h($row['source_key'] ?? '-') . '</small>',
-            (int)$row['raw_count'] . '<small>Valid ' . (int)$row['valid_count'] . '</small>',
-            '<span class="badge badge-light">' . $this->h($row['status']) . '</span>',
+            (int)$row['raw_count'] . '<small>' . $this->h($this->x('tbl.valid_n', ['n' => (int)$row['valid_count']])) . '</small>',
+            '<span class="badge badge-light">' . $this->h(\App\Core\Lang::status((string)$row['status'])) . '</span>',
             (int)$row['attempt_count'],
             $this->h($row['created_at'] ?? '-'),
             $this->h($row['completed_at'] ?? '-'),
@@ -451,24 +455,24 @@ final class AdminDataTableService
         return [
             $this->rowTitle($row['title'], $row['excerpt'] ?: $row['slug']),
             '<code>' . $this->h($row['slug']) . '</code>',
-            '<span class="badge badge-light">' . $this->h($row['status']) . '</span>',
+            '<span class="badge badge-light">' . $this->h(\App\Core\Lang::status((string)$row['status'])) . '</span>',
             $this->h($row['author_name'] ?? '-'),
             $this->h($row['published_at'] ?? '-'),
             $this->h($row['updated_at'] ?? '-'),
-            '<button class="btn btn-sm btn-outline-primary js-article-edit" type="button" data-article=\'' . $this->h($this->json($row)) . '\'>Edit</button> <form method="post" action="' . $base . '/admin/articles/archive" class="d-inline js-confirm-form" data-confirm="Archive this article?"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="article_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-secondary">Archive</button></form>',
+            '<button class="btn btn-sm btn-outline-primary js-article-edit" type="button" data-article=\'' . $this->h($this->json($row)) . '\'>' . $this->x('tbl.edit') . '</button> <form method="post" action="' . $base . '/admin/articles/archive" class="d-inline js-confirm-form" data-confirm="' . $this->h($this->x('tbl.archive_confirm')) . '"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="article_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-secondary">' . $this->x('tbl.archive') . '</button></form>',
         ];
     }
 
     private function auditRow(array $row): array
     {
-        $summary = $this->short($row['after_data'] ?? $row['before_data'] ?? 'No payload', 130);
+        $summary = $this->short($row['after_data'] ?? $row['before_data'] ?? $this->x('tbl.no_payload'), 130);
         return [
             $this->h($row['created_at'] ?? '-'),
-            $this->h($row['actor_name'] ?? ('User #' . ($row['user_id'] ?? '-'))) . '<small>' . $this->h($row['actor_email'] ?? '') . '</small>',
+            $this->h($row['actor_name'] ?? ($this->x('tbl.user_n', ['n' => (string)($row['user_id'] ?? '-')]))) . '<small>' . $this->h($row['actor_email'] ?? '') . '</small>',
             '<span class="badge badge-light">' . $this->h($row['action']) . '</span>',
             $this->h($row['entity_type'] ?? '-') . ' #' . $this->h($row['entity_id'] ?? '-'),
             $this->h($summary),
-            '<details class="audit-details"><summary>Open</summary><pre>' . $this->h($this->json(['before' => $row['before_data'] ?? null, 'after' => $row['after_data'] ?? null])) . '</pre></details>',
+            '<details class="audit-details"><summary>' . $this->x('tbl.open') . '</summary><pre>' . $this->h($this->json(['before' => $row['before_data'] ?? null, 'after' => $row['after_data'] ?? null])) . '</pre></details>',
         ];
     }
 

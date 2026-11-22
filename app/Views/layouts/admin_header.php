@@ -65,9 +65,11 @@ $groups = [
 if (!function_exists('mi_page_header')) {
     /** DropX-style page header: breadcrumb (home icon + chevrons), title, description, right-aligned actions. */
     function mi_page_header(string $base, array $crumbs, string $title, string $description = '', string $actions = ''): string {
-        $html = '<div class="dx-page-head"><nav aria-label="Breadcrumb" class="dx-crumbs d-flex align-items-center text-muted"><a href="' . $base . '/admin" aria-label="Home"><i class="fas fa-home"></i></a>';
+        $html = '<div class="dx-page-head"><nav aria-label="' . htmlspecialchars(t('header.breadcrumb')) . '" class="dx-crumbs d-flex align-items-center text-muted"><a href="' . $base . '/admin" aria-label="' . htmlspecialchars(t('header.home')) . '"><i class="fas fa-home"></i></a>';
         $last = count($crumbs) - 1;
         foreach ($crumbs as $i => $c) {
+            $translated = \App\Core\Lang::label((string) $c);   // English names in the code become the chosen language; anything else was escaped by the caller
+            if ($translated !== null) { $c = htmlspecialchars($translated); }
             $html .= '<i class="fas fa-chevron-right mx-2" aria-hidden="true"></i>' . ($i === $last ? '<span aria-current="page" class="font-weight-bold dx-crumb-current">' . $c . '</span>' : '<span>' . $c . '</span>');
         }
         $html .= '</nav><div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between mt-2"><div><h1 class="dx-title">' . $title . '</h1>';
@@ -92,7 +94,7 @@ $langBack = $requestPath . ($backQuery !== '' ? '?' . $backQuery : '');
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
 <meta name="description" content="ModInspect Admin operations console">
-<title><?= htmlspecialchars($title ?? 'Admin') ?> - <?= htmlspecialchars($config['name']) ?> Admin</title>
+<title><?= htmlspecialchars(\App\Core\Lang::label((string) ($title ?? 'Admin')) ?? ($title ?? 'Admin')) ?> -<?= htmlspecialchars($config['name']) ?> Admin</title>
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/fontawesome/css/fontawesome-all.css?v=<?= (int) @filemtime(ROOT_PATH . '/public/assets/admin/vendor/fontawesome/css/fontawesome-all.css') ?>">
 <link rel="stylesheet" href="<?= $base ?>/assets/admin/vendor/datatables/css/dataTables.bootstrap4.min.css">
@@ -115,7 +117,7 @@ $langBack = $requestPath . ($backQuery !== '' ? '?' . $backQuery : '');
             <a class="dx-logo d-flex align-items-center" href="<?= $base ?>/admin" aria-label="<?= htmlspecialchars(t('header.logo_aria')) ?>"><span class="dx-mark"><i class="fas fa-search"></i></span><span class="dx-wordmark">ModInspect</span></a>
             <button type="button" class="dx-close d-lg-none" aria-label="<?= htmlspecialchars(t('header.close_sidebar')) ?>"><i class="fas fa-times"></i></button>
         </div>
-        <nav class="dx-nav flex-grow-1" aria-label="Main navigation">
+        <nav class="dx-nav flex-grow-1" aria-label="<?= htmlspecialchars(t('header.main_nav')) ?>">
             <?php foreach($groups as $group => $links): ?>
                 <?php $visibleLinks=array_values(array_filter($links, fn($link) => $authz->can($authUser, $link['permission']))); ?>
                 <?php if(!$visibleLinks) continue; ?>

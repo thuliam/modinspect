@@ -7,6 +7,7 @@ if (!defined('MODINSPECT_TESTING')) {
 
 if (!defined('ROOT_PATH')) {
     require __DIR__ . '/bootstrap.php';
+$_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admin pages (the default language is Thai)
 }
 
 use App\Controllers\AdminController;

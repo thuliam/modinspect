@@ -98,4 +98,29 @@ foreach (['active', 'disabled'] as $s) { ok_lg(isset($th["member.status.$s"]), "
 $login = (string)file_get_contents($root . '/app/Views/auth/login.php');
 ok_lg(str_contains($login, 'action="<?= $base ?>/lang"') && str_contains($login, "t('login.sign_in')"), 'The login page has the language switch and translated text');
 ok_lg(str_contains($header, 'action="<?= $base ?>/lang"') && str_contains($header, '<html lang="<?= $lang ?>">'), 'The admin header has the switch and a dynamic lang attribute');
+// fixed controller messages: both texts present, no text repeated, lookup works from either language
+$pairs = Lang::messagePairs(); $seen = [];
+ok_lg(count($pairs) > 50, 'The message pairs loaded (' . count($pairs) . ')');
+foreach ($pairs as $p) {
+    ok_lg(isset($p['en'], $p['th']) && trim($p['en']) !== '' && trim($p['th']) !== '', 'Every message pair has both texts: ' . ($p['en'] ?? '?'));
+    ok_lg(preg_match('/\p{Thai}/u', $p['th']) === 1, 'The Thai side of a message is Thai: ' . $p['en']);
+    foreach (['en', 'th'] as $l) { ok_lg(!isset($seen[$p[$l]]) || $seen[$p[$l]] === $p['en'], 'A message text belongs to one pair only: ' . $p[$l]); $seen[$p[$l]] = $p['en']; }
+}
+$_SESSION = []; $_COOKIE = [];
+ok_lg(Lang::message('User created.') === 'สร้างผู้ใช้แล้ว' && Lang::message('สร้างผู้ใช้แล้ว') === 'สร้างผู้ใช้แล้ว', 'A fixed message is shown in Thai by default, whichever language the code wrote it in');
+Lang::set('en');
+ok_lg(Lang::message('สร้างผู้ใช้แล้ว') === 'User created.' && Lang::message('User created.') === 'User created.', 'and in English after the switch');
+ok_lg(Lang::message('A text that is not in the list') === 'A text that is not in the list', 'An unknown message is returned unchanged');
+$_SESSION = [];
+// the texts the page scripts use
+$footer = (string)file_get_contents($root . '/app/Views/layouts/admin_footer.php');
+preg_match_all("/t\('((?:js|dt)\.[a-z_]+)'\)/", $footer, $jsKeys);
+ok_lg(count($jsKeys[1]) >= 20, 'The footer hands the script texts to the page (' . count($jsKeys[1]) . ')');
+// page titles and crumbs written in English in the code have a text in both languages
+$ctrl = (string)file_get_contents($root . '/app/Controllers/AdminController.php');
+preg_match_all("/render\('[a-z-]+','([^']+)'/", $ctrl, $titles);
+foreach (array_unique($titles[1]) as $ti) {
+    if (str_contains($ti, '#') || preg_match('/[\x{0E01}-\x{0E4E}]/u', $ti)) { continue; }
+    ok_lg(Lang::label($ti) !== null, "The page title \"$ti\" has a text (a nav., navg. or crumb. key)");
+}
 echo "lang_test: PASS (" . count($th) . " keys, " . count($used) . " used)\n";

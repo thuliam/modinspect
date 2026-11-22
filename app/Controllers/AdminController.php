@@ -16,7 +16,8 @@ use PDO;
 
 final class AdminController extends Controller {
     private ?array $user = null;
-    private function render(string $view,string $title,array $data=[]): void { $this->view('admin/'.$view,['title'=>$title,'auth_user'=>$this->user()]+$data); }
+    /** the page title is written in English in the code; Lang::label shows it in the chosen language when a text exists */
+    private function render(string $view,string $title,array $data=[]): void { $this->view('admin/'.$view,['title'=>\App\Core\Lang::label($title) ?? $title,'auth_user'=>$this->user()]+$data); }
     /** LS-14 J-0: the server already refuses the write (403); this only stops the page from offering a button that would fail */
     private function canManage(): bool { return (new AuthorizationService())->can($this->user(), 'products.manage'); }
     /** drops the action cell (last column) of every row for a read-only role; the column stays so the table keeps its shape */
@@ -112,7 +113,7 @@ final class AdminController extends Controller {
         } elseif(($_POST['action']??'')==='alias') {
             $r=$svc->addAlias($rawId,(int)(filter_input(INPUT_POST,'product_id',FILTER_VALIDATE_INT) ?: 0),trim((string)($_POST['alias_text']??'')),$actor,$note);
             $err=(string)($r['error']??'');
-            $this->flash($r['ok']?'success':'danger',$r['ok']?'Alias added. It applies to future imports; no price was changed.':(str_starts_with($err,'ALIAS_WOULD_CHANGE_OTHER_LISTINGS')?'This alias would change how '.substr($err,strrpos($err,':')+1).' other known listing(s) resolve, so it was not saved.':($messages[$err]??'Could not save the alias.')));
+            $this->flash($r['ok']?'success':'danger',$r['ok']?'Alias added. It applies to future imports; no price was changed.':(str_starts_with($err,'ALIAS_WOULD_CHANGE_OTHER_LISTINGS')?t('msg.alias_would_change',['n'=>substr($err,strrpos($err,':')+1)]):($messages[$err]??'Could not save the alias.')));
         } else { $this->flash('danger','Unknown action.'); }
         $this->redirect('/admin/unresolved-listings');
     }
@@ -203,7 +204,7 @@ final class AdminController extends Controller {
         global $config; $f=new \App\Services\Community\Forum(Database::connection($config['db']));
         $type=(string)($_POST['type']??''); $id=(int)($_POST['id']??0); $action=(string)($_POST['action']??'');
         $r=$f->moderate((int)$this->user()['id'],$type,$id,$action);
-        $this->flash($r['ok']?'success':'danger',$r['ok']?'Done.':'Could not apply: '.($r['error']??'error'));
+        $this->flash($r['ok']?'success':'danger',$r['ok']?'Done.':t('msg.could_not_apply',['e'=>($r['error']??'error')]));
         $this->redirect('/admin/community-moderation');
     }
     public function communityReports(): void {
@@ -526,7 +527,7 @@ final class AdminController extends Controller {
                 $db->commit();
             }catch(\Throwable $e){ if($db->inTransaction()) $db->rollBack(); $this->flash('danger','Alias import failed; nothing was saved.'); $this->redirect('/admin/product-aliases'); }
             $this->audit('product_aliases_imported','product_alias',null,['added'=>$added,'skipped'=>array_sum($plan['counts'])-$added]);
-            $this->flash('success',"Imported {$added} aliases.");
+            $this->flash('success',t('msg.imported_aliases',['n'=>$added]));
             $this->redirect('/admin/product-aliases');
         }
         $d=new Dashboard();
@@ -638,7 +639,7 @@ final class AdminController extends Controller {
             $file=$this->storedUploadPath($_FILES['evidence_file'] ?? null);
             if($file==='' && (int)($_FILES['evidence_file']['size'] ?? 0) > OfflineEvidenceImportService::MAX_FILE_BYTES){
                 unset($_SESSION['admin_import_pending']);
-                $this->flash('danger','The file is larger than '.(OfflineEvidenceImportService::MAX_FILE_BYTES/1048576).' MB. Split it into smaller files.');
+                $this->flash('danger',t('msg.file_too_large',['mb'=>(OfflineEvidenceImportService::MAX_FILE_BYTES/1048576)]));
                 $this->redirect('/admin/collector-jobs');
             }
             if($file===''){
@@ -666,7 +667,7 @@ final class AdminController extends Controller {
         } else {
             unset($_SESSION['admin_import_pending']);
         }
-        $this->flash(($summary['invalid_rows'] ?? 0)>0 && ($summary['valid_rows'] ?? 0)===0 ? 'danger' : 'success',($dryRun ? 'Dry run complete. ' : 'Import complete. ').'Valid rows: '.(int)($summary['valid_rows'] ?? 0).', invalid rows: '.(int)($summary['invalid_rows'] ?? 0).', duplicates: '.(int)($summary['duplicate_rows'] ?? 0).'.');
+        $this->flash(($summary['invalid_rows'] ?? 0)>0 && ($summary['valid_rows'] ?? 0)===0 ? 'danger' : 'success',t($dryRun ? 'msg.dry_run_done' : 'msg.import_done',['valid'=>(int)($summary['valid_rows'] ?? 0),'invalid'=>(int)($summary['invalid_rows'] ?? 0),'dup'=>(int)($summary['duplicate_rows'] ?? 0)]));
         $this->redirect('/admin/collector-jobs');
     }
     private function storedUploadPath(?array $file): string {
@@ -700,7 +701,8 @@ final class AdminController extends Controller {
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($payload,JSON_UNESCAPED_UNICODE);
     }
-    private function flash(string $type,string $message): void { $_SESSION['flash']=['type'=>$type,'message'=>$message]; }
+    /** the message is a fixed text in the code (English or Thai); it is shown in the language chosen when the page is displayed after the redirect */
+    private function flash(string $type,string $message): void { $_SESSION['flash']=['type'=>$type,'message'=>\App\Core\Lang::message($message)]; }
     private function baseUrl(): string { global $config; return (string)$config['base_url']; }
     private function audit(string $action,string $entityType,?int $entityId,array $after): void { (new AuthService())->audit((int)$this->user()['id'],$action,$entityType,$entityId,$after); }
     private function slug(string $value): string {

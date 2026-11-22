@@ -16,7 +16,7 @@ function ok_ih(bool $c, string $m): void { if (!$c) { throw new RuntimeException
 function ih_http(string $method, string $url, string $jar, array $fields = [], ?string $uploadField = null, ?string $uploadPath = null, string $uploadName = 'file.csv'): array
 {
     $ch = curl_init($url);
-    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_HEADER => true, CURLOPT_FOLLOWLOCATION => false, CURLOPT_COOKIEJAR => $jar, CURLOPT_COOKIEFILE => $jar, CURLOPT_TIMEOUT => 60, CURLOPT_CUSTOMREQUEST => $method]);
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_HEADER => true, CURLOPT_FOLLOWLOCATION => false, CURLOPT_COOKIEJAR => $jar, CURLOPT_COOKIEFILE => $jar, CURLOPT_COOKIE => 'mi_lang=en', CURLOPT_TIMEOUT => 60, CURLOPT_CUSTOMREQUEST => $method]);
     if ($method === 'POST') {
         if ($uploadField !== null && $uploadPath !== null) { $fields[$uploadField] = new CURLFile($uploadPath, 'text/csv', $uploadName); }
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);

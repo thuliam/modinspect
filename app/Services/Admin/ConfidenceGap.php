@@ -17,24 +17,24 @@ final class ConfidenceGap
      */
     public static function explain(string $label, array $caps, float $rawScore, int $included): array
     {
-        $human = in_array('HUMAN_RECORDED_EVIDENCE_CAP', $caps, true) ? ['Every included observation was typed by a person (owner text and/or owner transcription), which caps the score at 79, below "high". One machine capture of a listing page lifts this cap.'] : [];
+        $human = in_array('HUMAN_RECORDED_EVIDENCE_CAP', $caps, true) ? [\App\Core\Lang::t('cg.human_cap')] : [];
         if (in_array($label, ['medium', 'high'], true)) {
             return ['reaches_medium' => true, 'blockers' => [], 'notes' => $human];
         }
         $blockers = []; $notes = $human;
         if ($included < 3 || in_array('INSUFFICIENT_SAMPLE', $caps, true)) {
-            $blockers[] = 'Needs at least 3 included observations (has ' . $included . ').';
+            $blockers[] = \App\Core\Lang::t('cg.need_3', ['n' => $included]);
         }
         if (in_array('OWNER_TEXT_ONLY_CAP', $caps, true)) {
-            $blockers[] = 'Every included observation is owner text without a listing URL, which caps the score below 60. At least one included observation from a different kind of source is needed.';
+            $blockers[] = \App\Core\Lang::t('cg.owner_only');
         }
         if ($rawScore < self::MEDIUM_AT && !in_array('INSUFFICIENT_SAMPLE', $caps, true)) {
-            $blockers[] = 'Raw score ' . number_format($rawScore, 1) . ' is below 60 before caps: more, fresher or more varied observations raise it.';
+            $blockers[] = \App\Core\Lang::t('cg.raw_low', ['s' => number_format($rawScore, 1)]);
         }
-        if (in_array('TINY_SAMPLE_CAP', $caps, true)) { $notes[] = 'Fewer than 5 included observations also caps the score at 64.'; }
-        if (in_array('SINGLE_SOURCE_CAP', $caps, true)) { $notes[] = 'A single source caps the score at 74.'; }
-        if (in_array('STALE_COHORT_CAP', $caps, true)) { $notes[] = 'The median observation is older than 90 days, which caps the score at 64.'; }
-        if (in_array('WEAK_EVIDENCE_CAP', $caps, true)) { $notes[] = 'Mostly weak evidence caps the score at 69.'; }
+        if (in_array('TINY_SAMPLE_CAP', $caps, true)) { $notes[] = \App\Core\Lang::t('cg.tiny'); }
+        if (in_array('SINGLE_SOURCE_CAP', $caps, true)) { $notes[] = \App\Core\Lang::t('cg.single'); }
+        if (in_array('STALE_COHORT_CAP', $caps, true)) { $notes[] = \App\Core\Lang::t('cg.stale'); }
+        if (in_array('WEAK_EVIDENCE_CAP', $caps, true)) { $notes[] = \App\Core\Lang::t('cg.weak'); }
         return ['reaches_medium' => $blockers === [], 'blockers' => $blockers, 'notes' => $notes];
     }
 }

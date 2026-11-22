@@ -4,6 +4,7 @@ declare(strict_types=1);
 define('MODINSPECT_TESTING', true);
 
 require __DIR__ . '/bootstrap.php';
+$_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admin pages (the default language is Thai)
 
 use App\Core\Database;
 use App\Models\DealCheck;
@@ -42,6 +43,6 @@ ok_dr($b !== null && $b['total'] >= 1 && $b['paid']['within_range'] >= 1, 'build
 $db->exec('DELETE FROM deal_checks WHERE uuid = ' . $db->quote($uuid));
 $src = (string)file_get_contents(ROOT_PATH . '/app/Services/Admin/DealOutcomeReport.php');
 ok_dr(!preg_match('/\b(INSERT|UPDATE|DELETE|ALTER|DROP)\b/', $src), 'The report only reads');
-$view = (string)file_get_contents(ROOT_PATH . '/app/Views/admin/data-health.php');
+$view = (string)file_get_contents(ROOT_PATH . '/app/Lang/en.views.php');   // the page text now lives in the language file
 ok_dr(str_contains($view, 'never set or change a price'), 'The admin card says outcomes are not prices');
 echo "deal_outcome_report_test: PASS\n";

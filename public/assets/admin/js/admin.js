@@ -27,12 +27,18 @@
         });
     });
 
+    // texts for the chosen language come from the page (a JSON block written by admin_footer.php from app/Lang); English is the fallback
+    var i18n = {};
+    try { i18n = JSON.parse(document.getElementById('mi-i18n').textContent) || {}; } catch (e) { i18n = {}; }
+    function tx(key, fallback) { return i18n[key] || fallback; }
+    var dtLanguage = i18n.dt || undefined;
+
     $('.js-confirm-form').on('submit', function (event) {
-        var message = $(this).data('confirm') || 'Continue?';
+        var message = $(this).data('confirm') || tx('continue', 'Continue?');
         if (!window.confirm(message)) event.preventDefault();
     });
     $(document).on('click', 'button[data-confirm]', function (event) {
-        var message = $(this).data('confirm') || 'Continue?';
+        var message = $(this).data('confirm') || tx('continue', 'Continue?');
         if (!window.confirm(message)) event.preventDefault();
     });
 
@@ -55,6 +61,7 @@
             var instance = $table.DataTable({
                 pageLength: parseInt($table.data('page-length') || 25, 10),
                 lengthMenu: [10, 25, 50, 100],
+                language: dtLanguage,
                 autoWidth: false,
                 processing: true,
                 serverSide: true,
@@ -126,9 +133,9 @@
         form.find('[name=spec_summary]').val(data.spec_summary || '');
         form.find('[name=image_path]').val(data.image_path || '');
         form.find('[name=is_active]').prop('checked', String(data.is_active) === '1');
-        $('#product-form-title').text('Edit Product');
-        $('#product-form-subtitle').text('Update the canonical Product Master record without changing market observations.');
-        $('#product-form-submit-label').html('<i class="fas fa-save mr-2"></i>Save Changes');
+        $('#product-form-title').text(tx('edit_product', 'Edit Product'));
+        $('#product-form-subtitle').text(tx('edit_product_sub', 'Update the canonical Product Master record without changing market observations.'));
+        $('#product-form-submit-label').empty().append('<i class="fas fa-save mr-2"></i>').append(document.createTextNode(tx('save_changes', 'Save Changes')));
         showProductForm();
         $('html, body').animate({ scrollTop: form.offset().top - 90 }, 200);
     });
@@ -138,9 +145,9 @@
         form[0].reset();
         form.find('[name=product_id]').val('');
         form.find('[name=is_active]').prop('checked', true);
-        $('#product-form-title').text('Add Product');
-        $('#product-form-subtitle').text('Create a canonical Product Master record for resolver and price workflows.');
-        $('#product-form-submit-label').html('<i class="fas fa-save mr-2"></i>Save Product');
+        $('#product-form-title').text(tx('add_product', 'Add Product'));
+        $('#product-form-subtitle').text(tx('add_product_sub', 'Create a canonical Product Master record for resolver and price workflows.'));
+        $('#product-form-submit-label').empty().append('<i class="fas fa-save mr-2"></i>').append(document.createTextNode(tx('save_product', 'Save Product')));
         showProductForm();
         setTimeout(function () { form.find('[name=category_id]').trigger('focus'); }, 150);
     });
@@ -157,7 +164,7 @@
         form.find('[name=alias_text]').val(data.alias_text || '');
         form.find('[name=source_note]').val(data.source_note || '');
         form.find('[name=confidence]').val(data.confidence || 100);
-        $('#alias-form-title').text('Edit Alias');
+        $('#alias-form-title').text(tx('edit_alias', 'Edit Alias'));
         $('html, body').animate({ scrollTop: form.offset().top - 90 }, 200);
     });
 
@@ -166,7 +173,7 @@
         form[0].reset();
         form.find('[name=alias_id]').val('');
         form.find('[name=confidence]').val(100);
-        $('#alias-form-title').text('Add Alias');
+        $('#alias-form-title').text(tx('add_alias', 'Add Alias'));
     });
 
     $(document).on('click', '.js-article-edit', function () {
@@ -178,7 +185,7 @@
         form.find('[name=excerpt]').val(data.excerpt || '');
         form.find('[name=body]').val(data.body || '');
         form.find('[name=status]').val(data.status || 'draft');
-        $('#article-form-title').text('Edit Article');
+        $('#article-form-title').text(tx('edit_article', 'Edit Article'));
         $('html, body').animate({ scrollTop: form.offset().top - 90 }, 200);
     });
 
@@ -186,6 +193,6 @@
         var form = $('#article-form');
         form[0].reset();
         form.find('[name=article_id]').val('');
-        $('#article-form-title').text('Add Article');
+        $('#article-form-title').text(tx('add_article', 'Add Article'));
     });
 })(jQuery);

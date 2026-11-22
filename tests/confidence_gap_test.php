@@ -6,6 +6,8 @@ require __DIR__ . '/bootstrap.php';
 use App\Services\Admin\ConfidenceGap;
 
 function ok_cg(bool $c, string $m): void { if (!$c) { throw new RuntimeException($m); } }
+// the explanations follow the admin language (Thai by default); this test reads the English wording
+$_SESSION['lang'] = 'en';
 
 $g = ConfidenceGap::explain('low', ['OWNER_TEXT_ONLY_CAP', 'SINGLE_SOURCE_CAP'], 72.0, 13);
 ok_cg(!$g['reaches_medium'] && count($g['blockers']) === 1 && str_contains($g['blockers'][0], 'different kind of source'), 'Owner-text-only is the single blocker when the raw score is already above 60');

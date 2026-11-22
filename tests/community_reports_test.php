@@ -4,6 +4,7 @@ declare(strict_types=1);
 define('MODINSPECT_TESTING', true);
 
 require __DIR__ . '/bootstrap.php';
+$_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admin pages (the default language is Thai)
 
 use App\Core\Database;
 use App\Services\Auth\AuthService;
@@ -164,6 +165,6 @@ $idx = $unix($root . '/public/index.php');
 ok_cr(str_contains($idx, "\$router->get('/admin/community-reports',[AdminController::class,'communityReports']);") && str_contains($idx, "\$router->post('/admin/community-reports/action',[AdminController::class,'communityReportAction']);"), 'The queue routes exist');
 $adm = $unix($root . '/app/Controllers/AdminController.php');
 ok_cr(str_contains($adm, "public function communityReports(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;") && str_contains($adm, "public function communityReportAction(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;\n        if(!Csrf::verify(\$_POST['_token']??null))"), 'Viewing the queue and deciding a report need the permission, and a decision needs a CSRF token');
-ok_cr(str_contains($unix($root . '/app/Views/admin/data-health.php'), 'Community reports') && str_contains($unix($root . '/cli/retention_purge.php'), '--community-days=N'), 'Data health shows the counts and the retention CLI has the option (S4)');
+ok_cr(str_contains($unix($root . '/app/Lang/en.views.php'), 'Community reports') && str_contains($unix($root . '/cli/retention_purge.php'), '--community-days=N'), 'Data health shows the counts and the retention CLI has the option (S4)');
 ok_cr(str_contains($unix($root . '/app/Services/Seo/SeoService.php'), "'/account', '/report', "), 'robots.txt keeps the form out of search');
 echo "community_reports_test: PASS\n";

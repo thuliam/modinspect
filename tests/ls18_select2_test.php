@@ -24,7 +24,7 @@ foreach (['app/Views/layouts/header.php', 'app/Views/layouts/admin_header.php'] 
 ok_s2(preg_match('#mi-select\.js[^\n]*defer.*site\.js[^\n]*defer#s', $read('app/Views/layouts/footer.php')) === 1, 'On public pages the glue runs before site.js (Compare uses its options)');
 $glue = $read('public/assets/mi-select.js');
 ok_s2(str_contains($glue, "find('select').not('[data-native], .js-select2-manual, .dataTables_length select, .select2-hidden-accessible')"), 'Every select is enhanced except opt-outs, manual ones and the DataTables page-size control');
-ok_s2(str_contains($glue, "language: 'th'") && !preg_match('#https?://#', $glue), 'Thai strings, no network');
+ok_s2(str_contains($glue, "language: document.documentElement.lang === 'en' ? 'en' : 'th'") && !preg_match('#https?://#', $glue), 'Thai strings by default (English when the page is English), no network');
 ok_s2(!preg_match('/#[0-9a-f]{3,6}\b/i', preg_replace('#var\([^)]*\)#', '', $read('public/assets/mi-select2.css')) ?? ''), 'The Select2 theme uses the CI tokens, no hard-coded colours (fallbacks inside var() only)');
 
 // Compare: grouped selects with the category on every option, locked by site.js; the server still accepts typed names

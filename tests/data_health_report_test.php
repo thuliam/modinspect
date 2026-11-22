@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
+$_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admin pages (the default language is Thai)
 
 use App\Services\Admin\DataHealthReport;
 

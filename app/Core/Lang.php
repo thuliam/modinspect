@@ -44,6 +44,30 @@ final class Lang
     /** @return array<string,string> */
     public static function all(string $lang): array { return self::load($lang); }
 
+    /** @var ?array<string,array{en:string,th:string}> */
+    private static ?array $messages = null;
+
+    /** @return list<array{en:string,th:string}> */
+    public static function messagePairs(): array
+    {
+        $pairs = require dirname(__DIR__) . '/Lang/messages.php';
+        return is_array($pairs) ? $pairs : [];
+    }
+
+    /**
+     * A fixed message a controller flashes ("User created." or the same in Thai), shown in the chosen language. A message that is not in
+     * app/Lang/messages.php (for example one that already went through t(), or a service's own text) is returned unchanged.
+     */
+    public static function message(string $text, ?string $lang = null): string
+    {
+        if (self::$messages === null) {
+            self::$messages = [];
+            foreach (self::messagePairs() as $p) { self::$messages[$p['en']] = $p; self::$messages[$p['th']] = $p; }
+        }
+        $lang = $lang !== null && in_array($lang, self::SUPPORTED, true) ? $lang : self::current();
+        return isset(self::$messages[$text]) ? self::$messages[$text][$lang] : $text;
+    }
+
     /** "New-price refs" -> "new_price_refs": the key a menu label is looked up under */
     public static function slug(string $label): string
     {
@@ -61,10 +85,40 @@ final class Lang
     private static function load(string $lang): array
     {
         if (!isset(self::$cache[$lang])) {
-            $file = dirname(__DIR__) . '/Lang/' . $lang . '.php';
-            $data = is_file($file) ? require $file : [];
-            self::$cache[$lang] = is_array($data) ? $data : [];
+            $all = [];
+            foreach (['', '.views'] as $part) {   // the shell and member texts, then the texts of the admin pages
+                $file = dirname(__DIR__) . '/Lang/' . $lang . $part . '.php';
+                $data = is_file($file) ? require $file : [];
+                if (is_array($data)) { $all = array_merge($all, $data); }
+            }
+            self::$cache[$lang] = $all;
         }
         return self::$cache[$lang];
+    }
+
+    /** a status or code from the data ("healthy", "MISSING_API_KEY", "YES") shown in the chosen language; a value without a text is returned as it came */
+    public static function status(string $value): string
+    {
+        $slug = self::slug($value);
+        $key = 'st.' . $slug;
+        return $slug !== '' && isset(self::load(self::DEFAULT)[$key]) ? self::t($key) : $value;
+    }
+
+    /**
+     * A page or breadcrumb name written in English in the code ("Market Data", "Users") shown in the chosen language: looked up as a menu text, a menu
+     * group or a crumb. Returns null when no text exists (the caller then keeps what it was given).
+     */
+    public static function label(string $name): ?string
+    {
+        if (preg_match('/^(Snapshot|Review Observation) #(\d+)$/', $name, $m)) {
+            return self::t($m[1] === 'Snapshot' ? 'crumb.snapshot_n' : 'crumb.review_observation_n', ['n' => $m[2]]);
+        }
+        $slug = self::slug($name);
+        if ($slug === '') { return null; }
+        $th = self::load(self::DEFAULT);
+        foreach (['nav.', 'navg.', 'crumb.'] as $prefix) {
+            if (isset($th[$prefix . $slug])) { return self::t($prefix . $slug); }
+        }
+        return null;
     }
 }

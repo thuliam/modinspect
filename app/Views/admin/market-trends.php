@@ -1,21 +1,21 @@
-<?php $t = $report['totals']; $regionNames = ['central' => 'Central', 'east' => 'East', 'north' => 'North', 'northeast' => 'Northeast', 'south' => 'South']; ?>
-<?php ob_start(); ?>Market Trends &amp; Locations<?php $dxT = ob_get_clean(); ob_start(); ?>Monthly price movement from approved observations, and the coarse place (province only) listings were offered from. Private: not shown on public pages.<?php $dxD = ob_get_clean(); ob_start(); ?><?php $dxA = ob_get_clean(); ?>
+<?php $t = $report['totals']; $regionNames = ['central' => t('v.central'), 'east' => t('v.east'), 'north' => t('v.north'), 'northeast' => t('v.northeast'), 'south' => t('v.south')]; ?>
+<?php ob_start(); ?><?= htmlspecialchars(t('v.market_trends_locations')) ?><?php $dxT = ob_get_clean(); ob_start(); ?><?= htmlspecialchars(t('v.monthly_price_movement_from_approved')) ?><?php $dxD = ob_get_clean(); ob_start(); ?><?php $dxA = ob_get_clean(); ?>
 <?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <div class="row mi-metric-row">
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-primary"><span>Trend months</span><strong><?= (int) $t['trend_points'] ?></strong><small>Months with at least 3 approved samples</small></div></div>
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-success"><span>Products with a trend</span><strong><?= (int) $t['trend_products'] ?></strong><small><?= count(array_filter($report['trends'], static fn($x) => (int) $x['months'] > 1)) ?> have two or more months</small></div></div>
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-info"><span>Listings with a province</span><strong><?= (int) $t['location_rows'] ?></strong><small>From owner-collected text, province granularity only</small></div></div>
-    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card <?= $t['top_share'] > 50 ? 'gradient-warning' : 'gradient-purple' ?>"><span>Largest province share</span><strong><?= number_format((float) $t['top_share'], 0) ?>%</strong><small><?= htmlspecialchars((string) ($t['top_province'] ?? '-')) ?><?= $t['top_share'] > 50 ? ' - one province dominates; may be repeated posts from one seller' : '' ?></small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-primary"><span><?= htmlspecialchars(t('v.trend_months')) ?></span><strong><?= (int) $t['trend_points'] ?></strong><small><?= htmlspecialchars(t('v.months_with_at_least_3_approved_samp')) ?></small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-success"><span><?= htmlspecialchars(t('v.products_with_a_trend')) ?></span><strong><?= (int) $t['trend_products'] ?></strong><small><?= count(array_filter($report['trends'], static fn($x) => (int) $x['months'] > 1)) ?> <?= htmlspecialchars(t('v.have_two_or_more_months')) ?></small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card gradient-info"><span><?= htmlspecialchars(t('v.listings_with_a_province')) ?></span><strong><?= (int) $t['location_rows'] ?></strong><small><?= htmlspecialchars(t('v.from_owner_collected_text_province_g')) ?></small></div></div>
+    <div class="col-xl-3 col-md-6 mb-3"><div class="card mi-metric-card <?= $t['top_share'] > 50 ? 'gradient-warning' : 'gradient-purple' ?>"><span><?= htmlspecialchars(t('v.largest_province_share')) ?></span><strong><?= number_format((float) $t['top_share'], 0) ?>%</strong><small><?= htmlspecialchars((string) ($t['top_province'] ?? '-')) ?><?= $t['top_share'] > 50 ? t('v.one_province_dominates_may_be_repeat') : '' ?></small></div></div>
 </div>
 
 <div class="row">
     <div class="col-xl-7 mb-3">
         <div class="card mi-admin-card mi-table-card">
-            <div class="card-header">Price trend by product</div>
+            <div class="card-header"><?= htmlspecialchars(t('v.price_trend_by_product')) ?></div>
             <div class="table-responsive">
                 <table class="table table-hover mi-admin-table mb-0">
-                    <thead><tr><th>Product</th><th>Category</th><th class="text-right">Months</th><th class="text-right">Samples</th><th class="text-right">Latest median</th><th class="text-right">Change</th></tr></thead>
+                    <thead><tr><th><?= htmlspecialchars(t('v.product')) ?></th><th><?= htmlspecialchars(t('v.category')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.months')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.samples')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.latest_median')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.change')) ?></th></tr></thead>
                     <tbody>
                     <?php foreach ($report['trends'] as $x): ?>
                         <tr>
@@ -24,7 +24,7 @@
                             <td class="text-right"><?= (int) $x['months'] ?></td>
                             <td class="text-right"><?= (int) $x['samples'] ?></td>
                             <td class="text-right">฿<?= number_format((float) $x['last_median']) ?></td>
-                            <td class="text-right"><?= $x['change_pct'] === null ? '<span class="badge badge-secondary">one month</span>' : '<span class="badge ' . ($x['change_pct'] >= 0 ? 'badge-warning' : 'badge-success') . '">' . ($x['change_pct'] >= 0 ? '+' : '') . number_format((float) $x['change_pct'], 1) . '%</span>' ?></td>
+                            <td class="text-right"><?= $x['change_pct'] === null ? '<span class="badge badge-secondary">' . htmlspecialchars(t('misc.one_month')) . '</span>' : '<span class="badge ' . ($x['change_pct'] >= 0 ? 'badge-warning' : 'badge-success') . '">' . ($x['change_pct'] >= 0 ? '+' : '') . number_format((float) $x['change_pct'], 1) . '%</span>' ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <?php if (!$report['trends']): ?><tr><td colspan="6" class="text-muted">No trend yet. Run <code>php cli/price_trend_build.php</code> after approving observations.</td></tr><?php endif; ?>
@@ -35,13 +35,13 @@
     </div>
     <div class="col-xl-5 mb-3">
         <div class="card mi-admin-card mi-table-card">
-            <div class="card-header">Listings by province and category</div>
+            <div class="card-header"><?= htmlspecialchars(t('v.listings_by_province_and_category')) ?></div>
             <div class="px-3 pb-2">
                 <?php foreach ($report['regions'] as $r => $n): ?><span class="badge badge-secondary mr-1"><?= $regionNames[$r] ?? htmlspecialchars((string) $r) ?> <?= (int) $n ?></span><?php endforeach; ?>
             </div>
             <div class="table-responsive">
                 <table class="table table-hover mi-admin-table mb-0">
-                    <thead><tr><th>Province</th><th>Category</th><th class="text-right">Listings</th><th class="text-right">Median ask</th><th class="text-right">Repost rate</th></tr></thead>
+                    <thead><tr><th><?= htmlspecialchars(t('v.province')) ?></th><th><?= htmlspecialchars(t('v.category')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.listings')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.median_ask')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.repost_rate')) ?></th></tr></thead>
                     <tbody>
                     <?php $repost = []; foreach (($dup['provinces'] ?? []) as $dp) { $repost[$dp['province']] = $dp['repost_rate']; } foreach (array_slice($report['locations'], 0, 40) as $l): ?>
                         <tr><td><?= htmlspecialchars($l['province']) ?></td><td><?= htmlspecialchars((string) $l['category']) ?></td><td class="text-right"><?= (int) $l['n'] ?></td><td class="text-right"><?= $l['median'] === null ? '<span class="text-muted">needs 3+</span>' : '฿' . number_format((float) $l['median']) ?></td><td class="text-right"><?php $rr = $repost[$l['province']] ?? null; echo $rr === null ? '-' : '<span class="badge ' . ($rr >= 0.5 ? 'badge-warning' : 'badge-secondary') . '">' . number_format($rr * 100) . '%</span>'; ?></td></tr>
@@ -53,5 +53,5 @@
         </div>
     </div>
 </div>
-<?php if (!empty($dup['overall']['listings'])): ?><div class="notice mb-3">Repeated posts: <b><?= number_format($dup['overall']['repost_rate'] * 100) ?>%</b> of the <?= (int) $dup['overall']['listings'] ?> listings with a province are reposts of an earlier listing. A province with a high repost rate shows one poster, not a market pattern.</div><?php endif; ?>
-<div class="notice">Location is a context signal only. It never changes a price snapshot or confidence. Only the province is stored: no seller, shop, phone, district or address.</div>
+<?php if (!empty($dup['overall']['listings'])): ?><div class="notice mb-3"><?= htmlspecialchars(t('v.repeated_posts')) ?> <b><?= number_format($dup['overall']['repost_rate'] * 100) ?>%</b> <?= htmlspecialchars(t('v.of_the')) ?> <?= (int) $dup['overall']['listings'] ?> <?= htmlspecialchars(t('v.listings_with_a_province_are_reposts')) ?></div><?php endif; ?>
+<div class="notice"><?= htmlspecialchars(t('v.location_is_a_context_signal_only_it')) ?></div>

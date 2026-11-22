@@ -1,22 +1,22 @@
 <?php
-$sections = ['A' => 'Data and trust', 'B' => 'Product and experience', 'C' => 'Security', 'D' => 'Operations', 'E' => 'Legal, privacy and rights', 'F' => 'Engineering gates'];
-$badge = ['met' => ['badge-success', 'Met'], 'not_met' => ['badge-danger', 'Not met'], 'owner' => ['badge-warning', 'Owner'], 'unknown' => ['badge-secondary', '?']];
+$sections = ['A' => t('v.data_and_trust'), 'B' => t('v.product_and_experience'), 'C' => t('v.security'), 'D' => t('v.operations'), 'E' => t('v.legal_privacy_and_rights'), 'F' => t('v.engineering_gates')];
+$badge = ['met' => ['badge-success', t('v.met')], 'not_met' => ['badge-danger', t('v.not_met_2')], 'owner' => ['badge-warning', t('v.owner')], 'unknown' => ['badge-secondary', '?']];
 $v = $panel['verdict'];
 ?>
-<?= mi_page_header($base, ['Market Data', 'Beta readiness'], 'Beta readiness', 'Read-only view of docs/BETA_READINESS_CHECKLIST.md. Rows marked live are measured now on this database and environment; the others show the status written in the checklist. It decides nothing: the Go/No-Go decision is the owner\'s.', '') ?>
+<?= mi_page_header($base, ['Market Data', 'Beta readiness'], htmlspecialchars(t('v.beta_readiness')), htmlspecialchars(t('v.read_only_view_of_docs_beta_readines')), '') ?>
 
 <?php if (!$panel['available']): ?>
-    <div class="alert alert-warning">The checklist file is not available on this installation (docs/BETA_READINESS_CHECKLIST.md).</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('v.the_checklist_file_is_not_available')) ?></div>
 <?php else: ?>
 <div class="row mi-metric-row">
-    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card <?= $v['verdict'] === 'GO' ? 'gradient-success' : 'gradient-warning' ?>"><span>Verdict by the checklist's rule</span><strong><?= htmlspecialchars($v['verdict']) ?></strong><small>GO needs every MUST row met</small></div></div>
-    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card gradient-primary"><span>MUST rows met</span><strong><?= (int) $v['must_met'] ?> / <?= (int) $v['must'] ?></strong><small><?= count($v['unmet_must']) ?> not met</small></div></div>
-    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card gradient-info"><span>SHOULD rows met</span><strong><?= (int) $v['should_met'] ?> / <?= (int) $v['should'] ?></strong><small>listed with an owner and a date when a decision is taken</small></div></div>
-    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card gradient-purple"><span>Measured now</span><strong><?= count(array_filter($panel['rows'], static fn($r) => $r['live'])) ?></strong><small>rows with a live value</small></div></div>
+    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card <?= $v['verdict'] === 'GO' ? 'gradient-success' : 'gradient-warning' ?>"><span><?= htmlspecialchars(t('v.verdict_by_the_checklist_s_rule')) ?></span><strong><?= htmlspecialchars($v['verdict']) ?></strong><small><?= htmlspecialchars(t('v.go_needs_every_must_row_met')) ?></small></div></div>
+    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card gradient-primary"><span><?= htmlspecialchars(t('v.must_rows_met')) ?></span><strong><?= (int) $v['must_met'] ?> / <?= (int) $v['must'] ?></strong><small><?= count($v['unmet_must']) ?> <?= htmlspecialchars(t('v.not_met')) ?></small></div></div>
+    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card gradient-info"><span><?= htmlspecialchars(t('v.should_rows_met')) ?></span><strong><?= (int) $v['should_met'] ?> / <?= (int) $v['should'] ?></strong><small><?= htmlspecialchars(t('v.listed_with_an_owner_and_a_date_when')) ?></small></div></div>
+    <div class="col-xl-3 col-md-6"><div class="card mi-metric-card gradient-purple"><span><?= htmlspecialchars(t('v.measured_now')) ?></span><strong><?= count(array_filter($panel['rows'], static fn($r) => $r['live'])) ?></strong><small><?= htmlspecialchars(t('v.rows_with_a_live_value')) ?></small></div></div>
 </div>
 
 <?php if ($v['unmet_must']): ?>
-<div class="card mi-admin-card mb-3"><div class="card-body"><strong>MUST rows not met:</strong> <?= htmlspecialchars(implode(', ', $v['unmet_must'])) ?></div></div>
+<div class="card mi-admin-card mb-3"><div class="card-body"><strong><?= htmlspecialchars(t('v.must_rows_not_met')) ?></strong> <?= htmlspecialchars(implode(', ', $v['unmet_must'])) ?></div></div>
 <?php endif; ?>
 
 <?php foreach ($sections as $letter => $title): $rows = array_values(array_filter($panel['rows'], static fn($r) => $r['section'] === $letter)); if (!$rows) { continue; } ?>
@@ -24,7 +24,7 @@ $v = $panel['verdict'];
     <div class="card-header"><?= $letter ?>. <?= htmlspecialchars($title) ?></div>
     <div class="table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
-            <thead><tr><th>ID</th><th>Level</th><th>Requirement</th><th>Status</th><th>Evidence / gap</th></tr></thead>
+            <thead><tr><th><?= htmlspecialchars(t('v.xb718adec')) ?></th><th><?= htmlspecialchars(t('v.level')) ?></th><th><?= htmlspecialchars(t('v.requirement')) ?></th><th><?= htmlspecialchars(t('v.status')) ?></th><th><?= htmlspecialchars(t('v.evidence_gap')) ?></th></tr></thead>
             <tbody>
             <?php foreach ($rows as $r): [$cls, $label] = $badge[$r['status']] ?? $badge['unknown']; ?>
                 <tr>
