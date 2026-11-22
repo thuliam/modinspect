@@ -78,7 +78,47 @@ while (count($featured) < 9 && $byCat) {
                     </div>
                 <p class="mi-data-note reveal" style="--d:400ms">อยู่ระหว่างทดลอง: ถ้าข้อมูลราคาที่ผ่านการตรวจสอบยังไม่พอ ระบบจะแสดงหน้ารุ่นสินค้าโดยไม่สร้างราคาตลาดปลอม</p>
             </div>
-            <div class="col-lg-7 mi-hero-art reveal" style="--d:150ms"><img src="<?= $base ?>/assets/brand/hero-hardware.png" fetchpriority="high" width="1026" height="436" alt="โน้ตบุ๊ก คอมพิวเตอร์ตั้งโต๊ะ การ์ดจอ SSD และจอภาพ (ภาพประกอบ)"></div>
+            <div class="col-lg-7 mi-hero-art reveal" style="--d:150ms">
+                <?php // MODINSPECT-HERO-RGB-001: the approved picture is the fallback and the reduced-motion picture. mi-hero-rgb.js adds a neutral base + lime lighting overlays (hue-rotated per group) once the page is idle; see docs/HERO_RGB.md ?>
+                <?php $rgbDir = $base . "/assets/brand/hero-rgb"; $rgbMeta = json_decode((string) @file_get_contents(ROOT_PATH . "/public/assets/brand/hero-rgb/layers.json"), true); ?>
+                <figure class="mi-rgb" data-mi-rgb data-mode="rainbow">
+                    <img class="mi-rgb-orig" src="<?= $rgbDir ?>/original.webp" fetchpriority="high" width="1774" height="887" alt="ชิ้นส่วนคอมพิวเตอร์ลอยแยกชิ้น ได้แก่ ซีพียู แรม เอสเอสดี การ์ดจอ เมนบอร์ด และเคสกระจกพร้อมพัดลมไฟสีเขียวมะนาว (ภาพประกอบ)">
+                    <?php if (is_array($rgbMeta) && !empty($rgbMeta["layers"])): $pw = (float) $rgbMeta["width"]; $ph = (float) $rgbMeta["height"]; ?>
+                    <div class="mi-rgb-stage" aria-hidden="true">
+                        <img class="mi-rgb-base" data-src="<?= $rgbDir ?>/base.webp" width="1774" height="887" alt="" decoding="async">
+                        <div class="mi-rgb-lights">
+                            <?php foreach ($rgbMeta["layers"] as $ln => $L): ?>
+                            <img class="mi-rgb-l" data-layer="<?= htmlspecialchars((string) $ln) ?>" data-src="<?= $rgbDir ?>/<?= htmlspecialchars((string) $ln) ?>.webp" width="<?= (int) $L["w"] ?>" height="<?= (int) $L["h"] ?>" alt="" decoding="async" style="left:<?= round($L["x"] / $pw * 100, 3) ?>%;top:<?= round($L["y"] / $ph * 100, 3) ?>%;width:<?= round($L["w"] / $pw * 100, 3) ?>%;height:<?= round($L["h"] / $ph * 100, 3) ?>%">
+                            <?php endforeach; ?>
+                        </div>
+                        <img class="mi-rgb-dim" data-src="<?= $rgbDir ?>/dim.webp" width="1774" height="887" alt="" decoding="async">
+                    </div>
+                    <?php endif; ?>
+                </figure>
+                <?php if (is_array($rgbMeta) && !empty($rgbMeta["layers"])): ?>
+                <?php // MODINSPECT-HERO-RGB-002: SELECT MODE HUD. Original line icons (24px grid, 1.5 stroke, round caps), no third-party artwork. ?>
+                <?php $hudModes = [
+                    "static" => ["STATIC", "คงที่ (สีเขียวมะนาวของแบรนด์)", '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none"/>'],
+                    "breathing" => ["BREATHING", "หายใจ (แสงค่อยๆ สว่างและหรี่)", '<path d="M2.5 12.5h4l2.2-6.5 3.3 12 2.5-8.5 1.5 3H21.5"/>'],
+                    "strobing" => ["STROBING", "กะพริบช้า (แสงวาบนุ่มๆ)", '<path d="M13.5 2.8 5.5 13.2h5.6l-1.1 8 8-10.6h-5.6z"/>'],
+                    "rainbow" => ["RAINBOW", "สายรุ้ง (สีไหลต่อเนื่อง พัดลมเหลื่อมกัน)", '<path d="M3 18a9 9 0 0 1 18 0"/><path d="M6.2 18a5.8 5.8 0 0 1 11.6 0"/><path d="M9.4 18a2.6 2.6 0 0 1 5.2 0"/>'],
+                    "cycle" => ["COLOR CYCLE", "วนสี (ทุกจุดเปลี่ยนสีพร้อมกัน)", '<path d="M4.5 12a7.5 7.5 0 0 1 13-5.1"/><path d="M19.5 12a7.5 7.5 0 0 1-13 5.1"/><path d="M18.2 3.5v4h-4"/><path d="M5.8 20.5v-4h4"/>'],
+                    "starry" => ["STARRY NIGHT", "ดาวระยิบ (แสงระยิบช้าๆ)", '<path d="M5.5 17 10 8.5l5 5.5 3.5-8"/><circle cx="5.5" cy="17" r="1.5"/><circle cx="10" cy="8.5" r="1.5"/><circle cx="15" cy="14" r="1.5"/><circle cx="18.5" cy="6" r="1.5"/>'],
+                    "smart" => ["SMART", "อัตโนมัติ (ระบบเลือกชุดสีที่เข้ากัน)", '<circle cx="12" cy="12" r="2.2"/><path d="M7.6 7.6a6.2 6.2 0 0 0 0 8.8"/><path d="M16.4 7.6a6.2 6.2 0 0 1 0 8.8"/><path d="M4.6 4.6a10.4 10.4 0 0 0 0 14.8"/><path d="M19.4 4.6a10.4 10.4 0 0 1 0 14.8"/>'],
+                    "dark" => ["DARK", "มืด (ลดแสงให้น้อยที่สุด เห็นฮาร์ดแวร์ชัด)", '<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" fill="currentColor" fill-opacity=".38"/>'],
+                ]; ?>
+                <section class="mi-hud" data-mi-hud data-mode="rainbow" aria-label="ควบคุมแสงไฟ RGB ของภาพประกอบ">
+                    <p class="mi-hud-status" aria-live="polite"><span data-rgb-status>Rainbow</span></p>
+                    <div class="mi-hud-grid" role="group" aria-label="โหมดแสงไฟ">
+                        <?php foreach ($hudModes as $mk => $hm): ?>
+                        <button type="button" class="mi-hud-btn" data-rgb-mode="<?= $mk ?>" aria-pressed="<?= $mk === "rainbow" ? "true" : "false" ?>" aria-label="<?= htmlspecialchars($hm[1]) ?>" title="<?= $hm[0] ?>">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><?= $hm[2] ?></svg>
+                        </button>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </section>
@@ -255,3 +295,4 @@ while (count($featured) < 9 && $byCat) {
         </div>
     </div>
 </section>
+<script src="<?= $base ?>/assets/mi-hero-rgb.js?v=<?= (int) @filemtime(ROOT_PATH . "/public/assets/mi-hero-rgb.js") ?>" defer></script>
