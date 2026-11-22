@@ -576,3 +576,23 @@ html.motion-full { scroll-behavior: smooth; }
 .mi-cmp-toggle:hover { color: inherit; text-decoration: none; }
 .mi-cmp-toggle small { opacity: .6; }
 .mi-cmp-mark { margin-left: 8px; }
+
+/* LS-34: main menu with grouped sub-menus (Bootstrap dropdown + CI tokens). Layout idea from the 21st.dev "dropdown navigation": group titles, an icon tile and a one-line description per item,
+   a soft pill behind the open item, a chevron that turns. No script: Bootstrap opens it on click and keyboard, the CSS below also opens it while the pointer rests on it (desktop only). */
+body.mi .navbar-nav .nav-item.show > .nav-link, body.mi .navbar-nav .nav-link.dropdown-toggle:hover { background: rgba(187, 242, 70, .1); border-radius: var(--ci-r-pill); }
+body.mi .navbar-nav .dropdown-toggle::after { transition: transform .25s; }
+body.mi .navbar-nav .show > .dropdown-toggle::after, body.mi .navbar-nav .dropdown:hover > .dropdown-toggle::after { transform: rotate(180deg); }
+body.mi .mi-mega { padding: 20px 24px; margin-top: 0; border-radius: var(--ci-r-lg); box-shadow: 0 16px 40px rgba(0, 0, 0, .45); }
+body.mi .mi-mega-title { margin: 0 0 12px; font: 600 12px/1.2 var(--ci-font); letter-spacing: 0; text-transform: none; color: var(--ci-text-2); }
+body.mi .mi-mega-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; color: var(--ci-text); }
+body.mi .mi-mega-ico { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); color: var(--ci-text); transition: background .25s, color .25s, border-color .25s; }
+body.mi .mi-mega-text b { display: block; font-size: 14px; font-weight: 600; line-height: 20px; }
+body.mi .mi-mega-text small { display: block; font-size: 12px; line-height: 16px; color: var(--ci-text-2); transition: color .25s; }
+body.mi .mi-mega-item:hover .mi-mega-ico, body.mi .mi-mega-item:focus .mi-mega-ico { background: var(--ci-primary); border-color: var(--ci-primary); color: var(--ci-on-primary); }
+body.mi .mi-mega-item:hover .mi-mega-text small, body.mi .mi-mega-item:focus .mi-mega-text small { color: var(--ci-text); }
+@media (min-width: 1200px) {
+    body.mi .mi-mega { min-width: 700px; }
+    body.mi .mi-mega-wrap:nth-of-type(3) .mi-mega { min-width: 520px; }
+}
+@media (min-width: 1200px) and (hover: hover) { body.mi .public-nav .dropdown:hover > .dropdown-menu { display: block; } }
+@media (max-width: 1199.98px) { body.mi .mi-mega { padding: 4px 8px 12px; border: 0; box-shadow: none; background: transparent; } body.mi .mi-mega-item { min-height: 44px; } body.mi .mi-mega-col + .mi-mega-col { margin-top: 16px; } }

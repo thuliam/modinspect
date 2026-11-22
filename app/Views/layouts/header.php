@@ -76,27 +76,66 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
         <a class="navbar-brand brand" href="<?= $base ?>/" aria-label="modinpect home"><?= mi_logo($base) ?></a>
         <button class="navbar-toggler burger" type="button" data-toggle="collapse" data-target="#site-menu" aria-controls="site-menu" aria-expanded="false" aria-label="เมนู"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="site-menu">
+            <?php
+            // LS-34: main menu. Grouped menus (title + icon + one-line description) are a Bootstrap dropdown styled with the CI tokens; every target is an existing page.
+            $navGroups = [
+                ['label' => 'เช็กราคา', 'base' => '/price', 'cols' => [
+                    ['ชิ้นส่วนหลัก', [
+                        ['CPU', 'ซีพียู ช่วงราคามือสอง', '/price?category=cpu', 'fa-microchip'],
+                        ['GPU', 'การ์ดจอ ช่วงราคามือสอง', '/price?category=gpu', 'fa-tv'],
+                        ['Motherboard', 'เมนบอร์ด', '/price?category=motherboard', 'fa-project-diagram'],
+                        ['RAM', 'หน่วยความจำ', '/price?category=ram', 'fa-memory'],
+                    ]],
+                    ['ชิ้นส่วนอื่น', [
+                        ['Storage', 'SSD และ HDD', '/price?category=storage', 'fa-hdd'],
+                        ['PSU', 'พาวเวอร์ซัพพลาย', '/price?category=psu', 'fa-plug'],
+                        ['Case', 'เคสคอมพิวเตอร์', '/price?category=case', 'fa-server'],
+                        ['Cooling', 'ชุดระบายความร้อน', '/price?category=cooling', 'fa-fan'],
+                    ]],
+                    ['ดูข้อมูล', [
+                        ['ค้นหาทุกรุ่น', 'ช่วงราคาของทุกรุ่นในระบบ', '/price', 'fa-search'],
+                        ['รุ่นที่ติดตาม', 'รุ่นที่คุณกดติดตามไว้', '/watching', 'fa-star'],
+                        ['วิธีคำนวณ', 'ที่มาของราคาและข้อจำกัด', '/methodology', 'fa-book'],
+                    ]],
+                ]],
+                ['label' => 'เครื่องมือ', 'base' => null, 'cols' => [
+                    ['ก่อนซื้อ', [
+                        ['เทียบรุ่น', 'เทียบสเปกและราคา', '/compare', 'fa-balance-scale'],
+                        ['Deal Checker', 'ราคาที่เจออยู่ตรงไหนของตลาด', '/deal-checker', 'fa-tag'],
+                        ['เช็กสภาพ', 'ต้องเช็กอะไรก่อนจ่ายเงิน', '/condition-guide', 'fa-clipboard-check'],
+                    ]],
+                    ['ช่วยตัดสินใจ', [
+                        ['วางประกาศ', 'ให้ระบบอ่านรุ่นและราคาจากประกาศ', '/read-listing', 'fa-paste'],
+                        ['ประกอบคอม', 'จัดสเปกคอมมือสอง', '/build', 'fa-tools'],
+                        ['ขยับไปรุ่นไหน', 'ใช้รุ่นนี้อยู่ ควรอัปเกรดเป็นอะไร', '/upgrade', 'fa-level-up-alt'],
+                    ]],
+                ]],
+            ];
+            ?>
             <ul class="navbar-nav mx-xl-auto text-nowrap">
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/') ?>" href="<?= $base ?>/">หน้าแรก</a></li>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/price') ?>" href="<?= $base ?>/price">เช็กราคา</a></li>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/compare') ?>" href="<?= $base ?>/compare">เทียบรุ่น</a></li>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/condition-guide') ?>" href="<?= $base ?>/condition-guide">เช็กสภาพ</a></li>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/deal-checker') ?>" href="<?= $base ?>/deal-checker">Deal Checker</a></li>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/read-listing') ?>" href="<?= $base ?>/read-listing">วางประกาศ</a></li>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/blog') ?>" href="<?= $base ?>/blog">บทความ</a></li>
-                <?php if (!empty($config['community_forum']['enabled'])): ?><li class="nav-item"><a class="nav-link<?= $navCurrent('/community') ?>" href="<?= $base ?>/community">ชุมชน</a></li><?php endif; ?>
-                <li class="nav-item"><a class="nav-link<?= $navCurrent('/build') ?>" href="<?= $base ?>/build">ประกอบคอม</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="cat-menu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">เพิ่มเติม</a>
-                    <div class="dropdown-menu" aria-labelledby="cat-menu">
-                        <a class="dropdown-item" href="<?= $base ?>/methodology">วิธีคำนวณ</a>
-                        <div class="dropdown-divider"></div>
-                        <h6 class="dropdown-header">หมวดหมู่</h6>
-                        <?php foreach (['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', 'ram' => 'RAM', 'storage' => 'Storage', 'psu' => 'PSU', 'case' => 'Case', 'cooling' => 'Cooling'] as $navCat => $navLabel): ?>
-                        <a class="dropdown-item" href="<?= $base ?>/price?category=<?= $navCat ?>"><?= $navLabel ?></a>
+                <?php foreach ($navGroups as $gi => $g):
+                    $paths = []; foreach ($g['cols'] as $col) { foreach ($col[1] as $it) { $paths[] = strtok($it[2], '?'); } }
+                    $gActive = false; foreach (array_unique($paths) as $p) { if ($navCurrent($p) !== '') { $gActive = true; break; } }
+                ?>
+                <li class="nav-item dropdown mi-mega-wrap">
+                    <a class="nav-link dropdown-toggle<?= $gActive ? ' active' : '' ?>" href="#" id="mega-<?= $gi ?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?= $g['label'] ?></a>
+                    <div class="dropdown-menu mi-mega" aria-labelledby="mega-<?= $gi ?>">
+                        <div class="row">
+                        <?php foreach ($g['cols'] as $col): ?>
+                            <div class="col-xl mi-mega-col">
+                                <h6 class="mi-mega-title"><?= $col[0] ?></h6>
+                                <?php foreach ($col[1] as $it): ?>
+                                <a class="mi-mega-item" href="<?= $base . $it[2] ?>"><span class="mi-mega-ico"><i class="fas <?= $it[3] ?>" aria-hidden="true"></i></span><span class="mi-mega-text"><b><?= $it[0] ?></b><small><?= $it[1] ?></small></span></a>
+                                <?php endforeach; ?>
+                            </div>
                         <?php endforeach; ?>
+                        </div>
                     </div>
                 </li>
+                <?php endforeach; ?>
+                <li class="nav-item"><a class="nav-link<?= $navCurrent('/blog') ?>" href="<?= $base ?>/blog">บทความ</a></li>
+                <?php if (!empty($config['community_forum']['enabled'])): ?><li class="nav-item"><a class="nav-link<?= $navCurrent('/community') ?>" href="<?= $base ?>/community">ชุมชน</a></li><?php endif; ?>
             </ul>
             <div class="nav-tools">
                 <a class="nav-icon" href="<?= $base ?>/price" aria-label="ค้นหารุ่นสินค้า" title="ค้นหารุ่น (กด / ได้ทุกหน้า)"><i class="fas fa-search" aria-hidden="true"></i></a>
