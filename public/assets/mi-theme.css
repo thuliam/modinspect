@@ -579,6 +579,23 @@ body.mi .mi-section-nav .nav-link:focus-visible .mi-dock-ico { outline: 2px soli
     body.mi .mi-section-nav .nav-link:hover + .nav-link .mi-dock-ico, body.mi .mi-section-nav .nav-link:has(+ .nav-link:hover) .mi-dock-ico { transform: scale(1.22); }
     body.mi .mi-section-nav .nav-link:hover + .nav-link + .nav-link .mi-dock-ico, body.mi .mi-section-nav .nav-link:has(+ .nav-link + .nav-link:hover) .mi-dock-ico { transform: scale(1.08); }
 }
+/* LS-35b: screens from 1720 px (the content tops out near 1480 px, so the bar clears it) get the dock as a vertical floating bar at the right edge (a short horizontal bar looked stubby); phones get it edge to edge. In between it stays the centred horizontal pill. */
+@media (min-width: 1720px) {
+    body.mi .mi-section-nav { position: fixed; top: 50%; right: 24px; transform: translateY(-50%); flex-direction: column; width: fit-content; height: auto; margin: 0; padding: 14px 8px; gap: 14px; z-index: 20; overflow: visible; }
+    body.mi .mi-section-nav .nav-link::after { top: 50%; left: auto; right: calc(100% + 26px); transform: translate(4px, -50%); }
+    body.mi .mi-section-nav .nav-link:hover::after, body.mi .mi-section-nav .nav-link:focus-visible::after { transform: translate(0, -50%); }
+    html { scroll-padding-top: 100px; }
+}
+@media (max-width: 991.98px) {
+    body.mi .mi-section-nav { top: 72px; width: 100vw; max-width: none; margin: 0 0 16px calc(50% - 50vw); padding: 6px 8px; gap: 0; justify-content: space-around; border-width: 1px 0; border-radius: 0; box-shadow: none; }
+    body.mi .mi-section-nav .nav-link { flex: 1 1 0; width: auto; height: 52px; }
+    body.mi .mi-dock-ico { width: 44px; height: 44px; font-size: 18px; }
+}
+/* the home page search box: the old stylesheet turns every ".mi-search > div" into a column on phones, which broke the Bootstrap input group (icon, field and button stacked) */
+body.mi .mi-search > .input-group { flex-direction: row; flex-wrap: nowrap; align-items: stretch; }
+body.mi .mi-search .input-group-prepend, body.mi .mi-search .input-group-append { flex: 0 0 auto; }
+body.mi .mi-search .form-control { flex: 1 1 auto; width: 1%; min-width: 0; }
+@media (max-width: 575.98px) { body.mi .mi-search .form-control { height: 52px; font-size: 1rem; } body.mi .mi-search .input-group-text { padding-left: 14px; padding-right: 8px; } body.mi .mi-search .btn-lime { min-width: 0; padding: 0 18px; } }
 html { scroll-padding-top: 160px; }
 html.motion-full { scroll-behavior: smooth; }
 
@@ -611,3 +628,19 @@ body.mi .mi-mega-item:hover .mi-mega-text small, body.mi .mi-mega-item:focus .mi
 }
 @media (min-width: 1200px) and (hover: hover) { body.mi .public-nav .dropdown:hover > .dropdown-menu { display: block; } }
 @media (max-width: 1199.98px) { body.mi .mi-mega { padding: 4px 8px 12px; border: 0; box-shadow: none; background: transparent; } body.mi .mi-mega-item { min-height: 44px; } body.mi .mi-mega-col + .mi-mega-col { margin-top: 16px; } }
+
+/* LS-36: benchmark stats in a gamer look: segmented neon bars (Bootstrap .progress with CI tokens), mono numerals, a lime radar. The bar width is the published score out of 100. */
+body.mi .mi-stat-radar { position: relative; height: 240px; margin: 4px 0 8px; }
+body.mi .mi-stats { margin: 8px 0 0; }
+body.mi .mi-stat { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr) 4.25rem; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid var(--ci-border); }
+body.mi .mi-stat-l { color: var(--ci-text-2); font-size: 14px; font-weight: 600; }
+body.mi .mi-stat-v { font-family: var(--mb-mono); font-size: 16px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; color: var(--ci-text); }
+body.mi .mi-stat-bar { position: relative; height: 10px; border-radius: 2px; background: var(--ci-elevated); overflow: hidden; }
+body.mi .mi-stat-bar .progress-bar { background: var(--ci-primary); box-shadow: 0 0 12px var(--ci-primary-glow); border-radius: 2px; transition: width .6s cubic-bezier(.2, .8, .2, 1); }
+body.mi .mi-stat-bar::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0, transparent 9px, var(--ci-surface) 9px, var(--ci-surface) 11px); }
+body.mi .mi-stat-main { padding: 12px 0; }
+body.mi .mi-stat-main .mi-stat-l { color: var(--ci-text); }
+body.mi .mi-stat-main .mi-stat-bar { height: 14px; }
+body.mi .mi-stat-main .mi-stat-v { white-space: nowrap; font-size: 26px; line-height: 1; color: var(--ci-primary); text-shadow: 0 0 14px var(--ci-primary-glow); }
+@media (max-width: 575.98px) { body.mi .mi-stat { grid-template-columns: 6rem minmax(0, 1fr) 3.5rem; gap: 8px; } body.mi .mi-stat-radar { height: 220px; } }
+@media (prefers-reduced-motion: reduce) { body.mi .mi-stat-bar .progress-bar { transition: none; } }
