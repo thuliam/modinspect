@@ -186,7 +186,7 @@ body.mi .mi-chips a { padding: 5px 16px; font-size: 14px; }
 body.mi .mi-data-note { font-size: 13px; max-width: none; }
 body.mi .mi-hero-art { display: flex; align-items: center; justify-content: center; padding: 0; }
 body.mi .mi-hero-art img { display: block; width: 100%; max-width: 100%; height: auto; margin: 0; filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .55)); }
-html.motion-full body.mi .mi-hero-art img { animation: miFloat 9s ease-in-out infinite; }
+html.motion-full body.mi .mi-hero-art img { animation: miFloat 9s ease-in-out infinite, miAura 18s linear infinite; }
 
 /* section rhythm */
 body.mi .mi-block { padding: clamp(28px, 4vw, 44px) 0; }
@@ -709,11 +709,11 @@ body.mi .mi-faq .collapse p, body.mi .mi-faq .collapsing p { margin: 0; padding:
 @media (max-width: 575.98px) { body.mi .mi-timeline { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { body.mi .mi-row, body.mi .mi-row-go, body.mi .mi-faq-q i { transition: none; } }
 
-/* LS-38: hero wavy background (the Aceternity wavy-background idea) in CSS only. Four blurred wave bands slide sideways at different speeds; the whole group cycles through the RGB spectrum with a hue-rotate filter, like ROG Aura Sync, starting from the CI lime. The left side is quieter so the headline keeps its contrast. Reduced motion: still, lime. */
-body.mi .mi-waves { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: .85; -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3), #000 50%); mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3), #000 50%); animation: miAura 18s linear infinite; }
+/* LS-38: hero wavy background (the Aceternity wavy-background idea) in CSS only. Four blurred wave bands slide sideways at different speeds; the bands stay CI lime (a lime gradient along each band); the RGB cycle belongs to the hardware picture (miAura, hue-rotate, like ROG Aura Sync). The left side is quieter so the headline keeps its contrast. Reduced motion: still, lime. */
+body.mi .mi-waves { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: .7; -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3), #000 50%); mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3), #000 50%); }
 body.mi .mi-wave { position: absolute; left: 0; top: var(--y); width: 200%; height: 220px; fill: none; stroke: var(--c); stroke-width: 40; filter: blur(12px); animation: miWaveSlide var(--t) linear infinite; }
 body.mi .mi-wave-rev { animation-direction: reverse; }
-@keyframes miAura { to { filter: hue-rotate(360deg); } }
+@keyframes miAura { from { filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .55)) hue-rotate(0deg); } to { filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .55)) hue-rotate(360deg); } }
 @keyframes miWaveSlide { to { transform: translateX(-50%); } }
 @media (max-width: 767.98px) { body.mi .mi-wave:nth-child(n+3) { display: none; } body.mi .mi-waves { opacity: .4; } }
-@media (prefers-reduced-motion: reduce) { body.mi .mi-waves, body.mi .mi-wave { animation: none; } }
+@media (prefers-reduced-motion: reduce) { body.mi .mi-wave { animation: none; } }

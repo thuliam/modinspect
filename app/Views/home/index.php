@@ -49,11 +49,11 @@ while (count($featured) < 5 && $byCat) {
 }
 ?>
 <section class="mi-hero">
-    <?php // LS-38: wavy background (after the Aceternity wavy-background), CSS only: four sliding wave bands, the whole group colour-cycles through the RGB spectrum (ROG Aura Sync style) with a hue-rotate filter. Static lime when the visitor asks for reduced motion. ?>
+    <?php // LS-38: wavy background (after the Aceternity wavy-background), CSS only: four sliding wave bands, the bands stay CI lime (a lime gradient along each band); the hardware picture cycles through the RGB spectrum (ROG Aura Sync style, see miAura in mi-theme.css). Static when the visitor asks for reduced motion. ?>
     <div class="mi-waves" aria-hidden="true">
-        <?php foreach ([[120, '#bbf246', 24, ''], [90, '#22d3ee', 30, ' mi-wave-rev'], [150, '#e879f9', 38, ''], [70, '#fb923c', 46, ' mi-wave-rev']] as $wi => $w):
+        <?php foreach ([[120, '#d4ff4a', 24, ''], [90, '#bbf246', 30, ' mi-wave-rev'], [150, '#e6ff6a', 38, ''], [70, '#a3d12a', 46, ' mi-wave-rev']] as $wi => $w):
             $d = 'M0 160'; for ($x = 0; $x < 2880; $x += 720) { $d .= ' C' . ($x + 180) . ' ' . (160 - $w[0]) . ' ' . ($x + 540) . ' ' . (160 + $w[0]) . ' ' . ($x + 720) . ' 160'; } ?>
-            <svg class="mi-wave<?= $w[3] ?>" style="--c:<?= $w[1] ?>;--t:<?= $w[2] ?>s;--y:<?= 22 + $wi * 14 ?>%" viewBox="0 0 2880 320" preserveAspectRatio="none" focusable="false"><path d="<?= $d ?>"/></svg>
+            <svg class="mi-wave<?= $w[3] ?>" style="--t:<?= $w[2] ?>s;--y:<?= 22 + $wi * 14 ?>%" viewBox="0 0 2880 320" preserveAspectRatio="none" focusable="false"><defs><linearGradient id="miWg<?= $wi ?>" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7fa312"/><stop offset=".5" stop-color="<?= $w[1] ?>"/><stop offset="1" stop-color="#7fa312"/></linearGradient></defs><path style="stroke:url(#miWg<?= $wi ?>)" d="<?= $d ?>"/></svg>
         <?php endforeach; ?>
     </div>
     <div class="container">
