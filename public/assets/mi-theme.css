@@ -644,3 +644,67 @@ body.mi .mi-stat-main .mi-stat-bar { height: 14px; }
 body.mi .mi-stat-main .mi-stat-v { white-space: nowrap; font-size: 26px; line-height: 1; color: var(--ci-primary); text-shadow: 0 0 14px var(--ci-primary-glow); }
 @media (max-width: 575.98px) { body.mi .mi-stat { grid-template-columns: 6rem minmax(0, 1fr) 3.5rem; gap: 8px; } body.mi .mi-stat-radar { height: 220px; } }
 @media (prefers-reduced-motion: reduce) { body.mi .mi-stat-bar .progress-bar { transition: none; } }
+
+/* LS-37: home page skeleton after the KYMA reference: a stat strip under the hero, then numbered sections with a label rail on the left (index + name) and the content on the right, rows separated by hairlines, a process line, an accordion. CI tokens only. */
+body.mi .mi-strip-wrap { padding: 0 0 8px; }
+body.mi .mi-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); background: var(--ci-surface); }
+body.mi .mi-strip li { display: flex; flex-direction: column; gap: 4px; padding: 20px 24px; border-left: 1px solid var(--ci-border); }
+body.mi .mi-strip li:first-child { border-left: 0; }
+body.mi .mi-strip b { font-family: var(--mb-mono); font-size: 32px; line-height: 1; font-weight: 700; color: var(--ci-primary); font-variant-numeric: tabular-nums; }
+body.mi .mi-strip span { color: var(--ci-text-2); font-size: 14px; }
+body.mi .mi-strip-wrap .mi-note { margin-top: 12px; }
+body.mi .mi-sec { padding: 48px 0; border-top: 1px solid var(--ci-border); }
+body.mi .mi-sec:first-of-type { margin-top: 24px; }
+body.mi .mi-rail { display: flex; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+body.mi .mi-idx { font-family: var(--mb-mono); font-weight: 700; color: var(--ci-primary); font-variant-numeric: tabular-nums; }
+body.mi .mi-rail-name { color: var(--ci-text-2); font-size: 14px; }
+body.mi .mi-sec h2 { max-width: 28ch; margin: 0 0 24px; font-size: clamp(1.5rem, 2.6vw, 2.25rem); line-height: 1.3; letter-spacing: 0; text-wrap: balance; }
+body.mi .mi-sec .mi-head h2 { margin-bottom: 0; }
+body.mi .mi-lead { max-width: 60ch; margin: -8px 0 24px; color: var(--ci-text-2); }
+body.mi .mi-principles { margin: 0 -12px; }
+body.mi .mi-principles > div { padding: 0 12px; }
+body.mi .mi-principle { display: flex; gap: 16px; height: 100%; padding: 20px 0; border-top: 1px solid var(--ci-border); }
+body.mi .mi-principle b { flex: 0 0 auto; font-family: var(--mb-mono); color: var(--ci-text-2); font-variant-numeric: tabular-nums; }
+body.mi .mi-principle h3 { margin: 0 0 4px; font-size: 1.05rem; }
+body.mi .mi-principle p { margin: 0; color: var(--ci-text-2); }
+body.mi .mi-deal-inline { max-width: 36rem; }
+body.mi .mi-deal-inline label { display: block; margin-bottom: 8px; }
+body.mi .mi-deal-inline .form-control { height: 52px; }
+body.mi .mi-deal-inline .btn-lime { border-radius: 0 var(--ci-r-md) var(--ci-r-md) 0; padding: 0 20px; }
+body.mi .mi-table { margin: 0; border-bottom: 1px solid var(--ci-border); }
+body.mi .mi-row { display: grid; grid-template-columns: 4.5rem 11rem minmax(0, 1fr) 2.5rem; align-items: center; gap: 16px; min-height: 64px; padding: 12px 0; border-top: 1px solid var(--ci-border); color: var(--ci-text); transition: background-color .2s, padding .2s; }
+body.mi .mi-row:hover, body.mi .mi-row:focus-visible { background: var(--ci-surface); color: var(--ci-text); padding-left: 12px; padding-right: 12px; }
+body.mi .mi-row-id { font-family: var(--mb-mono); font-size: 13px; color: var(--ci-text-2); font-variant-numeric: tabular-nums; }
+body.mi .mi-row strong { font-size: 1.05rem; }
+body.mi .mi-row-sub { color: var(--ci-text-2); }
+body.mi .mi-row-go { justify-self: end; color: var(--ci-text-2); transition: color .2s, transform .2s; }
+body.mi .mi-row:hover .mi-row-go { color: var(--ci-primary); transform: translateX(4px); }
+body.mi .mi-row-article { grid-template-columns: 8rem minmax(0, 1.2fr) minmax(0, 1.6fr) 2.5rem; align-items: start; }
+body.mi .mi-timeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin: 0; }
+body.mi .mi-timeline li { padding-top: 16px; border-top: 2px solid var(--ci-border); }
+body.mi .mi-timeline li:first-child { border-top-color: var(--ci-primary); }
+body.mi .mi-timeline-n { display: block; margin-bottom: 8px; font-family: var(--mb-mono); font-size: 13px; color: var(--ci-primary); }
+body.mi .mi-timeline h3 { margin: 0 0 8px; font-size: 1.05rem; }
+body.mi .mi-timeline p { margin: 0; color: var(--ci-text-2); }
+body.mi .mi-faq { border-bottom: 1px solid var(--ci-border); }
+body.mi .mi-faq-item { border-top: 1px solid var(--ci-border); }
+body.mi .mi-faq-item h3 { margin: 0; font-size: 1rem; font-family: inherit; font-weight: 600; }
+body.mi .mi-faq-q { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 1.5rem; align-items: center; gap: 16px; width: 100%; min-height: 64px; padding: 12px 0; border: 0; background: transparent; color: var(--ci-text); text-align: left; font: inherit; font-weight: 600; }
+body.mi .mi-faq-q:hover { color: var(--ci-primary); }
+body.mi .mi-faq-q i { color: var(--ci-text-2); transition: transform .2s; }
+body.mi .mi-faq-q:not(.collapsed) i { transform: rotate(45deg); color: var(--ci-primary); }
+body.mi .mi-faq .collapse p, body.mi .mi-faq .collapsing p { margin: 0; padding: 0 0 20px calc(4.5rem + 16px); max-width: 70ch; color: var(--ci-text-2); }
+@media (max-width: 991.98px) { body.mi .mi-timeline { grid-template-columns: repeat(2, minmax(0, 1fr)); } body.mi .mi-sec { padding: 32px 0; } body.mi .mi-rail { margin-bottom: 12px; } }
+@media (max-width: 767.98px) {
+    body.mi .mi-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    body.mi .mi-strip li:nth-child(3) { border-left: 0; }
+    body.mi .mi-strip li:nth-child(n+3) { border-top: 1px solid var(--ci-border); }
+    body.mi .mi-row, body.mi .mi-row-article { grid-template-columns: 2.5rem minmax(0, 1fr) 2rem; gap: 4px 12px; }
+    body.mi .mi-row-sub { grid-column: 2; }
+    body.mi .mi-row-article .mi-row-id { grid-column: 1 / -1; }
+    body.mi .mi-row-article strong, body.mi .mi-row-article .mi-row-sub { grid-column: 1 / 3; }
+    body.mi .mi-faq-q { grid-template-columns: 2.5rem minmax(0, 1fr) 1.5rem; }
+    body.mi .mi-faq .collapse p, body.mi .mi-faq .collapsing p { padding-left: calc(2.5rem + 16px); }
+}
+@media (max-width: 575.98px) { body.mi .mi-timeline { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { body.mi .mi-row, body.mi .mi-row-go, body.mi .mi-faq-q i { transition: none; } }
