@@ -15,7 +15,7 @@ $root = dirname(__DIR__);
 $hw = (string)file_get_contents($root . '/app/Views/components/hw-art.php');
 ok_sp(str_contains($hw, "bool \$eager = false") && str_contains($hw, "\$eager ? 'fetchpriority=\"high\"' : 'loading=\"lazy\"'"), 'A product photo is lazy by default and fetched first when asked');
 ok_sp(str_contains((string)file_get_contents($root . '/app/Views/price/show.php'), "mi_product_photo(\$product, \$base, 'mi-photo', true)"), 'The photo at the top of a product page is the eager one');
-ok_sp(str_contains((string)file_get_contents($root . '/app/Views/home/index.php'), 'hero-hardware.png" fetchpriority="high"'), 'The home hero picture is fetched first');
+ok_sp(str_contains((string)file_get_contents($root . '/app/Views/home/index.php'), '/original.webp" fetchpriority="high"'), 'The home hero picture is fetched first');
 foreach (['product-card.php', 'product-list.php'] as $c) {
     preg_match_all('/mi_product_photo\(([^;]*?)\);/', (string)file_get_contents($root . '/app/Views/components/' . $c), $calls);
     ok_sp(count($calls[1]) >= 1 && !array_filter($calls[1], static fn(string $a): bool => str_contains($a, 'true')), "Pictures in lists ($c) stay lazy (no eager argument)");

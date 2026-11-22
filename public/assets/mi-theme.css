@@ -70,8 +70,6 @@ body.mi .mi-chips span i { color: var(--ci-gold); }
 body.mi .mi-chips a:hover { border-color: var(--mi-lime); color: var(--mi-lime); background: rgba(187, 242, 70, .08); }
 body.mi .mi-data-note { max-width: 40rem; margin: 18px 0 0; padding: 0; border: 0; background: none; color: var(--mb-muted); font-size: 13px; line-height: 1.7; }
 body.mi .mi-hero-art { padding: 8px 0; }
-body.mi .mi-hero-art svg { display: block; width: 100%; height: auto; filter: drop-shadow(0 24px 48px rgba(187, 242, 70, .18)); }
-html.motion-full body.mi .mi-hero-art svg { animation: miFloat 8s ease-in-out infinite; }
 @keyframes miFloat { 50% { transform: translateY(-10px); } }
 @media (max-width: 991.98px) { body.mi .mi-hero-art { margin-top: 32px; } }
 
@@ -187,8 +185,37 @@ body.mi .mi-chips { font-size: 15px; }
 body.mi .mi-chips a { padding: 5px 16px; font-size: 14px; }
 body.mi .mi-data-note { font-size: 13px; max-width: none; }
 body.mi .mi-hero-art { display: flex; align-items: center; justify-content: center; padding: 0; }
-body.mi .mi-hero-art img { display: block; width: 100%; max-width: 100%; height: auto; margin: 0; filter: drop-shadow(0 30px 50px rgba(0, 0, 0, .55)); }
-html.motion-full body.mi .mi-hero-art img { animation: miFloat 9s ease-in-out infinite, miAura 18s linear infinite; }
+/* MODINSPECT-HERO-RGB-001: layered RGB hero. One shared coordinate system (the 1774x887 picture); every overlay is placed in % of it, so registration holds at every size. The picture never moves. */
+body.mi .mi-rgb { position: relative; width: 100%; margin: 0; aspect-ratio: 1774 / 887; contain: layout paint; }
+body.mi .mi-rgb img { display: block; max-width: none; user-select: none; -webkit-user-drag: none; }
+body.mi .mi-rgb-orig { width: 100%; height: auto; }
+body.mi .mi-rgb-stage { position: absolute; inset: 0; visibility: hidden; pointer-events: none; }
+body.mi .mi-rgb.is-rgb .mi-rgb-stage { visibility: visible; }
+body.mi .mi-rgb.is-rgb .mi-rgb-orig { visibility: hidden; }
+body.mi .mi-rgb-stage img { position: absolute; }
+body.mi .mi-rgb-base, body.mi .mi-rgb-dim { left: 0; top: 0; width: 100%; height: 100%; }
+body.mi .mi-rgb-dim { opacity: 0; }
+body.mi .mi-rgb-lights { position: absolute; inset: 0; }
+body.mi .mi-hero-art { flex-direction: column; align-items: stretch; gap: 10px; }
+/* the picture melts into the hero: soft edges, deeper at the bottom (floor reflections) and right (light beam); the case fans stay fully inside */
+body.mi .mi-rgb-orig, body.mi .mi-rgb-stage { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 92%, transparent 100%), linear-gradient(180deg, transparent 0, #000 8%, #000 84%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 92%, transparent 100%), linear-gradient(180deg, transparent 0, #000 8%, #000 84%, transparent 100%); mask-composite: intersect; }
+
+/* MODINSPECT-HERO-RGB-002: light-mode switch, a small floating gimmick (icons only, no panel). Buttons stay 44px for touch. */
+body.mi .mi-hero-art { position: relative; }
+body.mi .mi-hud { --hud-ico: #aeb6b8; --hud-lime: #d4f139; position: absolute; right: 0; top: 50%; transform: translateY(-50%); z-index: 2; display: flex; visibility: hidden; opacity: .6; transition: opacity .25s; }
+body.mi .mi-hud.is-ready { visibility: visible; }
+body.mi .mi-hud:hover, body.mi .mi-hud:focus-within { opacity: 1; }
+body.mi .mi-hud-grid { display: flex; flex-direction: column; gap: 0; }
+body.mi .mi-hud-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: var(--hud-ico); cursor: pointer; transition: color .2s; }
+body.mi .mi-hud-btn svg { display: block; width: 20px; height: 20px; stroke-width: 2; transition: filter .2s; }
+body.mi .mi-hud-btn:hover { color: #fff; }
+body.mi .mi-hud-btn[aria-pressed="true"] { color: var(--hud-lime); }
+body.mi .mi-hud-btn[aria-pressed="true"] svg { filter: drop-shadow(0 0 5px rgba(212, 241, 57, .7)); }
+body.mi .mi-hud-btn:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }
+body.mi .mi-hud-status { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (max-width: 767.98px) { body.mi .mi-hud { top: auto; bottom: 1%; transform: none; } body.mi .mi-hud-grid { flex-direction: row; } }
+@media (max-width: 400px) { body.mi .mi-hud-grid { flex-wrap: wrap; width: 176px; } }
+@media (prefers-reduced-motion: reduce) { body.mi .mi-hud, body.mi .mi-hud-btn, body.mi .mi-hud-btn svg { transition: none; } }
 
 /* section rhythm */
 body.mi .mi-block { padding: clamp(28px, 4vw, 44px) 0; }
@@ -893,9 +920,6 @@ body.mi .mi-admin-table thead th { border-bottom: 1px solid var(--ci-border-acti
 body.mi .mi-admin-table td, body.mi .mi-admin-table th { border-top: 1px solid var(--ci-border); }
 body.mi .mi-admin-table tbody tr:not(.mi-cmp-group) { transition: background-color .2s; }
 body.mi .mi-admin-table tbody tr:not(.mi-cmp-group):hover { background: rgba(187, 242, 70, .05); }
-
-/* LS-49: the hero picture fades into the page instead of ending in a visible rectangle (owner: the edge still shows). Written as an override at the end of the file so the hero RGB layer rules above stay untouched: the picture and its light stage share one soft mask on all four sides; the mode switch sits outside the mask. */
-body.mi .mi-rgb-orig, body.mi .mi-rgb-stage { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%, #000 84%, transparent 100%); mask-composite: intersect; }
 
 /* LS-51: (1) a Select2 box keeps its pill shape when it opens: only the border and ring change, the list opens below as a separate rounded panel; (2) the /price budget row; (3) the product page actions as one primary button plus the dock; (4) the two lists of similar models switch with pills. */
 body.mi .select2-container--default.select2-container--open.select2-container--below .select2-selection--single, body.mi .select2-container--default.select2-container--open.select2-container--above .select2-selection--single { border-radius: var(--ci-r-pill); }
