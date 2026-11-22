@@ -951,3 +951,6 @@ body.mi .mi-price-layout .mi-result-summary { flex-wrap: wrap; gap: 4px 16px; ma
 /* LS-53: scrollbars in the brand: a thin track in the surface colour and a thumb that turns lime on hover, for the page and for the filter sidebar. */
 html, body.mi .mi-side, body.mi .mi-cat-dock { scrollbar-width: thin; scrollbar-color: var(--ci-border-active) transparent; }
 body.mi .mi-side:hover, body.mi .mi-side:focus-within { scrollbar-color: var(--ci-primary) transparent; }
+
+/* LS-54: every scrolling box on the public site (Select2 lists, the builder parts card, the dock, tables) uses the brand scrollbar, not only the page and the filter sidebar. */
+body.mi *, body.mi .select2-results__options { scrollbar-width: thin; scrollbar-color: var(--ci-border-active) transparent; }
