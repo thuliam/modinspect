@@ -48,8 +48,8 @@
                     <li><a href="<?= $base ?>/condition-guide/<?= htmlspecialchars($c['slug']) ?>"><?= htmlspecialchars($c['name']) ?></a></li>
                 <?php endforeach; ?>
             </ul>
-            <a class="button" href="<?= $base ?>/deal-checker">เปิด Deal Checker</a>
-            <a class="button ghost mt-2" href="<?= $base ?>/price?category=<?= rawurlencode($guide['slug']) ?>">ดูราคา <?= htmlspecialchars($guide['name']) ?> มือสอง</a>
+            <a class="btn btn-lime btn-block" href="<?= $base ?>/deal-checker">เปิด Deal Checker</a>
+            <a class="btn btn-ghost btn-block mt-2" href="<?= $base ?>/price?category=<?= rawurlencode($guide['slug']) ?>">ดูราคา <?= htmlspecialchars($guide['name']) ?> มือสอง</a>
         </aside>
     </div>
     <p class="mi-trend-note"><?= htmlspecialchars($guide['note']) ?></p>

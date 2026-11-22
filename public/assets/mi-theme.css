@@ -966,3 +966,20 @@ body.mi .mi-blog-cat.active { background: var(--ci-primary); color: var(--ci-on-
 body.mi .mi-blog-cat.active i, body.mi .mi-blog-cat.active em { color: var(--ci-on-primary); }
 body.mi .mi-blog-tag { display: inline-block; margin-right: 8px; padding: 2px 10px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-primary); font-size: 12px; }
 body.mi .mi-side-plain { overflow: visible; max-height: none; }
+
+/* LS-56: the Tools pages in the home language: the compare table as hairline rows (no admin card, no hover fill), the "differs" mark as a quiet amber pill like the other delta pills, the Deal Checker and reader panels as the same hairline surface as the /price filter, and the upgrade cards on the same surface. Buttons are the lime pill, fields the pill/ask bar. */
+body.mi .mi-table-card { background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+body.mi .mi-table-card .table { background: transparent; color: var(--ci-text); }
+body.mi .mi-table-card .table th, body.mi .mi-table-card .table td { padding: 14px 12px; border-top: 1px solid var(--ci-border); border-bottom: 0; background: transparent; vertical-align: middle; }
+body.mi .mi-table-card .table thead th { border-top: 0; border-bottom: 1px solid var(--ci-border-active); color: var(--ci-text-2); font-weight: 500; }
+body.mi .mi-table-card .table tbody th[scope=row] { color: var(--ci-text-2); font-weight: 500; }
+body.mi .mi-table-card .table.table-hover tbody tr:hover { background: var(--ci-surface); color: var(--ci-text); }
+body.mi .mi-cmp-group th { background: transparent; border-top: 1px solid var(--ci-border-active); }
+body.mi .mi-delta-diff { color: #fbbf24; background: rgba(251, 191, 36, .1); border-color: rgba(251, 191, 36, .35); }
+body.mi .mi-deal-form, body.mi .mi-help-card, body.mi .mi-up-card, body.mi .mi-result-panel { background: var(--ci-surface); border: 1px solid var(--ci-border); border-radius: var(--ci-r-lg); box-shadow: none; }
+body.mi .mi-deal-form .mi-ask-bar { height: 52px; box-shadow: none; }
+body.mi .mi-deal-form .mi-ask-bar:focus-within { height: 52px; box-shadow: 0 0 0 3px var(--ci-border-glow); }
+body.mi .mi-deal-form textarea.form-control { border-radius: var(--ci-r-lg); padding: 16px 20px; }
+body.mi .mi-deal-form .custom-checkbox { margin: 8px 0; }
+body.mi .mi-deal-form .mi-checks { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+body.mi .mi-up-card .mi-delta { margin-left: 0; }

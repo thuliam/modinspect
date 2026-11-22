@@ -27,7 +27,7 @@ $yn = static fn(?bool $b): string => $b === true ? 'มีระบุ' : 'ไ�
                     <input id="listing-price" type="number" name="price" min="1" max="10000000" step="1" class="form-control" value="<?= $r['price'] !== null ? (int) $r['price'] : '' ?>" placeholder="ระบบอ่านราคาไม่ชัด กรอกเองได้">
                 </div>
             <?php endif; ?>
-            <button type="submit" class="btn btn-primary">อ่านประกาศ</button>
+            <button type="submit" class="btn btn-lime"><i class="fas fa-search" aria-hidden="true"></i> อ่านประกาศ</button>
         </form>
     </div>
 
@@ -98,3 +98,5 @@ $yn = static fn(?bool $b): string => $b === true ? 'มีระบุ' : 'ไ�
     <?php $neg = ($p && $v && ($v['label'] ?? '') !== 'insufficient' && $p['q1'] && $p['q3'] && $r['price'] !== null) ? \App\Services\Deal\Negotiation::plan($p['name'], (float) $r['price'], $p['q1'], $p['q3'], $p['median'], $p['samples']) : null; require ROOT_PATH . '/app/Views/components/negotiation.php'; ?>
     <?php endif; ?>
 </section>
+
+<?php require ROOT_PATH . '/app/Views/components/next-step.php'; // LS-56: every tool page ends with a next step ?>
