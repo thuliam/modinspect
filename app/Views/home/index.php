@@ -49,6 +49,13 @@ while (count($featured) < 5 && $byCat) {
 }
 ?>
 <section class="mi-hero">
+    <?php // LS-38: wavy background (after the Aceternity wavy-background), CSS only: four sliding wave bands, the whole group colour-cycles through the RGB spectrum (ROG Aura Sync style) with a hue-rotate filter. Static lime when the visitor asks for reduced motion. ?>
+    <div class="mi-waves" aria-hidden="true">
+        <?php foreach ([[120, '#bbf246', 24, ''], [90, '#22d3ee', 30, ' mi-wave-rev'], [150, '#e879f9', 38, ''], [70, '#fb923c', 46, ' mi-wave-rev']] as $wi => $w):
+            $d = 'M0 160'; for ($x = 0; $x < 2880; $x += 720) { $d .= ' C' . ($x + 180) . ' ' . (160 - $w[0]) . ' ' . ($x + 540) . ' ' . (160 + $w[0]) . ' ' . ($x + 720) . ' 160'; } ?>
+            <svg class="mi-wave<?= $w[3] ?>" style="--c:<?= $w[1] ?>;--t:<?= $w[2] ?>s;--y:<?= 22 + $wi * 14 ?>%" viewBox="0 0 2880 320" preserveAspectRatio="none" focusable="false"><path d="<?= $d ?>"/></svg>
+        <?php endforeach; ?>
+    </div>
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-5 mi-hero-copy">

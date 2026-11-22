@@ -708,3 +708,12 @@ body.mi .mi-faq .collapse p, body.mi .mi-faq .collapsing p { margin: 0; padding:
 }
 @media (max-width: 575.98px) { body.mi .mi-timeline { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { body.mi .mi-row, body.mi .mi-row-go, body.mi .mi-faq-q i { transition: none; } }
+
+/* LS-38: hero wavy background (the Aceternity wavy-background idea) in CSS only. Four blurred wave bands slide sideways at different speeds; the whole group cycles through the RGB spectrum with a hue-rotate filter, like ROG Aura Sync, starting from the CI lime. The left side is quieter so the headline keeps its contrast. Reduced motion: still, lime. */
+body.mi .mi-waves { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: .85; -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3), #000 50%); mask-image: linear-gradient(90deg, rgba(0, 0, 0, .3), #000 50%); animation: miAura 18s linear infinite; }
+body.mi .mi-wave { position: absolute; left: 0; top: var(--y); width: 200%; height: 220px; fill: none; stroke: var(--c); stroke-width: 40; filter: blur(12px); animation: miWaveSlide var(--t) linear infinite; }
+body.mi .mi-wave-rev { animation-direction: reverse; }
+@keyframes miAura { to { filter: hue-rotate(360deg); } }
+@keyframes miWaveSlide { to { transform: translateX(-50%); } }
+@media (max-width: 767.98px) { body.mi .mi-wave:nth-child(n+3) { display: none; } body.mi .mi-waves { opacity: .4; } }
+@media (prefers-reduced-motion: reduce) { body.mi .mi-waves, body.mi .mi-wave { animation: none; } }
