@@ -26,12 +26,14 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
             <button type="submit">ค้นหา</button>
         </div>
         <?php $keep = array_filter(['sort' => $sort ?? '', 'priced' => !empty($pricedOnly) ? '1' : '']); ?>
-        <div class="mi-category-chips" aria-label="Quick category filters">
+        <?php // LS-47: category filter as a dock (icon above its label, RGB tiles, macOS-style bounce on hover); same icons as the main menu
+        $catIcons = ['cpu' => 'fa-microchip', 'gpu' => 'fa-tv', 'motherboard' => 'fa-project-diagram', 'ram' => 'fa-memory', 'storage' => 'fa-hdd', 'psu' => 'fa-plug', 'case' => 'fa-server', 'cooling' => 'fa-fan']; $catI = 0; ?>
+        <nav class="mi-cat-dock" aria-label="Quick category filters">
             <?php foreach ($categories as $value => $label): ?>
-                <a href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $value]) + $keep)) ?>" class="<?= $category === $value ? 'active' : '' ?>"><?= $label ?></a>
+                <a class="mi-cat-item<?= $category === $value ? ' active' : '' ?>"<?= $category === $value ? ' aria-current="true"' : '' ?> style="--h:<?= ($catI++) * 40 ?>" href="<?= $base ?>/price?<?= htmlspecialchars(http_build_query(array_filter(['q' => $q, 'category' => $value]) + $keep)) ?>"><span class="mi-cat-ico"><i class="fas <?= $catIcons[$value] ?? 'fa-microchip' ?>" aria-hidden="true"></i></span><span class="mi-cat-lbl"><?= $label ?></span></a>
             <?php endforeach; ?>
-            <a href="<?= $base ?>/price<?= ($q !== '' || $keep) ? '?' . htmlspecialchars(http_build_query(array_filter(['q' => $q]) + $keep)) : '' ?>" class="<?= $category === null && $q === '' ? 'active' : '' ?>">ทั้งหมด</a>
-        </div>
+            <a class="mi-cat-item<?= $category === null && $q === '' ? ' active' : '' ?>"<?= $category === null && $q === '' ? ' aria-current="true"' : '' ?> style="--h:<?= $catI * 40 ?>" href="<?= $base ?>/price<?= ($q !== '' || $keep) ? '?' . htmlspecialchars(http_build_query(array_filter(['q' => $q]) + $keep)) : '' ?>"><span class="mi-cat-ico"><i class="fas fa-th-large" aria-hidden="true"></i></span><span class="mi-cat-lbl">ทั้งหมด</span></a>
+        </nav>
         <?php // LS-21: special filters of the chosen category; the choices are only values that exist in that category's models
         $specOptions = $specOptions ?? []; $specFilters = $specFilters ?? [];
         $speedOpts = $specOptions['speed'] ?? []; ?>
