@@ -328,5 +328,6 @@ return [
     'st.fixture_baseline' => 'Fixture baseline',
     'misc.general' => 'General',
     'misc.article_category_hint' => 'Shown in the blog sidebar. Needs migration 030 on the database.',
+    'msg.not_saved' => 'Not saved: {e}',
     'misc.articles_module_desc' => 'Manage existing article and buying-guide workflow. CMS scope is unchanged in this rebuild.',
 ];

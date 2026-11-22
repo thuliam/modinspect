@@ -602,7 +602,7 @@ final class AdminController extends Controller {
         $known=array_map('intval',array_column(\App\Services\Catalog\GameFpsImport::products($db),'id'));
         $c=\App\Services\Catalog\GameFpsImport::clean($_POST);
         if(!in_array($pid,$known,true)) { $this->flash('danger','Choose a CPU or GPU model.'); }
-        elseif($c['data']===null) { $this->flash('danger','Not saved: '.$c['error']); }
+        elseif($c['data']===null) { $this->flash('danger',t('msg.not_saved',['e'=>$c['error']])); }
         else {
             \App\Services\Catalog\GameFpsImport::store($db,$pid,$c['data']);
             $this->audit('game_fps_saved','product',$pid,['game'=>$c['data']['game_key'],'resolution'=>$c['data']['resolution'],'sponsor'=>$c['data']['sponsor_name']]);

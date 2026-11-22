@@ -146,4 +146,9 @@ return [
     ['en' => 'Optional operational metadata', 'th' => 'ข้อมูลเมตาเชิงปฏิบัติการ (ไม่บังคับ)'],
     ['en' => 'Collection/probe run identifier, if present.', 'th' => 'รหัสรอบการเก็บ/สำรวจข้อมูล ถ้ามี'],
     ['en' => 'Useful for review scoping; do not fabricate it.', 'th' => 'มีประโยชน์ในการกำหนดขอบเขตการตรวจสอบ ห้ามสร้างขึ้นเอง'],
+    ['en' => 'Session expired. Please retry.', 'th' => 'เซสชันหมดอายุ กรุณาลองใหม่'],
+    ['en' => 'Migration 031 is not applied on this database.', 'th' => 'ยังไม่ได้ลง migration 031 ในฐานข้อมูลนี้'],
+    ['en' => 'Choose a CPU or GPU model.', 'th' => 'กรุณาเลือกรุ่น CPU หรือ GPU'],
+    ['en' => 'Result saved.', 'th' => 'บันทึกผลแล้ว'],
+    ['en' => 'Result deleted.', 'th' => 'ลบผลแล้ว'],
 ];
