@@ -46,6 +46,7 @@
         </div>
     </div>
 </footer>
+<button type="button" id="to-top" class="mi-top" aria-label="กลับขึ้นด้านบน" title="กลับขึ้นด้านบน"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
 <script src="<?= $base ?>/assets/admin/vendor/jquery/jquery-3.7.1.min.js"></script>
 <script src="<?= $base ?>/assets/admin/vendor/bootstrap/js/bootstrap.bundle.js"></script>
 <script src="<?= $base ?>/assets/admin/vendor/select2/select2.min.js"></script>

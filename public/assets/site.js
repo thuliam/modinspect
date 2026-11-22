@@ -54,6 +54,47 @@ jQuery(function ($) {
         $rev.each(function () { rio.observe(this); });
     } else { $rev.addClass('in'); }
 
+    /* LS-43 heading motion, after kyma.framer.ai: titles are split into words (Intl.Segmenter knows Thai word boundaries; a letter split would tear Thai vowel and tone marks off their base),
+       the hero title rises word by word on load, section titles rise word by word when their section scrolls in, and the long statement of section 02 lights up word by word as it is scrolled
+       through. The split is always done; CSS animates it only in full-motion mode, so the motion toggle in the footer works without a reload. */
+    (function () {
+        var seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter('th', { granularity: 'word' }) : null;
+        function parts(t) { return seg ? Array.from(seg.segment(t), function (x) { return x.segment; }) : t.split(/(\s+)/); }
+        function split(el) {
+            var i = 0;
+            (function walk(node) {
+                Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+                    if (n.nodeType === 3) {
+                        var f = document.createDocumentFragment();
+                        parts(n.nodeValue).forEach(function (w) {
+                            if (!w.trim()) { f.appendChild(document.createTextNode(w)); return; }
+                            var sp = document.createElement('span'); sp.className = 'mi-w'; sp.style.setProperty('--w', i++); sp.textContent = w; f.appendChild(sp);
+                        });
+                        n.parentNode.replaceChild(f, n);
+                    } else if (n.nodeType === 1 && n.tagName !== 'BR') { walk(n); }
+                });
+            })(el);
+        }
+        $('.mi-hero h1, .mi-sec h2').each(function () { split(this); });
+        var $lit = $('#about h2').addClass('mi-lit'), ticking = false;
+        function light() {
+            ticking = false;
+            $lit.each(function () {
+                var r = this.getBoundingClientRect(), vh = window.innerHeight, p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (r.height + vh * 0.3))), words = $(this).find('.mi-w'), n = Math.round(p * words.length);
+                words.each(function (k) { this.classList.toggle('lit', k < n); });
+            });
+        }
+        if ($lit.length) { light(); $(window).on('scroll resize', function () { if (!ticking) { ticking = true; requestAnimationFrame(light); } }); }
+    })();
+
+    /* LS-43 back to top: shown once the page is long and the visitor is a screen or more down */
+    (function () {
+        var $b = $('#to-top');
+        if (!$b.length) { return; }
+        function show() { $b.toggleClass('show', document.documentElement.scrollHeight > window.innerHeight * 2.5 && window.scrollY > Math.max(600, window.innerHeight)); }
+        $(window).on('scroll resize', show); show();
+        $b.on('click', function () { window.scrollTo({ top: 0, behavior: $('html').hasClass('motion-full') ? 'smooth' : 'auto' }); $('#main').trigger('focus'); });
+    })();
     /* decode (LS-41, after the number scramble on kyma.framer.ai): the figure starts as noise and settles into the real number from left to right; the markup already holds the real number,
        so without script or while the observer waits, it reads correctly. A changing number is not travel, so calm mode keeps it. */
     function runCount(el) {
