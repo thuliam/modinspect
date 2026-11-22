@@ -40,11 +40,11 @@ $artFor = static fn(string $name): string => match (strtolower(trim($name))) { '
 $byCat = [];
 foreach (($products ?? []) as $p) { $byCat[(string) ($p['category_name'] ?? '')][] = $p; }
 $featured = [];
-while (count($featured) < 5 && $byCat) {
+while (count($featured) < 9 && $byCat) {
     foreach ($byCat as $k => $list) {
         $featured[] = array_shift($byCat[$k]);
         if (!$byCat[$k]) { unset($byCat[$k]); }
-        if (count($featured) >= 5) { break; }
+        if (count($featured) >= 9) { break; }
     }
 }
 ?>
@@ -173,8 +173,8 @@ while (count($featured) < 5 && $byCat) {
             <?php if ($featured): ?>
                 <?php if ((int) $counts['priced'] === 0): ?><p class="mi-note mi-featured-note"><i class="fas fa-info-circle" aria-hidden="true"></i> ยังไม่มีรุ่นที่มีราคาตลาดผ่านการตรวจสอบ ระบบจึงไม่แสดงราคา เปิดดูสเปกและใช้ Deal Checker ได้</p><?php endif; ?>
                 <div class="row mi-featured">
-                    <?php foreach (array_slice($featured, 0, 4) as $product): ?>
-                        <div class="col-sm-6 mb-4" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
+                    <?php foreach (array_slice($featured, 0, 9) as $product): ?>
+                        <div class="col-md-6 col-xl-4 mb-4" data-cat="<?= htmlspecialchars(strtolower((string) ($product['category_name'] ?? ''))) ?>">
                             <?php $artType = $artFor((string) ($product['category_name'] ?? '')); require ROOT_PATH . '/app/Views/components/product-card.php'; ?>
                         </div>
                     <?php endforeach; ?>

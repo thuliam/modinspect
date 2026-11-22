@@ -778,3 +778,12 @@ body.mi .mi-sec li:nth-child(4), body.mi .mi-sec .mi-principles > div:nth-child(
 body.mi .mi-sec li:nth-child(5) { --i: 4; }
 body.mi .mi-sec li:nth-child(6) { --i: 5; }
 body.mi .mi-sec li:nth-child(n+7) { --i: 6; }
+
+/* LS-42: featured models, nine cards in three rows of three on desktop; each card fades in with a soft blur-to-sharp and a small scale-up, staggered across the grid (the entrance of the 21st.dev bento product features). Full-motion mode only; calm mode and no-script show the cards at once. */
+body.mi .mi-featured { counter-reset: mi-card; }
+body.mi .mi-featured > div { display: flex; }
+body.mi .mi-featured > div > * { width: 100%; }
+body.mi .mi-sec .mi-featured > div:nth-child(5) { --i: 4; } body.mi .mi-sec .mi-featured > div:nth-child(6) { --i: 5; } body.mi .mi-sec .mi-featured > div:nth-child(7) { --i: 6; }
+body.mi .mi-sec .mi-featured > div:nth-child(8) { --i: 7; } body.mi .mi-sec .mi-featured > div:nth-child(9) { --i: 8; }
+html.motion-full body.mi .mi-sec .mi-featured > div { transition: opacity .8s cubic-bezier(.2, .7, .2, 1) calc(var(--i, 0) * 90ms + 200ms), transform .8s cubic-bezier(.2, .7, .2, 1) calc(var(--i, 0) * 90ms + 200ms), filter .8s cubic-bezier(.2, .7, .2, 1) calc(var(--i, 0) * 90ms + 200ms); }
+html.motion-full body.mi .mi-sec:not(.in) .mi-featured > div { opacity: 0; transform: translateY(32px) scale(.97); filter: blur(6px); }
