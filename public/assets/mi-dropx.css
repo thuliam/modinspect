@@ -205,3 +205,19 @@ body.mi-admin-body .mi-product-active-switch .custom-control-label::before, body
 body.mi-admin-body .custom-control-input:checked ~ .custom-control-label::before { background-color: var(--ci-primary); border-color: var(--ci-primary); }
 body.mi-admin-body form.card > .card-body > .btn { margin-bottom: 16px; }
 body.mi-admin-body form.card > .card-body > .form-text { margin: -4px 0 16px; }
+
+/* ---- LS-62 audit fixes (26 admin pages measured at 1440 and 375 px, 2026-11-23): one control height, no sub-12px text, sentence-case table heads, one card padding ---- */
+body.mi-admin-body small, body.mi-admin-body .small, body.mi-admin-body .form-text { font-size: 12px; }
+body.mi-admin-body table.table thead th, body.mi-admin-body .dataTables_wrapper thead th { font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--ci-text-2); }
+body.mi-admin-body .select2-container .select2-selection--single { height: 38px; }
+body.mi-admin-body .select2-container .select2-selection--single .select2-selection__rendered { line-height: 36px; }
+body.mi-admin-body .select2-container .select2-selection--single .select2-selection__arrow { height: 36px; }
+body.mi-admin-body .btn:not(.btn-sm):not(.btn-lg) { min-height: 38px; }
+body.mi-admin-body .card-header { padding: 16px 20px; }
+body.mi-admin-body .card-body:not(.p-0) { padding: 20px; }
+body.mi-admin-body form.card > .card-body { padding: 20px 20px 4px; }
+body.mi-admin-body .select2-container .select2-selection--single, body.mi-admin-body .select2-container--default .select2-selection--single { min-height: 38px; height: 38px; }
+body.mi-admin-body .dataTables_wrapper .form-control, body.mi-admin-body .dataTables_wrapper .form-control-sm, body.mi-admin-body .dataTables_wrapper select.custom-select-sm { height: 38px; min-height: 38px; font-size: 14px; }
+body.mi-admin-body .form-control-sm:not(.dataTables_wrapper *) { height: 38px; }
+body.mi-admin-body input.form-control:not([type=file]):not([type=checkbox]):not([type=radio]):not(.form-control-plaintext) { height: 38px; min-height: 38px; }
+body.mi-admin-body input[type=file].form-control { height: auto; padding: 6px 10px; }
