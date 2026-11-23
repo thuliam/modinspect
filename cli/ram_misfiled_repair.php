@@ -38,11 +38,24 @@ echo "\napproved RAM rows contradicting their product: $n, products affected: " 
 if (!isset($o['apply'])) { echo "Dry run: nothing written. Add --apply --expect=$n to exclude them.\n"; exit(0); }
 if (!isset($o['expect']) || (int)$o['expect'] !== $n) { fwrite(STDERR, "Refused: --expect must equal $n.\n"); exit(2); }
 
-$dash = new Dashboard();
+// Dashboard::decideObservation only decides PENDING rows, so reversing an approval is done here, in one transaction per row, with the same records:
+// status change (guarded on the current status), a review decision and an audit log carrying the before state, all under --actor.
 $ok = 0; $failed = 0;
+$sel = $db->prepare('SELECT * FROM price_observations WHERE id=:id');
+$upd = $db->prepare("UPDATE price_observations SET verified_status='excluded', updated_at=NOW() WHERE id=:id AND verified_status='approved'");
+$dec = $db->prepare("INSERT INTO observation_review_decisions (price_observation_id,raw_observation_id,lane,decision,reason_codes,human_value,notes) VALUES (:o,:raw,'red','rejected',:rc,:hv,:n)");
+$aud = $db->prepare("INSERT INTO audit_logs (user_id,action,entity_type,entity_id,before_data,after_data) VALUES (:u,'review_excluded_misfiled','price_observation',:id,:b,:a)");
 foreach ($bad as $r) {
     $note = 'Excluded as misfiled: the title states ' . $r['why'] . ' relative to the product it was filed under. Evidence kept; recorded by the agent under the owner\'s account.';
-    $dash->decideObservation((int)$r['id'], 'excluded', $note, $actor) ? $ok++ : $failed++;
+    try {
+        $db->beginTransaction();
+        $sel->execute(['id' => $r['id']]); $before = $sel->fetch();
+        $upd->execute(['id' => $r['id']]);
+        if ($upd->rowCount() !== 1) { throw new RuntimeException('row is no longer approved'); }
+        $dec->execute(['o' => $r['id'], 'raw' => $before['raw_observation_id'], 'rc' => json_encode(['misfiled_spec_conflict']), 'hv' => json_encode(['verified_status' => 'excluded', 'conflict' => $r['why']], JSON_UNESCAPED_UNICODE), 'n' => $note]);
+        $aud->execute(['u' => $actor, 'id' => $r['id'], 'b' => json_encode($before, JSON_UNESCAPED_UNICODE), 'a' => json_encode(['verified_status' => 'excluded', 'notes' => $note], JSON_UNESCAPED_UNICODE)]);
+        $db->commit(); $ok++;
+    } catch (Throwable $e) { if ($db->inTransaction()) { $db->rollBack(); } $failed++; fwrite(STDERR, "#{$r['id']}: " . $e->getMessage() . "\n"); }
 }
 echo "excluded=$ok failed=$failed\n";
 $snap = new PriceSnapshotService();
