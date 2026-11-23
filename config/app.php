@@ -1,14 +1,18 @@
 <?php
 declare(strict_types=1);
 
-// The public address is APP_URL's scheme and host plus the folder this request really runs from (the directory of index.php). The folder part is taken from
-// the request so links and assets stay correct whether the host serves .../public (document root not yet set) or the site root (document root = public).
+// The public address is APP_URL's scheme and host plus the folder the web server actually serves public/ from, found by comparing the real public
+// folder with the server's document root. So links and assets stay correct whether the host serves .../public (document root not yet set) or the
+// site root (document root = public), whatever APP_URL's path says.
 $appUrl = rtrim((string)($_ENV['APP_URL'] ?? 'http://localhost/modinspect/public'), '/');
-if (PHP_SAPI !== 'cli' && isset($_SERVER['SCRIPT_NAME']) && str_ends_with((string)$_SERVER['SCRIPT_NAME'], '/index.php')) {
+$docRoot = PHP_SAPI !== 'cli' ? realpath((string)($_SERVER['DOCUMENT_ROOT'] ?? '')) : false;
+$pubDir = realpath(dirname(__DIR__) . '/public');
+if ($docRoot !== false && $pubDir !== false) {
+    $d = rtrim(str_replace('\\', '/', $docRoot), '/');
+    $p = rtrim(str_replace('\\', '/', $pubDir), '/');
     $origin = parse_url($appUrl);
-    if (!empty($origin['scheme']) && !empty($origin['host'])) {
-        $dir = rtrim(str_replace('\\', '/', dirname((string)$_SERVER['SCRIPT_NAME'])), '/');
-        $appUrl = $origin['scheme'] . '://' . $origin['host'] . (isset($origin['port']) ? ':' . $origin['port'] : '') . $dir;
+    if (!empty($origin['scheme']) && !empty($origin['host']) && strncasecmp($p, $d, strlen($d)) === 0 && (strlen($p) === strlen($d) || $p[strlen($d)] === '/')) {
+        $appUrl = $origin['scheme'] . '://' . $origin['host'] . (isset($origin['port']) ? ':' . $origin['port'] : '') . substr($p, strlen($d));
     }
 }
 
