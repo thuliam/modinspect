@@ -5,7 +5,7 @@ $pages = (int) max(1, ceil($total / $per));
 <?= mi_page_header($base, ['Catalog', 'Unresolved listings'], htmlspecialchars(t('v.unresolved_listings')), htmlspecialchars(t('v.listings_the_resolver_could_not_matc')), '') ?>
 
 <?php if (!$actionsAvailable): ?>
-    <div class="alert alert-warning">The decision table (migration 019) is not installed on this database, so this page is read-only. Run <code>php cli/migrate.php</code> to enable the actions.</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.unres_pre')) ?> <code>php cli/migrate.php</code> <?= htmlspecialchars(t('misc.unres_post')) ?></div>
 <?php elseif (!$canManage): ?>
     <div class="alert alert-info"><?= htmlspecialchars(t('v.you_can_view_this_queue_adding_alias')) ?></div>
 <?php endif; ?>

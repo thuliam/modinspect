@@ -5,7 +5,7 @@ $badge = ['submitted' => 'badge-warning', 'approved' => 'badge-success', 'reject
 ?>
 <?= mi_page_header($base, ['Market data', 'Seller listings'], htmlspecialchars(t('v.x5de075c2')), htmlspecialchars(t('v.hg_17_hg_16'))) ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning">ฐานข้อมูลนี้ยังไม่มีตารางประกาศ ให้รัน <code>php cli/migrate.php database/migrations/023_members.sql</code> และ <code>024_listing_attributes_and_seller_listings.sql</code> ก่อน (เจ้าของเป็นผู้รันบนฐานข้อมูลจริง)</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.sl_table_pre')) ?> <code>php cli/migrate.php database/migrations/023_members.sql</code> <?= htmlspecialchars(t('misc.sl_table_mid')) ?> <code>024_listing_attributes_and_seller_listings.sql</code> <?= htmlspecialchars(t('misc.sl_table_post')) ?></div>
 <?php else: ?>
 <div class="card mi-admin-card mi-table-card">
     <div class="card-header"><h2><?= htmlspecialchars(t('v.xf1336909')) ?><?= count($rows) ?>)</h2></div>

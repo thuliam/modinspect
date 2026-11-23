@@ -212,7 +212,7 @@ $evidenceFields = $evidenceMetadata((string)($o['excerpt'] ?? ''));
                 <?php endif; ?>
             </div>
             <div class="review-source-row">
-                <span>Source reference <code><?= htmlspecialchars(substr((string)($o['external_reference_hash'] ?? ''), 0, 16) ?: '-') ?></code></span>
+                <span><?= htmlspecialchars(t('misc.source_reference')) ?> <code><?= htmlspecialchars(substr((string)($o['external_reference_hash'] ?? ''), 0, 16) ?: '-') ?></code></span>
                 <?php if ($hasSourceLink): ?>
                     <a class="btn btn-primary" href="<?= htmlspecialchars($sourceUrl) ?>" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt mr-2"></i><?= htmlspecialchars(t('v.open_source')) ?></a>
                 <?php else: ?>

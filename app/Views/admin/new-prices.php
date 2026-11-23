@@ -6,7 +6,7 @@ $byCat = []; foreach ($products as $p) { $byCat[(string) $p['category_name']][] 
 <?= mi_page_header($base, ['Market data', 'New-price refs'], htmlspecialchars(t('v.x1efe243b')), htmlspecialchars(t('v.snapshot_audit'))) ?>
 
 <?php if (!$ready): ?>
-    <div class="alert alert-warning">ฐานข้อมูลนี้ยังไม่มีตาราง <code>new_price_references</code> ให้รัน <code>php cli/migrate.php database/migrations/022_new_price_references.sql</code> ก่อน (เจ้าของเป็นผู้รันบนฐานข้อมูลจริง)</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.np_table_pre')) ?> <code>new_price_references</code> <?= htmlspecialchars(t('misc.np_table_mid')) ?> <code>php cli/migrate.php database/migrations/022_new_price_references.sql</code> <?= htmlspecialchars(t('misc.np_table_post')) ?></div>
 <?php else: ?>
 <form class="card mi-admin-card mb-3" method="post" action="<?= $base ?>/admin/new-prices/action" autocomplete="off">
     <input type="hidden" name="_token" value="<?= $token ?>">

@@ -24,7 +24,7 @@ $detail = static function (array $r): string {
 ?>
 <?= mi_page_header($base, ['Market data', 'Community reports'], htmlspecialchars(t('v.x3aed6989')), htmlspecialchars(t('v.xd8e6f9e1')), '') ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning">ฐานข้อมูลนี้ยังไม่มีตารางรายงาน ให้รัน <code>php cli/migrate.php database/migrations/026_community_reports.sql</code> หลังสำรองข้อมูล</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.mig_reports_pre')) ?> <code>php cli/migrate.php database/migrations/026_community_reports.sql</code> <?= htmlspecialchars(t('misc.mig_reports_post')) ?></div>
 <?php else: ?>
     <?php if (!$featureOn): ?><div class="alert alert-info">ฟอร์มรายงานสำหรับผู้เข้าชมยังปิดอยู่ (ตั้งค่า <code>COMMUNITY_REPORTS_ENABLED</code> และ <code>COMMUNITY_REPORTS_HMAC_KEY</code> หลังเจ้าของอนุมัติข้อความความเป็นส่วนตัว) คิวนี้ดูและตัดสินรายงานที่มีอยู่ได้ตามปกติ</div><?php endif; ?>
     <div class="card mi-admin-card mb-3"><div class="card-body">

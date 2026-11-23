@@ -26,7 +26,7 @@
         <p class="mb-2"><?= htmlspecialchars(t('v.importer_dry_run_on_the_new_rows')) ?> <strong><?= (int) $imp['valid_rows'] ?></strong> <?= htmlspecialchars(t('v.valid')) ?> <strong><?= (int) $imp['invalid_rows'] ?></strong> <?= htmlspecialchars(t('v.invalid')) ?> <strong><?= (int) $imp['duplicate_rows'] ?></strong> <?= htmlspecialchars(t('v.duplicate')) ?></p>
         <?php if ($result['skipped']): ?><p class="mb-2 text-muted"><?= htmlspecialchars(t('v.skipped_before_import')) ?> <?php $parts = []; foreach ($result['skipped'] as $why => $n) { $parts[] = htmlspecialchars((string) $why) . ' ' . (int) $n; } echo implode(' · ', $parts); ?></p><?php endif; ?>
         <?php if ($result['row_errors']): ?><p class="mb-2 text-muted"><?= htmlspecialchars(t('v.importer_row_errors')) ?> <?php $parts = []; foreach ($result['row_errors'] as $code => $n) { $parts[] = htmlspecialchars((string) $code) . ' ' . (int) $n; } echo implode(' · ', $parts); ?></p><?php endif; ?>
-        <p class="mb-0 text-muted">To import for real, run <code>php cli/import_market_evidence.php --file=… --dataset=owner_text</code> on the prepared file (see <code>docs/OPERATOR_GUIDE_TH.md</code>).</p>
+        <p class="mb-0 text-muted"><?= htmlspecialchars(t('misc.intake_import_pre')) ?> <code>php cli/import_market_evidence.php --file=… --dataset=owner_text</code> <?= htmlspecialchars(t('misc.intake_import_mid')) ?> <code>docs/OPERATOR_GUIDE_TH.md</code>).</p>
     </div>
 </div>
 <?php endif; ?>

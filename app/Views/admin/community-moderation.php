@@ -9,7 +9,7 @@ $reasonTh = \App\Services\Community\Forum::REASONS;
 ?>
 <?= mi_page_header($base, ['Market data', 'Community moderation'], htmlspecialchars(t('v.x8a845048')), htmlspecialchars(t('v.x3a926b56')), '') ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning">ฐานข้อมูลนี้ยังไม่มีตารางชุมชน ให้รัน <code>php cli/migrate.php database/migrations/027_community_forum.sql</code> หลังสำรองข้อมูล</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.mig_community_pre')) ?> <code>php cli/migrate.php database/migrations/027_community_forum.sql</code> <?= htmlspecialchars(t('misc.mig_community_post')) ?></div>
 <?php else: ?>
     <?php if (!$featureOn): ?><div class="alert alert-info">ชุมชนสำหรับผู้เข้าชมยังปิดอยู่ (ตั้งค่า <code>COMMUNITY_FORUM_ENABLED</code> หลังเจ้าของอนุมัติกฎชุมชนและข้อความความเป็นส่วนตัว) คิวนี้ยังดูและตัดสินรายการที่มีอยู่ได้</div><?php endif; ?>
     <div class="card mi-admin-card mb-3"><div class="card-body">
