@@ -20,7 +20,7 @@ $pages = (int) max(1, ceil($total / $per));
     <div class="card-header"><?= (int) $total ?> <?= htmlspecialchars(t('v.listing_s_page')) ?> <?= (int) $page ?> <?= htmlspecialchars(t('v.x8bf8854b')) ?> <?= $pages ?></div>
     <div class="table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
-            <thead><tr><th><?= htmlspecialchars(t('v.listing_private')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.price_text')) ?></th><th><?= htmlspecialchars(t('v.evidence_3')) ?></th><th style="min-width:22rem"><?= htmlspecialchars(t('v.decision')) ?></th></tr></thead>
+            <thead><tr><th><?= htmlspecialchars(t('v.listing_private')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.price_text')) ?></th><th><?= htmlspecialchars(t('v.evidence_3')) ?></th><th class="mi-th-wider"><?= htmlspecialchars(t('v.decision')) ?></th></tr></thead>
             <tbody>
             <?php foreach ($rows as $r): ?>
                 <tr>

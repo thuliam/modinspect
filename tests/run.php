@@ -101,6 +101,7 @@ $commands = [
     ['label' => 'tests/blog_test.php', 'args' => ['tests/blog_test.php']],
     ['label' => 'tests/blog_category_test.php', 'args' => ['tests/blog_category_test.php']],
     ['label' => 'tests/game_fps_test.php', 'args' => ['tests/game_fps_test.php']],
+    ['label' => 'tests/admin_ui_pattern_test.php', 'args' => ['tests/admin_ui_pattern_test.php']],
     ['label' => 'tests/glossary_test.php', 'args' => ['tests/glossary_test.php']],
     ['label' => 'tests/used_vs_new_test.php', 'args' => ['tests/used_vs_new_test.php']],
     ['label' => 'tests/upgrade_finder_test.php', 'args' => ['tests/upgrade_finder_test.php']],

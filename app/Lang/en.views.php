@@ -678,4 +678,5 @@ return [
     'misc.gf_bulk_mid' => '(dry run; add',
     'misc.gf_bulk_post' => 'to store). The same rules apply.',
     'crumb.game_fps' => 'Game FPS',
+    'crumb.admin_ui_kit' => 'Admin UI kit',
 ];

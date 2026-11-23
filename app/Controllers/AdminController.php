@@ -585,6 +585,11 @@ final class AdminController extends Controller {
         }
         $this->redirect('/admin/articles');
     }
+    /** LS-62: reference page of the admin form/table/button pattern; admin only, no data */
+    public function uiKitPage(): void {
+        if(!$this->requirePermission('products.view')) return;
+        $this->render('ui-kit','Admin UI kit',[]);
+    }
     /** LS-60: add, list and delete in-game FPS results (CPU/GPU pages); same validation as cli/game_fps_import.php */
     public function gameFpsPage(): void {
         if(!$this->requirePermission('products.view')) return;

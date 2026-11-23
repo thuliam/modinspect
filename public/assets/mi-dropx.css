@@ -221,3 +221,12 @@ body.mi-admin-body .dataTables_wrapper .form-control, body.mi-admin-body .dataTa
 body.mi-admin-body .form-control-sm:not(.dataTables_wrapper *) { height: 38px; }
 body.mi-admin-body input.form-control:not([type=file]):not([type=checkbox]):not([type=radio]):not(.form-control-plaintext) { height: 38px; min-height: 38px; }
 body.mi-admin-body input[type=file].form-control { height: auto; padding: 6px 10px; }
+/* LS-62: classes that replace the last inline styles in the admin views */
+body.mi-admin-body .mi-cell-max { max-width: 420px; }
+body.mi-admin-body .mi-th-wide { min-width: 18rem; }
+body.mi-admin-body .mi-th-wider { min-width: 22rem; }
+body.mi-admin-body .mi-th-widest { min-width: 24rem; }
+body.mi-admin-body .mi-chart-box { position: relative; height: 200px; }
+/* table action buttons are big enough to tap on phones */
+@media (max-width: 767.98px) { body.mi-admin-body table .btn, body.mi-admin-body table .btn-sm { min-height: 40px; padding: 8px 14px; } body.mi-admin-body .dataTables_wrapper .page-link { min-height: 40px; min-width: 40px; display: inline-flex; align-items: center; justify-content: center; } }
+body.mi-admin-body dt, body.mi-admin-body code { font-size: 12px; }

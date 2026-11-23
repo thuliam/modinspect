@@ -678,4 +678,5 @@ return [
     'misc.gf_bulk_mid' => '(ทดลองรัน; เพิ่ม',
     'misc.gf_bulk_post' => 'เพื่อบันทึก) ใช้กติกาเดียวกัน',
     'crumb.game_fps' => 'FPS ในเกม',
+    'crumb.admin_ui_kit' => 'ชุดแบบแผน UI หลังบ้าน',
 ];
