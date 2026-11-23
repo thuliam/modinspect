@@ -341,4 +341,6 @@ return [
     'misc.article_category_hint' => 'แสดงในแถบด้านข้างของบล็อก ต้องลง migration 030 ในฐานข้อมูลก่อน',
     'msg.not_saved' => 'ไม่ได้บันทึก: {e}',
     'misc.articles_module_desc' => 'จัดการบทความและคู่มือการซื้อที่มีอยู่เดิม ขอบเขตของ CMS ไม่เปลี่ยนในการสร้างใหม่ครั้งนี้',
+    'msg.import_centre_done' => 'นำเข้าแล้ว: สร้างใหม่ {created} อัปเดต {updated} ข้าม {refused} แถว',
+    'nav.import_centre' => 'ศูนย์นำเข้า',
 ];

@@ -151,4 +151,10 @@ return [
     ['en' => 'Choose a CPU or GPU model.', 'th' => 'กรุณาเลือกรุ่น CPU หรือ GPU'],
     ['en' => 'Result saved.', 'th' => 'บันทึกผลแล้ว'],
     ['en' => 'Result deleted.', 'th' => 'ลบผลแล้ว'],
+    ['en' => 'Upload a CSV or JSON file (within the size limit).', 'th' => 'อัปโหลดไฟล์ CSV หรือ JSON (ไม่เกินขนาดที่กำหนด)'],
+    ['en' => 'The game FPS table is not on this database yet (migration 031).', 'th' => 'ฐานข้อมูลนี้ยังไม่มีตารางผลทดสอบ FPS (migration 031)'],
+    ['en' => 'The file has no readable rows (check the header line).', 'th' => 'ไฟล์ไม่มีแถวที่อ่านได้ (ตรวจบรรทัดหัวตาราง)'],
+    ['en' => 'The file has too many rows (most 2000).', 'th' => 'ไฟล์มีแถวมากเกินไป (สูงสุด 2000 แถว)'],
+    ['en' => 'No valid row to import.', 'th' => 'ไม่มีแถวที่ผ่านให้นำเข้า'],
+    ['en' => 'The import failed and nothing was saved.', 'th' => 'นำเข้าไม่สำเร็จ และไม่มีอะไรถูกบันทึก'],
 ];

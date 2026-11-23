@@ -105,4 +105,32 @@ final class GameFpsImport
             ON DUPLICATE KEY UPDATE avg_fps = VALUES(avg_fps), low1_fps = VALUES(low1_fps), source_name = VALUES(source_name), source_url = VALUES(source_url), license_note = VALUES(license_note), sponsor_name = VALUES(sponsor_name), tested_on = VALUES(tested_on), retrieved_on = CURDATE()")
             ->execute(['p' => $productId, 'g' => $d['game_key'], 'r' => $d['resolution'], 'q' => $d['quality'], 'a' => $d['avg_fps'], 'l' => $d['low1_fps'], 'pp' => $d['paired_part'], 'sn' => $d['source_name'], 'su' => $d['source_url'], 'ln' => $d['license_note'], 'sp' => $d['sponsor_name'], 't' => $d['tested_on']]);
     }
+    /**
+     * LS-67: classify every row (product match + validation) without writing; used by the admin import centre.
+     * @return list<array{line:int,action:string,slug:string,name:string,error:?string,data:?array,product_id:?int}> action = create | refused
+     */
+    public static function plan(PDO $db, array $rows): array
+    {
+        $products = self::products($db); $out = [];
+        foreach ($rows as $i => $row) {
+            $c = self::clean($row); $m = self::matchProduct((string) ($row['product'] ?? ''), $products);
+            $err = $c['error'] ?? $m['error'];
+            $out[] = ['line' => $i + 2, 'action' => $err === null ? 'create' : 'refused', 'slug' => trim((string) ($row['product'] ?? '')), 'name' => trim((string) ($row['game'] ?? '')) . ' ' . trim((string) ($row['resolution'] ?? '')), 'error' => $err, 'data' => $err === null ? $c['data'] : null, 'product_id' => $err === null ? $m['id'] : null];
+        }
+        return $out;
+    }
+
+    /** @return array{created:int,updated:int} writes every planned row (store() upserts), one transaction */
+    public static function apply(PDO $db, array $plan): array
+    {
+        $n = 0; $own = !$db->inTransaction(); if ($own) { $db->beginTransaction(); }
+        try { foreach ($plan as $p) { if ($p['data'] !== null) { self::store($db, (int) $p['product_id'], $p['data']); $n++; } } if ($own) { $db->commit(); } }
+        catch (\Throwable $e) { if ($own && $db->inTransaction()) { $db->rollBack(); } throw $e; }
+        return ['created' => $n, 'updated' => 0];
+    }
+
+    public static function csvTemplate(): string
+    {
+        return "\xEF\xBB\xBFproduct,game,resolution,quality,avg_fps,low1_fps,paired_part,source_name,source_url,license_note,sponsor_name,tested_on\nnvidia-geforce-rtx-4070,Counter-Strike 2,1080p,High,310.5,220,Ryzen 7 7800X3D,Example Lab,https://example.org/review,CC BY 4.0,,2026-11-01\n";
+    }
 }

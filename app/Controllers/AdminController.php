@@ -585,6 +585,69 @@ final class AdminController extends Controller {
         }
         $this->redirect('/admin/articles');
     }
+    /** LS-67: import centre. One page, one flow (template, upload, dry run, confirm) for Product Master and in-game FPS; history is the audit log (`import_applied`). */
+    private const IMPORT_TYPES = ['products', 'game_fps'];
+    private const IMPORT_MAX_ROWS = 2000;
+    private function importType(?string $t): string { $t=strtolower(trim((string)$t)); return in_array($t,self::IMPORT_TYPES,true) ? $t : 'products'; }
+    private function importPlan(string $type, PDO $db, array $rows): array {
+        return $type==='game_fps' ? \App\Services\Catalog\GameFpsImport::plan($db,$rows) : \App\Services\Catalog\ProductImport::plan($db,$rows);
+    }
+    public function importCentrePage(): void {
+        if(!$this->requirePermission('products.view')) return;
+        global $config; $db=Database::connection($config['db']);
+        $type=$this->importType($_GET['type'] ?? null);
+        $result=$_SESSION['admin_import_centre_result'] ?? null;
+        if(is_array($result) && ($result['type'] ?? '')!==$type) $result=null;
+        $this->render('import-centre','Import centre',['type'=>$type,'result'=>$result,'can_manage'=>$this->canManage(),'fps_table'=>\App\Services\Catalog\GameFpsImport::tableExists($db),'recent'=>$this->recentImports($db)]);
+    }
+    private function recentImports(PDO $db): array {
+        try { return $db->query("SELECT created_at, action, after_data FROM audit_logs WHERE action IN ('import_applied') ORDER BY id DESC LIMIT 10")->fetchAll(); } catch(\PDOException) { return []; }
+    }
+    public function importCentreTemplate(): void {
+        if(!$this->requirePermission('products.view')) return;
+        $type=$this->importType($_GET['type'] ?? null);
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="modinspect-'.str_replace('_','-',$type).'-template.csv"');
+        echo $type==='game_fps' ? \App\Services\Catalog\GameFpsImport::csvTemplate() : \App\Services\Catalog\ProductImport::csvTemplate();
+    }
+    public function importCentreDryRun(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        $type=$this->importType($_POST['type'] ?? null); $back='/admin/import?type='.$type;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect($back); }
+        unset($_SESSION['admin_import_centre'],$_SESSION['admin_import_centre_result']);
+        $file=$this->storedUploadPath($_FILES['import_file'] ?? null);
+        if($file===''){ $this->flash('danger','Upload a CSV or JSON file (within the size limit).'); $this->redirect($back); }
+        global $config; $db=Database::connection($config['db']);
+        if($type==='game_fps' && !\App\Services\Catalog\GameFpsImport::tableExists($db)){ @unlink($file); $this->flash('danger','The game FPS table is not on this database yet (migration 031).'); $this->redirect($back); }
+        $rows=\App\Services\Catalog\GameFpsImport::readFile($file);
+        if($rows===[] || count($rows)>self::IMPORT_MAX_ROWS){ @unlink($file); $this->flash('danger',$rows===[] ? 'The file has no readable rows (check the header line).' : 'The file has too many rows (most 2000).'); $this->redirect($back); }
+        $plan=$this->importPlan($type,$db,$rows);
+        $count=['create'=>0,'update'=>0,'refused'=>0]; foreach($plan as $p) $count[$p['action']]=($count[$p['action']] ?? 0)+1;
+        $_SESSION['admin_import_centre']=['type'=>$type,'file'=>$file,'hash'=>hash_file('sha256',$file),'name'=>basename((string)($_FILES['import_file']['name'] ?? 'file'))];
+        $_SESSION['admin_import_centre_result']=['type'=>$type,'name'=>$_SESSION['admin_import_centre']['name'],'rows'=>count($rows),'count'=>$count,'lines'=>array_map(static fn($p)=>['line'=>$p['line'],'action'=>$p['action'],'name'=>$p['name'],'slug'=>$p['slug'],'error'=>$p['error']],array_slice($plan,0,200))];
+        $this->redirect($back);
+    }
+    public function importCentreApply(): void {
+        if(!$this->requirePermission('products.manage')) return;
+        $type=$this->importType($_POST['type'] ?? null); $back='/admin/import?type='.$type;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger','Session expired. Please retry.'); $this->redirect($back); }
+        $pending=$_SESSION['admin_import_centre'] ?? null;
+        if(!is_array($pending) || ($pending['type'] ?? '')!==$type || !is_file((string)$pending['file']) || hash_file('sha256',(string)$pending['file'])!==(string)$pending['hash']){
+            unset($_SESSION['admin_import_centre'],$_SESSION['admin_import_centre_result']);
+            $this->flash('danger','Run a successful Dry Run before confirming an import.'); $this->redirect($back);
+        }
+        global $config; $db=Database::connection($config['db']);
+        $plan=$this->importPlan($type,$db,\App\Services\Catalog\GameFpsImport::readFile((string)$pending['file']));
+        $ready=array_filter($plan,static fn($p)=>$p['data']!==null);
+        if($ready===[]){ $this->flash('danger','No valid row to import.'); $this->redirect($back); }
+        try {
+            $done=$type==='game_fps' ? \App\Services\Catalog\GameFpsImport::apply($db,$plan) : \App\Services\Catalog\ProductImport::apply($db,$plan);
+        } catch(\Throwable $e){ $this->flash('danger','The import failed and nothing was saved.'); $this->redirect($back); }
+        $this->audit('import_applied','import_'.$type,null,['type'=>$type,'file_sha256'=>substr((string)$pending['hash'],0,16),'file'=>(string)$pending['name'],'created'=>$done['created'],'updated'=>$done['updated'],'refused'=>count($plan)-count($ready)]);
+        @unlink((string)$pending['file']); unset($_SESSION['admin_import_centre'],$_SESSION['admin_import_centre_result']);
+        $this->flash('success',t('msg.import_centre_done',['created'=>$done['created'],'updated'=>$done['updated'],'refused'=>count($plan)-count($ready)]));
+        $this->redirect($back);
+    }
     /** LS-62: reference page of the admin form/table/button pattern; admin only, no data */
     public function uiKitPage(): void {
         if(!$this->requirePermission('products.view')) return;

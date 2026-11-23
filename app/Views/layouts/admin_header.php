@@ -51,6 +51,7 @@ $groups = [
     'COLLECTION' => [
         ['label' => 'Sources', 'icon' => 'fa-rss', 'href' => '/admin/sources', 'permission' => 'sources.view', 'paths' => ['/admin/sources']],
         ['label' => 'Owner intake', 'icon' => 'fa-upload', 'href' => '/admin/intake', 'permission' => 'products.manage', 'paths' => ['/admin/intake']],
+        ['label' => 'Import centre', 'icon' => 'fa-file-import', 'href' => '/admin/import', 'permission' => 'products.view', 'paths' => ['/admin/import']],
         ['label' => 'Imports', 'icon' => 'fa-download', 'href' => '/admin/collector-jobs', 'permission' => 'collection.jobs.view', 'paths' => ['/admin/collector-jobs']],
     ],
     'CONTENT' => [
