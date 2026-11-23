@@ -142,12 +142,15 @@ final class Product
             FROM price_snapshot_observations so LEFT JOIN data_sources s ON s.id=so.snapshot_source_id
             WHERE so.snapshot_id=:sid ORDER BY so.snapshot_observed_at DESC, so.id DESC");
         $stmt->execute(['sid' => $sid]);
-        $included = []; $excluded = []; $sources = [];
+        $included = []; $excluded = []; $sources = []; $excludedRows = [];
         foreach ($stmt->fetchAll() as $r) {
             if ($r['inclusion_status'] === 'included') { $included[] = $r; $sources[$r['source_id'] ?? 'none'] = true; }
-            else { $reason = (string)($r['exclusion_reason'] ?: 'other'); $excluded[$reason] = ($excluded[$reason] ?? 0) + 1; }
+            else {
+                $reason = (string)($r['exclusion_reason'] ?: 'other'); $excluded[$reason] = ($excluded[$reason] ?? 0) + 1;
+                $r['reason'] = $reason; $excludedRows[] = $r; // LS-61: shown greyed in the listings table (date, price, reason only)
+            }
         }
-        return ['snapshot_id' => $sid, 'included' => $included, 'excluded' => $excluded, 'sources' => count($sources)];
+        return ['snapshot_id' => $sid, 'included' => $included, 'excluded' => $excluded, 'excluded_rows' => $excludedRows, 'sources' => count($sources)];
     }
     /** Manufacturer specs with their source (product_reference_specs). Fails soft: a missing table or a database hiccup must never break the product page. */
     /** LS-21: one query for the filter facts of the whole catalog: product_id => [spec_key => spec_value] (read-only; the filters never write) */

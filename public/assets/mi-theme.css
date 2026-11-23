@@ -1034,6 +1034,18 @@ body.mi .mi-guide-txt strong { font-size: 1.1rem; line-height: 1.3; }
 body.mi .mi-guide-txt small { color: var(--ci-text-2); font-size: .9rem; }
 body.mi .mi-guide-go { display: grid; flex: 0 0 auto; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ci-primary); color: var(--ci-on-primary); transition: transform .25s; }
 body.mi .mi-guide-card:hover .mi-guide-go { transform: translateX(4px); }
+/* LS-61: guide + method links as compact rows inside the confidence card; the listings table scrolls and greys excluded rows. */
+body.mi .mi-before-you-decide { display: flex; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 16px; }
+body.mi .mi-before-you-decide .mi-guide-card { padding: 12px 16px; gap: 12px; border: 1px solid var(--ci-border); border-radius: var(--ci-r-md); }
+body.mi .mi-before-you-decide .mi-guide-ico { width: 40px; height: 40px; font-size: 17px; border-radius: 12px; }
+body.mi .mi-before-you-decide .mi-guide-txt strong { font-size: 1rem; }
+body.mi .mi-before-you-decide .mi-guide-go { width: 32px; height: 32px; font-size: 13px; }
+body.mi .mi-evidence-scroll { max-height: 340px; overflow: auto; }
+body.mi .mi-evidence .table th { position: sticky; top: 0; background: var(--ci-surface); }
+body.mi .mi-evidence .table td:nth-child(2) { white-space: nowrap; }
+body.mi .mi-ev-mid td { background: rgba(187, 242, 70, .08); }
+body.mi .mi-ev-badge { margin-left: 6px; background: var(--ci-primary); color: var(--ci-on-primary); font-weight: 600; }
+body.mi .mi-ev-out td { color: var(--ci-text-3, var(--ci-text-2)); opacity: .6; text-decoration: line-through; text-decoration-color: transparent; }
 body.mi .mi-fps-empty { color: var(--ci-text-2); }
 body.mi .mi-fps-games { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
 body.mi .mi-fps-games li { padding: 6px 14px; border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-pill); color: var(--ci-text-2); font-size: 14px; }
