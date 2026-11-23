@@ -1,0 +1,42 @@
+# Read-only: lists folder names on the FTPS account so the served folder can be located. Writes nothing, deletes nothing, prints no file contents.
+name: ModInspect FTPS Locate (read-only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  locate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List top-level folders
+        shell: bash
+        env:
+          FTPS_USERNAME: ${{ secrets.MODINSPECT_FTPS_USERNAME }}
+          FTPS_PASSWORD: ${{ secrets.MODINSPECT_FTPS_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import os, ssl, sys
+          from ftplib import FTP_TLS
+          user = os.environ.get("FTPS_USERNAME", "")
+          if user != "modinspect@thuliamdev.com":
+              sys.exit("Unexpected FTPS account. Refusing to connect.")
+          s = FTP_TLS(context=ssl.create_default_context())
+          s.connect(host="thuliamdev.com", port=21, timeout=30)
+          s.login(user=user, passwd=os.environ["FTPS_PASSWORD"])
+          s.prot_p()
+          print("pwd:", s.pwd())
+          def show(p, depth):
+              try:
+                  items = s.mlsd(p, facts=["type", "modify", "size"])
+                  items = [(n, f) for n, f in items if n not in (".", "..")]
+              except Exception as e:
+                  print(p, "ERR", e); return
+              for n, f in sorted(items):
+                  if n.startswith(".env"):
+                      continue
+                  print("%s%s  %s  %s" % (p.rstrip("/") + "/", n, f.get("type"), f.get("modify", "")))
+                  if f.get("type") == "dir" and depth > 0 and n in ("public", "public_html", "domains", "modinspect", "app", "config"):
+                      show(p.rstrip("/") + "/" + n, depth - 1)
+          show("/", 2)
+          s.close()
+          PY
