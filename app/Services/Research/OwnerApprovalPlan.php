@@ -19,7 +19,8 @@ final class OwnerApprovalPlan
      */
     public static function build(PDO $db, string $sourceLike = 'offline_owner_text_%', bool $trustedOnly = false): array
     {
-        $st = $db->prepare("SELECT o.id, o.product_id, p.full_name, COALESCE(o.price_value,o.asking_price) price, o.is_deposit, o.is_defective, o.is_duplicate, o.listing_type, r.raw_title
+        $st = $db->prepare("SELECT o.id, o.product_id, p.full_name, COALESCE(o.price_value,o.asking_price) price, o.is_deposit, o.is_defective, o.is_duplicate, o.listing_type, r.raw_title,
+                p.memory_type, p.memory_speed_mhz, p.capacity_gb
             FROM price_observations o
             JOIN raw_price_observations r ON r.id=o.raw_observation_id
             JOIN data_sources s ON s.id=r.source_id
@@ -52,6 +53,8 @@ final class OwnerApprovalPlan
     /** @param array<string,mixed> $r */
     public static function untrusted(array $r): bool
     {
+        // LS-77: a title that contradicts the RAM product it sits under (16GB kit under a 32GB class) is a misfiled row, never trusted
+        if (!empty($r['memory_type']) && \App\Services\Catalog\SpecConsistency::ramConflicts((string)$r['raw_title'], $r) !== []) { return true; }
         return (int)$r['is_deposit'] === 1 || (int)$r['is_defective'] === 1 || (int)$r['is_duplicate'] === 1 || (string)$r['listing_type'] !== 'single_item'
             || preg_match('/(ขายแล้ว|\bsold\b|จองแล้ว|reserved|ติดจอง|มือ ?1\b|มือหนึ่ง|brand new|sealed|ใหม่แกะกล่อง|ของใหม่|มัดจำ|deposit)/iu', (string)$r['raw_title']) === 1;
     }

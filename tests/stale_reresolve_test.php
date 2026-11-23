@@ -51,6 +51,12 @@ ok_sr(!\App\Services\Research\OwnerApprovalPlan::untrusted($t()), 'A used single
 foreach ([['listing_type' => 'bundle'], ['is_deposit' => 1], ['is_defective' => 1], ['is_duplicate' => 1], ['raw_title' => 'RTX 3060 ขายแล้ว'], ['raw_title' => 'RTX 3060 มือ 1 ใหม่แกะกล่อง'], ['raw_title' => 'RTX 3060 จองแล้ว']] as $bad) {
     ok_sr(\App\Services\Research\OwnerApprovalPlan::untrusted($t($bad)), 'Untrusted: ' . json_encode($bad, JSON_UNESCAPED_UNICODE));
 }
+// LS-77: a RAM title that contradicts the product it sits under is a misfiled row; a fact the title does not state is never a conflict
+$p32 = ['memory_type' => 'DDR4', 'memory_speed_mhz' => 2666, 'capacity_gb' => 32];
+ok_sr(\App\Services\Catalog\SpecConsistency::ramConflicts('Kingston Fury DDR4 16GB 2x8GB 2666 RAM kit', $p32) === ['capacity 16 != 32'], 'A 16GB kit under a 32GB class conflicts');
+ok_sr(\App\Services\Catalog\SpecConsistency::ramConflicts('Ram T-force 32GB DDR4 16x2', $p32) === [], 'A matching title does not conflict');
+ok_sr(\App\Services\Catalog\SpecConsistency::ramConflicts('แรม มือสอง ราคา 2000', $p32) === [], 'A title that states no facts never conflicts');
+ok_sr(\App\Services\Research\OwnerApprovalPlan::untrusted($t(['raw_title' => 'DDR4 16GB 2x8GB 2666'] + $p32)), 'A misfiled RAM row is untrusted');
 // the decision is read-only by construction: it takes no database (the spec-class map is plain data)
 ok_sr((new ReflectionMethod(S::class, 'decide'))->getNumberOfParameters() === 5, 'decide() has no database parameter');
 echo "stale_reresolve_test: PASS\n";
