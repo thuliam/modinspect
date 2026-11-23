@@ -1056,3 +1056,14 @@ body.mi .mi-fps-list .mi-stat { grid-template-columns: minmax(9rem, 14rem) minma
 body.mi .mi-fps-list .mi-stat-l small, body.mi .mi-fps-list .mi-stat-v small { display: block; color: var(--ci-text-2); font-size: 12px; font-weight: 400; }
 body.mi .mi-fps-list .mi-stat-v small:first-child { display: inline; margin-left: 2px; }
 @media (max-width: 575.98px) { body.mi .mi-fps-list .mi-stat { grid-template-columns: 7rem minmax(0, 1fr) 4.5rem; } }
+
+/* LS-69: product picture gallery (Bootstrap carousel; the credit sits under each picture) */
+body.mi .mi-gallery-carousel { display: block; padding: 0; }
+body.mi .mi-carousel { width: 100%; }
+body.mi .mi-carousel .mi-photo { width: 100%; max-height: 320px; margin: 0; padding: 12px; object-fit: contain; }
+body.mi .mi-photo-credit { padding: 8px 48px 28px; color: var(--ci-text-2); font-size: 12px; text-align: center; }
+body.mi .mi-photo-credit a { color: var(--ci-primary); }
+body.mi .mi-carousel .carousel-indicators { bottom: 0; margin-bottom: 8px; }
+body.mi .mi-carousel .carousel-indicators li { width: 8px; height: 8px; margin: 0 4px; border: 0; border-radius: 50%; background: var(--ci-border-active); opacity: 1; }
+body.mi .mi-carousel .carousel-indicators li.active { background: var(--ci-primary); }
+body.mi .mi-carousel .carousel-control-prev, body.mi .mi-carousel .carousel-control-next { width: 44px; }

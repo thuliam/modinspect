@@ -104,6 +104,7 @@ $commands = [
     ['label' => 'tests/admin_ui_pattern_test.php', 'args' => ['tests/admin_ui_pattern_test.php']],
     ['label' => 'tests/product_import_test.php', 'args' => ['tests/product_import_test.php']],
     ['label' => 'tests/spec_image_import_test.php', 'args' => ['tests/spec_image_import_test.php']],
+    ['label' => 'tests/product_gallery_test.php', 'args' => ['tests/product_gallery_test.php']],
     ['label' => 'tests/glossary_test.php', 'args' => ['tests/glossary_test.php']],
     ['label' => 'tests/used_vs_new_test.php', 'args' => ['tests/used_vs_new_test.php']],
     ['label' => 'tests/upgrade_finder_test.php', 'args' => ['tests/upgrade_finder_test.php']],

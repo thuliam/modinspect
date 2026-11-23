@@ -58,7 +58,10 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <div class="col-lg-6 mb-3">
             <div class="mi-gallery">
                 <span class="mi-gallery-badge"><i class="fas fa-<?= $hasMarketSnapshot ? 'chart-line' : 'info-circle' ?>" aria-hidden="true"></i> <?= $hasMarketSnapshot ? 'มีข้อมูลราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span>
+                <?php $images = $images ?? []; $galleryHtml = $images ? (function () use ($images, $product, $base) { ob_start(); require ROOT_PATH . '/app/Views/components/product-gallery.php'; return (string) ob_get_clean(); })() : ''; // LS-69 ?>
+                <?php if ($galleryHtml !== ''): ?><div class="mi-gallery-art has-photo mi-gallery-carousel"><?= $galleryHtml ?></div><?php $photo = true; else: ?>
                 <div class="mi-gallery-art<?= ($photo = mi_product_photo($product, $base, 'mi-photo', true)) ? ' has-photo' : '' ?>"><?= $photo ?? mi_art_img($artType, $base) ?></div>
+                <?php endif; ?>
                 <div class="mi-gallery-meta">
                     <span><?= htmlspecialchars($product['category_name']) ?></span>
                     <?php if (!empty($product['brand_name'])): ?><?= mi_brand_logo($product['brand_name'], $base, 20) ?><?php endif; ?>
