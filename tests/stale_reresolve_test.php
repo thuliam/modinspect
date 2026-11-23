@@ -35,6 +35,16 @@ ok_sr($d($row(['extraction' => $x(['isDefective' => true])]))['outcome'] === 'RE
 $key = OwnerIntakeDeduper::keyFor('ขาย NVIDIA GeForce RTX 5060 มือสอง', 9000);
 ok_sr($d($row(), [$key => true])['outcome'] === 'REPOST_OF_EXISTING_LISTING', 'A listing that already has an observation is a repost');
 ok_sr($d($row(['extraction' => $x(['askingPrice' => 9100])]), [$key => true])['outcome'] === 'would_create', 'The same text at another price is a different listing key');
-// the decision is read-only by construction: it takes no database
-ok_sr((new ReflectionMethod(S::class, 'decide'))->getNumberOfParameters() === 4, 'decide() has no database parameter');
+// LS-76: owner-transcribed Facebook captures (REAL dataset) are re-resolved; other REAL sources never are
+ok_sr($d($row(['source_key' => 'offline_real_facebook_com']))['outcome'] === 'would_create', 'An owner-transcribed Facebook row is re-resolved');
+ok_sr($d($row(['source_key' => 'offline_real_priceza_com']))['outcome'] === 'NOT_OWNER_TEXT_SOURCE', 'A REAL Priceza row is still never touched');
+// LS-76: a title that states a whole spec class resolves to the generic class product; a missing fact means no class
+$spec = static fn(array $r, array $ids): array => S::decide($r, $resolver, $validator, [], $ids);
+$ramRow = $row(['source_key' => 'offline_real_facebook_com', 'title' => 'Kingston Fury Beast DDR4 16GB 2x8 3200MHz']);
+$hit = $spec($ramRow, ['ram-ddr4-3200-16gb' => 77]);
+ok_sr($hit['outcome'] === 'would_create' && $hit['product_id'] === 77 && $hit['method'] === 'spec_class_from_title', 'A RAM post naming type, speed and size resolves to the generic class: ' . json_encode($hit));
+ok_sr($spec($ramRow, [])['outcome'] === 'STILL_UNRESOLVED', 'No class product in the catalog means unresolved');
+ok_sr($spec($row(['source_key' => 'offline_real_facebook_com', 'title' => 'Kingston Fury Beast DDR4 16GB']), ['ram-ddr4-3200-16gb' => 77])['outcome'] === 'STILL_UNRESOLVED', 'A RAM post without its speed is never guessed into a class');
+// the decision is read-only by construction: it takes no database (the spec-class map is plain data)
+ok_sr((new ReflectionMethod(S::class, 'decide'))->getNumberOfParameters() === 5, 'decide() has no database parameter');
 echo "stale_reresolve_test: PASS\n";
