@@ -32,6 +32,8 @@ ASSET_EXTENSIONS = {
     # credits (Wikimedia Commons photos, brand logos) and font licences must ship with the files they describe
     ".json", ".txt", ".eot",
 }
+# Reviewed third-party licence texts (docs/THIRD_PARTY_LICENSES.md) that must ship with the library they describe; exact paths only, not a whole extension.
+REVIEWED_LICENSE_FILES = {"public/assets/admin/vendor/select2/LICENSE.md"}
 # A development-only README lives under the public assets directory.
 INTENTIONAL_EXCLUSIONS = {"public/assets/admin/README.md"}
 # Manufacturer product photos kept for review only: usage rights are not confirmed, so they must never be packaged for deployment.
@@ -57,6 +59,8 @@ def include(relative: str) -> bool:
     if relative in {"public/index.php", "public/.htaccess", "public/favicon.ico"}:
         return True
     if len(p.parts) >= 3 and p.parts[:2] == ("public", "assets"):
+        if relative in REVIEWED_LICENSE_FILES:
+            return True
         if p.suffix.lower() not in ASSET_EXTENSIONS:
             fail("unreviewed asset type: " + relative)
         return True
