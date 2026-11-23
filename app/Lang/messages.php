@@ -157,4 +157,8 @@ return [
     ['en' => 'The file has too many rows (most 2000).', 'th' => 'ไฟล์มีแถวมากเกินไป (สูงสุด 2000 แถว)'],
     ['en' => 'No valid row to import.', 'th' => 'ไม่มีแถวที่ผ่านให้นำเข้า'],
     ['en' => 'The import failed and nothing was saved.', 'th' => 'นำเข้าไม่สำเร็จ และไม่มีอะไรถูกบันทึก'],
+    ['en' => 'Choose the picture files.', 'th' => 'เลือกไฟล์รูป'],
+    ['en' => 'Too many pictures in one batch (most 20).', 'th' => 'รูปมากเกินไปในหนึ่งชุด (สูงสุด 20 ไฟล์)'],
+    ['en' => 'The picture batch could not be stored.', 'th' => 'เก็บรูปชุดนี้ไม่สำเร็จ'],
+    ['en' => 'The product pictures table is not on this database yet (migration 033).', 'th' => 'ฐานข้อมูลนี้ยังไม่มีตารางรูปสินค้า (migration 033)'],
 ];

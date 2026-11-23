@@ -1,7 +1,7 @@
 <?php
-/** @var string $type products|game_fps */
+/** @var string $type products|specs|images|game_fps */
 $tt = static fn (string $k): string => htmlspecialchars(t($k));
-$tabs = ['products' => 'misc.imp_type_products', 'game_fps' => 'misc.imp_type_fps'];
+$tabs = ['products' => 'misc.imp_type_products', 'specs' => 'misc.imp_type_specs', 'images' => 'misc.imp_type_images', 'game_fps' => 'misc.imp_type_fps'];
 ob_start(); ?><?= $tt('crumb.import_centre') ?><?php $dxT = ob_get_clean(); ob_start(); ?><?= $tt('misc.imp_desc') ?><?php $dxD = ob_get_clean();
 ?>
 <?= mi_page_header($base, ['Collection'], $dxT, $dxD, '') ?>
@@ -15,22 +15,39 @@ ob_start(); ?><?= $tt('crumb.import_centre') ?><?php $dxT = ob_get_clean(); ob_s
 <?php if ($type === 'game_fps' && empty($fps_table)): ?>
     <div class="alert alert-warning"><?= $tt('misc.imp_fps_missing') ?></div>
 <?php endif; ?>
+<?php if ($type === 'images' && empty($images_table)): ?>
+    <div class="alert alert-warning"><?= $tt('misc.imp_images_missing') ?></div>
+<?php endif; ?>
 
 <form class="card mi-admin-card mb-3" method="post" action="<?= $base ?>/admin/import/dry-run" enctype="multipart/form-data">
     <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
     <input type="hidden" name="type" value="<?= htmlspecialchars($type) ?>">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h2><?= $tt($tabs[$type]) ?></h2>
-        <a class="btn btn-outline-secondary" href="<?= $base ?>/admin/import/template?type=<?= htmlspecialchars($type) ?>"><i class="fas fa-download mr-2" aria-hidden="true"></i><?= $tt('misc.imp_download') ?></a>
+        <?php if ($type !== 'images'): ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/import/template?type=<?= htmlspecialchars($type) ?>"><i class="fas fa-download mr-2" aria-hidden="true"></i><?= $tt('misc.imp_download') ?></a><?php endif; ?>
     </div>
     <div class="card-body">
         <p class="text-muted"><?= $tt('misc.imp_flow') ?></p>
-        <p class="text-muted"><?= $tt($type === 'game_fps' ? 'misc.imp_rules_fps' : 'misc.imp_rules_products') ?></p>
+        <p class="text-muted"><?php if ($type === 'game_fps'): ?><?= $tt('misc.imp_rules_fps') ?><?php elseif ($type === 'specs'): ?><?= $tt('misc.imp_rules_specs') ?><?php elseif ($type === 'images'): ?><?= $tt('misc.imp_rules_images') ?><?php else: ?><?= $tt('misc.imp_rules_products') ?><?php endif; ?></p>
         <?php if ($can_manage): ?>
+            <?php if ($type === 'images'): ?>
+                <div class="form-group">
+                    <label for="import-files"><?= $tt('misc.imp_pick_images') ?></label>
+                    <input class="form-control" id="import-files" type="file" name="import_files[]" accept="image/jpeg,image/png,image/webp" multiple required>
+                    <small class="form-text text-muted"><?= htmlspecialchars(t('misc.imp_img_limit', ['n' => (int) $max_images])) ?></small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4"><label for="img-src"><?= $tt('misc.imp_src_name') ?></label><input class="form-control" id="img-src" name="source_name" maxlength="120" required></div>
+                    <div class="form-group col-md-4"><label for="img-lic"><?= $tt('misc.imp_license') ?></label><input class="form-control" id="img-lic" name="license_note" maxlength="120" required></div>
+                    <div class="form-group col-md-4"><label for="img-url"><?= $tt('misc.imp_src_url') ?></label><input class="form-control" id="img-url" type="url" name="source_url" maxlength="500"></div>
+                </div>
+                <div class="form-group"><label for="img-alt"><?= $tt('misc.imp_alt') ?></label><input class="form-control" id="img-alt" name="alt" maxlength="160"></div>
+            <?php else: ?>
             <div class="form-group">
                 <label for="import-file"><?= $tt('misc.imp_file') ?></label>
                 <input class="form-control" id="import-file" type="file" name="import_file" accept=".csv,.json" required>
             </div>
+            <?php endif; ?>
         <?php else: ?>
             <p class="text-muted"><?= $tt('misc.imp_readonly') ?></p>
         <?php endif; ?>
