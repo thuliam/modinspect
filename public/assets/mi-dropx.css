@@ -181,3 +181,52 @@ body.mi-admin-body .mi-definition-grid dt { font-size: 11px; font-weight: 600; l
 body.mi-admin-body .btn-link { color: var(--ci-primary); }
 html[data-theme="dark"] body.mi-admin-body a.dx-link.active, html[data-theme="dark"] body.mi-admin-body a.dx-link.active i { color: #a5b4fc; }
 body.mi-admin-body .text-primary { color: var(--ci-primary) !important; }
+
+/* ---- LS-63: admin form pattern (owner review 2026-11-23: uneven gaps, loose labels, broken switch, grey footer band). Tokens and spacing only, 4px grid. ----
+   Field = label (13px, sentence case) + control (38px) + 16px below; card body 20px; footer is a hairline row, not a grey band. */
+body.mi-admin-body form label, body.mi-admin-body .mi-field-label { margin-bottom: 6px; font-size: 13px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ci-text-2); }
+body.mi-admin-body .form-row { margin-right: -8px; margin-left: -8px; }
+body.mi-admin-body .form-row > .form-group, body.mi-admin-body .form-row > [class*="col-"] { padding-right: 8px; padding-left: 8px; }
+body.mi-admin-body form .form-group { margin-bottom: 16px; }
+body.mi-admin-body form .form-group.mb-0 { margin-bottom: 0; }
+body.mi-admin-body .form-row > .form-group { margin-bottom: 16px; }
+body.mi-admin-body .form-row > .form-group > label { margin-bottom: 6px; }
+body.mi-admin-body form.card > .card-body { padding: 20px 20px 4px; }
+body.mi-admin-body form.card > .card-body > .form-group:last-child, body.mi-admin-body form.card > .card-body > .form-row:last-child > .form-group { margin-bottom: 16px; }
+body.mi-admin-body .mi-product-form-card .form-control, body.mi-admin-body .mi-filter-card .form-control, body.mi-admin-body form.card .form-control:not(textarea) { min-height: 38px; height: 38px; }
+body.mi-admin-body form.card textarea.form-control { height: auto; min-height: 96px; }
+body.mi-admin-body form.card > .card-header { padding: 16px 20px; }
+body.mi-admin-body form.card > .card-footer { display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 16px 20px; background: transparent !important; border-top: 1px solid var(--ci-border); }
+body.mi-admin-body form.card > .card-footer .btn { min-height: 38px; padding-top: 0; padding-bottom: 0; }
+/* the status field: a bordered box the height of a control; Bootstrap 4.1 has no custom-switch, so it is a checkbox */
+body.mi-admin-body .mi-product-active-switch { min-height: 38px; padding: 0 12px 0 40px; background: var(--ci-search); border: 1px solid var(--ci-border-active); border-radius: var(--ci-r-md); }
+body.mi-admin-body .mi-product-active-switch .custom-control-label { margin: 0; font-size: 14px; font-weight: 500; }
+body.mi-admin-body .mi-product-active-switch .custom-control-label::before, body.mi-admin-body .mi-product-active-switch .custom-control-label::after { top: 50%; margin-top: -8px; left: 12px; }
+body.mi-admin-body .custom-control-input:checked ~ .custom-control-label::before { background-color: var(--ci-primary); border-color: var(--ci-primary); }
+body.mi-admin-body form.card > .card-body > .btn { margin-bottom: 16px; }
+body.mi-admin-body form.card > .card-body > .form-text { margin: -4px 0 16px; }
+
+/* ---- LS-62 audit fixes (26 admin pages measured at 1440 and 375 px, 2026-11-23): one control height, no sub-12px text, sentence-case table heads, one card padding ---- */
+body.mi-admin-body small, body.mi-admin-body .small, body.mi-admin-body .form-text { font-size: 12px; }
+body.mi-admin-body table.table thead th, body.mi-admin-body .dataTables_wrapper thead th { font-size: 12px; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--ci-text-2); }
+body.mi-admin-body .select2-container .select2-selection--single { height: 38px; }
+body.mi-admin-body .select2-container .select2-selection--single .select2-selection__rendered { line-height: 36px; }
+body.mi-admin-body .select2-container .select2-selection--single .select2-selection__arrow { height: 36px; }
+body.mi-admin-body .btn:not(.btn-sm):not(.btn-lg) { min-height: 38px; }
+body.mi-admin-body .card-header { padding: 16px 20px; }
+body.mi-admin-body .card-body:not(.p-0) { padding: 20px; }
+body.mi-admin-body form.card > .card-body { padding: 20px 20px 4px; }
+body.mi-admin-body .select2-container .select2-selection--single, body.mi-admin-body .select2-container--default .select2-selection--single { min-height: 38px; height: 38px; }
+body.mi-admin-body .dataTables_wrapper .form-control, body.mi-admin-body .dataTables_wrapper .form-control-sm, body.mi-admin-body .dataTables_wrapper select.custom-select-sm { height: 38px; min-height: 38px; font-size: 14px; }
+body.mi-admin-body .form-control-sm:not(.dataTables_wrapper *) { height: 38px; }
+body.mi-admin-body input.form-control:not([type=file]):not([type=checkbox]):not([type=radio]):not(.form-control-plaintext) { height: 38px; min-height: 38px; }
+body.mi-admin-body input[type=file].form-control { height: auto; padding: 6px 10px; }
+/* LS-62: classes that replace the last inline styles in the admin views */
+body.mi-admin-body .mi-cell-max { max-width: 420px; }
+body.mi-admin-body .mi-th-wide { min-width: 18rem; }
+body.mi-admin-body .mi-th-wider { min-width: 22rem; }
+body.mi-admin-body .mi-th-widest { min-width: 24rem; }
+body.mi-admin-body .mi-chart-box { position: relative; height: 200px; }
+/* table action buttons are big enough to tap on phones */
+@media (max-width: 767.98px) { body.mi-admin-body table .btn, body.mi-admin-body table .btn-sm { min-height: 40px; padding: 8px 14px; } body.mi-admin-body .dataTables_wrapper .page-link { min-height: 40px; min-width: 40px; display: inline-flex; align-items: center; justify-content: center; } }
+body.mi-admin-body dt, body.mi-admin-body code { font-size: 12px; }

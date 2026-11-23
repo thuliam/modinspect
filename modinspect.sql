@@ -725,6 +725,13 @@ CREATE TABLE `products` (
   `memory_type` varchar(20) DEFAULT NULL,
   `form_factor` varchar(30) DEFAULT NULL,
   `capacity_gb` int(10) UNSIGNED DEFAULT NULL,
+  `memory_speed_mhz` smallint(5) UNSIGNED DEFAULT NULL,
+  `kit_modules` tinyint(3) UNSIGNED DEFAULT NULL,
+  `interface_type` varchar(20) DEFAULT NULL,
+  `media_type` varchar(10) DEFAULT NULL,
+  `power_watt` smallint(5) UNSIGNED DEFAULT NULL,
+  `efficiency_rating` varchar(20) DEFAULT NULL,
+  `modular_type` varchar(20) DEFAULT NULL,
   `image_path` varchar(255) DEFAULT NULL,
   `is_popular` tinyint(1) NOT NULL DEFAULT 0,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
@@ -2286,4 +2293,18 @@ CREATE TABLE game_fps_results (
   UNIQUE KEY uq_game_fps (product_id, game_key, resolution, quality, paired_part),
   INDEX idx_game_fps_product (product_id),
   CONSTRAINT fk_game_fps_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE product_images (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  product_id BIGINT UNSIGNED NOT NULL,
+  slot TINYINT UNSIGNED NOT NULL,
+  path VARCHAR(255) NOT NULL,
+  alt_text VARCHAR(160) NULL,
+  source_name VARCHAR(120) NOT NULL,
+  source_url VARCHAR(500) NULL,
+  license_note VARCHAR(120) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_product_image_slot (product_id, slot),
+  CONSTRAINT fk_product_image_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;

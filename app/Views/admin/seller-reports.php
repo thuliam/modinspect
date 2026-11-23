@@ -5,7 +5,7 @@ $badge = ['pending' => 'badge-warning', 'verified' => 'badge-success', 'rejected
 ?>
 <?= mi_page_header($base, ['Market data', 'Seller reports'], htmlspecialchars(t('v.x9862e9d0')), htmlspecialchars(t('v.hg_14_4'))) ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning">ฐานข้อมูลนี้ยังไม่มีตารางรายงาน ให้รัน <code>php cli/migrate.php database/migrations/025_seller_reports.sql</code> (เจ้าของเป็นผู้รันบนฐานข้อมูลจริง)</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.sr_table_pre')) ?> <code>php cli/migrate.php database/migrations/025_seller_reports.sql</code> <?= htmlspecialchars(t('misc.sr_table_post')) ?></div>
 <?php else: ?>
 <?php if ($disputes): ?>
 <div class="card mi-admin-card mb-3"><div class="card-header"><h2><?= htmlspecialchars(t('v.x4f5b48fd')) ?><?= count($disputes) ?>)</h2></div>
@@ -16,7 +16,7 @@ $badge = ['pending' => 'badge-warning', 'verified' => 'badge-success', 'rejected
 <?php endif; ?>
 <div class="card mi-admin-card mi-table-card"><div class="card-header"><h2><?= htmlspecialchars(t('v.x8790d80e')) ?><?= count($rows) ?>)</h2></div>
     <div class="table-responsive"><table class="table table-hover mi-admin-table mb-0">
-        <thead><tr><th><?= htmlspecialchars(t('v.xe0e40ba8')) ?></th><th><?= htmlspecialchars(t('v.xa43ca823')) ?></th><th><?= htmlspecialchars(t('v.x57042bac')) ?></th><th><?= htmlspecialchars(t('v.x89ef56de')) ?></th><th><?= htmlspecialchars(t('v.x4d8016a7')) ?></th><th><?= htmlspecialchars(t('v.x92d64201')) ?></th><th><?= htmlspecialchars(t('v.xc9701a0d')) ?></th><th style="min-width:18rem"><?= htmlspecialchars(t('v.x8aba0b36')) ?></th></tr></thead><tbody>
+        <thead><tr><th><?= htmlspecialchars(t('v.xe0e40ba8')) ?></th><th><?= htmlspecialchars(t('v.xa43ca823')) ?></th><th><?= htmlspecialchars(t('v.x57042bac')) ?></th><th><?= htmlspecialchars(t('v.x89ef56de')) ?></th><th><?= htmlspecialchars(t('v.x4d8016a7')) ?></th><th><?= htmlspecialchars(t('v.x92d64201')) ?></th><th><?= htmlspecialchars(t('v.xc9701a0d')) ?></th><th class="mi-th-wide"><?= htmlspecialchars(t('v.x8aba0b36')) ?></th></tr></thead><tbody>
         <?php if (!$rows): ?><tr><td colspan="8" class="text-muted"><?= htmlspecialchars(t('v.x2b27e1c1')) ?></td></tr><?php endif; ?>
         <?php foreach ($rows as $r): ?><tr>
             <td><?= htmlspecialchars(\App\Services\Listing\SellerCheck::TYPES[$r['identifier_type']] ?? (string) $r['identifier_type']) ?></td>

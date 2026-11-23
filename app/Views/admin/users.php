@@ -21,7 +21,7 @@
     <div class="card-header"><h2><?= htmlspecialchars(t('v.accounts')) ?></h2></div>
     <div class="table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
-            <thead><tr><th><?= htmlspecialchars(t('v.name_email')) ?></th><th><?= htmlspecialchars(t('v.role')) ?></th><th><?= htmlspecialchars(t('v.status')) ?></th><th><?= htmlspecialchars(t('v.last_sign_in')) ?></th><th style="min-width:24rem"><?= htmlspecialchars(t('v.actions')) ?></th></tr></thead>
+            <thead><tr><th><?= htmlspecialchars(t('v.name_email')) ?></th><th><?= htmlspecialchars(t('v.role')) ?></th><th><?= htmlspecialchars(t('v.status')) ?></th><th><?= htmlspecialchars(t('v.last_sign_in')) ?></th><th class="mi-th-widest"><?= htmlspecialchars(t('v.actions')) ?></th></tr></thead>
             <tbody>
             <?php foreach ($users as $u): $self = (int) $u['id'] === $me; $uid = (int) $u['id']; ?>
                 <tr>

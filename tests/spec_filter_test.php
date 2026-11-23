@@ -66,4 +66,24 @@ ok_sf($a1['speed'] === '3200', 'speed_mhz spec beats the speed in the name');
 ok_sf(F::attrs($p(81, 'storage', 'Drive 1TB'), ['interface' => 'NVMe PCIe 4.0'])['iface'] === 'NVMe' && F::attrs($p(82, 'psu', 'PSU'), ['psu_capacity_watt' => '850'])['watt'] === '850', 'interface and PSU watt specs are used');
 ok_sf(F::attrs($p(83, 'cooling', 'Noctua Air Tower AIO-compatible'), ['cooler_type' => 'aio'])['ctype'] === 'AIO', 'cooler_type spec beats the name');
 
+// LS-72: RAM by brand, form factor and kit; the product columns come before the name and the reference specs
+$r = static fn(int $id, string $name, string $brand, string $type, string $ff, int $cap, int $speed, ?int $kit): array => ['id' => $id, 'category_slug' => 'ram', 'full_name' => $name, 'brand_name' => $brand, 'memory_type' => $type, 'form_factor' => $ff, 'capacity_gb' => $cap, 'memory_speed_mhz' => $speed, 'kit_modules' => $kit];
+$ram = [
+    $r(90, 'Kingston FURY Beast DDR5-6000 32GB (2x16GB)', 'Kingston', 'DDR5', 'DIMM', 32, 6000, 2),
+    $r(91, 'RAM DDR4-3200 16GB', 'Generic', 'DDR4', 'DIMM', 16, 3200, null),
+    $r(92, 'Corsair Vengeance DDR4-3200 16GB SO-DIMM (2x8GB)', 'Corsair', 'DDR4', 'SO-DIMM', 16, 3200, 2),
+    $r(93, 'Kingston FURY Impact DDR5-5600 16GB SO-DIMM', 'Kingston', 'DDR5', 'SO-DIMM', 16, 5600, 1),
+];
+$ids2 = static fn(array $rows): array => array_map(static fn($x) => $x['id'], $rows);
+ok_sf($ids2(F::apply($ram, [], 'ram', ['brand' => 'Kingston'])) === [90, 93], 'RAM by brand');
+ok_sf($ids2(F::apply($ram, [], 'ram', ['form' => 'SO-DIMM'])) === [92, 93], 'RAM by form factor');
+ok_sf($ids2(F::apply($ram, [], 'ram', ['form' => 'SO-DIMM', 'brand' => 'Kingston', 'mem' => 'DDR5'])) === [93], 'brand, form factor and type combine');
+ok_sf($ids2(F::apply($ram, [], 'ram', ['kit' => '2'])) === [90, 92], 'RAM by modules in the kit');
+ok_sf($ids2(F::apply($ram, [], 'ram', ['speed_min' => '5600', 'form' => 'DIMM'])) === [90], 'speed range and form factor combine');
+$ro = F::options($ram, [], 'ram');
+ok_sf(($ro['brand'] ?? []) === ['Corsair', 'Generic', 'Kingston'] && ($ro['form'] ?? []) === ['DIMM', 'SO-DIMM'] && ($ro['kit'] ?? []) === ['1', '2'] && ($ro['cap'] ?? []) === ['16', '32'], 'RAM options list only the values that exist: ' . json_encode($ro));
+ok_sf(F::attrs($r(94, 'Old name DDR3-1333 4GB', 'X', 'DDR4', 'DIMM', 8, 3200, null), ['memory_type' => 'DDR3', 'capacity_gb' => '4', 'speed_mhz' => '1333'])['mem'] === 'DDR4', 'the product column beats the reference spec and the name');
+ok_sf(F::label('form', 'ram') === 'ฟอร์มแฟกเตอร์' && F::label('form', 'motherboard') === 'ขนาดบอร์ด', 'form factor is labelled per category');
+ok_sf(F::attrs(['id' => 95, 'category_slug' => 'motherboard', 'full_name' => 'Board', 'brand_name' => 'ASUS', 'memory_type' => 'DDR5', 'chipset' => 'b650'], [])['chipset'] === 'B650' && !isset(F::attrs(['id' => 96, 'category_slug' => 'cpu', 'full_name' => 'CPU', 'brand_name' => 'AMD'], [])['brand']), 'brand and chipset are board and RAM filters, not CPU filters');
+
 echo "spec_filter_test: PASS\n";

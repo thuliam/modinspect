@@ -28,7 +28,7 @@ $v = $panel['verdict'];
             <tbody>
             <?php foreach ($rows as $r): [$cls, $label] = $badge[$r['status']] ?? $badge['unknown']; ?>
                 <tr>
-                    <td><?= htmlspecialchars($r['id']) ?></td>
+                    <td class="text-nowrap"><?= htmlspecialchars($r['id']) ?></td>
                     <td><?= htmlspecialchars($r['level']) ?></td>
                     <td><?= htmlspecialchars($r['requirement']) ?></td>
                     <td><span class="badge <?= $cls ?>"><?= $label ?></span><?= $r['owner'] ? ' <span class="badge badge-light">owner</span>' : '' ?><?= $r['live'] ? ' <span class="badge badge-info">live</span>' : '' ?></td>

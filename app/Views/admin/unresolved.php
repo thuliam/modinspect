@@ -5,7 +5,7 @@ $pages = (int) max(1, ceil($total / $per));
 <?= mi_page_header($base, ['Catalog', 'Unresolved listings'], htmlspecialchars(t('v.unresolved_listings')), htmlspecialchars(t('v.listings_the_resolver_could_not_matc')), '') ?>
 
 <?php if (!$actionsAvailable): ?>
-    <div class="alert alert-warning">The decision table (migration 019) is not installed on this database, so this page is read-only. Run <code>php cli/migrate.php</code> to enable the actions.</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.unres_pre')) ?> <code>php cli/migrate.php</code> <?= htmlspecialchars(t('misc.unres_post')) ?></div>
 <?php elseif (!$canManage): ?>
     <div class="alert alert-info"><?= htmlspecialchars(t('v.you_can_view_this_queue_adding_alias')) ?></div>
 <?php endif; ?>
@@ -20,7 +20,7 @@ $pages = (int) max(1, ceil($total / $per));
     <div class="card-header"><?= (int) $total ?> <?= htmlspecialchars(t('v.listing_s_page')) ?> <?= (int) $page ?> <?= htmlspecialchars(t('v.x8bf8854b')) ?> <?= $pages ?></div>
     <div class="table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
-            <thead><tr><th><?= htmlspecialchars(t('v.listing_private')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.price_text')) ?></th><th><?= htmlspecialchars(t('v.evidence_3')) ?></th><th style="min-width:22rem"><?= htmlspecialchars(t('v.decision')) ?></th></tr></thead>
+            <thead><tr><th><?= htmlspecialchars(t('v.listing_private')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.price_text')) ?></th><th><?= htmlspecialchars(t('v.evidence_3')) ?></th><th class="mi-th-wider"><?= htmlspecialchars(t('v.decision')) ?></th></tr></thead>
             <tbody>
             <?php foreach ($rows as $r): ?>
                 <tr>

@@ -5,13 +5,13 @@ $badge = ['submitted' => 'badge-warning', 'approved' => 'badge-success', 'reject
 ?>
 <?= mi_page_header($base, ['Market data', 'Seller listings'], htmlspecialchars(t('v.x5de075c2')), htmlspecialchars(t('v.hg_17_hg_16'))) ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning">ฐานข้อมูลนี้ยังไม่มีตารางประกาศ ให้รัน <code>php cli/migrate.php database/migrations/023_members.sql</code> และ <code>024_listing_attributes_and_seller_listings.sql</code> ก่อน (เจ้าของเป็นผู้รันบนฐานข้อมูลจริง)</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.sl_table_pre')) ?> <code>php cli/migrate.php database/migrations/023_members.sql</code> <?= htmlspecialchars(t('misc.sl_table_mid')) ?> <code>024_listing_attributes_and_seller_listings.sql</code> <?= htmlspecialchars(t('misc.sl_table_post')) ?></div>
 <?php else: ?>
 <div class="card mi-admin-card mi-table-card">
     <div class="card-header"><h2><?= htmlspecialchars(t('v.xf1336909')) ?><?= count($rows) ?>)</h2></div>
     <div class="table-responsive">
         <table class="table table-hover mi-admin-table mb-0">
-            <thead><tr><th><?= htmlspecialchars(t('v.x75cb8be2')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.xe3efa74f')) ?></th><th><?= htmlspecialchars(t('v.x412a9419')) ?></th><th><?= htmlspecialchars(t('v.x2564e9fb')) ?></th><th><?= htmlspecialchars(t('v.xc9701a0d')) ?></th><th style="min-width:18rem"><?= htmlspecialchars(t('v.x8aba0b36')) ?></th></tr></thead>
+            <thead><tr><th><?= htmlspecialchars(t('v.x75cb8be2')) ?></th><th class="text-right"><?= htmlspecialchars(t('v.xe3efa74f')) ?></th><th><?= htmlspecialchars(t('v.x412a9419')) ?></th><th><?= htmlspecialchars(t('v.x2564e9fb')) ?></th><th><?= htmlspecialchars(t('v.xc9701a0d')) ?></th><th class="mi-th-wide"><?= htmlspecialchars(t('v.x8aba0b36')) ?></th></tr></thead>
             <tbody>
             <?php if (!$rows): ?><tr><td colspan="6" class="text-muted"><?= htmlspecialchars(t('v.x49e63fd2')) ?></td></tr><?php endif; ?>
             <?php foreach ($rows as $r): ?>

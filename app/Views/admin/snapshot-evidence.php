@@ -39,7 +39,7 @@ ob_start(); ?><a class="btn btn-outline-secondary" href="<?= $base ?>/admin/pric
     </div>
     <?php if (count($history['history']) > 1): $chartId = 'snaphist' . bin2hex(random_bytes(3)); $series = array_reverse($history['history']); ?>
     <div class="card-body pt-0">
-        <div style="position:relative;height:200px"><canvas id="<?= $chartId ?>" data-chart="history" data-color="#6366f1" data-source="<?= $chartId ?>-data" role="img" aria-label="<?= htmlspecialchars(t('v.median_at_each_calculation_of_this_p')) ?>"></canvas></div>
+        <div class="mi-chart-box"><canvas id="<?= $chartId ?>" data-chart="history" data-color="#6366f1" data-source="<?= $chartId ?>-data" role="img" aria-label="<?= htmlspecialchars(t('v.median_at_each_calculation_of_this_p')) ?>"></canvas></div>
         <p class="text-muted mt-2 mb-0"><?= htmlspecialchars(t('v.median_as_published_at_each_calculat')) ?></p>
         <?php // LS-20 B1: data block (not run), drawn by mi-charts.js (no inline script, so a Content-Security-Policy can be enforced) ?>
         <script src="<?= $base ?>/assets/vendor/chartjs/chart.umd.min.js"></script>

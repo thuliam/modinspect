@@ -9,7 +9,7 @@ $reasonTh = \App\Services\Community\Forum::REASONS;
 ?>
 <?= mi_page_header($base, ['Market data', 'Community moderation'], htmlspecialchars(t('v.x8a845048')), htmlspecialchars(t('v.x3a926b56')), '') ?>
 <?php if (!$ready): ?>
-    <div class="alert alert-warning">ฐานข้อมูลนี้ยังไม่มีตารางชุมชน ให้รัน <code>php cli/migrate.php database/migrations/027_community_forum.sql</code> หลังสำรองข้อมูล</div>
+    <div class="alert alert-warning"><?= htmlspecialchars(t('misc.mig_community_pre')) ?> <code>php cli/migrate.php database/migrations/027_community_forum.sql</code> <?= htmlspecialchars(t('misc.mig_community_post')) ?></div>
 <?php else: ?>
     <?php if (!$featureOn): ?><div class="alert alert-info">ชุมชนสำหรับผู้เข้าชมยังปิดอยู่ (ตั้งค่า <code>COMMUNITY_FORUM_ENABLED</code> หลังเจ้าของอนุมัติกฎชุมชนและข้อความความเป็นส่วนตัว) คิวนี้ยังดูและตัดสินรายการที่มีอยู่ได้</div><?php endif; ?>
     <div class="card mi-admin-card mb-3"><div class="card-body">
@@ -23,7 +23,7 @@ $reasonTh = \App\Services\Community\Forum::REASONS;
             <?php foreach ($queue as $r): ?>
                 <tr>
                     <td><?= htmlspecialchars($typeTh[$r['target_type']] ?? (string) $r['target_type']) ?> #<?= (int) $r['target_id'] ?></td>
-                    <td style="max-width:420px"><?= htmlspecialchars((string) $r['preview']) ?></td>
+                    <td class="mi-cell-max"><?= htmlspecialchars((string) $r['preview']) ?></td>
                     <td><small><?= htmlspecialchars((string) $r['handle']) ?></small></td>
                     <td><?= (int) $r['flags'] ?> <?= htmlspecialchars(t('v.xe104a02b')) ?><br><small class="text-muted"><?= htmlspecialchars(implode(', ', array_map(static fn(string $k): string => $reasonTh[$k] ?? $k, explode(',', (string) $r['reasons'])))) ?></small></td>
                     <td><span class="badge <?= $r['status'] === 'hidden' ? 'badge-warning' : 'badge-light' ?>"><?= $r['status'] === 'hidden' ? t('v.x43c58f67') : htmlspecialchars((string) $r['status']) ?></span></td>

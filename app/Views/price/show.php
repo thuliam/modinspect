@@ -58,7 +58,10 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         <div class="col-lg-6 mb-3">
             <div class="mi-gallery">
                 <span class="mi-gallery-badge"><i class="fas fa-<?= $hasMarketSnapshot ? 'chart-line' : 'info-circle' ?>" aria-hidden="true"></i> <?= $hasMarketSnapshot ? 'มีข้อมูลราคาตลาด' : 'ยังไม่มีราคาตลาด' ?></span>
+                <?php $images = $images ?? []; $galleryHtml = $images ? (function () use ($images, $product, $base) { ob_start(); require ROOT_PATH . '/app/Views/components/product-gallery.php'; return (string) ob_get_clean(); })() : ''; // LS-69 ?>
+                <?php if ($galleryHtml !== ''): ?><div class="mi-gallery-art has-photo mi-gallery-carousel"><?= $galleryHtml ?></div><?php $photo = true; else: ?>
                 <div class="mi-gallery-art<?= ($photo = mi_product_photo($product, $base, 'mi-photo', true)) ? ' has-photo' : '' ?>"><?= $photo ?? mi_art_img($artType, $base) ?></div>
+                <?php endif; ?>
                 <div class="mi-gallery-meta">
                     <span><?= htmlspecialchars($product['category_name']) ?></span>
                     <?php if (!empty($product['brand_name'])): ?><?= mi_brand_logo($product['brand_name'], $base, 20) ?><?php endif; ?>
@@ -132,9 +135,6 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
         </div><?php endif; ?>
     </div>
     <?php $gameFps = $gameFps ?? null; require ROOT_PATH . '/app/Views/components/game-fps.php'; // LS-59 ?>
-    <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): // LS-59: the guide link as a card, not a loose text line ?>
-        <a class="card mi-guide-card mb-4" href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>"><span class="mi-guide-ico"><i class="fas fa-clipboard-check" aria-hidden="true"></i></span><span class="mi-guide-txt"><strong>คู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></strong><small>ดูอะไร ทดสอบอะไร ถามผู้ขายอะไร ก่อนโอนเงิน</small></span><span class="mi-guide-go"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></a>
-    <?php endif; ?>
 
     <?php if (!empty($communityOn)): // LS-21 (R-11): only when the owner has switched community reports on ?>
         <p class="mi-trend-note"><i class="fas fa-flag mr-1" aria-hidden="true"></i><a href="<?= $base ?>/report/<?= rawurlencode((string) $product['slug']) ?>">พบข้อมูลไม่ถูกต้อง หรืออยากแจ้งราคาที่ขายได้? แจ้งเรา</a></p>
@@ -180,18 +180,17 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                     <div><dt>ความสดของข้อมูล</dt><dd><?= number_format((float) ($product['fresh_sample_ratio'] ?? 0), 1) ?>%</dd></div>
                     <div><dt>ประเภทข้อมูล</dt><dd>ราคาประกาศ</dd></div>
                 </dl>
+                <p class="mi-trend-note">ความน่าเชื่อถือบอกคุณภาพของข้อมูล ไม่ใช่คำตัดสินว่าดีลนั้นดีหรือไม่ดี</p>
+                <div class="mi-before-you-decide">
+                    <?php if (\App\Services\Catalog\ConditionGuide::for($product['category_slug'] ?? null) !== null): // LS-61: guide + method links live in the confidence card ?>
+                        <a class="mi-guide-card" href="<?= $base ?>/condition-guide/<?= htmlspecialchars(strtolower((string) $product['category_slug'])) ?>"><span class="mi-guide-ico"><i class="fas fa-clipboard-check" aria-hidden="true"></i></span><span class="mi-guide-txt"><strong>คู่มือเช็กสภาพก่อนซื้อ<?= ' ' . htmlspecialchars((string) $product['category_name']) ?></strong><small>ดูอะไร ทดสอบอะไร ถามผู้ขายอะไร ก่อนโอนเงิน</small></span><span class="mi-guide-go"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></a>
+                    <?php endif; ?>
+                    <a class="mi-guide-card" href="<?= $base ?>/methodology"><span class="mi-guide-ico"><i class="fas fa-calculator" aria-hidden="true"></i></span><span class="mi-guide-txt"><strong>วิธีคำนวณและข้อจำกัด</strong><small>ราคานี้คำนวณอย่างไร และอะไรที่ยังบอกไม่ได้</small></span><span class="mi-guide-go"><i class="fas fa-arrow-right" aria-hidden="true"></i></span></a>
+                </div>
             </aside></div>
 
-            <div class="col-12 col-lg-6 mb-4">
-            <article class="card mi-method-card h-100">
-                <h2>เข้าใจข้อมูลนี้</h2>
-                <p>ช่วงราคาที่พบช่วยให้เห็นกรอบตลาดโดยประมาณ ส่วนความน่าเชื่อถือบอกคุณภาพของข้อมูล ไม่ใช่คำตัดสินว่าดีลนั้นดีหรือไม่ดี</p>
-                <a class="button ghost" href="<?= $base ?>/methodology">อ่านวิธีคำนวณ</a>
-            </article>
-            </div>
+            <div class="col-12 col-lg-6 mb-4"><?php require ROOT_PATH . '/app/Views/components/evidence-explorer.php'; ?></div>
         </div>
-
-        <?php require ROOT_PATH . '/app/Views/components/evidence-explorer.php'; ?>
         <div class="row mt-4">
         <?php $hasSim = !empty($similar) || !empty($similarPerf); ?>
         <div class="col-12<?= $hasSim ? ' col-lg-6' : '' ?> mb-4">

@@ -63,7 +63,7 @@ $errorLabel=static fn(string $value): string => ucwords(strtolower(str_replace('
 
 <div class="row">
     <div class="col-lg-7">
-        <div class="card mi-admin-card mb-3">
+        <div class="card mi-admin-card mb-3 h-100">
             <div class="card-header"><h2><?= htmlspecialchars(t('v.upload_and_dry_run')) ?></h2></div>
             <div class="card-body">
                 <?php if(!$canImport): ?>
@@ -100,7 +100,7 @@ $errorLabel=static fn(string $value): string => ucwords(strtolower(str_replace('
         </div>
     </div>
     <div class="col-lg-5">
-        <div class="card mi-admin-card mb-3">
+        <div class="card mi-admin-card mb-3 h-100">
             <div class="card-header"><h2><?= htmlspecialchars(t('v.confirm_import')) ?></h2></div>
             <div class="card-body">
                 <?php if(!$canImport): ?>
