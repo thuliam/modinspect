@@ -745,4 +745,6 @@ return [
     'misc.imp_type_ram' => 'RAM (brand, form factor, bus)',
     'misc.imp_rules_ram' => 'One row per RAM product: brand (Generic = a spec class priced by spec), series, DDR3/DDR4/DDR5, form factor DIMM or SO-DIMM, bus speed (MHz), total capacity (GB) and modules in the kit. The name and slug are built for you, so the same RAM never appears twice. The brand must already exist.',
     'misc.imp_ram_missing' => 'This database does not have the RAM bus speed and kit columns yet, so RAM cannot be imported.',
+    'misc.imp_type_mb' => 'Motherboards (brand, socket, chipset)',
+    'misc.imp_rules_mb' => 'One row per motherboard: brand, model name, socket, chipset, memory type (DDR3/4/5) and form factor (ATX, Micro-ATX, Mini-ITX, E-ATX). The socket and memory must be compatible (AM5 is DDR5 only); the full name and slug are built for you. The brand must already exist.',
 ];

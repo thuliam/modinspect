@@ -12,10 +12,11 @@ final class SpecFilter
 {
     /** category slug => list of filter keys, in display order */
     public const BY_CATEGORY = [
-        'cpu' => ['socket'], 'motherboard' => ['socket', 'mem', 'form'], 'ram' => ['brand', 'mem', 'form', 'cap', 'kit', 'speed'], // LS-72: RAM by brand, type, form factor, size, modules in the kit, bus speed
+        // LS-72 RAM: brand, type, form factor, size, modules in the kit, bus speed. LS-73 motherboard: brand, socket, chipset, memory, form factor.
+        'cpu' => ['socket'], 'motherboard' => ['brand', 'socket', 'chipset', 'mem', 'form'], 'ram' => ['brand', 'mem', 'form', 'cap', 'kit', 'speed'],
         'gpu' => ['vram', 'chip'], 'storage' => ['cap', 'iface'], 'psu' => ['watt'], 'cooling' => ['ctype'],
     ];
-    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM', 'iface' => 'อินเทอร์เฟซ', 'watt' => 'กำลังไฟ (W)', 'chip' => 'ชิปกราฟิก', 'brand' => 'ยี่ห้อ', 'kit' => 'จำนวนแท่ง', 'ctype' => 'แบบระบายความร้อน'];
+    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM', 'iface' => 'อินเทอร์เฟซ', 'watt' => 'กำลังไฟ (W)', 'chip' => 'ชิปกราฟิก', 'brand' => 'ยี่ห้อ', 'kit' => 'จำนวนแท่ง', 'chipset' => 'ชิปเซ็ต', 'ctype' => 'แบบระบายความร้อน'];
 
     /** the label of a filter; form factor means the board size on a motherboard and DIMM/SO-DIMM on RAM */
     public static function label(string $key, string $category = ''): string
@@ -51,6 +52,14 @@ final class SpecFilter
         if (isset($specs['cooler_type']) && in_array(strtolower(trim($specs['cooler_type'])), ['air', 'aio'], true)) { $a['ctype'] = strtolower(trim($specs['cooler_type'])) === 'aio' ? 'AIO' : 'Air'; }
         if (($product['category_slug'] ?? '') === 'cooling' && !isset($a['ctype'])) {
             if (preg_match('/\b(AIO|Liquid|Water)\b/i', $name)) { $a['ctype'] = 'AIO'; } elseif (preg_match('/\b(Air|Tower)\b/i', $name)) { $a['ctype'] = 'Air'; }
+        }
+        // LS-73: motherboard facts are columns of the product too; they come first, the reference specs and the name fill what a column lacks
+        if (($product['category_slug'] ?? '') === 'motherboard') {
+            if (trim((string)($product['socket'] ?? '')) !== '') { $a['socket'] = trim((string)$product['socket']); }
+            if (trim((string)($product['chipset'] ?? '')) !== '') { $a['chipset'] = strtoupper(trim((string)$product['chipset'])); }
+            if (trim((string)($product['memory_type'] ?? '')) !== '') { $a['mem'] = strtoupper(trim((string)$product['memory_type'])); }
+            if (trim((string)($product['form_factor'] ?? '')) !== '') { $a['form'] = trim((string)$product['form_factor']); }
+            if (trim((string)($product['brand_name'] ?? '')) !== '') { $a['brand'] = trim((string)$product['brand_name']); }
         }
         // LS-72: RAM facts are columns of the product (migration 034 and the RAM format); they come first, the reference specs and the name only fill what a column lacks
         if (($product['category_slug'] ?? '') === 'ram') {
@@ -89,7 +98,7 @@ final class SpecFilter
         if (!$active || !isset(self::BY_CATEGORY[$category])) { return array_values($products); }
         return array_values(array_filter($products, static function (array $p) use ($specMap, $active): bool {
             $a = self::attrs($p, $specMap[(int)$p['id']] ?? []);
-            foreach (['socket', 'mem', 'form', 'cap', 'vram', 'iface', 'watt', 'chip', 'ctype', 'brand', 'kit'] as $k) {
+            foreach (['socket', 'mem', 'form', 'cap', 'vram', 'iface', 'watt', 'chip', 'ctype', 'brand', 'kit', 'chipset'] as $k) {
                 if (isset($active[$k]) && ($a[$k] ?? null) !== $active[$k]) { return false; }
             }
             if (isset($active['speed_min']) || isset($active['speed_max'])) {

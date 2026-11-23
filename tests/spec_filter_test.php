@@ -84,6 +84,6 @@ $ro = F::options($ram, [], 'ram');
 ok_sf(($ro['brand'] ?? []) === ['Corsair', 'Generic', 'Kingston'] && ($ro['form'] ?? []) === ['DIMM', 'SO-DIMM'] && ($ro['kit'] ?? []) === ['1', '2'] && ($ro['cap'] ?? []) === ['16', '32'], 'RAM options list only the values that exist: ' . json_encode($ro));
 ok_sf(F::attrs($r(94, 'Old name DDR3-1333 4GB', 'X', 'DDR4', 'DIMM', 8, 3200, null), ['memory_type' => 'DDR3', 'capacity_gb' => '4', 'speed_mhz' => '1333'])['mem'] === 'DDR4', 'the product column beats the reference spec and the name');
 ok_sf(F::label('form', 'ram') === 'ฟอร์มแฟกเตอร์' && F::label('form', 'motherboard') === 'ขนาดบอร์ด', 'form factor is labelled per category');
-ok_sf(!isset(F::attrs(['id' => 95, 'category_slug' => 'motherboard', 'full_name' => 'Board', 'brand_name' => 'ASUS', 'memory_type' => 'DDR5'], [])['brand']), 'brand is a RAM filter only');
+ok_sf(F::attrs(['id' => 95, 'category_slug' => 'motherboard', 'full_name' => 'Board', 'brand_name' => 'ASUS', 'memory_type' => 'DDR5', 'chipset' => 'b650'], [])['chipset'] === 'B650' && !isset(F::attrs(['id' => 96, 'category_slug' => 'cpu', 'full_name' => 'CPU', 'brand_name' => 'AMD'], [])['brand']), 'brand and chipset are board and RAM filters, not CPU filters');
 
 echo "spec_filter_test: PASS\n";

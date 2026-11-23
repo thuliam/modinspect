@@ -1,7 +1,7 @@
 <?php
-/** @var string $type products|ram|specs|images|game_fps */
+/** @var string $type products|ram|motherboard|specs|images|game_fps */
 $tt = static fn (string $k): string => htmlspecialchars(t($k));
-$tabs = ['products' => 'misc.imp_type_products', 'ram' => 'misc.imp_type_ram', 'specs' => 'misc.imp_type_specs', 'images' => 'misc.imp_type_images', 'game_fps' => 'misc.imp_type_fps'];
+$tabs = ['products' => 'misc.imp_type_products', 'ram' => 'misc.imp_type_ram', 'motherboard' => 'misc.imp_type_mb', 'specs' => 'misc.imp_type_specs', 'images' => 'misc.imp_type_images', 'game_fps' => 'misc.imp_type_fps'];
 ob_start(); ?><?= $tt('crumb.import_centre') ?><?php $dxT = ob_get_clean(); ob_start(); ?><?= $tt('misc.imp_desc') ?><?php $dxD = ob_get_clean();
 ?>
 <?= mi_page_header($base, ['Collection'], $dxT, $dxD, '') ?>
@@ -31,7 +31,7 @@ ob_start(); ?><?= $tt('crumb.import_centre') ?><?php $dxT = ob_get_clean(); ob_s
     </div>
     <div class="card-body">
         <p class="text-muted"><?= $tt('misc.imp_flow') ?></p>
-        <p class="text-muted"><?php if ($type === 'game_fps'): ?><?= $tt('misc.imp_rules_fps') ?><?php elseif ($type === 'ram'): ?><?= $tt('misc.imp_rules_ram') ?><?php elseif ($type === 'specs'): ?><?= $tt('misc.imp_rules_specs') ?><?php elseif ($type === 'images'): ?><?= $tt('misc.imp_rules_images') ?><?php else: ?><?= $tt('misc.imp_rules_products') ?><?php endif; ?></p>
+        <p class="text-muted"><?php if ($type === 'game_fps'): ?><?= $tt('misc.imp_rules_fps') ?><?php elseif ($type === 'motherboard'): ?><?= $tt('misc.imp_rules_mb') ?><?php elseif ($type === 'ram'): ?><?= $tt('misc.imp_rules_ram') ?><?php elseif ($type === 'specs'): ?><?= $tt('misc.imp_rules_specs') ?><?php elseif ($type === 'images'): ?><?= $tt('misc.imp_rules_images') ?><?php else: ?><?= $tt('misc.imp_rules_products') ?><?php endif; ?></p>
         <?php if ($can_manage): ?>
             <?php if ($type === 'images'): ?>
                 <div class="form-group">

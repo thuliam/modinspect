@@ -586,15 +586,15 @@ final class AdminController extends Controller {
         $this->redirect('/admin/articles');
     }
     /** LS-67/68: import centre. One page, one flow (template, upload, dry run, confirm) for Product Master, reference specs, product pictures and in-game FPS; history is the audit log (`import_applied`). */
-    private const IMPORT_TYPES = ['products', 'ram', 'specs', 'images', 'game_fps'];
+    private const IMPORT_TYPES = ['products', 'ram', 'motherboard', 'specs', 'images', 'game_fps'];
     private const IMPORT_MAX_ROWS = 2000;
     private const IMPORT_MAX_IMAGES = 20; // PHP's default max_file_uploads; larger batches use cli/image_import.php
     private function importType(?string $t): string { $t=strtolower(trim((string)$t)); return in_array($t,self::IMPORT_TYPES,true) ? $t : 'products'; }
     private function importPlan(string $type, PDO $db, array $rows): array {
-        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::plan($db,$rows), 'specs'=>\App\Services\Catalog\SpecImport::plan($db,$rows), 'ram'=>\App\Services\Catalog\RamImport::plan($db,$rows), default=>\App\Services\Catalog\ProductImport::plan($db,$rows) };
+        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::plan($db,$rows), 'specs'=>\App\Services\Catalog\SpecImport::plan($db,$rows), 'ram'=>\App\Services\Catalog\RamImport::plan($db,$rows), 'motherboard'=>\App\Services\Catalog\MotherboardImport::plan($db,$rows), default=>\App\Services\Catalog\ProductImport::plan($db,$rows) };
     }
     private function importApplyPlan(string $type, PDO $db, array $plan): array {
-        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::apply($db,$plan), 'specs'=>\App\Services\Catalog\SpecImport::apply($db,$plan), 'ram'=>\App\Services\Catalog\RamImport::apply($db,$plan), default=>\App\Services\Catalog\ProductImport::apply($db,$plan) };
+        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::apply($db,$plan), 'specs'=>\App\Services\Catalog\SpecImport::apply($db,$plan), 'ram'=>\App\Services\Catalog\RamImport::apply($db,$plan), 'motherboard'=>\App\Services\Catalog\MotherboardImport::apply($db,$plan), default=>\App\Services\Catalog\ProductImport::apply($db,$plan) };
     }
     public function importCentrePage(): void {
         if(!$this->requirePermission('products.view')) return;
@@ -613,7 +613,7 @@ final class AdminController extends Controller {
         if($type==='images'){ http_response_code(404); echo 'No template: name the files after the model slug.'; return; }
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="modinspect-'.str_replace('_','-',$type).'-template.csv"');
-        echo match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::csvTemplate(), 'specs'=>\App\Services\Catalog\SpecImport::csvTemplate(), 'ram'=>\App\Services\Catalog\RamImport::csvTemplate(), default=>\App\Services\Catalog\ProductImport::csvTemplate() };
+        echo match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::csvTemplate(), 'specs'=>\App\Services\Catalog\SpecImport::csvTemplate(), 'ram'=>\App\Services\Catalog\RamImport::csvTemplate(), 'motherboard'=>\App\Services\Catalog\MotherboardImport::csvTemplate(), default=>\App\Services\Catalog\ProductImport::csvTemplate() };
     }
     private function importResult(string $type,string $name,int $rows,array $plan): void {
         $count=['create'=>0,'update'=>0,'refused'=>0]; foreach($plan as $p) $count[$p['action']]=($count[$p['action']] ?? 0)+1;
