@@ -17,7 +17,7 @@ final class PriceController extends Controller {
         $specFilters=[]; $specOptions=[];
         if($category!==null && isset(\App\Services\Catalog\SpecFilter::BY_CATEGORY[$category])){
             $specMap=$model->specMap();
-            foreach(['socket','mem','form','cap','vram','iface','watt','chip','ctype','brand','kit','chipset','speed_min','speed_max'] as $k){ $v=self::queryString($k); if($v!==''){ $specFilters[$k]=$v; } }
+            foreach(['socket','mem','form','cap','vram','iface','watt','chip','ctype','brand','kit','chipset','media','eff','modular','speed_min','speed_max'] as $k){ $v=self::queryString($k); if($v!==''){ $specFilters[$k]=$v; } }
             $specOptions=\App\Services\Catalog\SpecFilter::options($catalog,$specMap,$category);
             $products=\App\Services\Catalog\SpecFilter::apply($products,$specMap,$category,$specFilters);
         }

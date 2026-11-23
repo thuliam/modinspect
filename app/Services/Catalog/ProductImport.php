@@ -13,14 +13,20 @@ use PDO;
  */
 final class ProductImport
 {
-    public const COLUMNS = ['category', 'brand', 'model_name', 'full_name', 'slug', 'generation', 'release_year', 'spec_summary', 'tdp_watt', 'recommended_psu_watt', 'socket', 'chipset', 'memory_type', 'form_factor', 'capacity_gb', 'memory_speed_mhz', 'kit_modules', 'image_path', 'is_active'];
-    private const TEXT = ['generation' => 100, 'spec_summary' => 2000, 'socket' => 40, 'chipset' => 40, 'memory_type' => 20, 'form_factor' => 30];
-    private const INTS = ['release_year' => [1990, 2100], 'tdp_watt' => [1, 2000], 'recommended_psu_watt' => [1, 3000], 'capacity_gb' => [1, 1000000], 'memory_speed_mhz' => [100, 20000], 'kit_modules' => [1, 8]];
+    public const COLUMNS = ['category', 'brand', 'model_name', 'full_name', 'slug', 'generation', 'release_year', 'spec_summary', 'tdp_watt', 'recommended_psu_watt', 'socket', 'chipset', 'memory_type', 'form_factor', 'capacity_gb', 'memory_speed_mhz', 'kit_modules', 'interface_type', 'media_type', 'power_watt', 'efficiency_rating', 'modular_type', 'image_path', 'is_active'];
+    private const TEXT = ['generation' => 100, 'spec_summary' => 2000, 'socket' => 40, 'chipset' => 40, 'memory_type' => 20, 'form_factor' => 30, 'interface_type' => 20, 'media_type' => 10, 'efficiency_rating' => 20, 'modular_type' => 20];
+    private const INTS = ['release_year' => [1990, 2100], 'tdp_watt' => [1, 2000], 'recommended_psu_watt' => [1, 3000], 'capacity_gb' => [1, 1000000], 'memory_speed_mhz' => [100, 20000], 'kit_modules' => [1, 8], 'power_watt' => [100, 3000]];
 
     public static function slug(string $value): string
     {
         $slug = preg_replace('/[^a-z0-9ก-๙]+/iu', '-', mb_strtolower(trim($value), 'UTF-8')) ?? '';
         return trim($slug, '-');
+    }
+
+    /** true when every named column exists on products (the matching migration was applied) */
+    public static function hasColumns(PDO $db, array $cols): bool
+    {
+        try { $db->query('SELECT ' . implode(', ', array_map(static fn ($c) => preg_replace('/[^a-z_]/', '', $c), $cols)) . ' FROM products LIMIT 1'); return true; } catch (\PDOException) { return false; }
     }
 
     public static function csvTemplate(): string

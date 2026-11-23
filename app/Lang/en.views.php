@@ -747,4 +747,9 @@ return [
     'misc.imp_ram_missing' => 'This database does not have the RAM bus speed and kit columns yet, so RAM cannot be imported.',
     'misc.imp_type_mb' => 'Motherboards (brand, socket, chipset)',
     'misc.imp_rules_mb' => 'One row per motherboard: brand, model name, socket, chipset, memory type (DDR3/4/5) and form factor (ATX, Micro-ATX, Mini-ITX, E-ATX). The socket and memory must be compatible (AM5 is DDR5 only); the full name and slug are built for you. The brand must already exist.',
+    'misc.imp_type_storage' => 'Storage (brand, interface, form factor)',
+    'misc.imp_type_psu' => 'PSU (brand, watts, 80 PLUS)',
+    'misc.imp_rules_storage' => 'One row per drive: brand (Generic = a spec class priced by spec), series, SSD or HDD, NVMe or SATA, form factor (M.2 2280, M.2 2242, M.2, 2.5", 3.5") and capacity in GB (1 TB = 1000). Combinations that cannot exist are refused (NVMe must be M.2); the name and slug are built for you.',
+    'misc.imp_rules_psu' => 'One row per PSU: brand (Generic = a spec class), series, watts, 80 PLUS rating (None, 80+ White to Titanium), cable type (Non-modular, Semi-modular, Fully modular) and form factor (ATX, SFX, SFX-L, TFX). The name and slug are built for you.',
+    'misc.imp_sp_missing' => 'This database does not have the storage and PSU columns yet, so they cannot be imported.',
 ];

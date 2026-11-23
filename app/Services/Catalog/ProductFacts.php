@@ -23,6 +23,8 @@ final class ProductFacts
         'capacity_gb' => ['ความจุ', 'capacity_gb', ' GB'],
         'memory_speed_mhz' => ['ความเร็วบัสหน่วยความจำ', 'speed_mhz', ' MHz'], // LS-71 (RAM)
         'kit_modules' => ['จำนวนแท่งในชุด', 'modules_in_kit', ' แท่ง'],
+        'interface_type' => ['ช่องต่อ', 'interface', ''], 'media_type' => ['ชนิดไดรฟ์', 'media_type', ''], // LS-74 (storage)
+        'power_watt' => ['กำลังไฟ', 'psu_capacity_watt', ' W'], 'efficiency_rating' => ['มาตรฐานประสิทธิภาพ', 'efficiency_rating', ''], 'modular_type' => ['ชนิดสาย', 'modular_type', ''], // LS-74 (PSU)
     ];
     /** manufacturer spec key => [label, unit shown after the value] */
     private const REFERENCE = [

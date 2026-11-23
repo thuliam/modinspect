@@ -162,4 +162,5 @@ return [
     ['en' => 'The picture batch could not be stored.', 'th' => 'เก็บรูปชุดนี้ไม่สำเร็จ'],
     ['en' => 'The product pictures table is not on this database yet (migration 033).', 'th' => 'ฐานข้อมูลนี้ยังไม่มีตารางรูปสินค้า (migration 033)'],
     ['en' => 'The RAM columns are not on this database yet.', 'th' => 'ฐานข้อมูลนี้ยังไม่มีช่องข้อมูล RAM (บัส/จำนวนแท่ง)'],
+    ['en' => 'The storage and PSU columns are not on this database yet.', 'th' => 'ฐานข้อมูลนี้ยังไม่มีช่องข้อมูล Storage/PSU'],
 ];

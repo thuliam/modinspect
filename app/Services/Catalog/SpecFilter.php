@@ -14,14 +14,14 @@ final class SpecFilter
     public const BY_CATEGORY = [
         // LS-72 RAM: brand, type, form factor, size, modules in the kit, bus speed. LS-73 motherboard: brand, socket, chipset, memory, form factor.
         'cpu' => ['socket'], 'motherboard' => ['brand', 'socket', 'chipset', 'mem', 'form'], 'ram' => ['brand', 'mem', 'form', 'cap', 'kit', 'speed'],
-        'gpu' => ['vram', 'chip'], 'storage' => ['cap', 'iface'], 'psu' => ['watt'], 'cooling' => ['ctype'],
+        'gpu' => ['vram', 'chip'], 'storage' => ['brand', 'media', 'iface', 'form', 'cap'], 'psu' => ['brand', 'watt', 'eff', 'modular', 'form'], 'cooling' => ['ctype'], // LS-74 storage and PSU
     ];
-    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM', 'iface' => 'อินเทอร์เฟซ', 'watt' => 'กำลังไฟ (W)', 'chip' => 'ชิปกราฟิก', 'brand' => 'ยี่ห้อ', 'kit' => 'จำนวนแท่ง', 'chipset' => 'ชิปเซ็ต', 'ctype' => 'แบบระบายความร้อน'];
+    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM', 'iface' => 'อินเทอร์เฟซ', 'watt' => 'กำลังไฟ (W)', 'chip' => 'ชิปกราฟิก', 'brand' => 'ยี่ห้อ', 'kit' => 'จำนวนแท่ง', 'chipset' => 'ชิปเซ็ต', 'media' => 'ชนิดไดรฟ์', 'eff' => '80 PLUS', 'modular' => 'ชนิดสาย', 'ctype' => 'แบบระบายความร้อน'];
 
     /** the label of a filter; form factor means the board size on a motherboard and DIMM/SO-DIMM on RAM */
     public static function label(string $key, string $category = ''): string
     {
-        if ($key === 'form' && $category === 'ram') { return 'ฟอร์มแฟกเตอร์'; }
+        if ($key === 'form' && in_array($category, ['ram', 'storage', 'psu'], true)) { return 'ฟอร์มแฟกเตอร์'; }
         return self::LABELS[$key] ?? $key;
     }
 
@@ -52,6 +52,21 @@ final class SpecFilter
         if (isset($specs['cooler_type']) && in_array(strtolower(trim($specs['cooler_type'])), ['air', 'aio'], true)) { $a['ctype'] = strtolower(trim($specs['cooler_type'])) === 'aio' ? 'AIO' : 'Air'; }
         if (($product['category_slug'] ?? '') === 'cooling' && !isset($a['ctype'])) {
             if (preg_match('/\b(AIO|Liquid|Water)\b/i', $name)) { $a['ctype'] = 'AIO'; } elseif (preg_match('/\b(Air|Tower)\b/i', $name)) { $a['ctype'] = 'Air'; }
+        }
+        // LS-74: storage and PSU facts are columns of the product; they come first, the reference specs and the name fill what a column lacks
+        if (($product['category_slug'] ?? '') === 'storage') {
+            if (trim((string)($product['interface_type'] ?? '')) !== '') { $a['iface'] = trim((string)$product['interface_type']); }
+            if (trim((string)($product['media_type'] ?? '')) !== '') { $a['media'] = strtoupper(trim((string)$product['media_type'])); }
+            if (trim((string)($product['form_factor'] ?? '')) !== '') { $a['form'] = trim((string)$product['form_factor']); }
+            if ((int)($product['capacity_gb'] ?? 0) > 0) { $a['cap'] = (string)(int)$product['capacity_gb']; }
+            if (trim((string)($product['brand_name'] ?? '')) !== '') { $a['brand'] = trim((string)$product['brand_name']); }
+        }
+        if (($product['category_slug'] ?? '') === 'psu') {
+            if ((int)($product['power_watt'] ?? 0) > 0) { $a['watt'] = (string)(int)$product['power_watt']; }
+            if (trim((string)($product['efficiency_rating'] ?? '')) !== '') { $a['eff'] = trim((string)$product['efficiency_rating']); }
+            if (trim((string)($product['modular_type'] ?? '')) !== '') { $a['modular'] = trim((string)$product['modular_type']); }
+            if (trim((string)($product['form_factor'] ?? '')) !== '') { $a['form'] = strtoupper(trim((string)$product['form_factor'])); }
+            if (trim((string)($product['brand_name'] ?? '')) !== '') { $a['brand'] = trim((string)$product['brand_name']); }
         }
         // LS-73: motherboard facts are columns of the product too; they come first, the reference specs and the name fill what a column lacks
         if (($product['category_slug'] ?? '') === 'motherboard') {
@@ -98,7 +113,7 @@ final class SpecFilter
         if (!$active || !isset(self::BY_CATEGORY[$category])) { return array_values($products); }
         return array_values(array_filter($products, static function (array $p) use ($specMap, $active): bool {
             $a = self::attrs($p, $specMap[(int)$p['id']] ?? []);
-            foreach (['socket', 'mem', 'form', 'cap', 'vram', 'iface', 'watt', 'chip', 'ctype', 'brand', 'kit', 'chipset'] as $k) {
+            foreach (['socket', 'mem', 'form', 'cap', 'vram', 'iface', 'watt', 'chip', 'ctype', 'brand', 'kit', 'chipset', 'media', 'eff', 'modular'] as $k) {
                 if (isset($active[$k]) && ($a[$k] ?? null) !== $active[$k]) { return false; }
             }
             if (isset($active['speed_min']) || isset($active['speed_max'])) {
