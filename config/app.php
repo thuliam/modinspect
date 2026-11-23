@@ -1,9 +1,20 @@
 <?php
 declare(strict_types=1);
 
+// The public address is APP_URL's scheme and host plus the folder this request really runs from (the directory of index.php). The folder part is taken from
+// the request so links and assets stay correct whether the host serves .../public (document root not yet set) or the site root (document root = public).
+$appUrl = rtrim((string)($_ENV['APP_URL'] ?? 'http://localhost/modinspect/public'), '/');
+if (PHP_SAPI !== 'cli' && isset($_SERVER['SCRIPT_NAME']) && str_ends_with((string)$_SERVER['SCRIPT_NAME'], '/index.php')) {
+    $origin = parse_url($appUrl);
+    if (!empty($origin['scheme']) && !empty($origin['host'])) {
+        $dir = rtrim(str_replace('\\', '/', dirname((string)$_SERVER['SCRIPT_NAME'])), '/');
+        $appUrl = $origin['scheme'] . '://' . $origin['host'] . (isset($origin['port']) ? ':' . $origin['port'] : '') . $dir;
+    }
+}
+
 return [
     'name' => 'ModInspect',
-    'base_url' => rtrim($_ENV['APP_URL'] ?? 'http://localhost/modinspect/public', '/'),
+    'base_url' => $appUrl,
     // closed pilot (docs/PILOT_SCOPE_TH.md): off by default; when on, nothing is indexed and every page carries the pilot notice
     'pilot' => filter_var($_ENV['APP_PILOT'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
     'db' => [
