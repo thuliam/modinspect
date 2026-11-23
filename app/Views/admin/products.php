@@ -58,7 +58,7 @@
                 </div>
                 <div class="form-group col-lg-2 col-md-3">
                     <span class="mi-field-label"><?= htmlspecialchars(t('v.status')) ?></span>
-                    <div class="custom-control custom-switch mi-product-active-switch">
+                    <div class="custom-control custom-checkbox mi-product-active-switch">
                         <input id="product-active" class="custom-control-input" type="checkbox" name="is_active" value="1" checked>
                         <label class="custom-control-label" for="product-active"><?= htmlspecialchars(t('v.active')) ?></label>
                     </div>
