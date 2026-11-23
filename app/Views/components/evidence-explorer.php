@@ -28,20 +28,20 @@ $gone = array_filter($evidence['excluded_rows'] ?? [], static fn ($r) => $r['cal
     <?php endif; ?>
     <div class="table-responsive mi-evidence-scroll">
         <table class="table table-sm mb-0">
-            <thead><tr><th>วันที่พบ</th><th class="text-right">ราคาเสนอขาย</th><th>แหล่ง</th></tr></thead>
+            <thead><tr><th>วันที่พบ</th><th class="text-right">ราคาเสนอขาย</th><th class="d-none d-md-table-cell">แหล่ง</th></tr></thead>
             <tbody>
             <?php foreach ($rows as $i => $r): ?>
                 <tr<?= $i === $markAt ? ' class="mi-ev-mid"' : '' ?>>
                     <td><?= htmlspecialchars($thDate((string) $r['observed_at'])) ?></td>
                     <td class="text-right">฿<?= number_format((float) $r['calculation_price']) ?><?= $i === $markAt ? ' <span class="badge badge-pill mi-ev-badge">ราคากลาง ฿' . number_format($median) . '</span>' : '' ?></td>
-                    <td><?= htmlspecialchars($gradeLabels[$r['grade']] ?? $gradeLabels['other']) ?></td>
+                    <td class="d-none d-md-table-cell"><?= htmlspecialchars($gradeLabels[$r['grade']] ?? $gradeLabels['other']) ?></td>
                 </tr>
             <?php endforeach; ?>
             <?php foreach ($gone as $r): ?>
                 <tr class="mi-ev-out">
                     <td><?= htmlspecialchars($thDate((string) $r['observed_at'])) ?></td>
-                    <td class="text-right">฿<?= number_format((float) $r['calculation_price']) ?></td>
-                    <td>ไม่นับ: <?= htmlspecialchars($reasonLabels[$r['reason']] ?? 'ตามกฎการคัดกรอง') ?></td>
+                    <td class="text-right">฿<?= number_format((float) $r['calculation_price']) ?><small class="d-md-none d-block">ไม่นับ: <?= htmlspecialchars($reasonLabels[$r['reason']] ?? 'ตามกฎการคัดกรอง') ?></small></td>
+                    <td class="d-none d-md-table-cell">ไม่นับ: <?= htmlspecialchars($reasonLabels[$r['reason']] ?? 'ตามกฎการคัดกรอง') ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
