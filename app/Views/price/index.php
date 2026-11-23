@@ -47,10 +47,10 @@ $categories = ['cpu' => 'CPU', 'gpu' => 'GPU', 'motherboard' => 'Motherboard', '
         <div class="mi-side-group mt-3" aria-label="ตัวกรองเฉพาะหมวด">
             <?php foreach ($specOptions as $key => $values): if ($key === 'speed') { continue; } ?>
                 <div class="mi-side-field">
-                <label for="spec-<?= $key ?>"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::LABELS[$key] ?? $key) ?></label>
+                <label for="spec-<?= $key ?>"><?= htmlspecialchars(\App\Services\Catalog\SpecFilter::label((string) $key, (string) $category)) ?></label>
                 <select id="spec-<?= $key ?>" name="<?= $key ?>" class="form-control h-auto" data-autosubmit data-width="100%">
                     <option value="">ทั้งหมด</option>
-                    <?php foreach ($values as $v): $text = in_array($key, ['cap'], true) ? ((int) $v >= 1000 ? ((int) $v / 1000) . ' TB' : $v . ' GB') : ($key === 'vram' ? $v . ' GB' : ($key === 'watt' ? $v . ' W' : $v)); ?>
+                    <?php foreach ($values as $v): $text = in_array($key, ['cap'], true) ? ((int) $v >= 1000 ? ((int) $v / 1000) . ' TB' : $v . ' GB') : ($key === 'vram' ? $v . ' GB' : ($key === 'watt' ? $v . ' W' : ($key === 'kit' ? $v . ' แท่ง' : ($key === 'brand' && strtolower($v) === 'generic' ? 'ทั่วไป (สเปกกลาง)' : $v)))); ?>
                         <option value="<?= htmlspecialchars($v) ?>"<?= ($specFilters[$key] ?? '') === $v ? ' selected' : '' ?>><?= htmlspecialchars($text) ?></option>
                     <?php endforeach; ?>
                 </select>

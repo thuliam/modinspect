@@ -12,10 +12,17 @@ final class SpecFilter
 {
     /** category slug => list of filter keys, in display order */
     public const BY_CATEGORY = [
-        'cpu' => ['socket'], 'motherboard' => ['socket', 'mem', 'form'], 'ram' => ['mem', 'cap', 'speed'],
+        'cpu' => ['socket'], 'motherboard' => ['socket', 'mem', 'form'], 'ram' => ['brand', 'mem', 'form', 'cap', 'kit', 'speed'], // LS-72: RAM by brand, type, form factor, size, modules in the kit, bus speed
         'gpu' => ['vram', 'chip'], 'storage' => ['cap', 'iface'], 'psu' => ['watt'], 'cooling' => ['ctype'],
     ];
-    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM', 'iface' => 'อินเทอร์เฟซ', 'watt' => 'กำลังไฟ (W)', 'chip' => 'ชิปกราฟิก', 'ctype' => 'แบบระบายความร้อน'];
+    public const LABELS = ['socket' => 'Socket', 'mem' => 'ชนิดแรม', 'form' => 'ขนาดบอร์ด', 'cap' => 'ความจุ', 'speed' => 'ความเร็ว (MHz)', 'vram' => 'VRAM', 'iface' => 'อินเทอร์เฟซ', 'watt' => 'กำลังไฟ (W)', 'chip' => 'ชิปกราฟิก', 'brand' => 'ยี่ห้อ', 'kit' => 'จำนวนแท่ง', 'ctype' => 'แบบระบายความร้อน'];
+
+    /** the label of a filter; form factor means the board size on a motherboard and DIMM/SO-DIMM on RAM */
+    public static function label(string $key, string $category = ''): string
+    {
+        if ($key === 'form' && $category === 'ram') { return 'ฟอร์มแฟกเตอร์'; }
+        return self::LABELS[$key] ?? $key;
+    }
 
     /** @param array<string,string> $specs @return array<string,string> filter key => normalised value */
     public static function attrs(array $product, array $specs): array
@@ -45,6 +52,15 @@ final class SpecFilter
         if (($product['category_slug'] ?? '') === 'cooling' && !isset($a['ctype'])) {
             if (preg_match('/\b(AIO|Liquid|Water)\b/i', $name)) { $a['ctype'] = 'AIO'; } elseif (preg_match('/\b(Air|Tower)\b/i', $name)) { $a['ctype'] = 'Air'; }
         }
+        // LS-72: RAM facts are columns of the product (migration 034 and the RAM format); they come first, the reference specs and the name only fill what a column lacks
+        if (($product['category_slug'] ?? '') === 'ram') {
+            if (trim((string)($product['memory_type'] ?? '')) !== '') { $a['mem'] = strtoupper(trim((string)$product['memory_type'])); }
+            if (trim((string)($product['form_factor'] ?? '')) !== '') { $a['form'] = strtoupper(trim((string)$product['form_factor'])); }
+            if ((int)($product['capacity_gb'] ?? 0) > 0) { $a['cap'] = (string)(int)$product['capacity_gb']; }
+            if ((int)($product['memory_speed_mhz'] ?? 0) > 0) { $a['speed'] = (string)(int)$product['memory_speed_mhz']; }
+            if ((int)($product['kit_modules'] ?? 0) > 0) { $a['kit'] = (string)(int)$product['kit_modules']; }
+            if (trim((string)($product['brand_name'] ?? '')) !== '') { $a['brand'] = trim((string)$product['brand_name']); }
+        }
         return $a;
     }
 
@@ -60,7 +76,7 @@ final class SpecFilter
                 if ($v !== null) { $vals[$v] = true; }
             }
             $vals = array_map('strval', array_keys($vals));
-            if (in_array($key, ['cap', 'speed', 'vram', 'watt'], true)) { sort($vals, SORT_NUMERIC); } else { natcasesort($vals); $vals = array_values($vals); }
+            if (in_array($key, ['cap', 'speed', 'vram', 'watt', 'kit'], true)) { sort($vals, SORT_NUMERIC); } else { natcasesort($vals); $vals = array_values($vals); }
             if (count($vals) >= 2) { $out[$key] = $vals; }
         }
         return $out;
@@ -73,7 +89,7 @@ final class SpecFilter
         if (!$active || !isset(self::BY_CATEGORY[$category])) { return array_values($products); }
         return array_values(array_filter($products, static function (array $p) use ($specMap, $active): bool {
             $a = self::attrs($p, $specMap[(int)$p['id']] ?? []);
-            foreach (['socket', 'mem', 'form', 'cap', 'vram', 'iface', 'watt', 'chip', 'ctype'] as $k) {
+            foreach (['socket', 'mem', 'form', 'cap', 'vram', 'iface', 'watt', 'chip', 'ctype', 'brand', 'kit'] as $k) {
                 if (isset($active[$k]) && ($a[$k] ?? null) !== $active[$k]) { return false; }
             }
             if (isset($active['speed_min']) || isset($active['speed_max'])) {
