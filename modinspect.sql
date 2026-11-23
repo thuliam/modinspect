@@ -725,6 +725,8 @@ CREATE TABLE `products` (
   `memory_type` varchar(20) DEFAULT NULL,
   `form_factor` varchar(30) DEFAULT NULL,
   `capacity_gb` int(10) UNSIGNED DEFAULT NULL,
+  `memory_speed_mhz` smallint(5) UNSIGNED DEFAULT NULL,
+  `kit_modules` tinyint(3) UNSIGNED DEFAULT NULL,
   `image_path` varchar(255) DEFAULT NULL,
   `is_popular` tinyint(1) NOT NULL DEFAULT 0,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,

@@ -161,4 +161,5 @@ return [
     ['en' => 'Too many pictures in one batch (most 20).', 'th' => 'รูปมากเกินไปในหนึ่งชุด (สูงสุด 20 ไฟล์)'],
     ['en' => 'The picture batch could not be stored.', 'th' => 'เก็บรูปชุดนี้ไม่สำเร็จ'],
     ['en' => 'The product pictures table is not on this database yet (migration 033).', 'th' => 'ฐานข้อมูลนี้ยังไม่มีตารางรูปสินค้า (migration 033)'],
+    ['en' => 'The RAM columns are not on this database yet.', 'th' => 'ฐานข้อมูลนี้ยังไม่มีช่องข้อมูล RAM (บัส/จำนวนแท่ง)'],
 ];

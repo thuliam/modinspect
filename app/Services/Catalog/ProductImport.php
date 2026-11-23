@@ -13,9 +13,9 @@ use PDO;
  */
 final class ProductImport
 {
-    public const COLUMNS = ['category', 'brand', 'model_name', 'full_name', 'slug', 'generation', 'release_year', 'spec_summary', 'tdp_watt', 'recommended_psu_watt', 'socket', 'chipset', 'memory_type', 'form_factor', 'capacity_gb', 'image_path', 'is_active'];
+    public const COLUMNS = ['category', 'brand', 'model_name', 'full_name', 'slug', 'generation', 'release_year', 'spec_summary', 'tdp_watt', 'recommended_psu_watt', 'socket', 'chipset', 'memory_type', 'form_factor', 'capacity_gb', 'memory_speed_mhz', 'kit_modules', 'image_path', 'is_active'];
     private const TEXT = ['generation' => 100, 'spec_summary' => 2000, 'socket' => 40, 'chipset' => 40, 'memory_type' => 20, 'form_factor' => 30];
-    private const INTS = ['release_year' => [1990, 2100], 'tdp_watt' => [1, 2000], 'recommended_psu_watt' => [1, 3000], 'capacity_gb' => [1, 1000000]];
+    private const INTS = ['release_year' => [1990, 2100], 'tdp_watt' => [1, 2000], 'recommended_psu_watt' => [1, 3000], 'capacity_gb' => [1, 1000000], 'memory_speed_mhz' => [100, 20000], 'kit_modules' => [1, 8]];
 
     public static function slug(string $value): string
     {

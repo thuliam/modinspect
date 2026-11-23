@@ -586,15 +586,15 @@ final class AdminController extends Controller {
         $this->redirect('/admin/articles');
     }
     /** LS-67/68: import centre. One page, one flow (template, upload, dry run, confirm) for Product Master, reference specs, product pictures and in-game FPS; history is the audit log (`import_applied`). */
-    private const IMPORT_TYPES = ['products', 'specs', 'images', 'game_fps'];
+    private const IMPORT_TYPES = ['products', 'ram', 'specs', 'images', 'game_fps'];
     private const IMPORT_MAX_ROWS = 2000;
     private const IMPORT_MAX_IMAGES = 20; // PHP's default max_file_uploads; larger batches use cli/image_import.php
     private function importType(?string $t): string { $t=strtolower(trim((string)$t)); return in_array($t,self::IMPORT_TYPES,true) ? $t : 'products'; }
     private function importPlan(string $type, PDO $db, array $rows): array {
-        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::plan($db,$rows), 'specs'=>\App\Services\Catalog\SpecImport::plan($db,$rows), default=>\App\Services\Catalog\ProductImport::plan($db,$rows) };
+        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::plan($db,$rows), 'specs'=>\App\Services\Catalog\SpecImport::plan($db,$rows), 'ram'=>\App\Services\Catalog\RamImport::plan($db,$rows), default=>\App\Services\Catalog\ProductImport::plan($db,$rows) };
     }
     private function importApplyPlan(string $type, PDO $db, array $plan): array {
-        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::apply($db,$plan), 'specs'=>\App\Services\Catalog\SpecImport::apply($db,$plan), default=>\App\Services\Catalog\ProductImport::apply($db,$plan) };
+        return match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::apply($db,$plan), 'specs'=>\App\Services\Catalog\SpecImport::apply($db,$plan), 'ram'=>\App\Services\Catalog\RamImport::apply($db,$plan), default=>\App\Services\Catalog\ProductImport::apply($db,$plan) };
     }
     public function importCentrePage(): void {
         if(!$this->requirePermission('products.view')) return;
@@ -602,7 +602,7 @@ final class AdminController extends Controller {
         $type=$this->importType($_GET['type'] ?? null);
         $result=$_SESSION['admin_import_centre_result'] ?? null;
         if(is_array($result) && ($result['type'] ?? '')!==$type) $result=null;
-        $this->render('import-centre','Import centre',['type'=>$type,'result'=>$result,'can_manage'=>$this->canManage(),'fps_table'=>\App\Services\Catalog\GameFpsImport::tableExists($db),'images_table'=>\App\Services\Catalog\ImageImport::tableExists($db),'max_images'=>self::IMPORT_MAX_IMAGES,'recent'=>$this->recentImports($db)]);
+        $this->render('import-centre','Import centre',['type'=>$type,'result'=>$result,'can_manage'=>$this->canManage(),'fps_table'=>\App\Services\Catalog\GameFpsImport::tableExists($db),'images_table'=>\App\Services\Catalog\ImageImport::tableExists($db),'ram_ready'=>\App\Services\Catalog\RamImport::ready($db),'max_images'=>self::IMPORT_MAX_IMAGES,'recent'=>$this->recentImports($db)]);
     }
     private function recentImports(PDO $db): array {
         try { return $db->query("SELECT created_at, action, after_data FROM audit_logs WHERE action IN ('import_applied') ORDER BY id DESC LIMIT 10")->fetchAll(); } catch(\PDOException) { return []; }
@@ -613,7 +613,7 @@ final class AdminController extends Controller {
         if($type==='images'){ http_response_code(404); echo 'No template: name the files after the model slug.'; return; }
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="modinspect-'.str_replace('_','-',$type).'-template.csv"');
-        echo match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::csvTemplate(), 'specs'=>\App\Services\Catalog\SpecImport::csvTemplate(), default=>\App\Services\Catalog\ProductImport::csvTemplate() };
+        echo match($type){ 'game_fps'=>\App\Services\Catalog\GameFpsImport::csvTemplate(), 'specs'=>\App\Services\Catalog\SpecImport::csvTemplate(), 'ram'=>\App\Services\Catalog\RamImport::csvTemplate(), default=>\App\Services\Catalog\ProductImport::csvTemplate() };
     }
     private function importResult(string $type,string $name,int $rows,array $plan): void {
         $count=['create'=>0,'update'=>0,'refused'=>0]; foreach($plan as $p) $count[$p['action']]=($count[$p['action']] ?? 0)+1;
@@ -628,6 +628,7 @@ final class AdminController extends Controller {
         if($type==='images'){ $this->importImagesDryRun($db,$back); return; }
         $file=$this->storedUploadPath($_FILES['import_file'] ?? null);
         if($file===''){ $this->flash('danger','Upload a CSV or JSON file (within the size limit).'); $this->redirect($back); }
+        if($type==='ram' && !\App\Services\Catalog\RamImport::ready($db)){ @unlink($file); $this->flash('danger','The RAM columns are not on this database yet.'); $this->redirect($back); }
         if($type==='game_fps' && !\App\Services\Catalog\GameFpsImport::tableExists($db)){ @unlink($file); $this->flash('danger','The game FPS table is not on this database yet (migration 031).'); $this->redirect($back); }
         $rows=\App\Services\Catalog\GameFpsImport::readFile($file);
         if($rows===[] || count($rows)>self::IMPORT_MAX_ROWS){ @unlink($file); $this->flash('danger',$rows===[] ? 'The file has no readable rows (check the header line).' : 'The file has too many rows (most 2000).'); $this->redirect($back); }

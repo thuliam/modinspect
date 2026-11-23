@@ -21,6 +21,8 @@ final class ProductFacts
         'tdp_watt'    => ['TDP', 'tdp_watt', ' W'],
         'form_factor' => ['ขนาด / ฟอร์มแฟกเตอร์', 'form_factor', ''],
         'capacity_gb' => ['ความจุ', 'capacity_gb', ' GB'],
+        'memory_speed_mhz' => ['ความเร็วบัสหน่วยความจำ', 'speed_mhz', ' MHz'], // LS-71 (RAM)
+        'kit_modules' => ['จำนวนแท่งในชุด', 'modules_in_kit', ' แท่ง'],
     ];
     /** manufacturer spec key => [label, unit shown after the value] */
     private const REFERENCE = [

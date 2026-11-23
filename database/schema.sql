@@ -55,6 +55,8 @@ CREATE TABLE products (
   memory_type VARCHAR(20) NULL,
   form_factor VARCHAR(30) NULL,
   capacity_gb INT UNSIGNED NULL,
+  memory_speed_mhz SMALLINT UNSIGNED NULL,
+  kit_modules TINYINT UNSIGNED NULL,
   image_path VARCHAR(255) NULL,
   is_popular TINYINT(1) NOT NULL DEFAULT 0,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
