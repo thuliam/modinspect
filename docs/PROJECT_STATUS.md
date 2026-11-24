@@ -1232,3 +1232,7 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 
 ## LS-85 base URL follows the opened address 2026-11-24
 - `config/app.php`: when the request Host is a loopback name (localhost, 127.0.0.1, [::1]) or listed in the new optional `APP_ALLOWED_HOSTS` (comma list), `base_url` uses that host, so a page opened on `localhost` keeps its styles even though `.env` says the LAN IP. Any other Host (forged or not) is ignored, so canonical links, sitemap and manifest cannot be poisoned. Verified with curl Host headers: localhost follows; evil.com and the LAN IP keep APP_URL. Production is unchanged (Host equals APP_URL).
+
+## LS-83 review pack and data gaps 2026-11-24
+- `cli/ls83_review_pack.php --csv=dir` (read-only) writes `ls78_review.csv` (117 untrusted pending Facebook rows: 53 bundle, 30 sold or reserved, 30 wrong RAM class, 4 new item; a suggested decision and an empty `owner_decision` column) and `ls79_collect.csv` (22 products with no snapshot: rows usable, rows missing, what to collect). The earlier report's 87 did not apply the RAM-class rule, so 30 wrong-class rows were hidden in it.
+- `--actor=<id> --decisions=<csv>` records the person's choices (approve, reject, exclude) through `Dashboard::decideObservation` (audit and review decision); dry run unless `--apply --expect=<n>`. Nothing was decided by the agent; CSVs are in git-ignored `storage/import/facebook_20261122`.
