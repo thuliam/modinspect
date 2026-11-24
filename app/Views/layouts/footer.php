@@ -45,6 +45,11 @@
         </div>
     </div>
 </footer>
+<?php // PWA P2: one Bootstrap alert bar at the bottom, filled and shown by site.js (install offer, new version, offline note); hidden otherwise ?>
+<div id="pwa-bar" class="fixed-bottom p-3 d-none" role="status" aria-live="polite"><div class="alert alert-dark mb-0 d-flex flex-wrap align-items-center justify-content-between">
+    <span data-pwa-text></span>
+    <span class="ml-auto"><button type="button" class="btn btn-sm btn-primary d-none" data-pwa-act></button> <button type="button" class="btn btn-sm btn-link" data-pwa-close aria-label="ปิด">ปิด</button></span>
+</div></div>
 <button type="button" id="to-top" class="mi-top" aria-label="กลับขึ้นด้านบน" title="กลับขึ้นด้านบน"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
 <script src="<?= $base ?>/assets/admin/vendor/jquery/jquery-3.7.1.min.js"></script>
 <script src="<?= $base ?>/assets/admin/vendor/bootstrap/js/bootstrap.bundle.js"></script>

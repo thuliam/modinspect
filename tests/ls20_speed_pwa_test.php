@@ -31,7 +31,7 @@ ok_sp(is_array($rows) && count($rows) <= 6, 'popular() runs');
 // ---- D4 ----
 $m = json_decode(S::manifestJson('ModInspect', 'https://x.test/app/'), true);
 ok_sp(is_array($m) && $m['name'] === 'ModInspect' && $m['start_url'] === 'https://x.test/app/' && $m['scope'] === 'https://x.test/app/' && $m['display'] === 'standalone' && $m['lang'] === 'th', 'The manifest has name, absolute start and scope, standalone display, Thai');
-ok_sp(count($m['icons']) === 2 && $m['icons'][0]['sizes'] === '192x192' && $m['icons'][1]['sizes'] === '512x512' && str_starts_with($m['icons'][0]['src'], 'https://x.test/app/assets/brand/'), 'Two icons, absolute under the base URL');
+ok_sp(count($m['icons']) === 3 && ($m['icons'][2]['purpose'] ?? '') === 'maskable' && $m['icons'][0]['sizes'] === '192x192' && $m['icons'][1]['sizes'] === '512x512' && str_starts_with($m['icons'][0]['src'], 'https://x.test/app/assets/brand/'), 'Two plain icons and one maskable, absolute under the base URL');
 foreach ($m['icons'] as $ic) { ok_sp(is_file($root . '/public/assets/brand/' . basename($ic['src'])), basename($ic['src']) . ' exists'); [$w] = getimagesize($root . '/public/assets/brand/' . basename($ic['src'])); ok_sp($w === (int)$ic['sizes'], basename($ic['src']) . ' really is ' . $ic['sizes']); }
 ok_sp(mb_strlen($m['short_name']) <= 12, 'A short name that fits under a home-screen icon');
 ok_sp(str_contains((string)file_get_contents($root . '/public/assets/ci-tokens.css'), $m['background_color']) && $m['background_color'] === $m['theme_color'], 'The colours are the CI canvas, the same as the page theme-color');

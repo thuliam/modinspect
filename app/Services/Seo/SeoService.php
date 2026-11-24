@@ -97,7 +97,7 @@ Disallow: /
         $b = rtrim($baseUrl, '/');
         return (string)json_encode(['name' => $name, 'short_name' => mb_substr($name, 0, 12), 'description' => 'เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง', 'lang' => 'th',
             'start_url' => $b . '/', 'scope' => $b . '/', 'display' => 'standalone', 'background_color' => '#0a0d14', 'theme_color' => '#0a0d14',
-            'icons' => [['src' => $b . '/assets/brand/icon-192x192.png', 'sizes' => '192x192', 'type' => 'image/png'], ['src' => $b . '/assets/brand/icon-512x512.png', 'sizes' => '512x512', 'type' => 'image/png']]],
+            'icons' => [['src' => $b . '/assets/brand/icon-192x192.png', 'sizes' => '192x192', 'type' => 'image/png'], ['src' => $b . '/assets/brand/icon-512x512.png', 'sizes' => '512x512', 'type' => 'image/png'], ['src' => $b . '/assets/brand/icon-maskable-512x512.png', 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'maskable']]],
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "
 ";
     }
