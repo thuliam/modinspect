@@ -23,6 +23,16 @@ final class SeoController extends Controller
         echo SeoService::manifestJson((string)$config['name'], (string)$config['base_url']);
     }
 
+    public function serviceWorker(): void
+    {
+        global $config;
+        $base = rtrim((string)$config['base_url'], '/');
+        header('Content-Type: text/javascript; charset=utf-8');
+        header('Cache-Control: no-cache');   // the browser re-checks the worker on every visit, so a release reaches devices
+        header('Service-Worker-Allowed: ' . rtrim((string)parse_url($base, PHP_URL_PATH), '/') . '/');
+        echo SeoService::serviceWorkerJs($base, (string)@filemtime(ROOT_PATH . '/public/assets/app.css'));
+    }
+
     public function sitemap(): void
     {
         global $config;

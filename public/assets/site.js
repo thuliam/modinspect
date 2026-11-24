@@ -209,3 +209,44 @@ $(function () {
         $t.remove();
     });
 });
+// PWA: register the service worker (it sits next to the manifest, so its path is taken from the manifest link and stays on the page's own origin),
+// and drive the one bottom bar (#pwa-bar): install offer, new version ready, offline note.
+(function () {
+    var bar = document.getElementById('pwa-bar'), deferred = null, onAct = null;
+    var store = { get: function (k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* no storage: the offer just shows again */ } } };
+    function show(text, actLabel, act) {
+        if (!bar) { return; }
+        bar.querySelector('[data-pwa-text]').textContent = text;
+        var b = bar.querySelector('[data-pwa-act]'); onAct = act || null;
+        b.textContent = actLabel || ''; b.classList.toggle('d-none', !act);
+        bar.classList.remove('d-none');
+    }
+    function hide() { if (bar) { bar.classList.add('d-none'); } }
+    if (bar) {
+        bar.querySelector('[data-pwa-close]').addEventListener('click', function () { if (deferred) { store.set('mi-pwa-dismissed', String(Date.now())); } hide(); });
+        bar.querySelector('[data-pwa-act]').addEventListener('click', function () { if (onAct) { onAct(); } });
+    }
+    window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault(); deferred = e;
+        var t = parseInt(store.get('mi-pwa-dismissed') || '0', 10);
+        if (Date.now() - t < 14 * 86400000) { return; }                       // asked less than two weeks ago
+        show('ติดตั้ง ModInspect ไว้บนหน้าจอหลักเพื่อเปิดเร็วขึ้น', 'ติดตั้ง', function () { deferred.prompt(); deferred.userChoice.then(function () { deferred = null; hide(); }); });
+    });
+    window.addEventListener('appinstalled', hide);
+    window.addEventListener('offline', function () { show('ตอนนี้ออฟไลน์ ราคาที่เห็นอาจไม่ใช่ล่าสุด'); });
+    window.addEventListener('online', hide);
+    if (!('serviceWorker' in navigator)) { return; }
+    window.addEventListener('load', function () {
+        var m = document.querySelector('link[rel=manifest]');
+        if (!m) { return; }
+        navigator.serviceWorker.register(new URL(m.href).pathname.replace(/[^/]*$/, '') + 'sw.js').then(function (reg) {
+            reg.addEventListener('updatefound', function () {
+                var w = reg.installing;
+                if (!w) { return; }
+                w.addEventListener('statechange', function () {
+                    if (w.state === 'installed' && navigator.serviceWorker.controller) { show('มีเวอร์ชันใหม่ของเว็บ', 'โหลดใหม่', function () { window.location.reload(); }); }
+                });
+            });
+        }).catch(function () { /* the site works without it */ });
+    });
+}());

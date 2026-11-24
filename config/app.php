@@ -20,6 +20,19 @@ if ($docRoot !== false && $pubDir !== false) {
     }
 }
 
+// LS-85: when the page is opened by another address than APP_URL's host (localhost instead of the LAN IP), links must stay on the address the browser used,
+// or the page loses its styles (Content-Security-Policy allows only its own origin). Only loopback names and hosts listed in APP_ALLOWED_HOSTS qualify, so a
+// forged Host header can never change the public address (canonical links, sitemap, manifest).
+if (PHP_SAPI !== 'cli' && !empty($_SERVER['HTTP_HOST'])) {
+    $reqHost = (string)$_SERVER['HTTP_HOST'];
+    $reqName = strtolower((string)(parse_url('//' . $reqHost, PHP_URL_HOST) ?? ''));
+    $allowed = array_merge(['localhost', '127.0.0.1', '[::1]'], array_filter(array_map('trim', explode(',', strtolower((string)($_ENV['APP_ALLOWED_HOSTS'] ?? ''))))));
+    $cur = parse_url($appUrl);
+    if ($reqName !== '' && in_array($reqName, $allowed, true) && strtolower((string)($cur['host'] ?? '')) !== $reqName) {
+        $appUrl = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http') . '://' . $reqHost . (string)($cur['path'] ?? '');
+    }
+}
+
 return [
     'name' => 'ModInspect',
     'base_url' => $appUrl,
@@ -47,6 +60,8 @@ return [
     'community_reports' => ['enabled' => filter_var($_ENV['COMMUNITY_REPORTS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['COMMUNITY_REPORTS_HMAC_KEY'] ?? '')],
     // LS-24 M9: community forum (threads, replies, reviews). Off unless enabled; every route answers 404 and no page links to it while off.
     'community_forum' => ['enabled' => filter_var($_ENV['COMMUNITY_FORUM_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
+    // LS-86: browser push for price-change alerts. Off unless PUSH_ENABLED=true; no sender is wired yet (a Web Push library needs owner approval).
+    'push' => ['enabled' => filter_var($_ENV['PUSH_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
     'seller_check' => ['enabled' => filter_var($_ENV['SELLER_CHECK_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['SELLER_CHECK_HMAC_KEY'] ?? '')],
     'collection' => [
         'live_collection_enabled' => filter_var($_ENV['MODINSPECT_LIVE_COLLECTION_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),

@@ -90,16 +90,49 @@ Disallow: /
 
     /**
      * LS-20 D4: web app manifest, so a phone can add the site to its home screen. Name comes from the site config (it follows the brand decision, HG-5),
-     * addresses are absolute under the base URL, the colours are the CI canvas and lime. No service worker and no offline promise: it is only a shortcut.
+     * addresses are absolute under the base URL, the colours are the CI canvas and lime. The service worker (serviceWorkerJs) adds the offline page.
      */
     public static function manifestJson(string $name, string $baseUrl): string
     {
         $b = rtrim($baseUrl, '/');
         return (string)json_encode(['name' => $name, 'short_name' => mb_substr($name, 0, 12), 'description' => 'เช็กราคา เช็กสภาพ ก่อนซื้อขายคอมมือสอง', 'lang' => 'th',
             'start_url' => $b . '/', 'scope' => $b . '/', 'display' => 'standalone', 'background_color' => '#0a0d14', 'theme_color' => '#0a0d14',
-            'icons' => [['src' => $b . '/assets/brand/icon-192x192.png', 'sizes' => '192x192', 'type' => 'image/png'], ['src' => $b . '/assets/brand/icon-512x512.png', 'sizes' => '512x512', 'type' => 'image/png']]],
+            'icons' => [['src' => $b . '/assets/brand/icon-192x192.png', 'sizes' => '192x192', 'type' => 'image/png'], ['src' => $b . '/assets/brand/icon-512x512.png', 'sizes' => '512x512', 'type' => 'image/png'], ['src' => $b . '/assets/brand/icon-maskable-512x512.png', 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'maskable']]],
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . "
 ";
+    }
+
+    /**
+     * PWA P1: the service worker is a few lines of configuration for the self-hosted Workbox library (public/assets/vendor/workbox, MIT).
+     * Pages: network first, then the device copy, then /offline. Static assets: stale while revalidate. Private and write paths are never handled.
+     * $version goes into the cache names, so a release drops the old copies.
+     */
+    public static function serviceWorkerJs(string $base, string $version): string
+    {
+        $b = rtrim($base, '/');
+        $prefix = rtrim((string)parse_url($b, PHP_URL_PATH), '/');
+        $private = array_map(static fn(string $p): string => $prefix . $p, array_merge(self::DISALLOW, ['/api', '/csp-report', '/sw.js', '/health']));
+        $js = <<<'JS'
+importScripts(BASE + '/assets/vendor/workbox/workbox-sw.js');
+workbox.setConfig({ modulePathPrefix: BASE + '/assets/vendor/workbox/', debug: false });
+const PAGES = 'mi-pages-' + VERSION, ASSETS = 'mi-assets-' + VERSION, OFFLINE = BASE + '/offline';
+self.addEventListener('install', (e) => { e.waitUntil(caches.open(PAGES).then((c) => c.add(OFFLINE)).then(() => self.skipWaiting())); });
+self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith('mi-') && !k.endsWith(VERSION)).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
+const { registerRoute, setCatchHandler } = workbox.routing;
+const { NetworkFirst, StaleWhileRevalidate } = workbox.strategies;
+const { ExpirationPlugin } = workbox.expiration;
+const { CacheableResponsePlugin } = workbox.cacheableResponse;
+const isPrivate = (url) => PRIVATE.some((p) => url.pathname.startsWith(p));
+const ok = new CacheableResponsePlugin({ statuses: [200] });
+registerRoute(({ request, url }) => request.mode === 'navigate' && url.origin === self.location.origin && !isPrivate(url),
+  new NetworkFirst({ cacheName: PAGES, networkTimeoutSeconds: 4, plugins: [ok, new ExpirationPlugin({ maxEntries: 40, maxAgeSeconds: 7 * 24 * 3600 })] }));
+registerRoute(({ request, url }) => request.method === 'GET' && url.origin === self.location.origin && url.pathname.startsWith(ASSET_PREFIX),
+  new StaleWhileRevalidate({ cacheName: ASSETS, plugins: [ok, new ExpirationPlugin({ maxEntries: 120, maxAgeSeconds: 30 * 24 * 3600 })] }));
+setCatchHandler(async ({ request }) => (request.mode === 'navigate' ? (await caches.match(OFFLINE)) || Response.error() : Response.error()));
+JS;
+        $head = 'const BASE = ' . json_encode($prefix, JSON_UNESCAPED_SLASHES) . ', VERSION = ' . json_encode($version) . ', ASSET_PREFIX = ' . json_encode($prefix . '/assets/', JSON_UNESCAPED_SLASHES)
+            . ', PRIVATE = ' . json_encode($private, JSON_UNESCAPED_SLASHES) . ";\n";
+        return $head . $js . "\n";
     }
 
     public static function description(string $default, ?string $custom, int $max = 160): string

@@ -28,7 +28,7 @@ $check = static function (string $label, bool $ok, string $detail = '') use (&$f
     if ($ok) { $pass++; echo "  ok    $label\n"; } else { $fail++; echo "  FAIL  $label" . ($detail !== '' ? " ($detail)" : '') . "\n"; }
 };
 
-foreach (['/', '/price', '/compare', '/condition-guide', '/deal-checker', '/build', '/methodology', '/login', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/favicon.ico'] as $p) {
+foreach (['/', '/price', '/compare', '/condition-guide', '/deal-checker', '/build', '/methodology', '/login', '/robots.txt', '/sitemap.xml', '/manifest.webmanifest', '/sw.js', '/offline', '/favicon.ico'] as $p) {
     $r = smoke_get($base . $p);
     $check("GET $p is 200", $r['code'] === 200, 'got ' . $r['code']);
     if (str_contains((string)$r['body'], '<html') || str_contains((string)$r['body'], '<!doctype')) {

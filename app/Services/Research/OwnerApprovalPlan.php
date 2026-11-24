@@ -20,11 +20,12 @@ final class OwnerApprovalPlan
     public static function build(PDO $db, string $sourceLike = 'offline_owner_text_%', bool $trustedOnly = false): array
     {
         $st = $db->prepare("SELECT o.id, o.product_id, p.full_name, COALESCE(o.price_value,o.asking_price) price, o.is_deposit, o.is_defective, o.is_duplicate, o.listing_type, r.raw_title,
-                p.memory_type, p.memory_speed_mhz, p.capacity_gb
+                p.memory_type, p.memory_speed_mhz, p.capacity_gb, c.name category
             FROM price_observations o
             JOIN raw_price_observations r ON r.id=o.raw_observation_id
             JOIN data_sources s ON s.id=r.source_id
             JOIN products p ON p.id=o.product_id
+            JOIN product_categories c ON c.id=p.category_id
             WHERE s.source_key LIKE :src AND o.verified_status='pending' AND o.price_type='asking' AND COALESCE(o.price_value,o.asking_price) > 0
             ORDER BY o.product_id, o.id");
         $st->execute(['src' => $sourceLike]);
@@ -55,6 +56,8 @@ final class OwnerApprovalPlan
     {
         // LS-77: a title that contradicts the RAM product it sits under (16GB kit under a 32GB class) is a misfiled row, never trusted
         if (!empty($r['memory_type']) && \App\Services\Catalog\SpecConsistency::ramConflicts((string)$r['raw_title'], $r) !== []) { return true; }
+        // LS-77b: a title that names another hardware category is a row filed under the wrong product
+        if (!empty($r['category']) && \App\Services\Catalog\SpecConsistency::categoryConflict((string)$r['raw_title'], (string)$r['category']) !== null) { return true; }
         return (int)$r['is_deposit'] === 1 || (int)$r['is_defective'] === 1 || (int)$r['is_duplicate'] === 1 || (string)$r['listing_type'] !== 'single_item'
             || preg_match('/(ขายแล้ว|\bsold\b|จองแล้ว|reserved|ติดจอง|มือ ?1\b|มือหนึ่ง|brand new|sealed|ใหม่แกะกล่อง|ของใหม่|มัดจำ|deposit)/iu', (string)$r['raw_title']) === 1;
     }

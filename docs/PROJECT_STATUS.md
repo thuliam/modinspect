@@ -1208,3 +1208,40 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - `config/app.php` base_url now follows the folder the request runs from (document root vs real public folder).
 - Open: the site is served at `/public/`; the root `/` still answers 403 (document root is the project folder, not `public`), so the deploy smoke check (which tests the root) reports failure although the site works. Setting the subdomain document root to `.../app/modinspect/public` would fix both.
 - The served folder also contains a `.git` directory and development folders from the Nov 18 clone; the root `.htaccess` blocks them today (403), but they should be removed by the owner.
+
+## Clean URLs and host cleanup 2026-11-24
+- DirectAdmin would not let the API change the subdomain document root, so the served folder (`public_html/app/modinspect`) has a root `.htaccess` (`deploy/hostatom_root.htaccess`) that rewrites every request into `public/`. Visible URLs have no `/public`; an old `/public/...` address redirects (in PHP, `public/index.php`). `public/.htaccess` redirects visible `*.php` addresses to the clean ones.
+- `config/app.php` base_url and the router follow the visible URL, so the same code works at `/public/`, at the root via the rewrite, and with document root = `public`.
+- Deleted from the served folder (owner-ordered): `.git`, `.codex`, `.github`, `.gitignore`, `.gitattributes`, `.env.testing*`, `AGENTS.md`, blueprints/README/prompt files, `cli`, `context`, `database`, `deploy`, `design`, `dist`, `docs`, `examples`, `scripts`, `tests`, `modinspect.sql`, `storage.zip`. Kept: `.env`, `.env.example`, `.htaccess`, `app`, `config`, `public`, `storage`.
+- The deploy smoke check now passes against the site root.
+
+## LS-77b Wrong-category rows and PWA plan 2026-11-24
+- Found 5 price rows whose own title names another hardware category than the product they sit under (DDR5 kits under Ryzen 5 5600, a DDR4 kit under i5-8400, a motherboard under Ryzen 5 2600, DDR3 RAM under Ryzen 5 1600). The "kit/each" flags of the LS-77 report were otherwise normal kit prices (2x16GB), not errors.
+- `SpecConsistency::categoryConflict` (pure) plus `OwnerApprovalPlan::untrusted` now keep such rows out of the approver; `cli/category_misfiled_repair.php` (dry run by default, `--apply --expect=N`) excludes them with a review decision and audit entry. Applied on DEV under actor 54: 5 rows excluded (3 approved, 2 pending), snapshots rebuilt for products #20 (#366) and #252 (#367). `tests/stale_reresolve_test.php` passes.
+- PWA: plan only, no code. See `docs/PWA_PLAN_TH.md` (manifest exists; service worker, offline page and push are planned; Workbox download needs owner approval).
+
+## PWA P1 installable + offline 2026-11-24 (owner approved Workbox)
+- Self-hosted Workbox 7.3.0 (6 production JS files + MIT LICENSE, about 22 KB) in `public/assets/vendor/workbox/`; credit in `docs/THIRD_PARTY_LICENSES.md`; the package guard allows its LICENSE by exact path.
+- `GET /sw.js` (`SeoController::serviceWorker`, `SeoService::serviceWorkerJs`) serves the worker from the app scope with `Cache-Control: no-cache` and `Service-Worker-Allowed`; cache names carry a version so a release drops old copies. Pages: network first (4 s), then device copy, then `/offline`; assets: stale while revalidate; admin, account, login, seller, watch, api, csp-report, health and the worker are never handled; only GET.
+- `GET /offline` page, registration glue (7 lines) at the end of `site.js`, smoke check covers `/sw.js` and `/offline`. CSP unchanged (`script-src 'self'` covers the worker).
+- `tests/pwa_test.php` passes; `tests/ls20_speed_pwa_test.php` updated (the manifest no longer promises "no worker"). Registration path is taken from the manifest link (same origin as the page). The Browser pane cannot register any service worker (even a trivial script fails there), so the worker has NOT been exercised in a real browser; not deployed. Next: P2 install button, P3 push (needs member system and library approval).
+
+## LS-82 category guard at intake 2026-11-24
+- `CollectionPipeline::catalog()` now carries each product's category slug and `ProductResolver::resolve` skips a product whose category the title contradicts (`SpecConsistency::categoryConflict`, now covering RAM, CPU, GPU, storage, PSU and, as the product side, motherboard). The approver and `cli/category_misfiled_repair.php` use the same rule.
+- Wider rule found 9 more wrong-category rows on DEV (SSDs under GTX 1650, Ryzen 5 1600 and i5-8400, a PSU under Ryzen 5 1600); excluded under actor 54 (audited, reversible). GTX 1650 snapshot rebuilt (#368; the SSDs were why its spread was wide); i5-8400 is left with fewer than 3 approved rows, so no snapshot. Resolver, golden, category-validation and stale re-resolve tests pass.
+
+## LS-85 base URL follows the opened address 2026-11-24
+- `config/app.php`: when the request Host is a loopback name (localhost, 127.0.0.1, [::1]) or listed in the new optional `APP_ALLOWED_HOSTS` (comma list), `base_url` uses that host, so a page opened on `localhost` keeps its styles even though `.env` says the LAN IP. Any other Host (forged or not) is ignored, so canonical links, sitemap and manifest cannot be poisoned. Verified with curl Host headers: localhost follows; evil.com and the LAN IP keep APP_URL. Production is unchanged (Host equals APP_URL).
+
+## LS-83 review pack and data gaps 2026-11-24
+- `cli/ls83_review_pack.php --csv=dir` (read-only) writes `ls78_review.csv` (117 untrusted pending Facebook rows: 53 bundle, 30 sold or reserved, 30 wrong RAM class, 4 new item; a suggested decision and an empty `owner_decision` column) and `ls79_collect.csv` (22 products with no snapshot: rows usable, rows missing, what to collect). The earlier report's 87 did not apply the RAM-class rule, so 30 wrong-class rows were hidden in it.
+- `--actor=<id> --decisions=<csv>` records the person's choices (approve, reject, exclude) through `Dashboard::decideObservation` (audit and review decision); dry run unless `--apply --expect=<n>`. Nothing was decided by the agent; CSVs are in git-ignored `storage/import/facebook_20261122`.
+
+## LS-84 PWA P2 2026-11-24
+- One hidden Bootstrap alert bar (`#pwa-bar`, `fixed-bottom`, in `footer.php`) driven by `site.js`: install offer (`beforeinstallprompt`, snoozed 14 days after "close"), "new version ready" (reload button, when a new worker installs while one controls the page), offline note (`offline`/`online` events). No custom CSS.
+- Manifest gains a maskable 512 icon (`icon-maskable-512x512.png`, the icon at 64% on the CI canvas, safe zone); `apple-touch-icon` already existed. Checked in the Browser pane: the bar shows on `offline` and hides on `online`, styles load on localhost (LS-85). Install prompt and update flow need a real Chrome with service worker support (the pane has none), so they are covered by `tests/pwa_test.php` source checks only.
+
+## LS-86 push backend (disabled) 2026-11-24
+- Migration 036 `push_subscriptions` (endpoint hash/endpoint, the two public keys, watch list JSON, active and failure counters, last notified; no personal fields) applied additively to the shared DB after an automatic backup.
+- `PushPayload` (validation), `PriceAlertPlanner` (alert at 5% or more vs the median seen when watching began, one per 24 h, only published checked prices), `SubscriptionStore`, `PushController` (`POST /api/push/subscribe` and `/unsubscribe`: 404 unless `PUSH_ENABLED=true`, default false; CSRF header; body cap 8 KB), `PushSender` interface with `NullPushSender`, and `cli/push_price_alerts.php` (dry run unless `--send`; sends nothing because no sender exists). `tests/push_test.php` passes; the route answers 404 now.
+- NOT done, needs the owner: approve a Web Push library (VAPID signing and payload encryption are not hand-written), create VAPID keys in `.env`, and a front-end opt-in button on `/watching`. The watch list is the visitor's cookie, so no member system is required (HG-13 is not a blocker for this design).
