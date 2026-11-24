@@ -31,6 +31,14 @@ $baht = static fn(float $v): string => '฿' . number_format($v); ?>
             </article></div>
         <?php endforeach; ?>
         </div>
+        <?php if (!empty($pushKey)): ?>
+        <div class="card mb-3"><div class="card-body">
+            <h2 class="h6">แจ้งเตือนเมื่อราคาเปลี่ยน</h2>
+            <p class="small mb-2">ถ้ากดรับแจ้งเตือน เราจะเก็บที่อยู่ push ของเบราว์เซอร์นี้กับรายชื่อรุ่นที่ติดตาม เพื่อส่งข้อความเมื่อราคากลางเปลี่ยน 5% ขึ้นไป ไม่เก็บชื่อ อีเมล หรือเบอร์โทร ยกเลิกได้ทุกเมื่อ</p>
+            <button type="button" class="btn btn-primary btn-sm" id="push-toggle" data-push-key="<?= htmlspecialchars($pushKey) ?>" data-csrf="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>" data-watch="<?= htmlspecialchars((string) json_encode($watch), ENT_QUOTES) ?>" data-base="<?= htmlspecialchars((string) $base) ?>" hidden>รับแจ้งเตือน</button>
+            <span class="small text-muted" id="push-note" role="status"></span>
+        </div></div>
+        <?php endif; ?>
         <p class="mi-trend-note">ลูกศรบอกทิศทางของราคากลางเท่านั้น ไม่ได้บอกว่าควรซื้อหรือรอ</p>
     <?php endif; ?>
 </section>

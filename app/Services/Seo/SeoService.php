@@ -128,6 +128,8 @@ registerRoute(({ request, url }) => request.mode === 'navigate' && url.origin ==
   new NetworkFirst({ cacheName: PAGES, networkTimeoutSeconds: 4, plugins: [ok, new ExpirationPlugin({ maxEntries: 40, maxAgeSeconds: 7 * 24 * 3600 })] }));
 registerRoute(({ request, url }) => request.method === 'GET' && url.origin === self.location.origin && url.pathname.startsWith(ASSET_PREFIX),
   new StaleWhileRevalidate({ cacheName: ASSETS, plugins: [ok, new ExpirationPlugin({ maxEntries: 120, maxAgeSeconds: 30 * 24 * 3600 })] }));
+self.addEventListener('push', (e) => { let d = {}; try { d = e.data ? e.data.json() : {}; } catch (x) { /* plain text or empty */ } e.waitUntil(self.registration.showNotification(d.title || 'ModInspect', { body: d.body || '', icon: BASE + '/assets/brand/icon-192x192.png', data: { url: d.url || (BASE + '/watching') } })); });
+self.addEventListener('notificationclick', (e) => { e.notification.close(); const u = new URL(e.notification.data && e.notification.data.url || (BASE + '/watching'), self.location.origin); e.waitUntil(u.origin === self.location.origin ? clients.openWindow(u.href) : undefined); });
 setCatchHandler(async ({ request }) => (request.mode === 'navigate' ? (await caches.match(OFFLINE)) || Response.error() : Response.error()));
 JS;
         $head = 'const BASE = ' . json_encode($prefix, JSON_UNESCAPED_SLASHES) . ', VERSION = ' . json_encode($version) . ', ASSET_PREFIX = ' . json_encode($prefix . '/assets/', JSON_UNESCAPED_SLASHES)

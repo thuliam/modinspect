@@ -250,3 +250,27 @@ $(function () {
         }).catch(function () { /* the site works without it */ });
     });
 }());
+
+// PWA P3: opt-in button on /watching (shown only when the server printed it, i.e. push is on and a public key is set)
+(function () {
+    var btn = document.getElementById('push-toggle'), note = document.getElementById('push-note');
+    if (!btn || !('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) { return; }
+    function say(t) { if (note) { note.textContent = t; } }
+    function b64(s) { var p = '='.repeat((4 - s.length % 4) % 4), r = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')), o = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) { o[i] = r.charCodeAt(i); } return o; }
+    function post(path, body) { return fetch(btn.getAttribute('data-base') + path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': btn.getAttribute('data-csrf') }, body: JSON.stringify(body), credentials: 'same-origin' }).then(function (r) { if (!r.ok) { throw new Error('http ' + r.status); } }); }
+    function body(sub) { var j = sub.toJSON(), w = []; try { w = JSON.parse(btn.getAttribute('data-watch') || '[]'); } catch (e) { /* no list */ } return { endpoint: j.endpoint, keys: j.keys, watch: w }; }
+    function label(on) { btn.textContent = on ? 'ยกเลิกการแจ้งเตือน' : 'รับแจ้งเตือน'; btn.setAttribute('data-on', on ? '1' : '0'); }
+    navigator.serviceWorker.ready.then(function (reg) {
+        btn.hidden = false;
+        reg.pushManager.getSubscription().then(function (sub) { label(!!sub); });
+        btn.addEventListener('click', function () {
+            reg.pushManager.getSubscription().then(function (sub) {
+                if (sub) { return post('/api/push/unsubscribe', body(sub)).then(function () { return sub.unsubscribe(); }).then(function () { label(false); say('ยกเลิกแล้ว'); }); }
+                return Notification.requestPermission().then(function (p) {
+                    if (p !== 'granted') { say('ไม่ได้รับอนุญาตให้แจ้งเตือน'); return null; }
+                    return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64(btn.getAttribute('data-push-key')) }).then(function (s) { return post('/api/push/subscribe', body(s)).then(function () { label(true); say('เปิดแจ้งเตือนแล้ว'); }); });
+                });
+            }).catch(function () { say('ทำรายการไม่สำเร็จ ลองใหม่อีกครั้ง'); });
+        });
+    });
+}());

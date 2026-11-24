@@ -26,8 +26,11 @@ final class WatchController extends Controller
             $now = $priced ? (float)$p['median'] : null;
             $rows[] = ['product' => $p, 'then' => $w['median'], 'now' => $now, 'change' => WatchList::change($w['median'], $now)];
         }
+        global $config;
+        // PWA P3: the opt-in button is offered only when push is on and a public VAPID key is set; it carries the visitor's own list so the server can compare later
+        $pushKey = (!empty($config['push']['enabled']) && preg_match('/^[A-Za-z0-9_-]{80,100}$/', (string)($config['push']['vapid_public'] ?? '')) === 1) ? (string)$config['push']['vapid_public'] : '';
         $flash = is_string($_SESSION['watch_flash'] ?? null) ? $_SESSION['watch_flash'] : null; unset($_SESSION['watch_flash']);
-        $this->view('pages/watching', ['flash' => $flash, 'title' => 'รุ่นที่ติดตาม', 'metaDescription' => 'รายการรุ่นที่คุณติดตาม พร้อมราคามือสองที่ตรวจแล้วเทียบกับตอนที่เริ่มติดตาม', 'rows' => $rows]);
+        $this->view('pages/watching', ['flash' => $flash, 'title' => 'รุ่นที่ติดตาม', 'metaDescription' => 'รายการรุ่นที่คุณติดตาม พร้อมราคามือสองที่ตรวจแล้วเทียบกับตอนที่เริ่มติดตาม', 'rows' => $rows, 'pushKey' => $pushKey, 'watch' => array_map(static fn(array $w): array => ['slug' => $w['slug'], 'median' => $w['median']], $list)]);
     }
 
     public function toggle(): void
