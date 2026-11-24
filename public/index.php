@@ -168,6 +168,12 @@ $router->get('/admin/audit-logs/data',[AdminController::class,'auditsData']);
 
 $basePath=rtrim(dirname($_SERVER['SCRIPT_NAME']),'/\\');
 $uri=parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH) ?: '/';
+// a site served from the host's /public folder (the host rewrites clean URLs into it) shows no /public: an old /public/... address goes to the clean one
+if ($basePath==='/public' && ($uri==='/public' || strncmp($uri,'/public/',8)===0)) {
+    $qs=(string)($_SERVER['QUERY_STRING'] ?? '');
+    header('Location: ' . (substr($uri,7) ?: '/') . ($qs!=='' ? '?'.$qs : ''), true, 301);
+    exit;
+}
 // the folder is stripped only when it is really part of the visible URL (not when the host rewrites into public/ internally)
 if ($basePath && $basePath!=='/' && ($uri===$basePath || strncmp($uri,$basePath.'/',strlen($basePath)+1)===0)) $uri=substr($uri,strlen($basePath)) ?: '/';
 $router->dispatch($_SERVER['REQUEST_METHOD'],$uri);
