@@ -20,6 +20,19 @@ if ($docRoot !== false && $pubDir !== false) {
     }
 }
 
+// LS-85: when the page is opened by another address than APP_URL's host (localhost instead of the LAN IP), links must stay on the address the browser used,
+// or the page loses its styles (Content-Security-Policy allows only its own origin). Only loopback names and hosts listed in APP_ALLOWED_HOSTS qualify, so a
+// forged Host header can never change the public address (canonical links, sitemap, manifest).
+if (PHP_SAPI !== 'cli' && !empty($_SERVER['HTTP_HOST'])) {
+    $reqHost = (string)$_SERVER['HTTP_HOST'];
+    $reqName = strtolower((string)(parse_url('//' . $reqHost, PHP_URL_HOST) ?? ''));
+    $allowed = array_merge(['localhost', '127.0.0.1', '[::1]'], array_filter(array_map('trim', explode(',', strtolower((string)($_ENV['APP_ALLOWED_HOSTS'] ?? ''))))));
+    $cur = parse_url($appUrl);
+    if ($reqName !== '' && in_array($reqName, $allowed, true) && strtolower((string)($cur['host'] ?? '')) !== $reqName) {
+        $appUrl = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http') . '://' . $reqHost . (string)($cur['path'] ?? '');
+    }
+}
+
 return [
     'name' => 'ModInspect',
     'base_url' => $appUrl,
