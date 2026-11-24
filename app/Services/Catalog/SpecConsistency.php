@@ -9,6 +9,22 @@ namespace App\Services\Catalog;
 final class SpecConsistency
 {
     /**
+     * LS-77b: a title that names only another hardware category (a DDR5 kit under a Ryzen CPU, a motherboard under a CPU) is filed in the wrong category.
+     * Fires only when the title states the other category and says nothing of the product's own, so a CPU+RAM bundle title is left to the bundle rules.
+     */
+    public static function categoryConflict(string $title, string $category): ?string
+    {
+        $kw = [
+            'RAM' => '/\b(ddr[345]|sodimm)\b|แรม/iu',
+            'CPU' => '/\b(ryzen|core\s?i[3579]|i[3579]-\d{4,5}k?f?)\b/iu',
+            'GPU' => '/\b(rtx|gtx|radeon|geforce|rx\s?\d{3,4})\b/iu',
+        ];
+        if (!isset($kw[$category]) || preg_match($kw[$category], $title) === 1) { return null; }
+        foreach ($kw as $other => $re) { if ($other !== $category && preg_match($re, $title) === 1) { return "title is $other, product is $category"; } }
+        return null;
+    }
+
+    /**
      * @param array{memory_type?:?string,memory_speed_mhz?:?int|string,capacity_gb?:?int|string} $product the product's own RAM facts
      * @return list<string>
      */

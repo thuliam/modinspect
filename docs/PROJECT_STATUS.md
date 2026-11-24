@@ -1214,3 +1214,8 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - `config/app.php` base_url and the router follow the visible URL, so the same code works at `/public/`, at the root via the rewrite, and with document root = `public`.
 - Deleted from the served folder (owner-ordered): `.git`, `.codex`, `.github`, `.gitignore`, `.gitattributes`, `.env.testing*`, `AGENTS.md`, blueprints/README/prompt files, `cli`, `context`, `database`, `deploy`, `design`, `dist`, `docs`, `examples`, `scripts`, `tests`, `modinspect.sql`, `storage.zip`. Kept: `.env`, `.env.example`, `.htaccess`, `app`, `config`, `public`, `storage`.
 - The deploy smoke check now passes against the site root.
+
+## LS-77b Wrong-category rows and PWA plan 2026-11-24
+- Found 5 price rows whose own title names another hardware category than the product they sit under (DDR5 kits under Ryzen 5 5600, a DDR4 kit under i5-8400, a motherboard under Ryzen 5 2600, DDR3 RAM under Ryzen 5 1600). The "kit/each" flags of the LS-77 report were otherwise normal kit prices (2x16GB), not errors.
+- `SpecConsistency::categoryConflict` (pure) plus `OwnerApprovalPlan::untrusted` now keep such rows out of the approver; `cli/category_misfiled_repair.php` (dry run by default, `--apply --expect=N`) excludes them with a review decision and audit entry. Applied on DEV under actor 54: 5 rows excluded (3 approved, 2 pending), snapshots rebuilt for products #20 (#366) and #252 (#367). `tests/stale_reresolve_test.php` passes.
+- PWA: plan only, no code. See `docs/PWA_PLAN_TH.md` (manifest exists; service worker, offline page and push are planned; Workbox download needs owner approval).
