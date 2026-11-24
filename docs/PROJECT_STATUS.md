@@ -1208,3 +1208,9 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - `config/app.php` base_url now follows the folder the request runs from (document root vs real public folder).
 - Open: the site is served at `/public/`; the root `/` still answers 403 (document root is the project folder, not `public`), so the deploy smoke check (which tests the root) reports failure although the site works. Setting the subdomain document root to `.../app/modinspect/public` would fix both.
 - The served folder also contains a `.git` directory and development folders from the Nov 18 clone; the root `.htaccess` blocks them today (403), but they should be removed by the owner.
+
+## Clean URLs and host cleanup 2026-11-24
+- DirectAdmin would not let the API change the subdomain document root, so the served folder (`public_html/app/modinspect`) has a root `.htaccess` (`deploy/hostatom_root.htaccess`) that rewrites every request into `public/`. Visible URLs have no `/public`; an old `/public/...` address redirects (in PHP, `public/index.php`). `public/.htaccess` redirects visible `*.php` addresses to the clean ones.
+- `config/app.php` base_url and the router follow the visible URL, so the same code works at `/public/`, at the root via the rewrite, and with document root = `public`.
+- Deleted from the served folder (owner-ordered): `.git`, `.codex`, `.github`, `.gitignore`, `.gitattributes`, `.env.testing*`, `AGENTS.md`, blueprints/README/prompt files, `cli`, `context`, `database`, `deploy`, `design`, `dist`, `docs`, `examples`, `scripts`, `tests`, `modinspect.sql`, `storage.zip`. Kept: `.env`, `.env.example`, `.htaccess`, `app`, `config`, `public`, `storage`.
+- The deploy smoke check now passes against the site root.
