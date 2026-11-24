@@ -8,7 +8,7 @@ namespace App\Services\Push;
  */
 final class PushPayload
 {
-    public const MAX_WATCH = 12;   // same ceiling as WatchList::MAX
+    public const MAX_WATCH = \App\Services\Catalog\WatchList::MAX;   // the list a visitor can hold is the list a subscription can carry
 
     /** @param array<string,mixed> $in @return array{ok:bool,error:?string,endpoint:string,p256dh:string,auth:string,watch:list<array{slug:string,median:?float}>} */
     public static function validate(array $in): array

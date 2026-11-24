@@ -6,7 +6,10 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Csrf;
 use App\Models\Product;
+use App\Core\Database;
 use App\Services\Catalog\WatchList;
+use App\Services\Member\MemberAuth;
+use App\Services\Member\MemberWatchList;
 
 /**
  * LS-25 C5: "models I am watching". The list is a cookie in the visitor's browser (see WatchList); this controller only toggles an entry (POST, CSRF-checked) and lists
@@ -14,10 +17,32 @@ use App\Services\Catalog\WatchList;
  */
 final class WatchController extends Controller
 {
+    /**
+     * LS-87: a signed-in member's list is the server table (merged once per sign-in from this browser's cookie, then it is the truth); a visitor keeps the cookie.
+     * @return array{0:list<array{slug:string,median:?float}>,1:?MemberWatchList,2:int}
+     */
+    private function activeList(): array
+    {
+        global $config;
+        $cookie = WatchList::parse(is_string($_COOKIE[WatchList::COOKIE] ?? null) ? $_COOKIE[WatchList::COOKIE] : null);
+        try {
+            $db = Database::connection($config['db']);
+            $m = (new MemberAuth($db))->current();
+            if ($m === null) { return [$cookie, null, 0]; }
+            $store = new MemberWatchList($db, max(1, min(200, (int)($config['watch_limit'] ?? WatchList::MAX))));
+            $key = 'watch_merged_' . (int)$m['id'];
+            $list = empty($_SESSION[$key]) ? $store->merge((int)$m['id'], $cookie) : $store->load((int)$m['id']);
+            $_SESSION[$key] = true;
+            return [$list, $store, (int)$m['id']];
+        } catch (\Throwable) {
+            return [$cookie, null, 0];   // a host without migration 037 or without a database keeps the cookie list
+        }
+    }
+
     public function index(): void
     {
         $model = new Product();
-        $list = WatchList::parse(is_string($_COOKIE[WatchList::COOKIE] ?? null) ? $_COOKIE[WatchList::COOKIE] : null);
+        [$list] = $this->activeList();
         $rows = [];
         foreach ($list as $w) {
             $p = $model->findBySlug($w['slug']);
@@ -39,9 +64,10 @@ final class WatchController extends Controller
         $slug = is_string($_POST['slug'] ?? null) ? trim($_POST['slug']) : '';
         $p = $slug !== '' ? (new Product())->findBySlug($slug) : null;
         if (!$p) { http_response_code(404); $this->view('errors/404', ['title' => 'ไม่พบหน้า']); return; }
-        $list = WatchList::parse(is_string($_COOKIE[WatchList::COOKIE] ?? null) ? $_COOKIE[WatchList::COOKIE] : null);
+        [$list, $store, $memberId] = $this->activeList();
         $priced = !empty($p['median']) && (int)($p['valid_sample_size'] ?? 0) > 0 && (int)($p['accepted_observation_count'] ?? 0) > 0;
-        $r = WatchList::toggle($list, (string)$p['slug'], $priced ? (float)$p['median'] : null);
+        $medianNow = $priced ? (float)$p['median'] : null;
+        $r = $store !== null ? $store->toggle($memberId, (string)$p['slug'], $medianNow) : WatchList::toggle($list, (string)$p['slug'], $medianNow);
         if (!defined('MODINSPECT_TESTING')) {
             setcookie(WatchList::COOKIE, WatchList::serialize($r['list']), ['expires' => time() + 86400 * 180, 'path' => '/', 'secure' => !empty($_SERVER['HTTPS']), 'httponly' => true, 'samesite' => 'Lax']);
         }

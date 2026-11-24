@@ -1254,3 +1254,10 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 ## Push opt-in button 2026-11-24
 - `/watching` shows a Bootstrap card with "รับแจ้งเตือน / ยกเลิกการแจ้งเตือน" only when `PUSH_ENABLED=true` and a public VAPID key (`PUSH_VAPID_PUBLIC`, base64url) is set; it says what is stored (push address and watched list, no name, email or phone). `site.js` asks permission, subscribes (`userVisibleOnly`) and posts to `/api/push/subscribe|unsubscribe` with the CSRF header; the worker shows the notification and opens `/watching` (same origin only).
 - Off in production (PUSH_ENABLED false). Still no sender: the library decision is open (owner asked for a recommendation; the agent recommended waiting until the button and service worker are proven in a real browser).
+
+## LS-87 member watch list on the server 2026-11-24
+- Migration 037: `watch_items` (member, model slug, median when watching began; unique per member and model; cascades on member delete) and `push_subscriptions.member_id`. Applied additively to the shared DB (automatic backup); mirrored in `schema.sql` and `modinspect.sql`.
+- `MemberWatchList` + `WatchController`: a signed-in member's list is the server table. The browser's cookie list is merged in once per sign-in (idempotent, up to the limit); after that the table is the truth, and `/watching` and the follow button read and write it. A visitor without an account keeps the cookie exactly as before. A host without migration 037 falls back to the cookie.
+- Limit: `WATCH_LIMIT` (default 20, the existing ceiling). The plan's "Free = 3 models" is an unconfirmed assumption and was NOT applied; the owner decides the Free/Plus numbers.
+- Push: a subscription made while signed in carries `member_id`; the alert job then reads the member's account list. Account deletion removes watch items and push subscriptions. Fixed a mismatch: the push payload cap now equals `WatchList::MAX` (was 12 vs 20).
+- `tests/member_watch_list_test.php` added; full local regression (`tests/run.php`) passes. No member exists yet (OAuth keys are the owner's HG-13), so the signed-in path is covered by tests, not by a real sign-in.

@@ -60,6 +60,8 @@ return [
     'community_reports' => ['enabled' => filter_var($_ENV['COMMUNITY_REPORTS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['COMMUNITY_REPORTS_HMAC_KEY'] ?? '')],
     // LS-24 M9: community forum (threads, replies, reviews). Off unless enabled; every route answers 404 and no page links to it while off.
     'community_forum' => ['enabled' => filter_var($_ENV['COMMUNITY_FORUM_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
+    // LS-87: most models a signed-in member may watch (the cookie list of a visitor keeps WatchList::MAX). The owner has not set a Free/Plus limit yet, so the default is the existing ceiling.
+    'watch_limit' => max(1, min(200, (int)($_ENV['WATCH_LIMIT'] ?? 20))),
     // LS-86: browser push for price-change alerts. Off unless PUSH_ENABLED=true; no sender is wired yet (a Web Push library needs owner approval).
     'push' => ['enabled' => filter_var($_ENV['PUSH_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'vapid_public' => (string)($_ENV['PUSH_VAPID_PUBLIC'] ?? '')],
     'seller_check' => ['enabled' => filter_var($_ENV['SELLER_CHECK_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['SELLER_CHECK_HMAC_KEY'] ?? '')],
