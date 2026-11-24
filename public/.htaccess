@@ -1,9 +1,9 @@
 Options -Indexes
 RewriteEngine On
 # A visible .php address is sent to the clean one (/index.php -> /, /x.php -> /x); the front controller below is an internal rewrite, so it never loops.
-RewriteCond %{THE_REQUEST} ^[A-Z]+\s(/[^\s?]*?/)index\.php[\s?]
+RewriteCond %{THE_REQUEST} "^[A-Z]+ (/(?:[^ ?]*/)?)index\.php[ ?]"
 RewriteRule ^ %1 [R=301,L]
-RewriteCond %{THE_REQUEST} ^[A-Z]+\s(/[^\s?]*?)\.php[\s?]
+RewriteCond %{THE_REQUEST} "^[A-Z]+ (/[^ ?]*?)\.php[ ?]"
 RewriteRule ^ %1 [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
