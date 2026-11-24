@@ -168,5 +168,6 @@ $router->get('/admin/audit-logs/data',[AdminController::class,'auditsData']);
 
 $basePath=rtrim(dirname($_SERVER['SCRIPT_NAME']),'/\\');
 $uri=parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH) ?: '/';
-if ($basePath && $basePath!=='/') $uri=substr($uri,strlen($basePath)) ?: '/';
+// the folder is stripped only when it is really part of the visible URL (not when the host rewrites into public/ internally)
+if ($basePath && $basePath!=='/' && ($uri===$basePath || strncmp($uri,$basePath.'/',strlen($basePath)+1)===0)) $uri=substr($uri,strlen($basePath)) ?: '/';
 $router->dispatch($_SERVER['REQUEST_METHOD'],$uri);
