@@ -209,10 +209,10 @@ $(function () {
         $t.remove();
     });
 });
-// PWA P1: register the service worker (it sits next to the manifest, so its address is relative to the manifest link)
+// PWA P1: register the service worker (it sits next to the manifest, so its path is taken from the manifest link and stays on the page's own origin)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
         var m = document.querySelector('link[rel=manifest]');
-        if (m) { navigator.serviceWorker.register(new URL('sw.js', m.href).href).catch(function () { /* the site works without it */ }); }
+        if (m) { navigator.serviceWorker.register(new URL(m.href).pathname.replace(/[^/]*$/, '') + 'sw.js').catch(function () { /* the site works without it */ }); }
     });
 }
