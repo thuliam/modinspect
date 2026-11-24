@@ -101,6 +101,7 @@ final class MemberAuth
         if ($own) { $this->db->beginTransaction(); }
         try {
             $this->db->prepare('UPDATE spec_builds SET member_id = NULL WHERE member_id = :id')->execute(['id' => $memberId]);
+            try { $this->db->prepare('DELETE FROM push_subscriptions WHERE member_id = :id')->execute(['id' => $memberId]); } catch (\Throwable) { /* a host without migration 037 */ }
             $this->db->prepare('DELETE FROM members WHERE id = :id')->execute(['id' => $memberId]);
             if ($own) { $this->db->commit(); }
         } catch (\Throwable $e) {

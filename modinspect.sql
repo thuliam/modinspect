@@ -2313,6 +2313,7 @@ CREATE TABLE product_images (
 CREATE TABLE push_subscriptions (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   endpoint_hash CHAR(64) NOT NULL,
+  member_id BIGINT UNSIGNED NULL,
   endpoint VARCHAR(1024) NOT NULL,
   p256dh VARCHAR(255) NOT NULL,
   auth VARCHAR(64) NOT NULL,
@@ -2324,5 +2325,18 @@ CREATE TABLE push_subscriptions (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_push_endpoint (endpoint_hash),
-  KEY idx_push_active (is_active, last_notified_at)
+  KEY idx_push_active (is_active, last_notified_at),
+  KEY idx_push_member (member_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- LS-87: member watch list (migration 037)
+CREATE TABLE watch_items (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  member_id BIGINT UNSIGNED NOT NULL,
+  product_slug VARCHAR(120) NOT NULL,
+  median_at_watch DECIMAL(12,2) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_watch_member_slug (member_id, product_slug),
+  CONSTRAINT fk_watch_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

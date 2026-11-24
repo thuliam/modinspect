@@ -29,7 +29,9 @@ final class PushController extends Controller
         $p = PushPayload::validate($in);
         if (!$p['ok']) { $this->json(422, ['status' => 'error', 'message' => (string)$p['error']]); return; }
         $store = new SubscriptionStore(Database::connection($config['db']));
-        if ($subscribe) { $store->save($p); $this->json(200, ['status' => 'success', 'message' => 'subscribed']); return; }
+        $mid = null;
+        try { $m = (new \App\Services\Member\MemberAuth(Database::connection($config['db'])))->current(); $mid = $m !== null ? (int)$m['id'] : null; } catch (\Throwable) { /* no member tables: anonymous */ }
+        if ($subscribe) { $store->save($p, $mid); $this->json(200, ['status' => 'success', 'message' => 'subscribed']); return; }
         $store->remove($p['endpoint']);
         $this->json(200, ['status' => 'success', 'message' => 'unsubscribed']);
     }

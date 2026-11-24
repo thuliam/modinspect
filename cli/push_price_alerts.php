@@ -27,6 +27,7 @@ foreach ($store->active() as $s) {
     $subs++;
     if (!PriceAlertPlanner::due($s['last_notified_at'] !== null ? (string)$s['last_notified_at'] : null, $now)) { continue; }
     $watch = json_decode((string)$s['watch_json'], true);
+    if (!empty($s['member_id'])) { $watch = (new \App\Services\Member\MemberWatchList($db))->load((int)$s['member_id']); }   // LS-87: the account list is the truth for a member
     if (!is_array($watch) || $watch === []) { continue; }
     $current = [];
     foreach ($watch as $w) {
