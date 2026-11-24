@@ -33,7 +33,7 @@ ASSET_EXTENSIONS = {
     ".json", ".txt", ".eot",
 }
 # Reviewed third-party licence texts (docs/THIRD_PARTY_LICENSES.md) that must ship with the library they describe; exact paths only, not a whole extension.
-REVIEWED_LICENSE_FILES = {"public/assets/admin/vendor/select2/LICENSE.md"}
+REVIEWED_LICENSE_FILES = {"public/assets/admin/vendor/select2/LICENSE.md", "public/assets/vendor/workbox/LICENSE"}
 # A development-only README lives under the public assets directory.
 INTENTIONAL_EXCLUSIONS = {"public/assets/admin/README.md"}
 # Manufacturer product photos kept for review only: usage rights are not confirmed, so they must never be packaged for deployment.

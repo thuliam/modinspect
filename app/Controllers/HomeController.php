@@ -9,5 +9,6 @@ final class HomeController extends Controller {
     /** LS-37: the latest three published articles for the home page; an empty list when the blog tables are not there. */
     private function recentArticles(): array { try { return (new \App\Models\Blog())->recent(3); } catch (\Throwable) { return []; } }
     public function glossary(): void { $this->view('pages/glossary',['title'=>'ศัพท์ตลาดมือสอง','metaDescription'=>'ตัวโชว์ ตัวขุด ประกันศูนย์ ถอดเครื่อง และคำอื่น ๆ ในประกาศขายคอมมือสอง แปลว่าอะไร และควรถามอะไรก่อนซื้อ','terms'=>\App\Services\Catalog\Glossary::terms()]); }
+    public function offline(): void { header('Cache-Control: no-store'); $this->view('pages/offline',['title'=>'ออฟไลน์']); }
     public function methodology(): void { $this->view('pages/methodology',['title'=>'วิธีคำนวณและความโปร่งใส']); }
 }

@@ -38,6 +38,6 @@ ok_sp(str_contains((string)file_get_contents($root . '/public/assets/ci-tokens.c
 ok_sp(str_contains((string)file_get_contents($root . '/public/index.php'), "\$router->get('/manifest.webmanifest',[SeoController::class,'manifest']);"), 'The route exists');
 $hd = (string)file_get_contents($root . '/app/Views/layouts/header.php');
 ok_sp(str_contains($hd, '<link rel="manifest" href="<?= $base ?>/manifest.webmanifest">') && str_contains($hd, 'content="#0a0d14"'), 'Every page links the manifest');
-ok_sp(!str_contains(json_encode($m), 'serviceWorker') && !preg_match('/serviceWorker/', (string)file_get_contents($root . '/public/assets/site.js')), 'No service worker: it is a shortcut, not an offline promise');
+ok_sp(!str_contains(json_encode($m), 'serviceWorker'), 'The manifest itself carries no worker field (the worker is registered by site.js since PWA P1, tests/pwa_test.php)');
 ok_sp(str_contains((string)file_get_contents($root . '/cli/smoke_check.php'), "'/manifest.webmanifest'"), 'The post-deploy smoke check covers it');
 echo "ls20_speed_pwa_test: PASS\n";
