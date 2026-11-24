@@ -63,6 +63,14 @@ ok_sr($cc('Fury DDR4 RAM 16GB 2x8 3200MHz', 'CPU') !== null, 'A RAM kit under a 
 ok_sr($cc('Intel Core i5-8400 CPU only', 'CPU') === null, 'A CPU under a CPU is fine');
 ok_sr($cc('i5-12400F ASRock H610 DDR4 bundle', 'CPU') === null, 'A title that also names the product own category is not decided here');
 ok_sr($cc('การ์ดจอ มือสอง ราคา 3000', 'GPU') === null, 'A title with no category words never conflicts');
+ok_sr($cc('WD Green 480GB SSD asking 1600', 'GPU') !== null, 'An SSD under a GPU is a category conflict');
+ok_sr($cc('Corsair RM750i power supply', 'CPU') !== null, 'A PSU under a CPU is a category conflict');
+ok_sr($cc('ASRock B450 Steel Legend DDR4', 'Motherboard') === null, 'A motherboard title naming its chipset is fine even with DDR4');
+ok_sr($cc('Kingston Fury DDR4 16GB', 'Motherboard') !== null, 'A RAM kit under a motherboard is a category conflict');
+// LS-82: the resolver itself refuses a product of another category than the title names
+$cr = new ProductResolver([['id' => 1, 'full_name' => 'AMD Ryzen 5 5600', 'aliases' => [], 'category' => 'cpu'], ['id' => 2, 'full_name' => 'AMD Ryzen 5 5600 DDR5 Kit', 'aliases' => ['DDR5 16GB 5600MHZ'], 'category' => 'ram']]);
+ok_sr($cr->resolve('16GB DDR5 5600MHZ Corsair')->productId !== 1, 'A DDR5 kit title never resolves to a CPU');
+ok_sr($cr->resolve('AMD Ryzen 5 5600 มือสอง')->productId === 1, 'A CPU title still resolves to the CPU');
 // the decision is read-only by construction: it takes no database (the spec-class map is plain data)
 ok_sr((new ReflectionMethod(S::class, 'decide'))->getNumberOfParameters() === 5, 'decide() has no database parameter');
 echo "stale_reresolve_test: PASS\n";

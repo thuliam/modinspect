@@ -14,13 +14,18 @@ final class SpecConsistency
      */
     public static function categoryConflict(string $title, string $category): ?string
     {
-        $kw = [
+        $category = strtoupper($category);
+        // what a title says about the thing being sold; MOTHERBOARD is only ever the product side (its own words are broad, so it is not used to detect)
+        $detect = [
             'RAM' => '/\b(ddr[345]|sodimm)\b|แรม/iu',
             'CPU' => '/\b(ryzen|core\s?i[3579]|i[3579]-\d{4,5}k?f?)\b/iu',
             'GPU' => '/\b(rtx|gtx|radeon|geforce|rx\s?\d{3,4})\b/iu',
+            'STORAGE' => '/\b(nvme|ssd|hdd|m\.2)\b/iu',
+            'PSU' => '/\b(psu|power\s?supply|80\s?plus)\b|พาวเวอร์ซัพพลาย/iu',
         ];
-        if (!isset($kw[$category]) || preg_match($kw[$category], $title) === 1) { return null; }
-        foreach ($kw as $other => $re) { if ($other !== $category && preg_match($re, $title) === 1) { return "title is $other, product is $category"; } }
+        $own = $detect + ['MOTHERBOARD' => '/\b(motherboard|mainboard|socket|lga\s?\d{3,4}|am[45]|[abhxzq]\d{2,3}m?)\b|เมนบอร์ด/iu'];
+        if (!isset($own[$category]) || preg_match($own[$category], $title) === 1) { return null; }
+        foreach ($detect as $other => $re) { if ($other !== $category && preg_match($re, $title) === 1) { return "title is $other, product is $category"; } }
         return null;
     }
 

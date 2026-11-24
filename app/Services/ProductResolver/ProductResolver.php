@@ -22,6 +22,8 @@ final class ProductResolver
         $best = [null, null, 0.0, 'none', 0];
 
         foreach ($this->catalog as $product) {
+            // LS-82: a title that names only another hardware category (a DDR5 kit, a motherboard) never resolves to this product
+            if (!empty($product['category']) && \App\Services\Catalog\SpecConsistency::categoryConflict($title, (string)$product['category']) !== null) { continue; }
             $productMarkers = ModelMarker::all((string)$product['full_name']);
             $names = array_merge([(string)$product['full_name']], $product['aliases'] ?? []);
             foreach ($names as $name) {

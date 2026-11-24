@@ -22,7 +22,7 @@ final class CollectionPipeline
 
     public function catalog(): array
     {
-        $products = $this->db->query("SELECT id, full_name FROM products WHERE is_active=1")->fetchAll();
+        $products = $this->db->query("SELECT p.id, p.full_name, c.slug category FROM products p JOIN product_categories c ON c.id=p.category_id WHERE p.is_active=1")->fetchAll();
         $aliases = $this->db->query("SELECT product_id, alias_text FROM product_aliases")->fetchAll();
         $byProduct = [];
 
@@ -31,6 +31,7 @@ final class CollectionPipeline
                 'id' => (int)$product['id'],
                 'full_name' => (string)$product['full_name'],
                 'aliases' => [],
+                'category' => (string)$product['category'],   // LS-82: lets the resolver refuse a product of another category than the title names
             ];
         }
 
