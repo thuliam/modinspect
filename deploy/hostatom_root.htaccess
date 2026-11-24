@@ -1,0 +1,14 @@
+# ModInspect on the HostAtom account: this file is the .htaccess of the folder the subdomain is served from (document root = project folder).
+# Only public/ is reachable; the visible URL never contains /public (the host sends every request into public/ internally).
+# If the document root is later set to public/, delete this file; public/.htaccess alone is enough.
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # An old visible /public/... address is sent to the clean one.
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\s/public(/[^\s?]*)?[\s?]
+    RewriteRule ^public(?:/(.*))?$ /$1 [R=301,L]
+    # Everything else is served from public/; anything outside it (.env, app, config, storage, sql, git) has no public address.
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

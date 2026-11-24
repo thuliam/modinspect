@@ -12,7 +12,11 @@ if ($docRoot !== false && $pubDir !== false) {
     $p = rtrim(str_replace('\\', '/', $pubDir), '/');
     $origin = parse_url($appUrl);
     if (!empty($origin['scheme']) && !empty($origin['host']) && strncasecmp($p, $d, strlen($d)) === 0 && (strlen($p) === strlen($d) || $p[strlen($d)] === '/')) {
-        $appUrl = $origin['scheme'] . '://' . $origin['host'] . (isset($origin['port']) ? ':' . $origin['port'] : '') . substr($p, strlen($d));
+        $sub = substr($p, strlen($d));
+        // when the host rewrites every request into public/ internally, the visible URL has no such folder: the base is then empty
+        $reqPath = (string)(parse_url((string)($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH) ?: '/');
+        if ($sub !== '' && $reqPath !== $sub && strncmp($reqPath, $sub . '/', strlen($sub) + 1) !== 0) { $sub = ''; }
+        $appUrl = $origin['scheme'] . '://' . $origin['host'] . (isset($origin['port']) ? ':' . $origin['port'] : '') . $sub;
     }
 }
 
