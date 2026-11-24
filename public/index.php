@@ -22,6 +22,8 @@ $router->get('/sitemap.xml',[SeoController::class,'sitemap']);
 $router->get('/manifest.webmanifest',[SeoController::class,'manifest']);
 $router->get('/sw.js',[SeoController::class,'serviceWorker']);   // PWA P1: served from the app scope so it can control every page
 $router->get('/offline',[HomeController::class,'offline']);
+$router->post('/api/push/subscribe',[\App\Controllers\PushController::class,'subscribe']);       // LS-86: 404 unless PUSH_ENABLED=true
+$router->post('/api/push/unsubscribe',[\App\Controllers\PushController::class,'unsubscribe']);
 $router->post('/csp-report',[SecurityController::class,'cspReport']);
 // LS-21 (R-11, ADR-006 option A): community reports. Every route is 404 unless COMMUNITY_REPORTS_ENABLED=true and a real key is set.
 $router->get('/report/{slug}',[CommunityReportController::class,'form']);

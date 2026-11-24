@@ -60,6 +60,8 @@ return [
     'community_reports' => ['enabled' => filter_var($_ENV['COMMUNITY_REPORTS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['COMMUNITY_REPORTS_HMAC_KEY'] ?? '')],
     // LS-24 M9: community forum (threads, replies, reviews). Off unless enabled; every route answers 404 and no page links to it while off.
     'community_forum' => ['enabled' => filter_var($_ENV['COMMUNITY_FORUM_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
+    // LS-86: browser push for price-change alerts. Off unless PUSH_ENABLED=true; no sender is wired yet (a Web Push library needs owner approval).
+    'push' => ['enabled' => filter_var($_ENV['PUSH_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
     'seller_check' => ['enabled' => filter_var($_ENV['SELLER_CHECK_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['SELLER_CHECK_HMAC_KEY'] ?? '')],
     'collection' => [
         'live_collection_enabled' => filter_var($_ENV['MODINSPECT_LIVE_COLLECTION_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
