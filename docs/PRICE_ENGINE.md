@@ -119,3 +119,10 @@ The thresholds are presentation thresholds (constants `PriceEngine::SLIGHT` and 
 - a statement that the factors are not turned into money. The system has no data that values a receipt, a warranty or a condition, so for a far gap it does not say the difference is reasonable; it points at the two usual checks (is it the right model and size, what does the seller say).
 
 It never changes the verdict label, never reads or writes a price snapshot, and uses neutral wording only (`tests/deal_explanation_test.php` also checks the earlier banned words).
+
+
+## Rows shared by price and trend, and when a price is recalculated (LS-89)
+
+`App\Services\Pricing\CohortRules` is the only rule for which listing counts. The price snapshot and the monthly trend (`TrendBuilder`) both use it.
+A public price needs the latest recorded asking snapshot, at least 3 listings, a median, and every listing behind it unchanged (`PublicSnapshot`).
+From the admin, approving or withdrawing a listing runs `PriceRefresh` for the models concerned: a new snapshot only when the result differs or the stored one is no longer publishable, then that model's trend months. Imports and command line changes are picked up by `cli/daily_jobs.php --apply` or the price status page.

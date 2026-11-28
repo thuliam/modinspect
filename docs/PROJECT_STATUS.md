@@ -1271,3 +1271,14 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - Verified locally on PHP 8.3.33: `tests/run.php` on a rebuilt test database, 196 steps passed, no warnings. One expectation changed on purpose in `tests/ls21_assets_card_test.php` (the deal card cache key now includes the current price). Two product pages rendered with the new code against the shared database (read-only): i5-8400 shows no price; RTX 5070 shows the newest listing date, calculation date and one source. Not run: PHP 8.1/8.4, CI, a browser check.
 - Pending the owner's approval: commit, push, merge, deploy, then backup, `cli/snapshot_recompute.php --apply` and `cli/price_trend_build.php` on the shared database.
 - Backend review and plan: `docs/LS89_BACKEND_REVIEW_TH.md`. Owner tasks: `docs/OWNER_TODO_TH.md`.
+
+## LS-89 backend, option 3 (BE-1 to BE-5) 2026-11-28 (local branch `ls89-backend`; not pushed, not deployed)
+- Base: `52fa768` commits the LS-88 price fix on the same branch (it replaces the note above that it was uncommitted).
+- BE-1: snapshot write and review decision are transactions; corrections and web imports record the acting user; price and trend share `CohortRules`; one public-price rule (`PublicSnapshot`, at least 3 listings).
+- BE-2: approve and withdraw (reason required) from the admin recalculate that model's price and trend and report the result; page `/admin/price-status` with preview and recalculate; hidden snapshots are marked in the price index.
+- BE-4: one admin controller per area on `AdminBaseController`; review reading in `ReviewQueueQuery`; the router requires a signed-in user for every `/admin` route; 19 one-off scripts in `cli/archive`.
+- BE-3: migrations `038_operations_ledger.sql` and `039_admin_mfa.sql` (additive, **not applied to any shared database**); `cli/daily_jobs.php`; page `/admin/system-health`; two-step sign-in shipped **off** (`AUTH_MFA_ENABLED=false`), `cli/mfa_reset.php`.
+- BE-5: brands and categories, reference specs, product pictures in the admin; picture import no longer overwrites or deletes a file still shown elsewhere.
+- Found and fixed: the admin review detail page printed its own PHP source since `54254b1` (2026-11-15). The live site still has this until deploy.
+- Shared database, read-only with the new code (2026-11-28): 55 public prices, all marked outdated (confidence method v3), 2 hidden (Corsair Vengeance LPX 32GB DDR4-3200, Intel Core i5-8400); no median would change; trend rebuild: 8 changed, 19 added, 1 removed.
+- Not done: bulk review of many rows (needs the DataTables extension download), a scheduled task on the host, QR code for two-step sign-in, CSRF check stays per action, coverage report still counts source rows rather than platforms.
