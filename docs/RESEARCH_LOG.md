@@ -2,6 +2,8 @@
 
 Moved from the top of `PROJECT_STATUS.md` on 2026-11-28 (LS-90) so the status file starts with the status. Content unchanged; newest first.
 
+Research collection milestone (2026-11-28): staged 1,927 source rows across RAM 178, SSD 603, HDD 199, motherboard 213, PSU 218, case 200 and cooling 316, exceeding the requested 1,000 collected entries. The 1,552 normalized name candidates are not verified unique products; observations may share samples, configurations or sources. The collection includes qualitative compatibility and reliability data. Two disputed rows remain quarantined. Source validation, reuse rights and Product Master matching remain future work; no staging data was imported as market prices. See database/reference/benchmark_research_2026-11-22/SESSION_HANDOFF_TH_2026-11-28.md.
+
 SSD research continuation: 45 model/capacity/variant summaries from Gen5 and 4TB comparative tables were staged. Unusual write values and cross-guide overlap are flagged; identity, test context and rights remain unreviewed.
 
 Internal SSD research continuation: 41 1TB model/variant summaries were staged from a comparative CrystalDiskMark table. Capacity is separate from the existing 2TB results; platform, identity, overlap and reuse rights remain unreviewed.
