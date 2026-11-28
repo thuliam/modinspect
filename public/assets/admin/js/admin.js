@@ -59,6 +59,8 @@
             var $table = $(this);
             if ($.fn.DataTable.isDataTable(this)) return;
             var instance = $table.DataTable({
+                // LS-90: DataTables Select, only on a table that has a bulk form
+                select: $table.data('bulk-form') ? { style: 'multi' } : false,
                 pageLength: parseInt($table.data('page-length') || 25, 10),
                 lengthMenu: [10, 25, 50, 100],
                 language: dtLanguage,
@@ -79,6 +81,23 @@
                 }
             });
             serverTables.push({ table: $table, instance: instance });
+        });
+
+        // LS-90: send the ids of the selected rows with the bulk form (the server shows them again before anything is saved)
+        $('.js-bulk-review').on('submit', function (event) {
+            var form = $(this);
+            var ids = [];
+            serverTables.forEach(function (item) {
+                if (!item.table.is(form.data('table'))) return;
+                item.instance.rows({ selected: true }).nodes().to$().find('[data-observation-id]').each(function () {
+                    ids.push($(this).data('observation-id'));
+                });
+            });
+            form.find('[name=ids]').val(ids.join(','));
+            if (!ids.length) {
+                event.preventDefault();
+                window.alert(form.data('empty'));
+            }
         });
 
         function redrawServerTable(item) {

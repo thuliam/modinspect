@@ -152,6 +152,8 @@ $router->post('/admin/users/action',[AdminController::class,'userAction']);
 $router->post('/admin/unresolved-listings/action',[AdminReviewController::class,'unresolvedAction']);
 $router->get('/admin/data-health',[AdminController::class,'dataHealth']);
 $router->post('/admin/review-queue/decision',[AdminReviewController::class,'reviewDecision']);
+$router->post('/admin/review-queue/bulk',[AdminReviewController::class,'reviewBulk']);
+$router->post('/admin/review-queue/bulk-apply',[AdminReviewController::class,'reviewBulkApply']);
 $router->post('/admin/review-queue/correction',[AdminReviewController::class,'reviewCorrection']);
 $router->get('/admin/price-indices',[AdminController::class,'indices']);
 $router->post('/admin/review-queue/withdraw',[AdminReviewController::class,'reviewWithdraw']);

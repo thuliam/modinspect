@@ -6,6 +6,7 @@ use App\Models\Dashboard;
 use App\Services\Admin\AdminDataTableService;
 use App\Services\Auth\AuthorizationService;
 use App\Services\Pricing\PriceRefresh;
+use App\Services\Review\BulkReview;
 use App\Services\Review\ReviewDecisionService;
 use App\Services\Review\ReviewCalibrationService;
 
@@ -23,7 +24,37 @@ final class AdminReviewController extends AdminBaseController {
             'sources'=>$d->reviewSourceOptions(),
             'batch_options'=>$d->reviewBatchOptions(),
             'filters'=>$filters,
+            'can_decide'=>$this->can('review.decide'),
         ]);
+    }
+    /** LS-90 T8: step 1 of a bulk decision, showing the chosen rows and their warnings. Writes nothing. */
+    public function reviewBulk(): void {
+        if(!$this->requirePermission('review.decide')) return;
+        if (!Csrf::verify($_POST['_token']??null)) { http_response_code(419); $this->view('errors/419',['title'=>'แบบฟอร์มหมดอายุ']); return; }
+        $decision=(string)($_POST['decision']??'');
+        $rows=in_array($decision,ReviewDecisionService::DECISIONS,true) ? (new BulkReview())->preview(BulkReview::ids($_POST['ids']??'')) : [];
+        if($rows===[]){ $this->flash('danger',t('review.bulk.none')); $this->redirect('/admin/review-queue'); }
+        $this->render('review-bulk','Bulk review',['rows'=>$rows,'decision'=>$decision]);
+    }
+    /** step 2: saves the ticked rows one by one, then recalculates the models whose price inputs changed */
+    public function reviewBulkApply(): void {
+        if(!$this->requirePermission('review.decide')) return;
+        if (!Csrf::verify($_POST['_token']??null)) { http_response_code(419); $this->view('errors/419',['title'=>'แบบฟอร์มหมดอายุ']); return; }
+        $decision=(string)($_POST['decision']??'');
+        $ids=BulkReview::ids($_POST['ids']??[]);
+        if(!in_array($decision,ReviewDecisionService::DECISIONS,true) || $ids===[] || ($_POST['confirm']??'')!=='1'){ $this->flash('danger',t('review.bulk.none')); $this->redirect('/admin/review-queue'); }
+        $result=(new BulkReview())->apply($ids,$decision,(int)$this->user()['id'],trim((string)($_POST['note']??'')));
+        $text=t('review.bulk.done',['done'=>$result['done'],'failed'=>count($result['failed'])]);
+        foreach(array_slice($result['failed'],0,5,true) as $id=>$code) $text.=' · #'.$id.' '.t('review.err.'.$code,['codes'=>'']);
+        $type=$result['failed']===[] ? 'success' : 'danger';
+        // as with a single decision, only an approval changes what a price is calculated from
+        if($decision==='approved' && $result['product_ids']!==[]){
+            $price=$this->priceResultMessage((new PriceRefresh())->refresh($result['product_ids']));
+            if($price['text']!=='') $text.=' · '.$price['text'];
+            if($price['type']==='danger') $type='danger';
+        }
+        $this->flash($type,$text);
+        $this->redirect('/admin/review-queue');
     }
     /** LS-90 T2: every pending real listing with what approving it would do, as a CSV for checking outside the browser. Admin only. */
     public function reviewExport(): void {

@@ -384,7 +384,7 @@ final class AdminDataTableService
         $quality = (string)($row['provenance_quality']['quality'] ?? 'GENERIC_SOURCE');
         $priceType = (string)($row['price_type'] ?? 'asking') === 'sold' ? $this->x('v.sold_final_price') : $this->x('v.listing_asking_price');
         $detail = $base . '/admin/review/' . (int)$row['id'] . '?return_to=' . rawurlencode($returnPath);
-        return '<article class="review-queue-item mi-dt-review-card">'
+        return '<article class="review-queue-item mi-dt-review-card" data-observation-id="' . (int)$row['id'] . '">'
             . '<div class="review-id-block"><span class="review-id">#' . (int)$row['id'] . '</span><span class="dataset-badge dataset-' . strtolower((string)$row['dataset_label']) . '">' . $this->h($row['dataset_label']) . '</span><small>' . $this->h(\App\Core\Lang::status((string)$row['verified_status'])) . '</small><small>' . $this->h($row['review_purpose'] ?? '') . '</small></div>'
             . '<div class="review-main-block"><h2>' . $this->h($row['full_name']) . '</h2>' . $this->textWarnings($row) . '<p>' . $this->h($this->short($row['display_title'] ?? $row['raw_title'] ?? '-', 130)) . '</p><small>' . $this->h($this->x('tbl.source_label')) . $this->h($row['source_name'] ?? $this->x('v.unknown_source')) . '</small></div>'
             . '<div class="review-price-block"><b>&#3647;' . number_format((float)$row['display_price']) . '</b><small>' . $this->h($priceType) . '</small></div>'

@@ -82,8 +82,18 @@ foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') ==
 
 <div class="card mi-table-card">
     <div class="card-header"><h2><?= htmlspecialchars(t('v.review_records')) ?></h2></div>
+<?php $canBulk = !empty($can_decide); if ($canBulk): ?>
+    <form class="card-body border-bottom js-bulk-review" method="post" action="<?= $base ?>/admin/review-queue/bulk" data-table="#review-table" data-empty="<?= htmlspecialchars(t('review.bulk.none')) ?>">
+        <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
+        <input type="hidden" name="ids" value="">
+        <p class="text-muted small mb-2"><?= htmlspecialchars(t('review.bulk.pick', ['n' => \App\Services\Review\BulkReview::MAX_ROWS])) ?></p>
+        <button class="btn btn-sm btn-success mr-1" type="submit" name="decision" value="approved"><?= htmlspecialchars(t('review.bulk.approved')) ?></button>
+        <button class="btn btn-sm btn-outline-danger mr-1" type="submit" name="decision" value="rejected"><?= htmlspecialchars(t('review.bulk.rejected')) ?></button>
+        <button class="btn btn-sm btn-outline-secondary" type="submit" name="decision" value="excluded"><?= htmlspecialchars(t('review.bulk.excluded')) ?></button>
+    </form>
+<?php endif; ?>
     <div class="table-responsive">
-        <table id="review-table" class="table mi-admin-table mb-0 js-server-data-table mi-review-dt" data-source-url="<?= $base ?>/admin/review-queue/data" data-filters="#review-filters" data-page-length="25">
+        <table id="review-table" class="table mi-admin-table mb-0 js-server-data-table mi-review-dt" data-source-url="<?= $base ?>/admin/review-queue/data" data-filters="#review-filters" data-page-length="25"<?= $canBulk ? ' data-bulk-form="1"' : '' ?>>
             <thead><tr><th><?= htmlspecialchars(t('v.review_item')) ?></th></tr></thead>
             <tbody></tbody>
         </table>
