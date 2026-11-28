@@ -136,7 +136,7 @@ try {
     }
     $as($admin, 'GET'); $r = am_call(fn() => $c->privacyRequests());
     ok_am(str_contains($r['body'], '/admin/legal-documents') && str_contains($r['body'], '/admin/member-capabilities'), 'The admin menu lists the three pages');
-    $as($reviewer, 'GET'); $r = am_call(fn() => $c->communityReports());
+    $as($reviewer, 'GET'); $r = am_call(fn() => (new AdminCommunityController())->communityReports());
     ok_am(!str_contains($r['body'], '/admin/privacy-requests') && !str_contains($r['body'], '/admin/legal-documents'), 'A reviewer does not see the member pages in the menu');
 
     echo "admin_member_trust_test: PASS\n";
