@@ -27,6 +27,7 @@ $groups = [
     'CATALOG' => [
         ['label' => 'Products', 'icon' => 'fa-microchip', 'href' => '/admin/products', 'permission' => 'products.view', 'paths' => ['/admin/products']],
         ['label' => 'Aliases', 'icon' => 'fa-random', 'href' => '/admin/product-aliases', 'permission' => 'products.view', 'paths' => ['/admin/product-aliases']],
+        ['label' => 'Brands and categories', 'icon' => 'fa-list', 'href' => '/admin/catalog-lists', 'permission' => 'products.view', 'paths' => ['/admin/catalog-lists']],
         ['label' => 'Unresolved', 'icon' => 'fa-question-circle', 'href' => '/admin/unresolved-listings', 'permission' => 'products.view', 'paths' => ['/admin/unresolved-listings']],
     ],
     'MARKET DATA' => [
