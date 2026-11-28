@@ -15,6 +15,8 @@ use Throwable;
 final class ReviewDecisionService
 {
     public const DECISIONS = ['approved', 'rejected', 'excluded'];
+    /** where an approved observation may go when it is withdrawn; 'pending' sends it back to the queue so it can be corrected */
+    public const WITHDRAW_TO = ['pending', 'rejected', 'excluded'];
 
     private PDO $db;
 
@@ -63,6 +65,37 @@ final class ReviewDecisionService
         });
     }
 
+    /**
+     * LS-89 BE-2: takes an approved observation out of the price data. A reason is required and kept in the decision record and the audit line.
+     * @return array{ok:bool,error:?string,errors:list<string>,product_ids:list<int>}
+     */
+    public function withdraw(int $id, string $to, string $reason, int $actorId): array
+    {
+        if (!in_array($to, self::WITHDRAW_TO, true)) {
+            return $this->fail('UNSUPPORTED_DECISION');
+        }
+        $reason = trim($reason);
+        if ($reason === '') {
+            return $this->fail('REASON_REQUIRED');
+        }
+        return $this->transaction(function () use ($id, $to, $reason, $actorId): array {
+            $current = $this->lockedRow($id);
+            if ($current === null) {
+                return $this->fail('OBSERVATION_NOT_FOUND');
+            }
+            if (($current['verified_status'] ?? '') !== 'approved') {
+                return $this->fail('OBSERVATION_NOT_APPROVED');
+            }
+            $update = $this->db->prepare("UPDATE price_observations SET verified_status=:status,updated_at=NOW() WHERE id=:id AND verified_status='approved'");
+            $update->execute(['status' => $to, 'id' => $id]);
+            if ($update->rowCount() !== 1) {
+                return $this->fail('OBSERVATION_NOT_APPROVED');
+            }
+            $this->record($current, $to, $actorId, $reason, 'review_withdrawn', ['verified_status' => $to, 'withdrawn_from' => 'approved']);
+            return ['ok' => true, 'error' => null, 'errors' => [], 'product_ids' => [(int)$current['product_id']]];
+        });
+    }
+
     /** same rule as before LS-89: a real listing needs a listing-level or owner-text provenance before it can be approved */
     private function hasEnoughProvenance(int $id): bool
     {
@@ -79,13 +112,18 @@ final class ReviewDecisionService
     private function record(array $before, string $status, ?int $actorId, string $notes, string $action, array $after): void
     {
         $id = (int)$before['id'];
-        $approved = $status === 'approved';
+        // a row sent back to the queue is "review required"; every other non-approval is stored as rejected (the column has no "excluded")
+        [$lane, $verdict] = match ($status) {
+            'approved' => ['green', 'approved'],
+            'pending' => ['amber', 'review_required'],
+            default => ['red', 'rejected'],
+        };
         $decision = $this->db->prepare("INSERT INTO observation_review_decisions (price_observation_id,raw_observation_id,lane,decision,reason_codes,human_value,reviewer_id,notes) VALUES (:observation_id,:raw_id,:lane,:decision,:reasons,:human_value,:reviewer_id,:notes)");
         $decision->execute([
             'observation_id' => $id,
             'raw_id' => $before['raw_observation_id'],
-            'lane' => $approved ? 'green' : 'red',
-            'decision' => $approved ? 'approved' : 'rejected',
+            'lane' => $lane,
+            'decision' => $verdict,
             'reasons' => json_encode(['human_' . $status]),
             'human_value' => json_encode($after, JSON_UNESCAPED_UNICODE),
             'reviewer_id' => $actorId,

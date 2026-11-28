@@ -36,6 +36,7 @@ $groups = [
         ['label' => 'Trends & Locations', 'icon' => 'fa-map-marker-alt', 'href' => '/admin/market-trends', 'permission' => 'snapshots.view', 'paths' => ['/admin/market-trends']],
         ['label' => 'Beta readiness', 'icon' => 'fa-clipboard-list', 'href' => '/admin/beta-readiness', 'permission' => 'products.manage', 'paths' => ['/admin/beta-readiness']],
         ['label' => 'Data health', 'icon' => 'fa-heartbeat', 'href' => '/admin/data-health', 'permission' => 'snapshots.view', 'paths' => ['/admin/data-health']],
+        ['label' => 'Price status', 'icon' => 'fa-sync-alt', 'href' => '/admin/price-status', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-status']],
         ['label' => 'Price Index', 'icon' => 'fa-tags', 'href' => '/admin/price-indices', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-indices']],
         ['label' => 'Seller reports', 'icon' => 'fa-flag', 'href' => '/admin/seller-reports', 'permission' => 'reports.moderate', 'paths' => ['/admin/seller-reports']],
         ['label' => 'Community moderation', 'icon' => 'fa-gavel', 'href' => '/admin/community-moderation', 'permission' => 'reports.moderate', 'paths' => ['/admin/community-moderation']],

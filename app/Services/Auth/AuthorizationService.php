@@ -16,6 +16,7 @@ final class AuthorizationService
             'review.view',
             'review.correct',
             'review.decide',
+            'prices.recalculate',
             'review.analytics.view',
             'listings.moderate',
             'reports.moderate',

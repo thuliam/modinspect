@@ -69,7 +69,7 @@ final class ReviewCorrectionService
         $stmt = $this->db->prepare(
             "INSERT INTO review_corrections (price_observation_id,field_name,original_value,corrected_value,reason,corrected_by,corrected_at)
              VALUES (:observation_id,:field_name,:original_value,:corrected_value,:reason,:corrected_by,NOW())
-             ON DUPLICATE KEY UPDATE corrected_value=VALUES(corrected_value),reason=VALUES(reason),corrected_by=VALUES(corrected_by),corrected_at=NOW(),updated_at=NOW()"
+             ON DUPLICATE KEY UPDATE review_decision_id=NULL,corrected_value=VALUES(corrected_value),reason=VALUES(reason),corrected_by=VALUES(corrected_by),corrected_at=NOW(),updated_at=NOW()"
         );
         $stmt->execute([
             'observation_id' => $observationId,

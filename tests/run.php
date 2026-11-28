@@ -34,6 +34,7 @@ $commands = [
     ['label' => 'tests/public_snapshot_validity_test.php', 'args' => ['tests/public_snapshot_validity_test.php']],
     ['label' => 'tests/source_identity_freshness_test.php', 'args' => ['tests/source_identity_freshness_test.php']],
     ['label' => 'tests/data_core_transaction_test.php', 'args' => ['tests/data_core_transaction_test.php']],
+    ['label' => 'tests/review_price_loop_test.php', 'args' => ['tests/review_price_loop_test.php']],
     ['label' => 'tests/ui_prune_css_test.php', 'args' => ['tests/ui_prune_css_test.php']],
     ['label' => 'tests/owner_intake_filter_test.php', 'args' => ['tests/owner_intake_filter_test.php']],
     ['label' => 'tests/gpu_vram_facts_test.php', 'args' => ['tests/gpu_vram_facts_test.php']],

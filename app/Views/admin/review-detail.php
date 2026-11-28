@@ -281,6 +281,23 @@ $evidenceFields = $evidenceMetadata((string)($o['excerpt'] ?? ''));
             <?php endif; ?>
             <?php if (!$isPending): ?>
                 <div class="notice"><?= htmlspecialchars(t('v.decision_already_recorded')) ?> <?= htmlspecialchars((string)$o['verified_status']) ?></div>
+                <?php if ($canDecide && (string)$o['verified_status'] === 'approved'): ?>
+                <form method="post" action="<?= $base ?>/admin/review-queue/withdraw" class="review-detail-form">
+                    <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
+                    <input type="hidden" name="observation_id" value="<?= (int)$o['id'] ?>">
+                    <input type="hidden" name="return_to" value="<?= htmlspecialchars($currentPath) ?>">
+                    <h3><?= htmlspecialchars(t('review.withdraw.title')) ?></h3>
+                    <label><?= htmlspecialchars(t('review.withdraw.to')) ?>
+                        <select class="form-control" name="to">
+                            <?php foreach (\App\Services\Review\ReviewDecisionService::WITHDRAW_TO as $to): ?><option value="<?= $to ?>"><?= htmlspecialchars(t('review.withdraw.to.' . $to)) ?></option><?php endforeach; ?>
+                        </select>
+                    </label>
+                    <label><?= htmlspecialchars(t('review.withdraw.reason')) ?>
+                        <textarea class="form-control" name="reason" required maxlength="500"></textarea>
+                    </label>
+                    <button class="btn btn-danger" type="submit"><i class="fas fa-undo mr-2"></i><?= htmlspecialchars(t('review.withdraw.button')) ?></button>
+                </form>
+                <?php endif; ?>
             <?php elseif ($canDecide): ?>
                 <form method="post" action="<?= $base ?>/admin/review-queue/decision" class="review-detail-form">
                     <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">

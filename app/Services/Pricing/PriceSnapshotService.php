@@ -58,6 +58,16 @@ final class PriceSnapshotService
         return $this->calculateSnapshot($productId, $priceType, $cohort['included'], $cohort);
     }
 
+    /**
+     * LS-89 BE-2: which listings of a model a calculation made now would use, and why the others would not. Read-only.
+     * @return array{included:list<array>,excluded:list<array>}
+     */
+    public function cohort(int $productId, string $priceType = 'asking'): array
+    {
+        $cohort = $this->buildCohort($productId, $priceType);
+        return ['included' => $cohort['included'], 'excluded' => $cohort['excluded']];
+    }
+
     public function reproduceSnapshot(int $snapshotId): array
     {
         $stmt = $this->db->prepare("SELECT * FROM price_indices WHERE id=:id LIMIT 1");

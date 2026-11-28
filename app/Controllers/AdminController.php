@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace App\Controllers;
 use App\Core\Database;
 use App\Core\Csrf;
-use App\Core\Controller;
 use App\Models\Dashboard;
 use App\Services\Admin\AdminDataTableService;
 use App\Services\Auth\AuthService;
@@ -11,13 +10,12 @@ use App\Services\Auth\AuthorizationService;
 use App\Services\Collection\ImportFieldContract;
 use App\Services\Collection\OfflineEvidenceImportService;
 use App\Services\Collection\SourceOperationsService;
+use App\Services\Pricing\PriceRefresh;
+use App\Services\Review\ReviewDecisionService;
 use App\Services\Review\ReviewCalibrationService;
 use PDO;
 
-final class AdminController extends Controller {
-    private ?array $user = null;
-    /** the page title is written in English in the code; Lang::label shows it in the chosen language when a text exists */
-    private function render(string $view,string $title,array $data=[]): void { $this->view('admin/'.$view,['title'=>\App\Core\Lang::label($title) ?? $title,'auth_user'=>$this->user()]+$data); }
+final class AdminController extends AdminBaseController {
     /** LS-14 J-0: the server already refuses the write (403); this only stops the page from offering a button that would fail */
     private function canManage(): bool { return (new AuthorizationService())->can($this->user(), 'products.manage'); }
     /** drops the action cell (last column) of every row for a read-only role; the column stays so the table keeps its shape */
@@ -25,23 +23,6 @@ final class AdminController extends Controller {
         if($this->canManage() || empty($payload['data'])) return $payload;
         foreach($payload['data'] as $i=>$row){ if(is_array($row) && $row){ $row[array_key_last($row)]=''; $payload['data'][$i]=$row; } }
         return $payload;
-    }
-    private function user(): ?array { return $this->user ??= (new AuthService())->currentUser(); }
-    private function requirePermission(string $permission): bool {
-        $auth=new AuthService();
-        $user=$auth->currentUser();
-        if(!$user){
-            if(($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') $_SESSION['auth_return_to']=$_SERVER['REQUEST_URI'] ?? '/admin';
-            $this->redirect('/login');
-        }
-        $this->user=$user;
-        if(!(new AuthorizationService())->can($user,$permission)){
-            $auth->audit((int)$user['id'],'auth_unauthorized','permission',null,['permission'=>$permission,'path'=>$_SERVER['REQUEST_URI'] ?? null]);
-            http_response_code(403);
-            $this->view('errors/403',['title'=>'ไม่มีสิทธิ์เข้าถึง','auth_user'=>$user]);
-            return false;
-        }
-        return true;
     }
     public function index(): void { if(!$this->requirePermission('admin.dashboard.view')) return; $d=new Dashboard();$this->render('dashboard','Admin Data Quality',$d->adminStats()+['products'=>$d->products(),'sources'=>$d->sources(),'recent_imports'=>$d->recentImportRuns()]); }
     public function products(): void { if(!$this->requirePermission('products.view')) return; $d=new Dashboard();$this->render('products','Product Master',['canManage'=>$this->canManage(),'products'=>$d->products(),'categories'=>$d->rows("SELECT id,name,slug FROM product_categories ORDER BY sort_order,name"),'brands'=>$d->rows("SELECT id,name FROM brands ORDER BY name")]); }
@@ -354,20 +335,52 @@ final class AdminController extends Controller {
     public function reviewCorrection(): void {
         if(!$this->requirePermission('review.correct')) return;
         if (!Csrf::verify($_POST['_token']??null)) { http_response_code(419); $this->view('errors/419',['title'=>'แบบฟอร์มหมดอายุ']); return; }
-        $id=filter_input(INPUT_POST,'observation_id',FILTER_VALIDATE_INT);
+        $id=$this->postId('observation_id');
         $field=(string)($_POST['field_name']??'');
         $value=$_POST['corrected_value']??null;
         $reason=trim((string)($_POST['reason']??''));
-        if($id) (new Dashboard())->correctObservation((int)$id,$field,$value,$reason,(int)$this->user()['id']);
+        if($id){
+            $r=(new Dashboard())->correctObservation((int)$id,$field,$value,$reason,(int)$this->user()['id']);
+            if(($r['ok'] ?? false)===true) $this->flash('success',t('review.done.corrected'));
+            else $this->flash('danger',t('review.err.'.($r['errors'][0] ?? 'UNSUPPORTED_FIELD')));
+        }
         $this->redirect($this->safeReviewReturnPath((string)($_POST['return_to'] ?? ''),$id ? '/admin/review/'.(int)$id : '/admin/review-queue'));
     }
     public function reviewDecision(): void {
         if(!$this->requirePermission('review.decide')) return;
         if (!Csrf::verify($_POST['_token']??null)) { http_response_code(419); $this->view('errors/419',['title'=>'แบบฟอร์มหมดอายุ']); return; }
-        $id=filter_input(INPUT_POST,'observation_id',FILTER_VALIDATE_INT);
+        $id=$this->postId('observation_id');
         $decision=(string)($_POST['decision']??'');
-        if($id) (new Dashboard())->decideObservation((int)$id,$decision,trim((string)($_POST['notes']??'')),(int)$this->user()['id']);
+        if($id){
+            $result=(new ReviewDecisionService())->decide((int)$id,$decision,trim((string)($_POST['notes']??'')),(int)$this->user()['id']);
+            // only an approval changes what a price is calculated from; rejecting a pending row leaves every price as it was
+            $this->reviewOutcome($result,'review.done.'.$decision,$decision==='approved');
+        }
         $this->redirect($this->safeReviewReturnPath((string)($_POST['return_to'] ?? ''),$id ? '/admin/review/'.(int)$id : '/admin/review-queue'));
+    }
+    /** LS-89 BE-2: take an approved listing out of the price data, with a reason, and bring that model's price up to date */
+    public function reviewWithdraw(): void {
+        if(!$this->requirePermission('review.decide')) return;
+        if (!Csrf::verify($_POST['_token']??null)) { http_response_code(419); $this->view('errors/419',['title'=>'แบบฟอร์มหมดอายุ']); return; }
+        $id=$this->postId('observation_id');
+        $to=(string)($_POST['to']??'');
+        if($id){
+            $result=(new ReviewDecisionService())->withdraw((int)$id,$to,(string)($_POST['reason']??''),(int)$this->user()['id']);
+            $this->reviewOutcome($result,$to==='pending'?'review.done.reopened':'review.done.withdrawn',true);
+        }
+        $this->redirect($this->safeReviewReturnPath((string)($_POST['return_to'] ?? ''),$id ? '/admin/review/'.(int)$id : '/admin/review-queue'));
+    }
+    /** says what a decision did; when it changed the price data, recalculates the models concerned and says what happened to their price */
+    /** a positive id posted with a form, or 0 */
+    private function postId(string $key): int { $v=$_POST[$key] ?? null; return is_scalar($v) ? max(0,(int)filter_var($v,FILTER_VALIDATE_INT)) : 0; }
+    private function reviewOutcome(array $result,string $doneKey,bool $refreshPrices): void {
+        if(!$result['ok']){
+            $this->flash('danger',t('review.err.'.$result['error'],['codes'=>implode(', ',$result['errors'])]));
+            return;
+        }
+        if(!$refreshPrices){ $this->flash('success',t($doneKey)); return; }
+        $price=$this->priceResultMessage((new PriceRefresh())->refresh($result['product_ids']));
+        $this->flash($price['type'],t($doneKey).($price['text']==='' ? '' : ' · '.$price['text']));
     }
     public function requeueJob(): void {
         if(!$this->requirePermission('collection.jobs.requeue')) return;
@@ -858,14 +871,6 @@ final class AdminController extends Controller {
         header('Content-Disposition: attachment; filename="modinspect-market-evidence-template.json"');
         echo ImportFieldContract::jsonTemplate();
     }
-    private function json(array $payload): void {
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($payload,JSON_UNESCAPED_UNICODE);
-    }
-    /** the message is a fixed text in the code (English or Thai); it is shown in the language chosen when the page is displayed after the redirect */
-    private function flash(string $type,string $message): void { $_SESSION['flash']=['type'=>$type,'message'=>\App\Core\Lang::message($message)]; }
-    private function baseUrl(): string { global $config; return (string)$config['base_url']; }
-    private function audit(string $action,string $entityType,?int $entityId,array $after): void { (new AuthService())->audit((int)$this->user()['id'],$action,$entityType,$entityId,$after); }
     private function slug(string $value): string {
         $slug=preg_replace('/[^a-z0-9ก-๙]+/iu','-',mb_strtolower(trim($value),'UTF-8')) ?? '';
         return trim($slug,'-');
