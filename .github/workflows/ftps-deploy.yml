@@ -117,7 +117,7 @@ jobs:
               for n in names:
                   full = os.path.join(root, n)
                   files.append((full, os.path.relpath(full, "site").replace(os.sep, "/")))
-          files.sort(key=lambda f: (f[1].startswith("public/"), f[1]))   # code first, public last
+          files.sort(key=lambda f: (f[1].startswith("public/"), f[1]))
           bad = [r for _f, r in files if r.startswith(".env") or "/.env" in r or "products-mfr" in r or ".." in r.split("/")]
           if bad:
               sys.exit("Package contains forbidden paths: %s" % bad[:5])
@@ -128,6 +128,19 @@ jobs:
               s.login(user=user, passwd=password)
               s.prot_p()
               s.cwd("/")
+              # Files the host does not have yet go first: new code must exist before a changed file starts to refer to it.
+              # Within each group: code first, public last.
+              s.voidcmd("TYPE I")
+              def on_host(rel):
+                  try:
+                      s.size("/" + rel)
+                      return True
+                  except error_perm:
+                      return False
+              present = {rel: on_host(rel) for _full, rel in files}
+              files.sort(key=lambda f: (present[f[1]], f[1].startswith("public/"), f[1]))
+              new_count = sum(1 for v in present.values() if not v)
+              print("%d files are new on the host and are sent first" % new_count)
               made = set()
               def ensure(d):
                   parts = d.split("/")

@@ -39,6 +39,25 @@ try {
     $u = (int)$db->lastInsertId();
     $db->prepare("INSERT INTO new_price_references (product_id, price, source_url, checked_on, created_by) VALUES (:p, 100, 'https://example.test', '2026-11-10', :u)")->execute(['p' => $p['id'], 'u' => $u]);
     ok_cv($byCat(CoverageReport::build($db))['cpu']['with_new_price'] === $base['cpu']['with_new_price'] + 1, 'A new-price reference is counted');
+
+    // LS-90: two import batches of one platform are one source; another platform makes two
+    $db->prepare("INSERT INTO products (category_id, brand_id, model_name, full_name, slug, is_active) SELECT category_id, brand_id, :m, :f, :s, 1 FROM products WHERE id = :p")
+        ->execute(['m' => 'cv-two', 'f' => 'Coverage two sources', 's' => 'cv-two-' . bin2hex(random_bytes(4)), 'p' => $p['id']]);
+    $two = (int)$db->lastInsertId();
+    $before = $byCat(CoverageReport::build($db))['cpu']['with_two_sources'];
+    $row = static function (string $key, string $domain) use ($db, $two): void {
+        $db->prepare("INSERT INTO data_sources (source_key, name, domain, source_type, access_method, risk_level, is_active) VALUES (:k, :n, :d, 'research', 'manual', 'low', 1)")
+            ->execute(['k' => $key . bin2hex(random_bytes(4)), 'n' => $key, 'd' => $domain]);
+        $db->prepare("INSERT INTO raw_price_observations (source_id, external_reference_hash, raw_title, raw_price_text, captured_at, processing_status) VALUES (:s, :h, 'x', '100', NOW(), 'processed')")
+            ->execute(['s' => (int)$db->lastInsertId(), 'h' => hash('sha256', random_bytes(16))]);
+        $db->prepare("INSERT INTO price_observations (raw_observation_id, product_id, price_type, asking_price, price_value, currency, listing_type, evidence_level, classification_confidence, verified_status, observed_at) VALUES (:r, :p, 'asking', 100, 100, 'THB', 'single_item', 3, 95, 'approved', NOW())")
+            ->execute(['r' => (int)$db->lastInsertId(), 'p' => $two]);
+    };
+    $row('cv_fb_one_', 'facebook.com');
+    $row('cv_fb_two_', 'www.facebook.com');
+    ok_cv($byCat(CoverageReport::build($db))['cpu']['with_two_sources'] === $before, 'Two batches of one platform are not two sources');
+    $row('cv_other_', 'market.example.test');
+    ok_cv($byCat(CoverageReport::build($db))['cpu']['with_two_sources'] === $before + 1, 'A second platform is a second source');
 } finally {
     $db->rollBack();
 }
