@@ -11,6 +11,7 @@ $_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admi
 }
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminCollectionController;
 use App\Core\Csrf;
 use App\Core\Database;
 use App\Core\RedirectException;
@@ -110,18 +111,18 @@ try {
 
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs';
-    $page = admin_import_render(fn() => (new AdminController())->jobs());
+    $page = admin_import_render(fn() => (new AdminCollectionController())->jobs());
     assert_admin_import(str_contains($page, 'Download CSV Template'), 'Imports page must expose CSV template download');
     assert_admin_import(str_contains($page, 'Download JSON Template'), 'Imports page must expose JSON template download');
     assert_admin_import(str_contains($page, 'Import Format / Field Reference'), 'Imports page must expose field guide');
     assert_admin_import(str_contains($page, 'Confirm Import unlocks after a Dry Run'), 'Confirm Import must be gated before dry-run');
 
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs/template.csv';
-    $csvTemplate = admin_import_render(fn() => (new AdminController())->importCsvTemplate());
+    $csvTemplate = admin_import_render(fn() => (new AdminCollectionController())->importCsvTemplate());
     assert_admin_import(str_contains($csvTemplate, 'source_item_id') && str_contains($csvTemplate, 'EXAMPLE-ITEM-001'), 'CSV template content mismatch');
 
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs/template.json';
-    $jsonTemplate = admin_import_render(fn() => (new AdminController())->importJsonTemplate());
+    $jsonTemplate = admin_import_render(fn() => (new AdminCollectionController())->importJsonTemplate());
     assert_admin_import(str_contains($jsonTemplate, '"records"') && str_contains($jsonTemplate, 'EXAMPLE / TEMPLATE ONLY'), 'JSON template content mismatch');
 
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs/import-confirm';
@@ -129,7 +130,7 @@ try {
     $_POST = ['_token' => Csrf::token()];
     $_FILES = [];
     unset($_SESSION['admin_import_pending']);
-    admin_import_redirect(fn() => (new AdminController())->importConfirm(), '/admin/collector-jobs');
+    admin_import_redirect(fn() => (new AdminCollectionController())->importConfirm(), '/admin/collector-jobs');
     assert_admin_import(!isset($_SESSION['admin_import_pending']), 'Confirm without Dry Run must stay blocked');
     assert_admin_import(str_contains((string)($_SESSION['flash']['message'] ?? ''), 'Dry Run'), 'Confirm without Dry Run should explain the gate');
 
@@ -191,7 +192,7 @@ try {
     $before = (int)$db->query('SELECT COUNT(*) FROM price_observations')->fetchColumn();
     $approvedBefore = (int)$db->query("SELECT COUNT(*) FROM price_observations WHERE verified_status='approved'")->fetchColumn();
     $snapshotsBefore = (int)$db->query('SELECT COUNT(*) FROM price_indices')->fetchColumn();
-    admin_import_redirect(fn() => (new AdminController())->importDryRun(), '/admin/collector-jobs');
+    admin_import_redirect(fn() => (new AdminCollectionController())->importDryRun(), '/admin/collector-jobs');
     assert_admin_import(isset($_SESSION['admin_import_pending']), 'Successful dry-run must create pending confirm context');
     assert_admin_import((int)($_SESSION['admin_import_summary']['records_scanned'] ?? 0) === 3, 'Dry-run should scan three rows');
     assert_admin_import((int)($_SESSION['admin_import_summary']['valid_rows'] ?? 0) === 3, 'Dry-run should report three eligible rows');
@@ -205,20 +206,20 @@ try {
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs/import-confirm';
     $_POST = ['_token' => Csrf::token()];
     $_FILES = [];
-    admin_import_redirect(fn() => (new AdminController())->importConfirm(), '/admin/collector-jobs');
+    admin_import_redirect(fn() => (new AdminCollectionController())->importConfirm(), '/admin/collector-jobs');
     assert_admin_import(!isset($_SESSION['admin_import_pending']), 'Changed dry-run file should clear pending import context');
     assert_admin_import((int)$db->query('SELECT COUNT(*) FROM price_observations')->fetchColumn() === $before, 'Changed dry-run file must not import');
 
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs/import-dry-run';
     $_POST = ['_token' => Csrf::token(), 'dataset' => 'test', 'limit' => '10'];
     $_FILES = ['evidence_file' => ['name' => 'owner-template-filled.csv', 'type' => 'text/csv', 'tmp_name' => $csvPath, 'error' => UPLOAD_ERR_OK, 'size' => filesize($csvPath)]];
-    admin_import_redirect(fn() => (new AdminController())->importDryRun(), '/admin/collector-jobs');
+    admin_import_redirect(fn() => (new AdminCollectionController())->importDryRun(), '/admin/collector-jobs');
     assert_admin_import(isset($_SESSION['admin_import_pending']), 'Second successful dry-run must recreate pending confirm context');
 
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs/import-confirm';
     $_POST = ['_token' => Csrf::token()];
     $_FILES = [];
-    admin_import_redirect(fn() => (new AdminController())->importConfirm(), '/admin/collector-jobs');
+    admin_import_redirect(fn() => (new AdminCollectionController())->importConfirm(), '/admin/collector-jobs');
     $after = (int)$db->query('SELECT COUNT(*) FROM price_observations')->fetchColumn();
     assert_admin_import($after === $before + 3, 'Confirm Import should create three review observations');
     assert_admin_import(!isset($_SESSION['admin_import_pending']), 'Confirm Import must clear pending context');
@@ -236,7 +237,7 @@ try {
 
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs';
-    $afterPage = admin_import_render(fn() => (new AdminController())->jobs());
+    $afterPage = admin_import_render(fn() => (new AdminCollectionController())->jobs());
     assert_admin_import(str_contains($afterPage, 'Confirm Import unlocks after a Dry Run'), 'Confirm gate should close after import');
     admin_import_jobs_datatable_assert((string)$config['base_url']);
 

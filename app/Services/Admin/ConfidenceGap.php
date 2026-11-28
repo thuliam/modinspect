@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 
 /**
  * Explains, for one stored snapshot, what stands between its confidence and "medium" (score 60). Pure derivation from the
- * snapshot's own stored policy caps and raw score (confidence-v2): it never recalculates, never changes a price or a label.
+ * snapshot's own stored policy caps and raw score (stored under the method version of the snapshot): it never recalculates, never changes a price or a label.
  */
 final class ConfidenceGap
 {

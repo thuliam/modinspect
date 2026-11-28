@@ -5,7 +5,8 @@ namespace App\Services\Pricing;
 
 final class SnapshotConfidenceService
 {
-    public const METHOD_VERSION = 'confidence-v2';
+    /** v3 (LS-88, DL-122): a platform counts as one source however many import batches or host spellings it has (SourceIdentity). */
+    public const METHOD_VERSION = 'confidence-v3';
     /** v2 (DL-033): evidence that is entirely owner-collected text without a listing URL can never score above the top of the 'low' band. */
     public const OWNER_TEXT_ONLY_CEILING = 59.0;
     /** additive rule (DL-079): evidence that is entirely human-recorded (owner text and/or owner transcription) stays below the 'high' band (80) */
@@ -117,6 +118,12 @@ final class SnapshotConfidenceService
         return ['score' => 95.0, 'sample_size' => $sampleSize, 'reasons' => ['STRONG_SAMPLE_SIZE']];
     }
 
+    /** the freshness rule for any date; the public pages use it for the day of viewing (PublicFreshness) */
+    public function freshness(array $rows, string $asOfDate): array
+    {
+        return $this->freshnessComponent($rows, $asOfDate);
+    }
+
     private function freshnessComponent(array $rows, string $asOfDate): array
     {
         $asOf = strtotime($asOfDate . ' 23:59:59');
@@ -170,14 +177,7 @@ final class SnapshotConfidenceService
     {
         $counts = [];
         foreach ($rows as $row) {
-            $sourceKey = (string)($row['source_domain'] ?? '');
-            if ($sourceKey === '') {
-                $sourceKey = (string)($row['source_name'] ?? '');
-            }
-            if ($sourceKey === '') {
-                $sourceKey = (string)($row['source_id'] ?? 'unknown');
-            }
-            $sourceKey = strtolower($sourceKey);
+            $sourceKey = SourceIdentity::ofRow($row);
             $counts[$sourceKey] = ($counts[$sourceKey] ?? 0) + 1;
         }
         ksort($counts);

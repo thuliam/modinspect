@@ -30,7 +30,7 @@ $existing = static function () use ($db): array {
 };
 $files = [];
 foreach (glob(ROOT_PATH . '/database/migrations/*.sql') ?: [] as $f) { $files[basename($f)] = (string)file_get_contents($f); }
-$plan = MigrationPlan::build($files, $existing(), $from);
+$plan = MigrationPlan::build($files, $existing(), $from, (new App\Services\Ops\MigrationLedger($db))->all());
 echo 'Database: ' . $config['db']['database'] . ' (' . ($apply ? 'APPLY' : 'dry run') . ")\n";
 foreach ($plan['items'] as $i) {
     printf("%-44s %-8s %s\n", $i['file'], strtoupper($i['action']), $i['verdict']);

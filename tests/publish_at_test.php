@@ -18,7 +18,7 @@ ok_pa(P::parse('2029-01-01T10:00', $now) === null && P::parse('2028-11-19T10:00'
 global $config;
 $db = Database::connection($config['db']);
 ok_pa($config['db']['database'] === 'modinspect_test', 'Must run on the isolated test database');
-$src = (string)file_get_contents(ROOT_PATH . '/app/Controllers/AdminController.php');
+$src = (string)file_get_contents(ROOT_PATH . '/app/Controllers/AdminCatalogController.php');
 ok_pa(str_contains($src, 'PublishAt::parse') && substr_count($src, ':pub_at0 IS NOT NULL THEN :pub_at1') === 2, 'Both the create and the update statement use the chosen time');
 $db->beginTransaction();
 try {

@@ -123,10 +123,10 @@ final class CommunityReports
         if ((int)$today->fetchColumn() >= self::PER_PRODUCT_PER_DAY) { return ['ok' => false, 'error' => 'PRODUCT_DAILY_LIMIT']; }
 
         // the public snapshot the visitor was looking at (what they saw); none when the product has no public price
-        $snap = $this->db->prepare("SELECT id FROM price_indices WHERE product_id = :p AND product_variant_id IS NULL AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' ORDER BY last_calculated_at DESC, id DESC LIMIT 1");
+        $snap = $this->db->prepare('SELECT ' . \App\Services\Pricing\PublicSnapshot::idSql(':p'));
         $snap->execute(['p' => $productId]); $snapshotId = $snap->fetchColumn();
         $ins = $this->db->prepare('INSERT INTO community_reports (report_type, product_id, snapshot_id, payload, reporter_hash, created_at) VALUES (:t, :p, :s, :j, :h, :c)');
-        $ins->execute(['t' => $type, 'p' => $productId, 's' => $snapshotId !== false ? (int)$snapshotId : null, 'j' => $json, 'h' => $hash, 'c' => $now->format('Y-m-d H:i:s')]);
+        $ins->execute(['t' => $type, 'p' => $productId, 's' => $snapshotId ? (int)$snapshotId : null, 'j' => $json, 'h' => $hash, 'c' => $now->format('Y-m-d H:i:s')]);
         return ['ok' => true, 'id' => (int)$this->db->lastInsertId(), 'duplicate' => false];
     }
 

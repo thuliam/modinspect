@@ -36,6 +36,7 @@ $hasMarketSnapshot = !empty($product['median'])
     && (int) ($product['accepted_observation_count'] ?? 0) > 0;
 $manifest = json_decode((string) ($product['calculation_manifest'] ?? ''), true) ?: [];
 $confidence = $manifest['confidence'] ?? [];
+$confidence['reasons'] = \App\Services\Pricing\PublicFreshness::reasonsToday($confidence['reasons'] ?? [], $product['current_freshness_code'] ?? null); // LS-88: wording for today
 ?>
 <?php require_once ROOT_PATH . '/app/Views/components/hw-art.php'; ?>
 <article class="card product-card mi-product-card <?= $hasMarketSnapshot ? 'has-price' : 'no-price' ?><?= !empty($cardHorizontal) ? ' mi-card-wide' : '' ?>">

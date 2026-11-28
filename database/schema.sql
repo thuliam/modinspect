@@ -1029,3 +1029,37 @@ CREATE TABLE watch_items (
   UNIQUE KEY uq_watch_member_slug (member_id, product_slug),
   CONSTRAINT fk_watch_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- LS-89: migration ledger and job history (migration 038)
+CREATE TABLE schema_migrations (
+  filename VARCHAR(190) NOT NULL,
+  checksum CHAR(64) NOT NULL,
+  method ENUM('run','recorded') NOT NULL DEFAULT 'run',
+  applied_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (filename)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE job_runs (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  job_name VARCHAR(60) NOT NULL,
+  status ENUM('running','ok','failed') NOT NULL DEFAULT 'running',
+  started_at DATETIME NOT NULL,
+  finished_at DATETIME NULL,
+  summary TEXT NULL,
+  error_code VARCHAR(120) NULL,
+  PRIMARY KEY (id),
+  KEY idx_job_runs_name (job_name, id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- LS-89: second sign-in factor (migration 039)
+CREATE TABLE user_mfa (
+  user_id BIGINT UNSIGNED NOT NULL,
+  secret_encrypted VARCHAR(255) NOT NULL,
+  enabled_at DATETIME NULL,
+  last_used_step BIGINT UNSIGNED NULL,
+  recovery_codes TEXT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id),
+  CONSTRAINT fk_user_mfa_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

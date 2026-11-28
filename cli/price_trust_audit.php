@@ -52,7 +52,7 @@ foreach ((new Product())->search() as $p) {
     $members = $m->fetchAll();
     $sources = []; $ownerText = 0; $mock = 0; $notApproved = 0; $badType = 0;
     foreach ($members as $o) {
-        $sources[$o['source_id'] ?? 'none'] = true;
+        $sources[\App\Services\Pricing\SourceIdentity::key($o['domain'], $o['source_name'], $o['source_key'], $o['source_id'])] = true;
         $sk = (string)($o['source_key'] !== '' ? $o['source_key'] : 'unknown'); $sourceKeys[$sk] = ($sourceKeys[$sk] ?? 0) + 1;
         if (str_starts_with(strtolower($o['source_key']), 'offline_owner_text_')) { $ownerText++; }
         if ($isMock($o['source_key'], $o['source_name'], $o['domain'])) { $mock++; }

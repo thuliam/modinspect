@@ -36,6 +36,7 @@ $hasMarketSnapshot = !empty($product['median'])
     && (int) ($product['accepted_observation_count'] ?? 0) > 0;
 $manifest = json_decode((string) ($product['calculation_manifest'] ?? ''), true) ?: [];
 $confidence = $manifest['confidence'] ?? [];
+$confidence['reasons'] = \App\Services\Pricing\PublicFreshness::reasonsToday($confidence['reasons'] ?? [], $product['current_freshness_code'] ?? null); // LS-88: wording for today
 $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insufficient'));
 ?>
 <section class="container product-page mi-product-detail">
@@ -176,8 +177,9 @@ $confidenceClass = strtolower((string) ($product['confidence_label'] ?? 'insuffi
                 <p class="mi-trend-note">ราคานี้มาจากราคาประกาศมือสองที่ผ่านการตรวจสอบ ไม่ใช่ราคาปิดดีลจริง และอาจต่างตามสภาพ ประกัน อุปกรณ์ และบริการของผู้ขาย</p>
                 <dl class="mi-context-list">
                     <div><dt>จำนวนตัวอย่าง</dt><dd><?= (int) $product['valid_sample_size'] ?> รายการ</dd></div>
-                    <div><dt>ข้อมูลล่าสุด</dt><dd><?= htmlspecialchars($product['last_calculated_at'] ?? '-') ?></dd></div>
-                    <div><dt>ความสดของข้อมูล</dt><dd><?= number_format((float) ($product['fresh_sample_ratio'] ?? 0), 1) ?>%</dd></div>
+                    <div><dt>ประกาศล่าสุดที่ใช้</dt><dd><?= htmlspecialchars(\App\Services\Deal\ShareText::thaiDate($product['newest_observed_at'] ?? null) ?? '-') ?></dd></div>
+                    <div><dt>คำนวณเมื่อ</dt><dd><?= htmlspecialchars(\App\Services\Deal\ShareText::thaiDate($product['last_calculated_at'] ?? null) ?? '-') ?></dd></div>
+                    <div><dt>ประกาศอายุไม่เกิน 30 วัน (ณ วันนี้)</dt><dd><?= number_format((float) ($product['current_fresh_ratio'] ?? 0), 1) ?>%</dd></div>
                     <div><dt>ประเภทข้อมูล</dt><dd>ราคาประกาศ</dd></div>
                 </dl>
                 <p class="mi-trend-note">ความน่าเชื่อถือบอกคุณภาพของข้อมูล ไม่ใช่คำตัดสินว่าดีลนั้นดีหรือไม่ดี</p>

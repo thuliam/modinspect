@@ -6,6 +6,7 @@ define('MODINSPECT_TESTING', true);
 require __DIR__ . '/bootstrap.php';
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminCommunityController;
 use App\Controllers\SellerController;
 use App\Core\Csrf;
 use App\Core\Database;
@@ -73,10 +74,10 @@ try {
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $asUser($mkUser('operator'));
     $_POST = ['_token' => Csrf::token(), 'id' => (string)$lid, 'decision' => 'approved'];
-    ok_sc(sc_call(fn() => (new AdminController())->sellerListingAction())['code'] === 403 && (new SellerListings($db))->find($uuid)['status'] === 'submitted', 'An operator cannot moderate listings');
+    ok_sc(sc_call(fn() => (new AdminCommunityController())->sellerListingAction())['code'] === 403 && (new SellerListings($db))->find($uuid)['status'] === 'submitted', 'An operator cannot moderate listings');
     $asUser($mkUser('reviewer'));
     $_POST = ['_token' => Csrf::token(), 'id' => (string)$lid, 'decision' => 'approved'];
-    ok_sc(sc_call(fn() => (new AdminController())->sellerListingAction())['redirect'] === '/admin/seller-listings' && (new SellerListings($db))->find($uuid)['status'] === 'approved', 'A reviewer can approve a submitted listing');
+    ok_sc(sc_call(fn() => (new AdminCommunityController())->sellerListingAction())['redirect'] === '/admin/seller-listings' && (new SellerListings($db))->find($uuid)['status'] === 'approved', 'A reviewer can approve a submitted listing');
 
     $config['seller']['listings_public'] = true; $_SESSION = [];
     $pub = sc_call(fn() => (new SellerController())->show($uuid));

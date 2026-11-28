@@ -80,7 +80,8 @@ if (!$skipDraw) {
 $ctl = $read('app/Controllers/DealCheckerController.php');
 $card = substr($ctl, (int)strpos($ctl, 'public function card('), (int)strpos($ctl, 'public function result(') - (int)strpos($ctl, 'public function card('));
 ok_l21($card !== '' && !preg_match('/condition_level|warranty|has_receipt|has_box|has_benchmark|user_agent|REMOTE_ADDR|email|phone/i', $card), 'The card is drawn from the model, price, verdict, range and median only: nothing about the visitor or what they entered about the item');
-ok_l21(str_contains($card, "'deal-card-'.\$uuid,86400") && str_contains($card, "{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}") && str_contains($card, 'ShareCard::available(') && str_contains($card, "http_response_code(404)"), 'Drawn once a day per result, the address must be a UUID, 404 when unavailable or unknown');
+// LS-88: the cache key also carries the current public price, so a withdrawn or recalculated price is never served from an older drawing
+ok_l21(str_contains($card, "'deal-card-'.\$uuid.'-'.(int)(\$deal['median']??0),86400") &&str_contains($card, "{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}") && str_contains($card, 'ShareCard::available(') && str_contains($card, "http_response_code(404)"), 'Drawn once a day per result, the address must be a UUID, 404 when unavailable or unknown');
 ok_l21(str_contains($read('public/index.php'), "\$router->get('/deal-checker/result/{uuid}/card',[DealCheckerController::class,'card']);"), 'The route exists');
 ok_l21(str_contains($ctl, '$cardOk=\App\Services\Deal\ShareCard::available(') && str_contains($ctl, "'ogWidth'=>\$cardOk?"), 'The result page offers the picture only when it can be drawn');
 $view = $read('app/Views/deal/result.php');

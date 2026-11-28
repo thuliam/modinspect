@@ -103,7 +103,7 @@ try {
     $config['community_forum']['enabled'] = false;
     $db->rollBack();
 }
-$admin = (string)file_get_contents(ROOT_PATH . '/app/Controllers/AdminController.php');
+$admin = (string)file_get_contents(ROOT_PATH . '/app/Controllers/AdminCommunityController.php');
 ok_cc(str_contains($admin, "public function communityModeration(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;") && str_contains($admin, "public function communityModerationAction(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;\n        if(!Csrf::verify"), 'Moderation needs the reviewer permission and a CSRF token');
 $idx = (string)file_get_contents(ROOT_PATH . '/public/index.php');
 foreach (["'/community'", "'/community/thread/{id}'", "'/community/review'", "'/community/vote'", "'/community/flag'", "'/admin/community-moderation'", "'/admin/community-moderation/action'"] as $r) { ok_cc(str_contains($idx, $r), "Route $r is registered"); }

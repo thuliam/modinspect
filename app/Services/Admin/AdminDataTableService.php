@@ -137,7 +137,7 @@ final class AdminDataTableService
         $this->addSearch($where, $params, ['p.full_name', 'b.name', 'c.name'], $req['search']);
         $from = "FROM products p JOIN brands b ON b.id=p.brand_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN price_indices pi ON pi.id=(SELECT id FROM price_indices WHERE product_id=p.id ORDER BY last_calculated_at DESC LIMIT 1)";
         $columns = ['p.full_name', 'pi.price_type', 'pi.median', 'pi.valid_sample_size', 'pi.confidence_label', 'pi.fresh_sample_ratio', 'pi.provenance_status', 'pi.last_calculated_at'];
-        $sql = "SELECT p.id product_id,p.slug,p.full_name,b.name brand,c.name category,pi.id snapshot_id,pi.price_type,pi.q1,pi.median,pi.q3,pi.valid_sample_size,pi.fresh_sample_ratio,pi.confidence_score,pi.confidence_label,pi.provenance_status,pi.last_calculated_at $from WHERE " . implode(' AND ', $where) . ' ORDER BY ' . $this->orderSql($req, $columns, 'p.id DESC') . ' LIMIT :limit OFFSET :offset';
+        $sql = "SELECT p.id product_id,p.slug,p.full_name,b.name brand,c.name category,pi.id snapshot_id,pi.price_type,pi.q1,pi.median,pi.q3,pi.valid_sample_size,pi.fresh_sample_ratio,pi.confidence_score,pi.confidence_label,pi.provenance_status,pi.last_calculated_at," . \App\Services\Pricing\PublicSnapshot::idSql('p.id') . " public_id $from WHERE " . implode(' AND ', $where) . ' ORDER BY ' . $this->orderSql($req, $columns, 'p.id DESC') . ' LIMIT :limit OFFSET :offset';
         $rows = $this->pagedRows($sql, $params, $req);
         $total = $this->count("SELECT COUNT(*) FROM products p", []);
         $filtered = $this->count("SELECT COUNT(*) $from WHERE " . implode(' AND ', $where), $params);
@@ -343,7 +343,7 @@ final class AdminDataTableService
             $this->h($this->short($row['spec_summary'] ?: $row['generation'] ?: $row['model_name'] ?: '-', 90)),
             '<span class="mi-row-title">' . $this->h($market) . '</span><span class="mi-row-subtitle">' . $this->h($this->x('tbl.pending_n', ['n' => (int)$row['pending_count'], 'm' => (int)$row['approved_count']])) . '</span>',
             $status,
-            '<button class="btn btn-sm btn-outline-primary js-product-edit" type="button" data-product=\'' . $this->h($this->json($row)) . '\'>' . $this->x('tbl.edit') . '</button> <form method="post" action="' . $base . '/admin/products/toggle" class="d-inline js-confirm-form" data-confirm="' . $this->h($toggleConfirm) . '"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="product_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-secondary">' . $toggle . '</button></form>',
+            '<button class="btn btn-sm btn-outline-primary js-product-edit" type="button" data-product=\'' . $this->h($this->json($row)) . '\'>' . $this->x('tbl.edit') . '</button> <a class="btn btn-sm btn-outline-secondary" href="' . $base . '/admin/products/' . (int)$row['id'] . '/specs">' . $this->x('md.specs_button') . '</a> <a class="btn btn-sm btn-outline-secondary" href="' . $base . '/admin/products/' . (int)$row['id'] . '/pictures">' . $this->x('md.pictures') . '</a> <form method="post" action="' . $base . '/admin/products/toggle" class="d-inline js-confirm-form" data-confirm="' . $this->h($toggleConfirm) . '"><input type="hidden" name="_token" value="' . $this->csrf() . '"><input type="hidden" name="product_id" value="' . (int)$row['id'] . '"><button class="btn btn-sm btn-outline-secondary">' . $toggle . '</button></form>',
         ];
     }
 
@@ -399,7 +399,9 @@ final class AdminDataTableService
             $this->rowTitle($row['full_name'], ($row['category'] ?? '-') . ' / ' . ($row['brand'] ?? '-')),
             $this->h($row['price_type'] ?? '-'),
             $hasSnapshot ? '&#3647;' . number_format((float)$row['q1']) . $this->h($this->x('tbl.to')) . '&#3647;' . number_format((float)$row['q3']) : $this->x('tbl.insufficient'),
-            $hasSnapshot ? '<strong>&#3647;' . number_format((float)$row['median']) . '</strong>' : '-',
+            ($hasSnapshot ? '<strong>&#3647;' . number_format((float)$row['median']) . '</strong>' : '-')
+                // LS-89 BE-2: the latest stored snapshot is not what the public site shows
+                . ($hasSnapshot && (int)($row['public_id'] ?? 0) !== (int)$row['snapshot_id'] ? ' <a class="badge badge-danger" href="' . $base . '/admin/price-status/' . (int)$row['product_id'] . '">' . $this->h($this->x('price.hidden_badge')) . '</a>' : ''),
             (int)($row['valid_sample_size'] ?? 0),
             '<span class="badge badge-light">' . $this->h(mb_strtoupper(\App\Core\Lang::status((string)($row['confidence_label'] ?? 'insufficient')))) . '</span><small>' . $this->h($this->x('tbl.score', ['n' => number_format((float)($row['confidence_score'] ?? 0), 2)])) . '</small>',
             // fresh_sample_ratio is already a percentage (0-100, see SnapshotConfidenceService); do not multiply again.

@@ -123,7 +123,7 @@ try {
     $_SESSION[AuthService::SESSION_LOGIN_AT] = time();
     $_SESSION[AuthService::SESSION_LAST_SEEN_AT] = time();
     ob_start();
-    (new App\Controllers\AdminController())->review();
+    (new App\Controllers\AdminReviewController())->review();
     $reviewHtml = (string)ob_get_clean();
     assert_stability(!str_contains($reviewHtml, $xss), 'Review UI must escape raw listing titles');
 
@@ -131,7 +131,7 @@ try {
     // filtered to this test's own source: the queue pages at 50, so with other pending rows in the test database the fixture row could fall on page 2
     $_GET = ['draw' => 1, 'start' => 0, 'length' => 100, 'dataset' => 'ALL', 'status' => 'pending', 'source_id' => (string)$sourceId];
     ob_start();
-    (new App\Controllers\AdminController())->reviewData();
+    (new App\Controllers\AdminReviewController())->reviewData();
     $reviewPayload = json_decode((string)ob_get_clean(), true);
     assert_stability(is_array($reviewPayload) && isset($reviewPayload['data']), 'Review queue data endpoint must return a DataTables payload');
     $reviewRows = json_encode($reviewPayload['data'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

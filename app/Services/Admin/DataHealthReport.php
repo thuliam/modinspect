@@ -19,10 +19,10 @@ final class DataHealthReport
      * @return array{categories:list<array>,confidence:array<string,int>,totals:array,freshness:array,grades:array{owner_text:int,other:int},ladder:array{checked:int,flags:int}} */
     public function build(): array
     {
-        $latest = "pi.id IN (SELECT MAX(id) FROM price_indices WHERE price_type = 'asking' AND product_variant_id IS NULL AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' GROUP BY product_id)";
+        $latest = "pi.id = " . \App\Services\Pricing\PublicSnapshot::idSql('pi.product_id');   // the public snapshot of the model, if it has one
 
         $categories = $this->db->query("SELECT c.name category, COUNT(DISTINCT p.id) products,
-                COUNT(DISTINCT CASE WHEN pi.valid_sample_size >= 3 AND pi.median > 0 THEN p.id END) priced,
+                COUNT(DISTINCT pi.product_id) priced,
                 COUNT(DISTINCT CASE WHEN o.verified_status = 'pending' THEN o.id END) pending,
                 COUNT(DISTINCT CASE WHEN o.verified_status = 'approved' THEN o.id END) approved
             FROM products p
@@ -37,7 +37,7 @@ final class DataHealthReport
         unset($c);
 
         $confidence = ['high' => 0, 'medium' => 0, 'low' => 0, 'insufficient' => 0];
-        foreach ($this->db->query("SELECT LOWER(pi.confidence_label) l, COUNT(*) n FROM price_indices pi WHERE $latest AND pi.valid_sample_size >= 3 AND pi.median > 0 GROUP BY LOWER(pi.confidence_label)")->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        foreach ($this->db->query("SELECT LOWER(pi.confidence_label) l, COUNT(*) n FROM price_indices pi WHERE $latest GROUP BY LOWER(pi.confidence_label)")->fetchAll(PDO::FETCH_ASSOC) as $r) {
             $confidence[$r['l']] = ($confidence[$r['l']] ?? 0) + (int)$r['n'];
         }
 
@@ -54,7 +54,7 @@ final class DataHealthReport
         ];
 
         $fresh = $this->db->query("SELECT COUNT(*) n, SUM(pi.fresh_sample_ratio >= 50) fresh_majority, AVG(pi.fresh_sample_ratio) avg_fresh
-            FROM price_indices pi WHERE $latest AND pi.valid_sample_size >= 3 AND pi.median > 0")->fetch(PDO::FETCH_ASSOC) ?: [];
+            FROM price_indices pi WHERE $latest")->fetch(PDO::FETCH_ASSOC) ?: [];
         $freshness = ['snapshots' => (int)($fresh['n'] ?? 0), 'fresh_majority' => (int)($fresh['fresh_majority'] ?? 0), 'avg_fresh_pct' => round((float)($fresh['avg_fresh'] ?? 0), 1)];
 
         $g = $this->db->query("SELECT SUM(LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%') owner_text, SUM(LOWER(COALESCE(s.source_key,'')) NOT LIKE 'offline_owner_text_%') other

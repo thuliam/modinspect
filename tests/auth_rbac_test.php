@@ -7,6 +7,8 @@ require __DIR__ . '/bootstrap.php';
 $_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admin pages (the default language is Thai)
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminReviewController;
+use App\Controllers\AdminCollectionController;
 use App\Controllers\AuthController;
 use App\Core\Csrf;
 use App\Core\Database;
@@ -98,7 +100,7 @@ try {
     expect_redirect(fn() => (new AdminController())->index(), '/login');
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['REQUEST_URI'] = '/admin/review-queue/decision';
-    expect_redirect(fn() => (new AdminController())->reviewDecision(), '/login');
+    expect_redirect(fn() => (new AdminReviewController())->reviewDecision(), '/login');
 
     $login = $auth->login("admin-{$suffix}@example.test", $password, '127.0.0.1');
     assert_auth(($login['ok'] ?? false) === true && (int)$_SESSION[AuthService::SESSION_USER_ID] === (int)$admin['user_id'], 'Admin login should succeed');
@@ -131,28 +133,28 @@ try {
     assert_auth(str_contains(render_auth(fn() => (new AdminController())->index()), 'Auth Admin'), 'ADMIN dashboard should render authenticated identity');
 
     auth_session((int)$reviewer['user_id']);
-    assert_auth(str_contains(render_auth(fn() => (new AdminController())->review()), '>Review Queue</h1>'), 'REVIEWER should view review queue');
+    assert_auth(str_contains(render_auth(fn() => (new AdminReviewController())->review()), '>Review Queue</h1>'), 'REVIEWER should view review queue');
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['REQUEST_URI'] = '/admin/sources/action';
     $_POST = ['_token' => Csrf::token(), 'source_id' => 1, 'action' => 'pause', 'reason' => 'denied'];
-    render_auth(fn() => (new AdminController())->sourceAction());
+    render_auth(fn() => (new AdminCollectionController())->sourceAction());
     assert_auth(http_response_code() === 403, 'Direct unauthorized REVIEWER source POST must be rejected');
 
     auth_session((int)$operator['user_id']);
     $_SERVER['REQUEST_METHOD'] = 'GET';
     $_SERVER['REQUEST_URI'] = '/admin/collector-jobs';
-    assert_auth(str_contains(render_auth(fn() => (new AdminController())->jobs()), '>Imports</h1>'), 'OPERATOR should view jobs');
+    assert_auth(str_contains(render_auth(fn() => (new AdminCollectionController())->jobs()), '>Imports</h1>'), 'OPERATOR should view jobs');
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['REQUEST_URI'] = '/admin/review-queue/decision';
     $_POST = ['_token' => Csrf::token(), 'observation_id' => 1, 'decision' => 'approved'];
-    render_auth(fn() => (new AdminController())->reviewDecision());
+    render_auth(fn() => (new AdminReviewController())->reviewDecision());
     assert_auth(http_response_code() === 403, 'Direct unauthorized OPERATOR review POST must be rejected');
 
     auth_session((int)$admin['user_id']);
     $_SERVER['REQUEST_METHOD'] = 'POST';
     $_SERVER['REQUEST_URI'] = '/admin/review-queue/decision';
     $_POST = ['_token' => 'bad-token', 'observation_id' => 1, 'decision' => 'approved'];
-    render_auth(fn() => (new AdminController())->reviewDecision());
+    render_auth(fn() => (new AdminReviewController())->reviewDecision());
     assert_auth(http_response_code() === 419, 'CSRF failure must be rejected');
 
     $sourceId = (int)$db->query("SELECT id FROM data_sources WHERE source_key='mock_fixture_provider' LIMIT 1")->fetchColumn();

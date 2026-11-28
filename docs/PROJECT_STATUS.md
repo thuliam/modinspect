@@ -1261,3 +1261,24 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - Limit: `WATCH_LIMIT` (default 20, the existing ceiling). The plan's "Free = 3 models" is an unconfirmed assumption and was NOT applied; the owner decides the Free/Plus numbers.
 - Push: a subscription made while signed in carries `member_id`; the alert job then reads the member's account list. Account deletion removes watch items and push subscriptions. Fixed a mismatch: the push payload cap now equals `WatchList::MAX` (was 12 vs 20).
 - `tests/member_watch_list_test.php` added; full local regression (`tests/run.php`) passes. No member exists yet (OAuth keys are the owner's HG-13), so the signed-in path is covered by tests, not by a real sign-in.
+
+## LS-88 T1-T3 price truth 2026-11-28 (code in the working tree; not committed, not deployed)
+- Found on the live site: `/price/intel-core-i5-8400` showed a median from two excluded SSD listings.
+- T1: `PublicSnapshot` is the one rule for what may be public (list, product page, evidence, trend, deal result, share, sitemap, admin counts). Regression: `tests/public_snapshot_validity_test.php` (fails without the rule).
+- T2: `SourceIdentity` + `confidence-v3`; `SnapshotRecompute` also re-stores a snapshot when only the method version changed.
+- T3: `PublicFreshness`; the page shows the newest listing date and the calculation date separately. `cli/price_trend_build.php --dry-run` added.
+- Shared database, read-only (2026-11-28): audit with the new code 55 public prices, 55 replay MATCH, P0 0, P1 0, all single source. Recompute dry run: 55 changed, 2 not eligible, no price change, 9 medium to low. Trend dry run: 8 changed, 19 added, 1 removed.
+- Verified locally on PHP 8.3.33: `tests/run.php` on a rebuilt test database, 196 steps passed, no warnings. One expectation changed on purpose in `tests/ls21_assets_card_test.php` (the deal card cache key now includes the current price). Two product pages rendered with the new code against the shared database (read-only): i5-8400 shows no price; RTX 5070 shows the newest listing date, calculation date and one source. Not run: PHP 8.1/8.4, CI, a browser check.
+- Pending the owner's approval: commit, push, merge, deploy, then backup, `cli/snapshot_recompute.php --apply` and `cli/price_trend_build.php` on the shared database.
+- Backend review and plan: `docs/LS89_BACKEND_REVIEW_TH.md`. Owner tasks: `docs/OWNER_TODO_TH.md`.
+
+## LS-89 backend, option 3 (BE-1 to BE-5) 2026-11-28 (local branch `ls89-backend`; not pushed, not deployed)
+- Base: `52fa768` commits the LS-88 price fix on the same branch (it replaces the note above that it was uncommitted).
+- BE-1: snapshot write and review decision are transactions; corrections and web imports record the acting user; price and trend share `CohortRules`; one public-price rule (`PublicSnapshot`, at least 3 listings).
+- BE-2: approve and withdraw (reason required) from the admin recalculate that model's price and trend and report the result; page `/admin/price-status` with preview and recalculate; hidden snapshots are marked in the price index.
+- BE-4: one admin controller per area on `AdminBaseController`; review reading in `ReviewQueueQuery`; the router requires a signed-in user for every `/admin` route; 19 one-off scripts in `cli/archive`.
+- BE-3: migrations `038_operations_ledger.sql` and `039_admin_mfa.sql` (additive, **not applied to any shared database**); `cli/daily_jobs.php`; page `/admin/system-health`; two-step sign-in shipped **off** (`AUTH_MFA_ENABLED=false`), `cli/mfa_reset.php`.
+- BE-5: brands and categories, reference specs, product pictures in the admin; picture import no longer overwrites or deletes a file still shown elsewhere.
+- Found and fixed: the admin review detail page printed its own PHP source since `54254b1` (2026-11-15). The live site still has this until deploy.
+- Shared database, read-only with the new code (2026-11-28): 55 public prices, all marked outdated (confidence method v3), 2 hidden (Corsair Vengeance LPX 32GB DDR4-3200, Intel Core i5-8400); no median would change; trend rebuild: 8 changed, 19 added, 1 removed.
+- Not done: bulk review of many rows (needs the DataTables extension download), a scheduled task on the host, QR code for two-step sign-in, CSRF check stays per action, coverage report still counts source rows rather than platforms.

@@ -29,8 +29,17 @@ Current version identifiers:
 formula_version: price-engine-v1
 cohort_version: cohort-v1
 quartile_method_version: linear-percentile-v1
-confidence_method_version: confidence-v1
+confidence_method_version: confidence-v3
 ```
+
+Version history: `confidence-v2` (DL-033) caps evidence that is entirely owner text. `confidence-v3` (DL-122) counts one platform as one source. Stored snapshots keep the version they were calculated with and still reproduce.
+
+## Public publication rule (DL-122)
+
+- One rule, `App\Services\Pricing\PublicSnapshot`: the latest recorded asking snapshot is public only while every included observation is still approved, on the same model, at the same price. Otherwise the model shows no price until a new snapshot is calculated. There is no fallback to an older snapshot.
+- Recalculation still needs at least 3 eligible observations; below that no new snapshot is written and the withdrawn one stays hidden.
+- Source identity (`SourceIdentity`): the platform counts, not the import batch or host spelling. All Facebook hosts and Facebook owner-text batches are one source.
+- Freshness wording on public pages is evaluated for the day of viewing (`PublicFreshness`). The stored score, label and prices are not changed by the passage of time.
 
 Confidence v1 components:
 
@@ -110,3 +119,10 @@ The thresholds are presentation thresholds (constants `PriceEngine::SLIGHT` and 
 - a statement that the factors are not turned into money. The system has no data that values a receipt, a warranty or a condition, so for a far gap it does not say the difference is reasonable; it points at the two usual checks (is it the right model and size, what does the seller say).
 
 It never changes the verdict label, never reads or writes a price snapshot, and uses neutral wording only (`tests/deal_explanation_test.php` also checks the earlier banned words).
+
+
+## Rows shared by price and trend, and when a price is recalculated (LS-89)
+
+`App\Services\Pricing\CohortRules` is the only rule for which listing counts. The price snapshot and the monthly trend (`TrendBuilder`) both use it.
+A public price needs the latest recorded asking snapshot, at least 3 listings, a median, and every listing behind it unchanged (`PublicSnapshot`).
+From the admin, approving or withdrawing a listing runs `PriceRefresh` for the models concerned: a new snapshot only when the result differs or the stored one is no longer publishable, then that model's trend months. Imports and command line changes are picked up by `cli/daily_jobs.php --apply` or the price status page.

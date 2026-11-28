@@ -82,6 +82,14 @@ final class ImageImport
         return $out;
     }
 
+    /** how many pictures and main pictures point at $path, not counting slot $slot of model $productId (nor that model's own main picture) */
+    public static function references(PDO $db, string $path, int $productId = 0, int $slot = 0): int
+    {
+        $a = $db->prepare('SELECT COUNT(*) FROM product_images WHERE path = ? AND NOT (product_id = ? AND slot = ?)'); $a->execute([$path, $productId, $slot]);
+        $b = $db->prepare('SELECT COUNT(*) FROM products WHERE image_path = ? AND id <> ?'); $b->execute([$path, $productId]);
+        return (int) $a->fetchColumn() + (int) $b->fetchColumn();
+    }
+
     /**
      * Copies the files under $destDir (public/assets/products), writes the rows and keeps products.image_path equal to slot 1. Files are written first; on any failure
      * the files written by this call are removed and the transaction is rolled back.
@@ -101,15 +109,20 @@ final class ImageImport
                 $d = $p['data']; $file = $d['slug'] . '-' . $d['slot'] . '.' . $d['ext']; $rel = 'assets/products/' . $file;
                 $dest = rtrim($destDir, '/\\') . DIRECTORY_SEPARATOR . $file;
                 $old = $db->prepare('SELECT path FROM product_images WHERE product_id = :p AND slot = :s'); $old->execute(['p' => (int) $p['product_id'], 's' => $d['slot']]); $oldPath = (string) $old->fetchColumn();
+                // LS-89: after pictures are swapped (or shared between models) this name may belong to someone else: use another name
+                if (self::references($db, $rel, (int) $p['product_id'], $d['slot']) > 0) {
+                    $file = $d['slug'] . '-' . $d['slot'] . '-' . substr((string) hash_file('sha256', $d['tmp']), 0, 8) . '.' . $d['ext']; $rel = 'assets/products/' . $file;
+                    $dest = rtrim($destDir, '/\\') . DIRECTORY_SEPARATOR . $file;
+                }
                 if (!copy($d['tmp'], $dest)) { throw new \RuntimeException('cannot write ' . $file); }
                 $written[] = $dest;
                 $up->execute(['p' => (int) $p['product_id'], 's' => $d['slot'], 'path' => $rel, 'alt' => $d['alt'], 'sn' => $d['source_name'], 'su' => $d['source_url'], 'ln' => $d['license_note']]);
                 if ($d['slot'] === 1) { $primary->execute(['path' => $rel, 'id' => (int) $p['product_id']]); }
                 $p['action'] === 'update' ? $updated++ : $created++;
-                if ($oldPath !== '' && $oldPath !== $rel && str_starts_with($oldPath, 'assets/products/')) { $stale[] = rtrim($destDir, '/\\') . DIRECTORY_SEPARATOR . basename($oldPath); } // the replaced picture of this slot
+                if ($oldPath !== '' && $oldPath !== $rel && str_starts_with($oldPath, 'assets/products/')) { $stale[$oldPath] = rtrim($destDir, '/\\') . DIRECTORY_SEPARATOR . basename($oldPath); } // the replaced picture of this slot
             }
             if ($own) { $db->commit(); }
-            if ($own) { foreach ($stale as $sf) { @unlink($sf); } }
+            if ($own) { foreach ($stale as $oldPath => $sf) { if (self::references($db, (string) $oldPath) === 0) { @unlink($sf); } } }
         } catch (\Throwable $e) {
             if ($own && $db->inTransaction()) { $db->rollBack(); }
             foreach ($written as $w) { @unlink($w); }

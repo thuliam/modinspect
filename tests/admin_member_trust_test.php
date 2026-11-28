@@ -6,6 +6,8 @@ define('MODINSPECT_TESTING', true);
 require __DIR__ . '/bootstrap.php';
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminMemberController;
+use App\Controllers\AdminCommunityController;
 use App\Core\Csrf;
 use App\Core\Database;
 use App\Core\RedirectException;
@@ -46,7 +48,7 @@ try {
         $_SERVER['REQUEST_METHOD'] = $method; $_SERVER['REQUEST_URI'] = '/admin/x'; $_GET = $get;
         $_POST = $method === 'POST' ? $post + ($token ? ['_token' => Csrf::token()] : []) : [];
     };
-    $c = new AdminController();
+    $c = new AdminMemberController();
     $audit = new MemberAudit($db);
     $pages = ['privacyRequests' => 'คำขอข้อมูลส่วนบุคคล', 'legalDocuments' => 'เอกสารกฎหมาย', 'memberCapabilities' => 'สิทธิ์ของสมาชิก'];
     $posts = ['privacyRequestAction' => ['id' => '1', 'to' => 'completed'], 'legalDocumentCreate' => ['doc_type' => 'privacy', 'version' => 'x', 'title' => 't', 'body' => 'b'],
@@ -135,7 +137,7 @@ try {
     }
     $as($admin, 'GET'); $r = am_call(fn() => $c->privacyRequests());
     ok_am(str_contains($r['body'], '/admin/legal-documents') && str_contains($r['body'], '/admin/member-capabilities'), 'The admin menu lists the three pages');
-    $as($reviewer, 'GET'); $r = am_call(fn() => $c->communityReports());
+    $as($reviewer, 'GET'); $r = am_call(fn() => (new AdminCommunityController())->communityReports());
     ok_am(!str_contains($r['body'], '/admin/privacy-requests') && !str_contains($r['body'], '/admin/legal-documents'), 'A reviewer does not see the member pages in the menu');
 
     echo "admin_member_trust_test: PASS\n";

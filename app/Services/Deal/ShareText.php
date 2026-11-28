@@ -11,13 +11,21 @@ final class ShareText
 {
     private const MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
 
+    /** '2026-11-24 19:42:02' to '24 พ.ย. 2569'; null for an empty or unreadable value */
+    public static function thaiDate(?string $value): ?string
+    {
+        $t = $value === null || $value === '' ? false : strtotime($value);
+        return $t === false ? null : (int)date('j', $t) . ' ' . self::MONTHS[(int)date('n', $t) - 1] . ' ' . ((int)date('Y', $t) + 543);
+    }
+
     /** @param array<string,mixed> $product a Product row with the public snapshot fields @return ?string null when the page shows no price (nothing is shared then) */
     public static function forProduct(array $product, string $url): ?string
     {
         if (empty($product['median']) || (int)($product['valid_sample_size'] ?? 0) <= 0 || (int)($product['accepted_observation_count'] ?? 0) <= 0 || empty($product['q1']) || empty($product['q3'])) { return null; }
-        $when = '';
-        $t = strtotime((string)($product['last_calculated_at'] ?? ''));
-        if ($t) { $when = ' · ข้อมูล ณ ' . (int)date('j', $t) . ' ' . self::MONTHS[(int)date('n', $t) - 1] . ' ' . ((int)date('Y', $t) + 543); }
+        // LS-88: the date of the newest listing is what tells a reader how old the figure is; the calculation date is the fallback only
+        $newest = self::thaiDate($product['newest_observed_at'] ?? null);
+        $calculated = self::thaiDate($product['last_calculated_at'] ?? null);
+        $when = $newest !== null ? ' · ประกาศล่าสุด ' . $newest : ($calculated !== null ? ' · ข้อมูล ณ ' . $calculated : '');
         return (string)$product['full_name'] . ' ราคาประกาศมือสองที่พบ ฿' . number_format((float)$product['q1']) . ' – ฿' . number_format((float)$product['q3'])
             . ' (ราคากลาง ฿' . number_format((float)$product['median']) . ', ตัวอย่าง ' . (int)$product['valid_sample_size'] . ' ประกาศ' . $when . ')'
             . "\nเป็นราคาประกาศขาย ไม่ใช่ราคาปิดดีล\n" . $url;

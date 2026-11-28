@@ -94,9 +94,8 @@ final class PriceLadderCheck
     {
         global $config;
         $db = Database::connection($config['db']);
-        $rows = $db->query("SELECT p.full_name name, pi.median FROM price_indices pi JOIN products p ON p.id = pi.product_id
-            WHERE pi.id IN (SELECT MAX(id) FROM price_indices WHERE price_type = 'asking' AND product_variant_id IS NULL AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' GROUP BY product_id)
-              AND pi.valid_sample_size >= 3 AND pi.median > 0 AND p.is_active = 1")->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $db->query("SELECT p.full_name name, pi.median FROM products p JOIN price_indices pi ON pi.id = " . \App\Services\Pricing\PublicSnapshot::idSql('p.id') . "
+            WHERE p.is_active = 1")->fetchAll(PDO::FETCH_ASSOC);
         $this->checked = count(array_filter($rows, static fn(array $r): bool => self::parseAny((string)$r['name']) !== null));
         return self::violations(array_map(static fn(array $r): array => ['name' => (string)$r['name'], 'median' => (float)$r['median']], $rows));
     }

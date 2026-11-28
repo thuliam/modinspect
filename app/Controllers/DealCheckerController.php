@@ -34,7 +34,7 @@ final class DealCheckerController extends Controller {
     public function card(string $uuid): void {
         $deal=(\App\Services\Deal\ShareCard::available(ROOT_PATH.'/public/assets/fonts') && preg_match('/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/',$uuid)) ? (new DealCheck())->findByUuid($uuid) : null;
         if (!$deal) { http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบผลการประเมิน']); return; }
-        $png=(new \App\Services\Http\FileCache(ROOT_PATH.'/storage/cache/http'))->remember('deal-card-'.$uuid,86400,static function() use($deal):string {
+        $png=(new \App\Services\Http\FileCache(ROOT_PATH.'/storage/cache/http'))->remember('deal-card-'.$uuid.'-'.(int)($deal['median']??0),86400,static function() use($deal):string {
             $x=\App\Services\DealExplanation::build($deal);
             $labels=['below_range'=>'ต่ำกว่าช่วงราคาที่พบ','in_range'=>'อยู่ในช่วงตลาด','above_range'=>'สูงกว่าช่วงที่พบ','insufficient'=>'ข้อมูลยังไม่เพียงพอ'];
             $q1=(float)($deal['suggested_price_min']??0) ?: (float)($deal['q1']??0); $q3=(float)($deal['suggested_price_max']??0) ?: (float)($deal['q3']??0);

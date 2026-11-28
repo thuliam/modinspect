@@ -15,8 +15,15 @@ final class DealCheck
         $stmt=$this->db->prepare($sql); $stmt->execute(['uuid'=>$uuid]+$data); return $uuid;
     }
     public function findByUuid(string $uuid): ?array {
-        $stmt=$this->db->prepare("SELECT d.*,p.full_name,p.slug,pi.q1,pi.median,pi.q3,pi.sample_size,pi.confidence_label FROM deal_checks d JOIN products p ON p.id=d.product_id LEFT JOIN price_indices pi ON pi.id=(SELECT id FROM price_indices WHERE product_id=p.id ORDER BY last_calculated_at DESC LIMIT 1) WHERE d.uuid=:uuid");
-        $stmt->execute(['uuid'=>$uuid]); return $stmt->fetch() ?: null;
+        $stmt=$this->db->prepare("SELECT d.*,p.full_name,p.slug,pi.q1,pi.median,pi.q3,pi.sample_size,pi.confidence_label FROM deal_checks d JOIN products p ON p.id=d.product_id LEFT JOIN price_indices pi ON pi.id=" . \App\Services\Pricing\PublicSnapshot::idSql('p.id') . " WHERE d.uuid=:uuid");
+        $stmt->execute(['uuid'=>$uuid]); $deal=$stmt->fetch() ?: null;
+        // LS-88: no public price now (none yet, or its snapshot was withdrawn) means a saved result shows no range and no verdict built on one
+        if ($deal !== null && $deal['median'] === null) { $deal=self::withoutRange($deal); }
+        return $deal;
+    }
+    private static function withoutRange(array $deal): array {
+        $none=(new \App\Services\PriceEngine())->evaluate(['q1'=>null,'q3'=>null],(float)$deal['user_price']);
+        return array_merge($deal,['result_label'=>$none['label'],'suggested_price_min'=>null,'suggested_price_max'=>null,'recommendation'=>$none['recommendation'],'warning_note'=>$none['warning']]);
     }
     /** LS-28 B1: the saved outcome of a result, or null (also null when migration 028 is not applied yet, so the page still renders) */
     public function outcomeFor(int $dealId): ?array {

@@ -3,22 +3,42 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Core\Database;
+use App\Services\Pricing\PublicFreshness;
+use App\Services\Pricing\PublicSnapshot;
+use App\Services\Pricing\SourceIdentity;
 use PDO;
 
 final class Product
 {
     private PDO $db;
     public function __construct() { global $config; $this->db = Database::connection($config['db']); }
-    private string $select = "SELECT p.*, b.name brand_name, c.name category_name, c.slug category_slug, pi.price_low, pi.q1, pi.median, pi.q3, pi.price_high, pi.market_min, pi.market_max, pi.sample_size, pi.valid_sample_size, pi.fresh_sample_ratio, pi.confidence_score, pi.confidence_label, pi.confidence_method_version, pi.calculation_manifest, pi.last_calculated_at, (SELECT COUNT(*) FROM price_observations po LEFT JOIN raw_price_observations r ON r.id=po.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE po.product_id=p.id AND po.verified_status='approved' AND (r.id IS NULL OR LOWER(COALESCE(s.source_key,'')) LIKE 'offline_real_%' OR LOWER(COALESCE(s.name,'')) LIKE '%offline real import%' OR (LOWER(COALESCE(s.source_key,'')) NOT LIKE '%mock%' AND LOWER(COALESCE(s.source_key,'')) NOT LIKE '%fixture%' AND LOWER(COALESCE(s.source_key,'')) NOT LIKE '%test%' AND LOWER(COALESCE(s.name,'')) NOT LIKE '%mock%' AND LOWER(COALESCE(s.name,'')) NOT LIKE '%fixture%' AND LOWER(COALESCE(s.name,'')) NOT LIKE '%test%' AND LOWER(COALESCE(s.domain,'')) NOT LIKE 'mock.%'))) accepted_observation_count FROM products p JOIN brands b ON b.id=p.brand_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN price_indices pi ON pi.id=(SELECT x.id FROM price_indices x WHERE x.product_id=p.id AND x.product_variant_id IS NULL AND COALESCE(x.provenance_status,'legacy_unavailable')<>'legacy_unavailable' ORDER BY x.last_calculated_at DESC LIMIT 1)";
-// Public eligibility: (1) the mock/fixture/test source classification matches Dashboard::datasetLabel (REAL wins), and
+    private function selectSql(): string { return "SELECT p.*, b.name brand_name, c.name category_name, c.slug category_slug, pi.price_low, pi.q1, pi.median, pi.q3, pi.price_high, pi.market_min, pi.market_max, pi.sample_size, pi.valid_sample_size, pi.fresh_sample_ratio, pi.confidence_score, pi.confidence_label, pi.confidence_method_version, pi.calculation_manifest, pi.last_calculated_at, pi.id snapshot_id, (SELECT COUNT(*) FROM price_observations po LEFT JOIN raw_price_observations r ON r.id=po.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE po.product_id=p.id AND po.verified_status='approved' AND (r.id IS NULL OR LOWER(COALESCE(s.source_key,'')) LIKE 'offline_real_%' OR LOWER(COALESCE(s.name,'')) LIKE '%offline real import%' OR (LOWER(COALESCE(s.source_key,'')) NOT LIKE '%mock%' AND LOWER(COALESCE(s.source_key,'')) NOT LIKE '%fixture%' AND LOWER(COALESCE(s.source_key,'')) NOT LIKE '%test%' AND LOWER(COALESCE(s.name,'')) NOT LIKE '%mock%' AND LOWER(COALESCE(s.name,'')) NOT LIKE '%fixture%' AND LOWER(COALESCE(s.name,'')) NOT LIKE '%test%' AND LOWER(COALESCE(s.domain,'')) NOT LIKE 'mock.%'))) accepted_observation_count FROM products p JOIN brands b ON b.id=p.brand_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN price_indices pi ON pi.id=" . PublicSnapshot::idSql('p.id'); }
+// Public eligibility (LS-88 adds (3): a snapshot with an excluded, moved or re-priced member is not joined, see PublicSnapshot): (1) the mock/fixture/test source classification matches Dashboard::datasetLabel (REAL wins), and
 // (2) legacy snapshots with unverifiable provenance are never joined, so they can never be shown as a market price.
+    /** LS-88 T3: adds newest_observed_at, current_fresh_ratio and current_freshness_code (all for today) to rows that show a public price; one extra query per call */
+    private function withFreshness(array $rows): array {
+        $ids = array_values(array_filter(array_map(static fn(array $r): int => (int)($r['snapshot_id'] ?? 0), $rows)));
+        $dates = [];
+        if ($ids) {
+            $stmt = $this->db->prepare("SELECT snapshot_id, snapshot_observed_at FROM price_snapshot_observations WHERE inclusion_status='included' AND snapshot_id IN (" . implode(',', array_fill(0, count($ids), '?')) . ")");
+            $stmt->execute($ids);
+            foreach ($stmt->fetchAll() as $m) { $dates[(int)$m['snapshot_id']][] = (string)$m['snapshot_observed_at']; }
+        }
+        $today = date('Y-m-d');
+        foreach ($rows as &$row) {
+            $now = PublicFreshness::evaluate($dates[(int)($row['snapshot_id'] ?? 0)] ?? [], $today);
+            $row['newest_observed_at'] = $now['newest_observed_at']; $row['current_fresh_ratio'] = $now['fresh_ratio']; $row['current_freshness_code'] = $now['code'];
+        }
+        unset($row);
+        return $rows;
+    }
     /** LS-20 D3: models that show a public price come first (the same "has a price" rule as the product card), then popular ones, so the first cards on the home page are never empty when priced models exist */
     public function popular(int $limit = 6): array {
-        $stmt = $this->db->prepare($this->select . " WHERE p.is_active=1 ORDER BY (pi.median IS NOT NULL AND pi.valid_sample_size > 0 AND accepted_observation_count > 0) DESC, p.is_popular DESC, pi.valid_sample_size DESC, p.full_name LIMIT :limit");
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT); $stmt->execute(); return $stmt->fetchAll();
+        $stmt = $this->db->prepare($this->selectSql() . " WHERE p.is_active=1 ORDER BY (pi.median IS NOT NULL AND pi.valid_sample_size > 0 AND accepted_observation_count > 0) DESC, p.is_popular DESC, pi.valid_sample_size DESC, p.full_name LIMIT :limit");
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT); $stmt->execute(); return $this->withFreshness($stmt->fetchAll());
     }
     public function search(string $query = '', ?string $category = null): array {
-        $sql = $this->select . " WHERE p.is_active=1";
+        $sql = $this->selectSql() . " WHERE p.is_active=1";
         $params = [];
         $query = \App\Services\Search\SearchQuery::clip($query);
         if ($query !== '') {
@@ -36,7 +56,7 @@ final class Product
             $params['q_ex1'] = $params['q_ex2'] = $params['q_ex3'] = $query;
         }
         $sql .= " ORDER BY " . $exact . "p.is_popular DESC, p.full_name";
-        $stmt=$this->db->prepare($sql); $stmt->execute($params); return $stmt->fetchAll();
+        $stmt=$this->db->prepare($sql); $stmt->execute($params); return $this->withFreshness($stmt->fetchAll());
     }
     /** Plain public counts for the home page: models listed, names recognised, models with an eligible price. No admin data. */
     /** Brands that have at least one active product, most products first (feeds the brand strip on the home page). */
@@ -53,18 +73,18 @@ final class Product
     }
     /** Share of the included evidence behind a snapshot that is owner-collected text without a listing URL (DL-013). */
     public function evidenceGrades(int $productId): array {
-        $stmt = $this->db->prepare("SELECT COUNT(*) total, COALESCE(SUM(CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' THEN 1 ELSE 0 END),0) owner_text, COALESCE(SUM(CASE WHEN EXISTS (SELECT 1 FROM market_evidence me WHERE me.raw_observation_id=r.id AND me.excerpt LIKE '%CAPTURE_METHOD=owner_transcription%') THEN 1 ELSE 0 END),0) transcribed FROM price_snapshot_observations so JOIN price_observations o ON o.id=so.observation_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE so.inclusion_status='included' AND so.snapshot_id=(SELECT x.id FROM price_indices x WHERE x.product_id=:pid AND x.product_variant_id IS NULL AND COALESCE(x.provenance_status,'legacy_unavailable')<>'legacy_unavailable' ORDER BY x.last_calculated_at DESC LIMIT 1)");
+        $stmt = $this->db->prepare("SELECT COUNT(*) total, COALESCE(SUM(CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' THEN 1 ELSE 0 END),0) owner_text, COALESCE(SUM(CASE WHEN EXISTS (SELECT 1 FROM market_evidence me WHERE me.raw_observation_id=r.id AND me.excerpt LIKE '%CAPTURE_METHOD=owner_transcription%') THEN 1 ELSE 0 END),0) transcribed FROM price_snapshot_observations so JOIN price_observations o ON o.id=so.observation_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE so.inclusion_status='included' AND so.snapshot_id=" . PublicSnapshot::idSql(':pid'));
         $stmt->execute(['pid' => $productId]);
         $row = $stmt->fetch() ?: [];
         return ['total' => (int)($row['total'] ?? 0), 'owner_text' => (int)($row['owner_text'] ?? 0), 'transcribed' => (int)($row['transcribed'] ?? 0)];
     }
     public function findBySlug(string $slug): ?array {
-        $stmt=$this->db->prepare($this->select . " WHERE p.slug=:slug AND p.is_active=1 LIMIT 1");
-        $stmt->execute(['slug'=>$slug]); return $stmt->fetch() ?: null;
+        $stmt=$this->db->prepare($this->selectSql() . " WHERE p.slug=:slug AND p.is_active=1 LIMIT 1");
+        $stmt->execute(['slug'=>$slug]); return $this->withFreshness($stmt->fetchAll())[0] ?? null;
     }
     public function find(int $id): ?array {
-        $stmt=$this->db->prepare($this->select . " WHERE p.id=:id LIMIT 1");
-        $stmt->execute(['id'=>$id]); return $stmt->fetch() ?: null;
+        $stmt=$this->db->prepare($this->selectSql() . " WHERE p.id=:id LIMIT 1");
+        $stmt->execute(['id'=>$id]); return $this->withFreshness($stmt->fetchAll())[0] ?? null;
     }
     /** LS-32 A: published benchmark scores for the model (reference only, never a price input). Empty when migration 029 has not been applied yet. */
     public function benchmarks(int $id): array {
@@ -89,6 +109,10 @@ final class Product
     }
     /** Monthly trend buckets (>=3 approved samples per month), oldest first. Derived by cli/price_trend_build.php. low_price/high_price (migration 029) are the wicks of the candle chart; older databases fall back to the quartiles only. */
     public function trend(int $id): array {
+        // LS-88: when a recorded snapshot exists but is no longer public, the stored months may hold the same excluded listings: show none
+        $state = $this->db->prepare("SELECT COUNT(*) recorded, " . PublicSnapshot::idSql(':b') . " public_id FROM price_indices WHERE product_id=:a AND product_variant_id IS NULL AND price_type='asking' AND COALESCE(provenance_status,'legacy_unavailable')<>'legacy_unavailable'");
+        $state->execute(['a' => $id, 'b' => $id]); $seen = $state->fetch() ?: [];
+        if ((int)($seen['recorded'] ?? 0) > 0 && ($seen['public_id'] ?? null) === null) { return []; }
         try {
             $stmt=$this->db->prepare("SELECT period_start, q1, median, q3, low_price, high_price, sample_size FROM price_trend_points WHERE product_id=:id ORDER BY period_start");
             $stmt->execute(['id'=>$id]);
@@ -140,18 +164,20 @@ final class Product
      * @return array{snapshot_id:int,included:array,excluded:array,sources:int}|null
      */
     public function evidence(int $productId): ?array {
-        $snap = $this->db->prepare("SELECT id FROM price_indices WHERE product_id=:p AND product_variant_id IS NULL AND COALESCE(provenance_status,'legacy_unavailable')<>'legacy_unavailable' ORDER BY last_calculated_at DESC LIMIT 1");
+        $snap = $this->db->prepare("SELECT " . PublicSnapshot::idSql(':p'));
         $snap->execute(['p' => $productId]);
         $sid = (int)$snap->fetchColumn();
         if ($sid <= 0) { return null; }
-        $stmt = $this->db->prepare("SELECT so.inclusion_status, so.exclusion_reason, so.calculation_price, so.snapshot_observed_at observed_at, so.snapshot_source_id source_id,
+        $stmt = $this->db->prepare("SELECT so.inclusion_status, so.exclusion_reason, so.calculation_price, so.snapshot_observed_at observed_at, so.snapshot_source_id source_id, s.domain source_domain, s.name source_name, s.source_key,
                 CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' THEN 'owner_text' ELSE 'other' END grade
             FROM price_snapshot_observations so LEFT JOIN data_sources s ON s.id=so.snapshot_source_id
             WHERE so.snapshot_id=:sid ORDER BY so.snapshot_observed_at DESC, so.id DESC");
         $stmt->execute(['sid' => $sid]);
         $included = []; $excluded = []; $sources = []; $excludedRows = [];
         foreach ($stmt->fetchAll() as $r) {
-            if ($r['inclusion_status'] === 'included') { $included[] = $r; $sources[$r['source_id'] ?? 'none'] = true; }
+            $source = SourceIdentity::ofRow($r);
+            unset($r['source_domain'], $r['source_name'], $r['source_key']); // public-safe rows: the platform is only counted, never listed
+            if ($r['inclusion_status'] === 'included') { $included[] = $r; $sources[$source] = true; }
             else {
                 $reason = (string)($r['exclusion_reason'] ?: 'other'); $excluded[$reason] = ($excluded[$reason] ?? 0) + 1;
                 $r['reason'] = $reason; $excludedRows[] = $r; // LS-61: shown greyed in the listings table (date, price, reason only)
