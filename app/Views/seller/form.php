@@ -28,6 +28,7 @@ $statusText = ['draft' => 'ฉบับร่าง', 'submitted' => 'รอท�
         <div class="row">
             <div class="col-md-8 mb-3"><label for="sl-product">รุ่นสินค้า</label><select id="sl-product" name="product_id" required><option value="">เลือกรุ่น</option><?php foreach ($byCat as $cat => $list): ?><optgroup label="<?= htmlspecialchars($cat) ?>"><?php foreach ($list as $p): ?><option value="<?= (int) $p['id'] ?>"<?= (int) ($old['product_id'] ?? 0) === (int) $p['id'] ? ' selected' : '' ?>><?= htmlspecialchars((string) $p['full_name']) ?></option><?php endforeach; ?></optgroup><?php endforeach; ?></select><?= $err('product_id') ?></div>
             <div class="col-md-4 mb-3"><label for="sl-price">ราคาที่ตั้งขาย (บาท)</label><input id="sl-price" name="asking_price" type="number" min="1" max="10000000" step="1" required value="<?= $val('asking_price') ?>"><?= $err('asking_price') ?></div>
+            <?php if (!empty($marketOpen)): ?><div class="col-md-4 mb-3"><label for="sl-qty">จำนวน (ชิ้น)</label><input id="sl-qty" name="quantity" type="number" min="1" max="999" step="1" value="<?= htmlspecialchars((string) ($old['quantity'] ?? 1)) ?>"><?= $err('quantity') ?></div><?php endif; ?>
             <div class="col-md-4 mb-3"><label for="sl-cond">สภาพสินค้า (%) ที่คุณประเมินเอง</label><input id="sl-cond" name="condition_percent" type="number" min="0" max="100" step="1" value="<?= $val('condition_percent') ?>" placeholder="เช่น 90"><?= $err('condition_percent') ?></div>
             <div class="col-md-4 mb-3"><label for="sl-age">อายุสินค้า (เดือน, ไม่บังคับ)</label><input id="sl-age" name="product_age_months" type="number" min="0" max="360" step="1" value="<?= $val('product_age_months') ?>"><?= $err('product_age_months') ?></div>
             <div class="col-md-4 mb-3"><label for="sl-prov">จังหวัด (ไม่บังคับ)</label><select id="sl-prov" name="province"><option value="">ไม่ระบุ</option><?php foreach (LA::PROVINCES as $pv): ?><option<?= ($old['province'] ?? '') === $pv ? ' selected' : '' ?>><?= $pv ?></option><?php endforeach; ?></select><?= $err('province') ?></div>
@@ -60,6 +61,17 @@ $statusText = ['draft' => 'ฉบับร่าง', 'submitted' => 'รอท�
         </form>
         <?php endif; ?>
     </div>
+    <?php if (!empty($marketOpen) && $listing['status'] === 'approved'): $sale = (string) ($listing['sale_state'] ?? 'available'); $until = (string) ($listing['expires_at'] ?? ''); ?>
+    <div class="card mb-3">
+        <h2 class="h5">สถานะการขาย: <?= ['available' => 'พร้อมขาย', 'reserved' => 'จองแล้ว', 'sold' => 'ขายแล้ว'][$sale] ?? htmlspecialchars($sale) ?></h2>
+        <?php if ($until !== ''): ?><p class="mb-2"><?= \App\Services\Market\ListingLifecycle::expired($listing) ? 'หมดอายุแล้วเมื่อ' : 'แสดงถึง' ?> <?= htmlspecialchars(substr($until, 0, 10)) ?></p><?php endif; ?>
+        <?php if ($sale !== 'sold'): ?><div class="mi-actions">
+            <?php foreach (($sale === 'available' ? ['reserved' => 'ทำเครื่องหมายว่าจองแล้ว'] : ['available' => 'กลับเป็นพร้อมขาย']) + ['sold' => 'ขายแล้ว', 'renew' => 'ต่ออายุประกาศ'] as $to => $label): ?>
+                <form method="post" action="<?= $base ?>/seller/listings/<?= htmlspecialchars((string) $listing['uuid']) ?>/sale"><input type="hidden" name="_token" value="<?= $token ?>"><input type="hidden" name="to" value="<?= $to ?>"><button type="submit" class="button ghost"><?= $label ?></button></form>
+            <?php endforeach; ?>
+        </div><small class="text-muted">"ขายแล้ว" ย้อนกลับไม่ได้ และประกาศจะไม่แสดงอีก</small><?php endif; ?>
+    </div>
+    <?php endif; ?>
     <div class="mi-actions">
         <?php foreach (in_array($listing['status'], ['draft', 'rejected'], true) ? ['submit' => 'ส่งให้ทีมงานตรวจ'] : [] as $a => $l): ?>
             <form method="post" action="<?= $base ?>/seller/listings/<?= htmlspecialchars((string) $listing['uuid']) ?>/action"><input type="hidden" name="_token" value="<?= $token ?>"><input type="hidden" name="action" value="<?= $a ?>"><button type="submit"><?= $l ?></button></form>

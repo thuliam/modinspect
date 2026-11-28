@@ -31,6 +31,8 @@
 
 ## งานสำรองฐานบนเครื่อง Studio (LS-90)
 
-Windows Task Scheduler ชื่อ `ModInspect daily DB backup` ทุกวัน 12:00 (ถ้าเครื่องปิดอยู่ จะรันเมื่อเปิดและล็อกอิน) รัน `php cli/backup_job.php` จากโฟลเดอร์หลัก
-อ่านฐานอย่างเดียว เขียนไฟล์ใหม่ใน `storage/backups/` และบันทึกหนึ่งบรรทัดใน `storage/logs/backup.log` ไม่ลบไฟล์เก่า (ราว 10 MB ต่อวัน ลบเองเป็นครั้งคราว หรือใช้ `cli/db_backup_prune.php`)
+Windows Task Scheduler ชื่อ `ModInspect daily DB backup` ทุกวัน 12:00 (ถ้าเครื่องปิดอยู่ จะรันเมื่อเปิดและล็อกอิน) รัน `php cli/db_backup.php` จากโฟลเดอร์หลัก และเก็บผลลง `storage/logs/backup.log` (เมื่อโฟลเดอร์หลักอัปเดตตรง `main` แล้ว เปลี่ยนเป็น `cli/backup_job.php` ได้ ซึ่งบันทึกเวลาด้วย)
+อ่านฐานอย่างเดียว เขียนไฟล์ใหม่ใน `storage/backups/` ไม่ลบไฟล์เก่า (ราว 10 MB ต่อวัน ลบเองเป็นครั้งคราว หรือใช้ `cli/db_backup_prune.php`)
 ปิดงาน: `Unregister-ScheduledTask -TaskName "ModInspect daily DB backup"`
+
+เมื่อเปิดตลาดประกาศ (LS-90): ตั้ง `php /path/to/modinspect/cli/notify_process.php --apply` ทุกชั่วโมง เขียนการแจ้งเตือนลง `storage/logs/notifications.log` เท่านั้น

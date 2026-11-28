@@ -39,6 +39,7 @@ $groups = [
         ['label' => 'Data health', 'icon' => 'fa-heartbeat', 'href' => '/admin/data-health', 'permission' => 'snapshots.view', 'paths' => ['/admin/data-health']],
         ['label' => 'Price status', 'icon' => 'fa-sync-alt', 'href' => '/admin/price-status', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-status']],
         ['label' => 'Price Index', 'icon' => 'fa-tags', 'href' => '/admin/price-indices', 'permission' => 'snapshots.view', 'paths' => ['/admin/price-indices']],
+        ['label' => 'Moderation queue', 'icon' => 'fa-inbox', 'href' => '/admin/moderation', 'permission' => 'listings.moderate', 'paths' => ['/admin/moderation']],
         ['label' => 'Seller reports', 'icon' => 'fa-flag', 'href' => '/admin/seller-reports', 'permission' => 'reports.moderate', 'paths' => ['/admin/seller-reports']],
         ['label' => 'Community moderation', 'icon' => 'fa-gavel', 'href' => '/admin/community-moderation', 'permission' => 'reports.moderate', 'paths' => ['/admin/community-moderation']],
         ['label' => 'Community reports', 'icon' => 'fa-comments', 'href' => '/admin/community-reports', 'permission' => 'reports.moderate', 'paths' => ['/admin/community-reports']],

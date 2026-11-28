@@ -62,9 +62,22 @@ final class AdminController extends AdminBaseController {
         if(!$this->requirePermission('products.manage')) return;
         $this->render('beta-readiness','Beta readiness',['panel'=>(new \App\Services\Admin\BetaReadiness())->build()]);
     }
+    /** LS-90 D4: give or take the content moderator capability */
+    public function userCapability(): void {
+        if(!$this->requirePermission('users.manage')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/users'); }
+        global $config;
+        $r=(new \App\Services\Auth\UserCapabilities(\App\Core\Database::connection($config['db'])))->set((int)(is_scalar($_POST['user_id']??null) ? $_POST['user_id'] : 0),'content_moderator',($_POST['held']??'')==='1',(int)$this->user()['id']);
+        $this->flash($r['ok']?'success':'danger',t($r['ok']?'mod.done':'common.fail'));
+        $this->redirect('/admin/users');
+    }
     public function users(): void {
         if(!$this->requirePermission('users.manage')) return;
-        $this->render('users','Users',['users'=>(new \App\Services\Admin\UserAdministration())->list(),'me'=>(int)$this->user()['id'],'roles'=>\App\Services\Admin\UserAdministration::ROLES]);
+        $users=(new \App\Services\Admin\UserAdministration())->list();
+        global $config; $caps=new \App\Services\Auth\UserCapabilities(\App\Core\Database::connection($config['db']));
+        foreach($users as &$u) $u['capabilities']=$caps->listFor((int)$u['id']);
+        unset($u);
+        $this->render('users','Users',['users'=>$users,'me'=>(int)$this->user()['id'],'roles'=>\App\Services\Admin\UserAdministration::ROLES]);
     }
     public function userAction(): void {
         if(!$this->requirePermission('users.manage')) return;

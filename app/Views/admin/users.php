@@ -40,6 +40,13 @@
                             <input class="form-control form-control-sm mr-1" type="password" name="password" minlength="12" placeholder="<?= htmlspecialchars(t('v.new_password')) ?>" aria-label="<?= htmlspecialchars(t('v.new_password')) ?>" autocomplete="new-password" required>
                             <button class="btn btn-sm btn-outline-secondary mr-2" type="submit"><?= htmlspecialchars(t('v.set_password')) ?></button>
                         </form>
+                        <form class="form-inline mb-1" method="post" action="<?= $base ?>/admin/users/capability">
+                            <input type="hidden" name="_token" value="<?= $token ?>"><input type="hidden" name="user_id" value="<?= $uid ?>">
+                            <?php $moderator = in_array('content_moderator', $u['capabilities'] ?? [], true); ?>
+                            <input type="hidden" name="held" value="<?= $moderator ? '0' : '1' ?>">
+                            <?php if ($moderator): ?><span class="badge badge-info mr-2"><?= htmlspecialchars(t('mod.moderator')) ?></span><?php endif; ?>
+                            <button class="btn btn-sm btn-outline-secondary" type="submit"><?= htmlspecialchars(t($moderator ? 'mod.moderator_remove' : 'mod.moderator_add')) ?></button>
+                        </form>
                         <form class="form-inline" method="post" action="<?= $base ?>/admin/users/action">
                             <input type="hidden" name="_token" value="<?= $token ?>"><input type="hidden" name="user_id" value="<?= $uid ?>">
                             <?php if ((int) $u['is_active'] === 1): ?>

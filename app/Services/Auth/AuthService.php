@@ -69,6 +69,8 @@ final class AuthService
             return null;
         }
         $_SESSION[self::SESSION_LAST_SEEN_AT] = $now;
+        // LS-90 D4: extra capabilities on top of the role (none on a host without migration 044)
+        $user['capabilities'] = (new UserCapabilities($this->db))->listFor((int)$user['id']);
         return $user;
     }
 

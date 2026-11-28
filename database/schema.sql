@@ -685,6 +685,9 @@ CREATE TABLE seller_listings (
   moderated_by BIGINT UNSIGNED NULL,
   moderated_at DATETIME NULL,
   moderation_note VARCHAR(255) NULL,
+  quantity SMALLINT UNSIGNED NOT NULL DEFAULT 1,
+  sale_state ENUM('available','reserved','sold') NOT NULL DEFAULT 'available',
+  expires_at DATETIME NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY uq_seller_listing_uuid (uuid),
@@ -1062,4 +1065,102 @@ CREATE TABLE user_mfa (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id),
   CONSTRAINT fk_user_mfa_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS seller_profiles (
+  member_id BIGINT UNSIGNED NOT NULL,
+  display_name VARCHAR(60) NOT NULL,
+  province VARCHAR(40) NULL,
+  about VARCHAR(300) NULL,
+  verification ENUM('unverified','pending','verified','revoked') NOT NULL DEFAULT 'unverified',
+  verified_by BIGINT UNSIGNED NULL,
+  verified_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (member_id),
+  INDEX idx_seller_profile_verification (verification, updated_at),
+  CONSTRAINT fk_seller_profile_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+  CONSTRAINT fk_seller_profile_verifier FOREIGN KEY (verified_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS seller_verification_events (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  member_id BIGINT UNSIGNED NOT NULL,
+  actor_type ENUM('member','admin') NOT NULL,
+  actor_id BIGINT UNSIGNED NOT NULL,
+  from_state VARCHAR(20) NOT NULL,
+  to_state VARCHAR(20) NOT NULL,
+  note VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_verification_member (member_id, id),
+  CONSTRAINT fk_verification_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS listing_status_events (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  listing_id BIGINT UNSIGNED NOT NULL,
+  actor_type ENUM('member','admin','system') NOT NULL,
+  actor_id BIGINT UNSIGNED NULL,
+  event VARCHAR(30) NOT NULL,
+  from_value VARCHAR(30) NULL,
+  to_value VARCHAR(30) NULL,
+  note VARCHAR(255) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  INDEX idx_listing_event (listing_id, id),
+  CONSTRAINT fk_listing_event FOREIGN KEY (listing_id) REFERENCES seller_listings(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS saved_listings (
+  member_id BIGINT UNSIGNED NOT NULL,
+  listing_id BIGINT UNSIGNED NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (member_id, listing_id),
+  CONSTRAINT fk_saved_listing_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE,
+  CONSTRAINT fk_saved_listing_listing FOREIGN KEY (listing_id) REFERENCES seller_listings(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS saved_searches (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  member_id BIGINT UNSIGNED NOT NULL,
+  filters_json VARCHAR(500) NOT NULL,
+  filters_hash CHAR(64) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_saved_search (member_id, filters_hash),
+  CONSTRAINT fk_saved_search_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS listing_reports (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  listing_id BIGINT UNSIGNED NOT NULL,
+  member_id BIGINT UNSIGNED NOT NULL,
+  reason ENUM('wrong_info','suspicious','already_sold','prohibited','personal_data') NOT NULL,
+  note VARCHAR(255) NULL,
+  status ENUM('open','upheld','dismissed') NOT NULL DEFAULT 'open',
+  decided_by BIGINT UNSIGNED NULL,
+  decided_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_listing_report (listing_id, member_id),
+  INDEX idx_listing_report_queue (status, created_at),
+  CONSTRAINT fk_listing_report_listing FOREIGN KEY (listing_id) REFERENCES seller_listings(id) ON DELETE CASCADE,
+  CONSTRAINT fk_listing_report_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS notification_queue (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  member_id BIGINT UNSIGNED NOT NULL,
+  kind VARCHAR(40) NOT NULL,
+  subject_id BIGINT UNSIGNED NULL,
+  status ENUM('queued','logged') NOT NULL DEFAULT 'queued',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  processed_at DATETIME NULL,
+  PRIMARY KEY (id),
+  INDEX idx_notification_queue (status, id),
+  CONSTRAINT fk_notification_member FOREIGN KEY (member_id) REFERENCES members(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS user_capabilities (
+  user_id BIGINT UNSIGNED NOT NULL,
+  capability VARCHAR(40) NOT NULL,
+  granted_by_user_id BIGINT UNSIGNED NULL,
+  granted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  revoked_at DATETIME NULL,
+  PRIMARY KEY (user_id, capability),
+  CONSTRAINT fk_user_capability_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_user_capability_granter FOREIGN KEY (granted_by_user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

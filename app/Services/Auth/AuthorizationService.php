@@ -42,6 +42,9 @@ final class AuthorizationService
         }
         $role = strtolower((string)($user['role'] ?? 'user'));
         $permissions = self::PERMISSIONS[$role] ?? [];
+        foreach ((array)($user['capabilities'] ?? []) as $capability) {
+            $permissions = array_merge($permissions, UserCapabilities::PERMISSIONS[$capability] ?? []);
+        }
         return in_array('*', $permissions, true) || in_array($permission, $permissions, true);
     }
 
