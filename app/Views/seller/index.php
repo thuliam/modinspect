@@ -7,7 +7,7 @@ $statusText = ['draft' => 'ฉบับร่าง', 'submitted' => 'รอท�
         <p class="lead">ลงรายละเอียดของที่จะขาย ดูช่วงราคาตลาดของรุ่นนั้น แล้วส่งให้ทีมงานตรวจ ข้อมูลติดต่อของคุณไม่ถูกเก็บในประกาศ</p>
     </div>
     <?php if ($notice): ?><div class="notice mb-3"><?= htmlspecialchars($notice) ?></div><?php endif; ?>
-    <div class="mi-actions mb-4"><a class="button" href="<?= $base ?>/seller/listings/new">ลงประกาศใหม่</a><a class="button ghost" href="<?= $base ?>/seller-price-advisor">ดูราคาแนะนำก่อนตั้งราคา</a></div>
+    <div class="mi-actions mb-4"><a class="button" href="<?= $base ?>/seller/listings/new">ลงประกาศใหม่</a><?php if (!empty($config['seller_advisor']['enabled'])): ?><a class="button ghost" href="<?= $base ?>/seller-price-advisor">ดูราคาแนะนำก่อนตั้งราคา</a><?php endif; ?></div>
     <?php if (!$listings): ?>
         <div class="mi-empty-state"><h2>ยังไม่มีประกาศ</h2><p>เริ่มจากเลือกรุ่นและใส่ราคาที่ตั้งใจขาย</p></div>
     <?php else: ?>

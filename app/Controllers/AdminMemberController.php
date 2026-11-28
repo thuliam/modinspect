@@ -50,7 +50,7 @@ final class AdminMemberController extends AdminBaseController {
         if(($_POST['confirm']??'')!=='1') { $this->flash('danger',t('ld.flash.confirm_required')); $this->redirect('/admin/legal-documents'); }
         $svc=new \App\Services\Member\LegalDocuments($this->trustDb(),new \App\Services\Member\MemberAudit($this->trustDb()));
         try { $svc->publish((int)($_POST['id']??0),(int)$this->user()['id']); $this->flash('success',t('ld.flash.published')); }
-        catch(\RuntimeException $e) { $this->flash('danger',['NOT_A_DRAFT'=>t('ld.flash.not_draft'),'EMPTY_BODY'=>t('ld.flash.empty_body')][$e->getMessage()]??t('common.fail')); }
+        catch(\RuntimeException $e) { $this->flash('danger',['NOT_A_DRAFT'=>t('ld.flash.not_draft'),'EMPTY_BODY'=>t('ld.flash.empty_body'),'UNFILLED_BLANK'=>t('ld.flash.unfilled')][$e->getMessage()]??t('common.fail')); }
         $this->redirect('/admin/legal-documents');
     }
     public function memberCapabilities(): void {

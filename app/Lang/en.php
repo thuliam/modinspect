@@ -135,6 +135,7 @@ return [
     'ld.flash.draft_saved' => 'Saved as draft #{id}. Not published.',
     'ld.flash.bad_type' => 'Unknown document type',
     'ld.flash.dup' => 'This version of this document type already exists',
+    'ld.flash.unfilled' => 'The text still has unfilled [...] blanks, so it cannot be published',
     'ld.flash.confirm_required' => 'Tick the box to confirm the owner and counsel approved the text',
     'ld.flash.published' => 'Published. The previous version of this type is retired and members must accept again.',
     'ld.flash.not_draft' => 'Only a draft can be published',

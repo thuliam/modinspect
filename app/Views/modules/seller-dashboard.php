@@ -7,6 +7,6 @@
     <div class="card"><span>ข้อมูลที่พร้อมแสดง</span><b><?= count($products) ?></b></div>
     <div class="card"><span>ลงประกาศอัตโนมัติ</span><b>ปิดอยู่</b></div>
 </div>
-<div class="section-head"><h2>รุ่นที่น่าสนใจ</h2><a href="<?= $base ?>/seller-price-advisor">ประเมินราคาใหม่ →</a></div>
+<div class="section-head"><h2>รุ่นที่น่าสนใจ</h2><?php if (!empty($config['seller_advisor']['enabled'])): ?><a href="<?= $base ?>/seller-price-advisor">ประเมินราคาใหม่ →</a><?php endif; ?></div>
 <div class="cards"><?php foreach($products as $product) require ROOT_PATH.'/app/Views/components/product-card.php'; ?></div>
 </section>

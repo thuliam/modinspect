@@ -86,6 +86,7 @@ try {
     $_SESSION[AuthService::SESSION_LOGIN_AT] = time();
     $_SESSION[AuthService::SESSION_LAST_SEEN_AT] = time();
 
+    $GLOBALS['config']['seller_advisor']['enabled'] = true;   // LS-90: closed by default (tests/public_gates_test.php); opened here to render the page
     $routes = [
         '/' => fn() => (new HomeController())->index(),
         '/price' => fn() => (new PriceController())->index(),

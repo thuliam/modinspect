@@ -37,6 +37,10 @@
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>/methodology">ราคามาจากไหน</a></li>
                     <li><a href="<?= $base ?>/methodology">ข้อจำกัดของข้อมูล</a></li>
+<?php if (!empty($config['legal_pages']['enabled'])): ?>
+                    <li><a href="<?= $base ?>/privacy">นโยบายความเป็นส่วนตัว</a></li>
+                    <li><a href="<?= $base ?>/terms">ข้อกำหนดการใช้งาน</a></li>
+<?php endif; ?>
                 </ul>
             </div>
         </div>

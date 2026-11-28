@@ -123,6 +123,8 @@ final class ModuleController extends Controller {
         $this->redirect('/build/'.$uuid);
     }
     public function sellerAdvisor(): void {
+        global $config;
+        if(empty($config['seller_advisor']['enabled'])){ http_response_code(404); $this->view('errors/404',['title'=>'ไม่พบหน้า']); return; }
         $products=(new Product())->search(); $result=null;
         if(isset($_GET['product_id'],$_GET['condition'])) foreach($products as $p) if((int)$p['id']===(int)$_GET['product_id']){
             if(empty($p['median']) || (int)($p['valid_sample_size']??0)<=0 || (int)($p['accepted_observation_count']??0)<=0) break;

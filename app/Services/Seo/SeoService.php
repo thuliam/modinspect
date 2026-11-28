@@ -64,7 +64,7 @@ Disallow: /
     public static function productImage(string $baseUrl, string $slug, string $publicDir): string
     {
         $b = rtrim($baseUrl, '/');
-        if (preg_match('/^[a-z0-9-]+$/', $slug) && is_file($publicDir . '/assets/products/' . $slug . '.jpg')) { return $b . '/assets/products/' . $slug . '.jpg'; }
+        if (preg_match('/^[a-z0-9-]+$/', $slug) && is_file($publicDir . '/assets/products/' . $slug . '.jpg') && !\App\Services\Catalog\SharedPictures::isShared($publicDir . '/assets/products/' . $slug . '.jpg')) { return $b . '/assets/products/' . $slug . '.jpg'; }
         return $b . '/assets/brand/hero-hardware.png';
     }
 
