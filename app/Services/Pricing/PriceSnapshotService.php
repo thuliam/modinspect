@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Services\Pricing;
 
 use App\Core\Database;
-use App\Services\Provenance\ObservationProvenanceService;
 use PDO;
+use Throwable;
 
 final class PriceSnapshotService
 {
@@ -150,23 +150,14 @@ final class PriceSnapshotService
 
     private function buildCohort(int $productId, string $priceType): array
     {
-        $stmt = $this->db->prepare(
-            "SELECT o.id observation_id,COALESCE(o.price_value,o.asking_price) calculation_price,o.asking_price,o.price_value,o.observed_at,o.product_variant_id,o.verified_status,o.price_type,o.listing_type,o.is_deposit,o.is_defective,o.is_duplicate,o.quality_flags,o.final_weight,r.source_id,r.raw_title,r.raw_price_text,r.source_url_encrypted,r.external_reference_hash,s.source_key,s.name source_name,s.domain source_domain,e.excerpt
-             ,o.evidence_level,s.evidence_quality source_evidence_quality
-             FROM price_observations o
-             LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id
-             LEFT JOIN data_sources s ON s.id=r.source_id
-             LEFT JOIN market_evidence e ON e.raw_observation_id=r.id
-             WHERE o.product_id=:product_id
-             ORDER BY o.id"
-        );
+        $stmt = $this->db->prepare(CohortRules::selectSql() . " WHERE o.product_id=:product_id ORDER BY o.id");
         $stmt->execute(['product_id' => $productId]);
         $considered = $stmt->fetchAll();
 
         $included = [];
         $excluded = [];
         foreach ($considered as $row) {
-            $reason = $this->exclusionReason($row, $priceType);
+            $reason = CohortRules::exclusionReason($row, $priceType);
             if ($reason === null) {
                 $included[] = $row;
             } else {
@@ -181,66 +172,6 @@ final class PriceSnapshotService
         });
 
         return ['considered' => $considered, 'included' => $included, 'excluded' => $excluded];
-    }
-
-    private function exclusionReason(array $row, string $priceType): ?string
-    {
-        if (($row['verified_status'] ?? '') !== 'approved') {
-            return 'NOT_ACCEPTED';
-        }
-        if (($row['price_type'] ?? '') !== $priceType) {
-            return 'WRONG_PRICE_TYPE';
-        }
-        if ($row['product_variant_id'] !== null) {
-            return 'OUTSIDE_COHORT';
-        }
-        if (($row['listing_type'] ?? '') !== 'single_item') {
-            return 'OUTSIDE_COHORT';
-        }
-        $qualityFlags = json_decode((string)($row['quality_flags'] ?? '[]'), true);
-        $qualityFlags = is_array($qualityFlags) ? array_map('strval', $qualityFlags) : [];
-        foreach (['WRONG_PRODUCT', 'MOBILE_GPU', 'WANTED', 'WHOLE_PC', 'BUNDLE', 'DEPOSIT', 'DEFECTIVE'] as $flag) {
-            if (in_array($flag, $qualityFlags, true)) {
-                return $flag;
-            }
-        }
-        if ((float)$row['calculation_price'] <= 0) {
-            return 'INVALID_PRICE';
-        }
-        if ((int)$row['is_deposit'] === 1) {
-            return 'DEPOSIT';
-        }
-        if ((int)$row['is_defective'] === 1) {
-            return 'DEFECTIVE';
-        }
-        if ((int)$row['is_duplicate'] === 1) {
-            return 'DUPLICATE';
-        }
-        if ($this->isMockSource($row)) {
-            return 'MOCK_SOURCE';
-        }
-        if (NewPriceReferenceSources::isReference((string)($row['source_key'] ?? ''))) {
-            return 'NEW_PRICE_REFERENCE_SOURCE';
-        }
-        if ($this->isRealOfflineSource($row) && !(new ObservationProvenanceService())->isListingLevel($row)) {
-            return 'INSUFFICIENT_PROVENANCE';
-        }
-        return null;
-    }
-
-    private function isMockSource(array $row): bool
-    {
-        $sourceKey = strtolower((string)($row['source_key'] ?? ''));
-        $sourceName = strtolower((string)($row['source_name'] ?? ''));
-        $sourceDomain = strtolower((string)($row['source_domain'] ?? ''));
-        return str_contains($sourceKey, 'mock') || str_contains($sourceName, 'mock') || str_starts_with($sourceDomain, 'mock.');
-    }
-
-    private function isRealOfflineSource(array $row): bool
-    {
-        $sourceKey = strtolower((string)($row['source_key'] ?? ''));
-        $sourceName = strtolower((string)($row['source_name'] ?? ''));
-        return str_starts_with($sourceKey, 'offline_real_') || str_contains($sourceName, 'offline real import');
     }
 
     private function calculateSnapshot(int $productId, string $priceType, array $rows, array $cohort): array
@@ -360,7 +291,28 @@ final class PriceSnapshotService
         return round($values[$lower] * (1 - $weight) + $values[$upper] * $weight, 2);
     }
 
+    /** LS-89 BE-1: the snapshot, its members and the history row are stored together or not at all */
     private function persistSnapshot(array $snapshot, array $cohort): int
+    {
+        $own = !$this->db->inTransaction();
+        if ($own) {
+            $this->db->beginTransaction();
+        }
+        try {
+            $snapshotId = $this->writeSnapshot($snapshot, $cohort);
+            if ($own) {
+                $this->db->commit();
+            }
+            return $snapshotId;
+        } catch (Throwable $e) {
+            if ($own && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    private function writeSnapshot(array $snapshot, array $cohort): int
     {
         $insert = $this->db->prepare(
             "INSERT INTO price_indices (product_id,price_type,price_low,q1,median,q3,price_high,fast_sale_min,fast_sale_max,market_min,market_max,premium_min,premium_max,sample_size,valid_sample_size,fresh_sample_ratio,confidence_score,confidence_label,formula_version,cohort_version,quartile_method_version,confidence_method_version,calculation_hash,calculation_manifest,provenance_status,last_calculated_at)

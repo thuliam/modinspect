@@ -5,6 +5,7 @@ namespace App\Services\Review;
 
 use App\Core\Database;
 use PDO;
+use Throwable;
 
 final class ReviewCorrectionService
 {
@@ -59,6 +60,12 @@ final class ReviewCorrectionService
             return $this->error('CORRECTION_UNCHANGED');
         }
 
+        // LS-89 BE-1: the correction and its audit line (with the acting user) are stored together
+        $own = !$this->db->inTransaction();
+        if ($own) {
+            $this->db->beginTransaction();
+        }
+        try {
         $stmt = $this->db->prepare(
             "INSERT INTO review_corrections (price_observation_id,field_name,original_value,corrected_value,reason,corrected_by,corrected_at)
              VALUES (:observation_id,:field_name,:original_value,:corrected_value,:reason,:corrected_by,NOW())
@@ -73,7 +80,16 @@ final class ReviewCorrectionService
             'corrected_by' => $actorId,
         ]);
 
-        $this->audit('review_correction_saved', 'price_observation', $observationId, ['field' => $field, 'original' => $original], ['field' => $field, 'corrected' => $normalized['value'], 'reason' => $reason]);
+        $this->audit('review_correction_saved', 'price_observation', $observationId, ['field' => $field, 'original' => $original], ['field' => $field, 'corrected' => $normalized['value'], 'reason' => $reason], $actorId);
+        if ($own) {
+            $this->db->commit();
+        }
+        } catch (Throwable $e) {
+            if ($own && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
 
         return ['ok' => true, 'field' => $field, 'value' => $normalized['value']];
     }
@@ -365,10 +381,11 @@ final class ReviewCorrectionService
         return str_contains($sourceKey, 'mock') || str_contains($sourceName, 'mock') || str_starts_with($sourceDomain, 'mock.');
     }
 
-    private function audit(string $action, string $entityType, int $entityId, ?array $before, array $after): void
+    private function audit(string $action, string $entityType, int $entityId, ?array $before, array $after, ?int $actorId): void
     {
-        $stmt = $this->db->prepare("INSERT INTO audit_logs (user_id,action,entity_type,entity_id,before_data,after_data) VALUES (NULL,:action,:entity_type,:entity_id,:before_data,:after_data)");
+        $stmt = $this->db->prepare("INSERT INTO audit_logs (user_id,action,entity_type,entity_id,before_data,after_data) VALUES (:user_id,:action,:entity_type,:entity_id,:before_data,:after_data)");
         $stmt->execute([
+            'user_id' => $actorId,
             'action' => $action,
             'entity_type' => $entityType,
             'entity_id' => $entityId,

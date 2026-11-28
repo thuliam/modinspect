@@ -6,7 +6,8 @@ namespace App\Services\Pricing;
 /**
  * LS-88 T1: the one rule that says which stored snapshot may be shown as a public price.
  *
- * A snapshot is public only when it is the LATEST recorded asking snapshot of the model AND every observation it was calculated from
+ * A snapshot is public only when it is the LATEST recorded asking snapshot of the model, has at least MIN_SAMPLE listings and a median,
+ * AND every observation it was calculated from
  * still stands: still approved, still on the same model, still at the same price. If any of them was later excluded, rejected, moved
  * or changed, the model shows no price until a new snapshot is calculated. There is deliberately no fallback to an older snapshot.
  *
@@ -14,6 +15,8 @@ namespace App\Services\Pricing;
  */
 final class PublicSnapshot
 {
+    public const MIN_SAMPLE = 3;
+
     /** true when no included observation behind snapshot row $alias has changed since the snapshot was stored */
     public static function intactSql(string $alias): string
     {
@@ -23,10 +26,16 @@ final class PublicSnapshot
                    OR COALESCE(vo.price_value, vo.asking_price) <> vm.calculation_price))";
     }
 
+    /** true when snapshot row $alias may be published: enough listings, a real median and nothing behind it changed */
+    public static function publishableSql(string $alias): string
+    {
+        return "{$alias}.valid_sample_size >= " . self::MIN_SAMPLE . " AND {$alias}.median > 0 AND " . self::intactSql($alias);
+    }
+
     /** scalar subquery: id of the public snapshot of the product in column $productColumn, NULL when it has none */
     public static function idSql(string $productColumn): string
     {
-        return "(SELECT CASE WHEN " . self::intactSql('ps') . " THEN ps.id END FROM price_indices ps
+        return "(SELECT CASE WHEN " . self::publishableSql('ps') . " THEN ps.id END FROM price_indices ps
             WHERE ps.product_id = {$productColumn} AND ps.product_variant_id IS NULL AND ps.price_type = 'asking'
               AND COALESCE(ps.provenance_status, 'legacy_unavailable') <> 'legacy_unavailable'
             ORDER BY ps.last_calculated_at DESC, ps.id DESC LIMIT 1)";

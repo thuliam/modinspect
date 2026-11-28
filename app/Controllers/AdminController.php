@@ -809,7 +809,7 @@ final class AdminController extends Controller {
                 $this->redirect('/admin/collector-jobs');
             }
         }
-        $summary=(new OfflineEvidenceImportService())->import($file,$dataset,$dryRun,$limit);
+        $summary=(new OfflineEvidenceImportService())->import($file,$dataset,$dryRun,$limit,(int)$this->user()['id']);
         $_SESSION['admin_import_summary']=$summary;
         if($dryRun){
             if((int)($summary['valid_rows'] ?? 0)>0){

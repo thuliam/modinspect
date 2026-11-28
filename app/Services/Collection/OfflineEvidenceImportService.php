@@ -39,7 +39,8 @@ final class OfflineEvidenceImportService
         $this->titleNormalizer = new ListingTitleNormalizer();
     }
 
-    public function import(string $file, string $dataset = 'test', bool $dryRun = false, int $limit = 100): array
+    /** $actorId is the signed-in admin when the import runs from the web; the command line passes none */
+    public function import(string $file, string $dataset = 'test', bool $dryRun = false, int $limit = 100, ?int $actorId = null): array
     {
         $started = microtime(true);
         $startedAt = date('Y-m-d H:i:s');
@@ -173,7 +174,7 @@ final class OfflineEvidenceImportService
         $summary = $this->finishSummary($summary, $started);
         $runSourceId = $this->ensureImportRunSource($dataset);
         (new CollectionRunRepository())->persist($this->collectionRunSummary($summary), $runSourceId, 'offline_file_import', 'offline_file_import', 'normal', $startedAt, date('Y-m-d H:i:s'));
-        $this->audit('offline_import_completed', 'collection_run', null, null, $summary);
+        $this->audit('offline_import_completed', 'collection_run', null, null, $summary, $actorId);
         return $summary;
     }
 
@@ -635,10 +636,11 @@ final class OfflineEvidenceImportService
         return $summary;
     }
 
-    private function audit(string $action, string $entityType, ?int $entityId, ?array $before, array $after): void
+    private function audit(string $action, string $entityType, ?int $entityId, ?array $before, array $after, ?int $actorId = null): void
     {
-        $stmt = $this->db->prepare("INSERT INTO audit_logs (user_id,action,entity_type,entity_id,before_data,after_data) VALUES (NULL,:action,:entity_type,:entity_id,:before_data,:after_data)");
+        $stmt = $this->db->prepare("INSERT INTO audit_logs (user_id,action,entity_type,entity_id,before_data,after_data) VALUES (:user_id,:action,:entity_type,:entity_id,:before_data,:after_data)");
         $stmt->execute([
+            'user_id' => $actorId,
             'action' => $action,
             'entity_type' => $entityType,
             'entity_id' => $entityId,

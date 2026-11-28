@@ -6,8 +6,11 @@ use App\Services\Collection\ProviderRegistry;
 use App\Services\Collection\SourceHealthService;
 use App\Services\ProductResolver\ProductResolver;
 use App\Services\Provenance\ObservationProvenanceService;
+use App\Services\Pricing\PublicSnapshot;
+use App\Services\Review\DatasetLabel;
 use App\Services\Review\ListingTitleNormalizer;
 use App\Services\Review\ReviewCorrectionService;
+use App\Services\Review\ReviewDecisionService;
 use PDO;
 
 final class Dashboard {
@@ -29,7 +32,7 @@ final class Dashboard {
             'real_pending_reviews'=>(int)$this->scalar("SELECT COUNT(*) FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE o.verified_status='pending' AND ".$this->datasetSqlExpression()."='REAL'"),
             'mock_test_pending_reviews'=>(int)$this->scalar("SELECT COUNT(*) FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE o.verified_status='pending' AND ".$this->datasetSqlExpression()."='MOCK_TEST'"),
             'approved_real_observations'=>(int)$this->scalar("SELECT COUNT(*) FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE o.verified_status='approved' AND ".$this->datasetSqlExpression()."='REAL'"),
-            'public_eligible_snapshots'=>(int)$this->scalar("SELECT COUNT(*) FROM price_indices WHERE provenance_status='recorded' AND valid_sample_size>0"),
+            'public_eligible_snapshots'=>(int)$this->scalar("SELECT COUNT(*) FROM products p WHERE p.is_active=1 AND ".PublicSnapshot::idSql('p.id')." IS NOT NULL"),
             'sources'=>(int)$this->scalar("SELECT COUNT(*) FROM data_sources"),
             'paused_sources'=>(int)$this->scalar("SELECT COUNT(*) FROM data_sources WHERE is_paused=1 OR is_active=0"),
             'unresolved_incidents'=>(int)$this->scalar("SELECT COUNT(*) FROM source_incidents WHERE resolved_at IS NULL"),
@@ -175,31 +178,9 @@ final class Dashboard {
         ];
     }
     public function decideObservation(int $id,string $decision,string $notes='',?int $actorId=null): bool {
-        $allowed=['approved'=>'approved','rejected'=>'rejected','excluded'=>'excluded'];
-        if(!isset($allowed[$decision])) return false;
-        $current=$this->rows("SELECT * FROM price_observations WHERE id=:id LIMIT 1",['id'=>$id])[0]??null;
-        if(!$current) return false;
-        if(($current['verified_status'] ?? '') !== 'pending') return false;
-        $reviewService=new ReviewCorrectionService();
-        $finalApply=['ok'=>true,'values'=>[],'quality_flags'=>[]];
-        if($decision==='approved'){
-            if($this->datasetLabelForObservation((int)$id) === 'REAL') { $prov=new ObservationProvenanceService(); $row=$this->provenanceRowForObservation((int)$id); if(!$prov->isListingLevel($row) && !$prov->isOwnerTextNoUrl($row)) return false; }
-            $finalApply=$reviewService->applyApprovedValues($id);
-            if(($finalApply['ok'] ?? false) !== true) return false;
-            $current=$this->rows("SELECT * FROM price_observations WHERE id=:id LIMIT 1",['id'=>$id])[0]??$current;
-        }
-        $stmt=$this->db->prepare("UPDATE price_observations SET verified_status=:status,updated_at=NOW() WHERE id=:id AND verified_status='pending'");
-        $stmt->execute(['status'=>$allowed[$decision],'id'=>$id]);
-        if($stmt->rowCount() !== 1) return false;
-        $review=$this->db->prepare("INSERT INTO observation_review_decisions (price_observation_id,raw_observation_id,lane,decision,reason_codes,human_value,notes) VALUES (:observation_id,:raw_id,:lane,:decision,:reasons,:human_value,:notes)");
-        $review->execute(['observation_id'=>$id,'raw_id'=>$current['raw_observation_id'],'lane'=>$decision==='approved'?'green':'red','decision'=>$decision==='approved'?'approved':'rejected','reasons'=>json_encode(['human_'.$decision]),'human_value'=>json_encode(['verified_status'=>$allowed[$decision],'final_values'=>$finalApply['values']??[],'quality_flags'=>$finalApply['quality_flags']??[]],JSON_UNESCAPED_UNICODE),'notes'=>$notes]);
-        $reviewId=(int)$this->db->lastInsertId();
-        $this->db->prepare("UPDATE review_corrections SET review_decision_id=:review_id WHERE price_observation_id=:id AND review_decision_id IS NULL")->execute(['review_id'=>$reviewId,'id'=>$id]);
-        $audit=$this->db->prepare("INSERT INTO audit_logs (user_id,action,entity_type,entity_id,before_data,after_data) VALUES (:user_id,:action,'price_observation',:id,:before_data,:after_data)");
-        $audit->execute(['user_id'=>$actorId,'action'=>'review_'.$decision,'id'=>$id,'before_data'=>json_encode($current,JSON_UNESCAPED_UNICODE),'after_data'=>json_encode(['verified_status'=>$allowed[$decision],'notes'=>$notes,'final_values'=>$finalApply['values']??[],'quality_flags'=>$finalApply['quality_flags']??[]],JSON_UNESCAPED_UNICODE)]);
-        return true;
+        return (new ReviewDecisionService($this->db))->decide($id,$decision,$notes,$actorId)['ok'];
     }
-    public function inventory(): array { return $this->rows("SELECT i.*,p.full_name,pi.market_min,pi.market_max,DATEDIFF(CURDATE(),i.acquired_at) age_days FROM shop_inventory_items i LEFT JOIN products p ON p.id=i.product_id LEFT JOIN price_indices pi ON pi.id=(SELECT id FROM price_indices WHERE product_id=p.id ORDER BY last_calculated_at DESC LIMIT 1) WHERE i.shop_id=1 ORDER BY age_days DESC"); }
+    public function inventory(): array { return $this->rows("SELECT i.*,p.full_name,pi.market_min,pi.market_max,DATEDIFF(CURDATE(),i.acquired_at) age_days FROM shop_inventory_items i LEFT JOIN products p ON p.id=i.product_id LEFT JOIN price_indices pi ON pi.id=".PublicSnapshot::idSql('p.id')." WHERE i.shop_id=1 ORDER BY age_days DESC"); }
     private function reviewWhere(array $filters,array &$params): string {
         $where=['1=1'];
         $dataset=(string)($filters['dataset'] ?? 'REAL');
@@ -261,7 +242,7 @@ final class Dashboard {
         $corrections=$withCorrections ? new ReviewCorrectionService() : null;
         $normalizer=new ListingTitleNormalizer();
         foreach($rows as &$row){
-            $row['dataset_label']=$this->datasetLabel((string)($row['source_key'] ?? ''),(string)($row['source_name'] ?? ''));
+            $row['dataset_label']=DatasetLabel::of((string)($row['source_key'] ?? ''),(string)($row['source_name'] ?? ''));
             $row['reason_codes_list']=$this->decodeJsonList($row['reason_codes'] ?? null);
             $storedFlags=$this->decodeJsonList($row['quality_flags'] ?? null);
             $row['quality_flags']=$storedFlags;
@@ -347,11 +328,6 @@ final class Dashboard {
             'method'=>$resolution->method,
         ];
     }
-    private function provenanceRowForObservation(int $id): array {
-        $stmt=$this->db->prepare("SELECT o.id,o.asking_price,o.price_value,o.raw_observation_id,r.raw_title,r.raw_price_text,r.source_url_encrypted,r.external_reference_hash,s.source_key,s.name source_name,e.excerpt FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id WHERE o.id=:id LIMIT 1");
-        $stmt->execute(['id'=>$id]);
-        return $stmt->fetch() ?: [];
-    }
     private function evidenceMetadataValue(string $excerpt,string $key): string {
         $needle=strtoupper($key).'=';
         foreach(preg_split('/\R/',$excerpt) ?: [] as $line){
@@ -381,25 +357,8 @@ final class Dashboard {
         if(str_starts_with($runId,'priceza-probe-') || $key === '__legacy_priceza_probe_no_run_id') return 'PROBE / CALIBRATION';
         return 'CALIBRATION / OTHER';
     }
-    private function datasetLabelForObservation(int $id): string {
-        $stmt=$this->db->prepare("SELECT s.source_key,s.name source_name FROM price_observations o LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE o.id=:id LIMIT 1");
-        $stmt->execute(['id'=>$id]);
-        $row=$stmt->fetch() ?: [];
-        return $this->datasetLabel((string)($row['source_key'] ?? ''),(string)($row['source_name'] ?? ''));
-    }
-    private function datasetSqlExpression(): string {
-        return "CASE WHEN LOWER(COALESCE(s.source_key,'')) LIKE 'offline_real_%' OR LOWER(COALESCE(s.source_key,'')) LIKE 'offline_owner_text_%' OR LOWER(COALESCE(s.name,'')) LIKE '%offline real import%' THEN 'REAL' WHEN LOWER(COALESCE(s.source_key,'')) LIKE '%mock%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.source_key,'')) LIKE '%test%' OR LOWER(COALESCE(s.name,'')) LIKE '%mock%' OR LOWER(COALESCE(s.name,'')) LIKE '%fixture%' OR LOWER(COALESCE(s.name,'')) LIKE '%test%' THEN 'MOCK_TEST' ELSE 'UNKNOWN' END";
-    }
+    private function datasetSqlExpression(): string { return DatasetLabel::sqlExpression(); }
     private function provenanceSqlExpression(): string {
         return "CASE WHEN e.excerpt LIKE '%SOURCE=priceza%' AND e.excerpt LIKE '%SOURCE_SEARCH_URL=%' AND e.excerpt LIKE '%SOURCE_LISTING_URL=%' AND e.excerpt LIKE '%SOURCE_ITEM_ID=%' AND e.excerpt LIKE '%MERCHANT=%' AND e.excerpt LIKE '%LISTING_TITLE=%' AND e.excerpt LIKE '%ASKING_PRICE=%' AND e.excerpt LIKE '%OBSERVED_AT=%' AND e.excerpt LIKE '%EVIDENCE_SNAPSHOT_JSON=%' AND e.excerpt LIKE '%EVIDENCE_HASH=%' THEN 'LISTING_LEVEL' WHEN r.source_url_encrypted LIKE 'https://www.priceza.com/s/%' OR e.excerpt LIKE '%SOURCE_SEARCH_URL=%' OR LOWER(COALESCE(e.excerpt,'')) LIKE '%search result%' THEN 'SEARCH_RESULT_LEVEL' ELSE 'GENERIC_SOURCE' END";
-    }
-    private function datasetLabel(string $sourceKey,string $sourceName): string {
-        $key=strtolower($sourceKey);
-        $name=strtolower($sourceName);
-        if(str_starts_with($key,'offline_real_') || str_starts_with($key,'offline_owner_text_') || str_contains($name,'offline real import')) return 'REAL';
-        foreach(['mock','fixture','test'] as $marker) {
-            if(str_contains($key,$marker) || str_contains($name,$marker)) return 'MOCK_TEST';
-        }
-        return 'UNKNOWN';
     }
 }
