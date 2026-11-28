@@ -66,6 +66,10 @@ final class CohortRules
         if (self::isRealOfflineSource($row) && !(new ObservationProvenanceService())->isListingLevel($row)) {
             return 'INSUFFICIENT_PROVENANCE';
         }
+        // LS-90 T1: a listing that says the item is brand new is not a used price. Last, so the earlier reason codes are unchanged.
+        if ($priceType !== 'new' && BrandNewClaim::detect((string)($row['raw_title'] ?? '') . ' ' . (string)($row['excerpt'] ?? '')) !== null) {
+            return 'BRAND_NEW_CLAIM';
+        }
         return null;
     }
 

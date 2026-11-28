@@ -25,6 +25,16 @@ final class AdminReviewController extends AdminBaseController {
             'filters'=>$filters,
         ]);
     }
+    /** LS-90 T2: every pending real listing with what approving it would do, as a CSV for checking outside the browser. Admin only. */
+    public function reviewExport(): void {
+        if(!$this->requirePermission('review.view')) return;
+        $csv=(new \App\Services\Review\ReviewExport())->pendingCsv();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="pending-review-'.date('Ymd').'.csv"');
+        header('Cache-Control: no-store');
+        $this->audit('review_queue_exported','price_observation',null,[]);
+        echo $csv;
+    }
     public function reviewDetail(string $id): void {
         if(!$this->requirePermission('review.view')) return;
         $observationId=filter_var($id,FILTER_VALIDATE_INT);
@@ -145,7 +155,9 @@ final class AdminReviewController extends AdminBaseController {
         $productId=filter_input(INPUT_GET,'product_id',FILTER_VALIDATE_INT) ?: null;
         $sourceId=filter_input(INPUT_GET,'source_id',FILTER_VALIDATE_INT) ?: null;
         $page=filter_input(INPUT_GET,'page',FILTER_VALIDATE_INT) ?: 1;
+        $impact=in_array($_GET['impact'] ?? '',['price','first_price'],true) ? (string)$_GET['impact'] : '';
         return [
+            'impact'=>$impact,
             'dataset'=>$dataset,
             'status'=>$status,
             'lane'=>$lane,

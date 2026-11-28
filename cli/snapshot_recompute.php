@@ -20,11 +20,11 @@ $job = new SnapshotRecompute($db, new PriceSnapshotService());
 $plan = $job->plan('asking');
 $counts = SnapshotRecompute::counts($plan);
 $stored = $apply ? $job->apply($plan, 'asking') : 0;
-$changes = array_values(array_filter($plan, static fn(array $r): bool => in_array($r['status'], ['new', 'changed'], true)));
+$changes = array_values(array_filter($plan, static fn(array $r): bool => in_array($r['status'], ['new', 'changed', 'withdraw'], true)));
 if ($json) { echo json_encode(['mode' => $apply ? 'applied' : 'dry run', 'counts' => $counts, 'stored' => $stored, 'changes' => $changes], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), "\n"; exit(0); }
 echo ($apply ? "APPLIED" : "DRY RUN (nothing stored; add --apply)") . ': ' . json_encode($counts) . ($apply ? " stored=$stored" : '') . "\n";
 foreach ($changes as $r) {
     echo sprintf("  %-8s %s\n", $r['status'], $r['name']);
-    foreach ($r['changes'] as $k => $c) { echo sprintf("      %s: %s -> %s\n", $k, $c['from'] ?? '-', $c['to']); }
+    foreach ($r['changes'] as $k => $c) { echo sprintf("      %s: %s -> %s\n", $k, $c['from'] ?? '-', $c['to'] ?? 'hidden'); }
 }
 exit(0);

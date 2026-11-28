@@ -11,7 +11,7 @@ $excluded=(int)($summary['status_totals']['excluded'] ?? 0);
 $activeBatch=null;
 foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') === (string)($batchOption['value'] ?? '')) $activeBatch=$batchOption; }
 ?>
-<?php ob_start(); ?><?= htmlspecialchars(t('v.review_queue')) ?><?php $dxT = ob_get_clean(); ob_start(); ?><?= htmlspecialchars(t('v.human_review_console_defaults_to_rea')) ?><?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-analytics"><i class="fas fa-chart-bar mr-2"></i><?= htmlspecialchars(t('v.review_analytics')) ?></a><?php $dxA = ob_get_clean(); ?>
+<?php ob_start(); ?><?= htmlspecialchars(t('v.review_queue')) ?><?php $dxT = ob_get_clean(); ob_start(); ?><?= htmlspecialchars(t('v.human_review_console_defaults_to_rea')) ?><?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-analytics"><i class="fas fa-chart-bar mr-2"></i><?= htmlspecialchars(t('v.review_analytics')) ?></a><a class="btn btn-outline-secondary ml-2" href="<?= $base ?>/admin/review-queue/export"><i class="fas fa-file-csv mr-2"></i><?= htmlspecialchars(t('review.export')) ?></a><?php $dxA = ob_get_clean(); ?>
 <?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <div class="row mi-metric-row">
@@ -26,6 +26,13 @@ foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') ==
 </div>
 
 <form id="review-filters" class="review-filter-panel js-datatable-filters" data-target="#review-table" method="get" action="<?= $base ?>/admin/review-queue">
+    <label><?= htmlspecialchars(t('review.impact')) ?>
+        <select name="impact">
+            <option value="" <?= $selected('impact','') ?>><?= htmlspecialchars(t('review.impact.all')) ?></option>
+            <option value="price" <?= $selected('impact','price') ?>><?= htmlspecialchars(t('review.impact.price')) ?></option>
+            <option value="first_price" <?= $selected('impact','first_price') ?>><?= htmlspecialchars(t('review.impact.first_price')) ?></option>
+        </select>
+    </label>
     <label><?= htmlspecialchars(t('v.dataset')) ?>
         <select name="dataset">
             <option value="REAL" <?= $selected('dataset','REAL') ?>><?= htmlspecialchars(t('v.real')) ?></option>

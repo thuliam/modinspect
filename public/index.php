@@ -124,6 +124,7 @@ $router->get('/admin/price-observations',[AdminReviewController::class,'observat
 $router->get('/admin/price-observations/data',[AdminReviewController::class,'observationsData']);
 $router->get('/admin/review-queue',[AdminReviewController::class,'review']);
 $router->get('/admin/review-queue/data',[AdminReviewController::class,'reviewData']);
+$router->get('/admin/review-queue/export',[AdminReviewController::class,'reviewExport']);
 $router->get('/admin/review/{id}',[AdminReviewController::class,'reviewDetail']);
 $router->get('/admin/review-analytics',[AdminReviewController::class,'reviewAnalytics']);
 $router->get('/admin/market-trends',[AdminController::class,'marketTrends']);

@@ -10,7 +10,7 @@ use Throwable;
 final class PriceSnapshotService
 {
     public const FORMULA_VERSION = 'price-engine-v1';
-    public const COHORT_VERSION = 'cohort-v1';
+    public const COHORT_VERSION = 'cohort-v2';   // LS-90: brand-new claims left out of used prices
     public const QUARTILE_METHOD_VERSION = 'linear-percentile-v1';
     public const CONFIDENCE_METHOD_VERSION = SnapshotConfidenceService::METHOD_VERSION;
 
@@ -41,6 +41,7 @@ final class PriceSnapshotService
         $rows = $cohort['included'];
 
         if (count($rows) < 3) {
+            $this->withholdIfOutdated($productId, $priceType, $cohort);
             return null;
         }
 
@@ -56,6 +57,43 @@ final class PriceSnapshotService
         $cohort = $this->buildCohort($productId, $priceType);
         if (count($cohort['included']) < 3) { return null; }
         return $this->calculateSnapshot($productId, $priceType, $cohort['included'], $cohort);
+    }
+
+    /**
+     * LS-90: true when the model shows a public price that rests on a listing today's rules leave out, and too few listings remain
+     * to calculate a new one. Read-only.
+     */
+    public function needsWithholding(int $productId, string $priceType = 'asking'): bool
+    {
+        $cohort = $this->buildCohort($productId, $priceType);
+        return count($cohort['included']) < 3 && $this->publicSnapshotUses($productId, $priceType, $cohort['excluded']);
+    }
+
+    /** stores an "insufficient" snapshot of what is left, which becomes the latest one and is never publishable; history stays as it was */
+    private function withholdIfOutdated(int $productId, string $priceType, array $cohort): void
+    {
+        if (!$this->publicSnapshotUses($productId, $priceType, $cohort['excluded'])) {
+            return;
+        }
+        $this->persistSnapshot($this->calculateSnapshot($productId, $priceType, $cohort['included'], $cohort), $cohort, false);
+    }
+
+    /** whether the currently publishable snapshot counted any of these listings */
+    private function publicSnapshotUses(int $productId, string $priceType, array $excluded): bool
+    {
+        if ($priceType !== 'asking' || $excluded === []) {
+            return false;
+        }
+        $stmt = $this->db->prepare('SELECT ' . PublicSnapshot::idSql('p.id') . ' FROM products p WHERE p.id=?');
+        $stmt->execute([$productId]);
+        $snapshotId = (int)$stmt->fetchColumn();
+        if ($snapshotId === 0) {
+            return false;
+        }
+        $ids = array_map(static fn(array $row): int => (int)$row['observation_id'], $excluded);
+        $used = $this->db->prepare("SELECT COUNT(*) FROM price_snapshot_observations WHERE snapshot_id=? AND inclusion_status='included' AND observation_id IN (" . implode(',', array_fill(0, count($ids), '?')) . ')');
+        $used->execute(array_merge([$snapshotId], $ids));
+        return (int)$used->fetchColumn() > 0;
     }
 
     /**
@@ -93,9 +131,9 @@ final class PriceSnapshotService
         sort($prices);
 
         $sampleSize = count($prices);
-        $q1 = $sampleSize > 0 ? $this->percentile($prices, 0.25) : null;
-        $median = $sampleSize > 0 ? $this->percentile($prices, 0.50) : null;
-        $q3 = $sampleSize > 0 ? $this->percentile($prices, 0.75) : null;
+        $q1 = $sampleSize > 0 ? $this->percentile($prices, 0.25) : 0.0;   // 0.0 is what a withheld snapshot with nothing left stores
+        $median = $sampleSize > 0 ? $this->percentile($prices, 0.50) : 0.0;
+        $q3 = $sampleSize > 0 ? $this->percentile($prices, 0.75) : 0.0;
 
         $manifest = json_decode((string)($stored['calculation_manifest'] ?? '{}'), true) ?: [];
         $confidence = $manifest['confidence'] ?? [];
@@ -202,11 +240,11 @@ final class PriceSnapshotService
         $snapshot = [
             'product_id' => $productId,
             'price_type' => $priceType,
-            'price_low' => min($prices),
-            'q1' => $this->percentile($prices, 0.25),
-            'median' => $this->percentile($prices, 0.50),
-            'q3' => $this->percentile($prices, 0.75),
-            'price_high' => max($prices),
+            'price_low' => $prices === [] ? 0.0 : min($prices),
+            'q1' => $prices === [] ? 0.0 : $this->percentile($prices, 0.25),
+            'median' => $prices === [] ? 0.0 : $this->percentile($prices, 0.50),
+            'q3' => $prices === [] ? 0.0 : $this->percentile($prices, 0.75),
+            'price_high' => $prices === [] ? 0.0 : max($prices),
             'sample_size' => $sampleSize,
             'valid_sample_size' => $sampleSize,
             'fresh_sample_ratio' => $freshRatio,
@@ -308,14 +346,14 @@ final class PriceSnapshotService
     }
 
     /** LS-89 BE-1: the snapshot, its members and the history row are stored together or not at all */
-    private function persistSnapshot(array $snapshot, array $cohort): int
+    private function persistSnapshot(array $snapshot, array $cohort, bool $withHistory = true): int
     {
         $own = !$this->db->inTransaction();
         if ($own) {
             $this->db->beginTransaction();
         }
         try {
-            $snapshotId = $this->writeSnapshot($snapshot, $cohort);
+            $snapshotId = $this->writeSnapshot($snapshot, $cohort, $withHistory);
             if ($own) {
                 $this->db->commit();
             }
@@ -328,7 +366,7 @@ final class PriceSnapshotService
         }
     }
 
-    private function writeSnapshot(array $snapshot, array $cohort): int
+    private function writeSnapshot(array $snapshot, array $cohort, bool $withHistory = true): int
     {
         $insert = $this->db->prepare(
             "INSERT INTO price_indices (product_id,price_type,price_low,q1,median,q3,price_high,fast_sale_min,fast_sale_max,market_min,market_max,premium_min,premium_max,sample_size,valid_sample_size,fresh_sample_ratio,confidence_score,confidence_label,formula_version,cohort_version,quartile_method_version,confidence_method_version,calculation_hash,calculation_manifest,provenance_status,last_calculated_at)
@@ -363,6 +401,10 @@ final class PriceSnapshotService
         $snapshotId = (int)$this->db->lastInsertId();
 
         $this->persistMembership($snapshotId, $cohort);
+        // a withheld snapshot is not a price, so it never enters the price history that the public chart reads
+        if (!$withHistory) {
+            return $snapshotId;
+        }
 
         $history = $this->db->prepare(
             "INSERT INTO price_histories (product_id,q1,median,q3,sample_size,confidence_score,snapshot_date)

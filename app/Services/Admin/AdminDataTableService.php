@@ -98,6 +98,7 @@ final class AdminDataTableService
             'lane' => strtolower((string)($input['lane'] ?? '')),
             'provenance' => strtoupper((string)($input['provenance'] ?? '')),
             'run_id' => preg_replace('/[^A-Za-z0-9_.:-]/', '', (string)($input['run_id'] ?? '')) ?? '',
+            'impact' => in_array($input['impact'] ?? '', ['price', 'first_price'], true) ? (string)$input['impact'] : '',
             'sort' => $this->reviewSort($req),
             'product_id' => ($input['product_id'] ?? '') !== '' ? (int)$input['product_id'] : null,
             'source_id' => ($input['source_id'] ?? '') !== '' ? (int)$input['source_id'] : null,
@@ -385,11 +386,23 @@ final class AdminDataTableService
         $detail = $base . '/admin/review/' . (int)$row['id'] . '?return_to=' . rawurlencode($returnPath);
         return '<article class="review-queue-item mi-dt-review-card">'
             . '<div class="review-id-block"><span class="review-id">#' . (int)$row['id'] . '</span><span class="dataset-badge dataset-' . strtolower((string)$row['dataset_label']) . '">' . $this->h($row['dataset_label']) . '</span><small>' . $this->h(\App\Core\Lang::status((string)$row['verified_status'])) . '</small><small>' . $this->h($row['review_purpose'] ?? '') . '</small></div>'
-            . '<div class="review-main-block"><h2>' . $this->h($row['full_name']) . '</h2><p>' . $this->h($this->short($row['display_title'] ?? $row['raw_title'] ?? '-', 130)) . '</p><small>' . $this->h($this->x('tbl.source_label')) . $this->h($row['source_name'] ?? $this->x('v.unknown_source')) . '</small></div>'
+            . '<div class="review-main-block"><h2>' . $this->h($row['full_name']) . '</h2>' . $this->textWarnings($row) . '<p>' . $this->h($this->short($row['display_title'] ?? $row['raw_title'] ?? '-', 130)) . '</p><small>' . $this->h($this->x('tbl.source_label')) . $this->h($row['source_name'] ?? $this->x('v.unknown_source')) . '</small></div>'
             . '<div class="review-price-block"><b>&#3647;' . number_format((float)$row['display_price']) . '</b><small>' . $this->h($priceType) . '</small></div>'
             . '<div class="review-lane-block"><span class="lane-badge lane-' . $this->h($lane) . '">' . $this->h(strtoupper($lane)) . '</span><small>' . $this->h(\App\Core\Lang::status($quality)) . '</small><small>' . $this->h($row['observed_at'] ?? '-') . '</small></div>'
             . '<a class="btn btn-primary review-open" href="' . $this->h($detail) . '"><i class="fas fa-search mr-2"></i>' . $this->x('tbl.review') . '</a>'
             . '</article>';
+    }
+
+    /** LS-90 T2: what the listing text says that matters before approving (new item, sold or reserved) */
+    private function textWarnings(array $row): string
+    {
+        $out = '';
+        foreach ($row['warning_items'] ?? [] as $item) {
+            if (in_array($item['code'], ['BRAND_NEW_CLAIM', 'SOLD_OR_RESERVED'], true)) {
+                $out .= '<span class="badge badge-warning mr-1">' . $this->h($item['label']) . '</span>';
+            }
+        }
+        return $out;
     }
 
     private function priceIndexRow(array $row, string $base): array

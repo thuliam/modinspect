@@ -41,6 +41,8 @@ $commands = [
     ['label' => 'tests/master_data_test.php', 'args' => ['tests/master_data_test.php']],
     ['label' => 'tests/view_source_leak_test.php', 'args' => ['tests/view_source_leak_test.php']],
     ['label' => 'tests/class_reference_test.php', 'args' => ['tests/class_reference_test.php']],
+    ['label' => 'tests/brand_new_claim_test.php', 'args' => ['tests/brand_new_claim_test.php']],
+    ['label' => 'tests/review_impact_test.php', 'args' => ['tests/review_impact_test.php']],
     ['label' => 'tests/ui_prune_css_test.php', 'args' => ['tests/ui_prune_css_test.php']],
     ['label' => 'tests/owner_intake_filter_test.php', 'args' => ['tests/owner_intake_filter_test.php']],
     ['label' => 'tests/gpu_vram_facts_test.php', 'args' => ['tests/gpu_vram_facts_test.php']],
