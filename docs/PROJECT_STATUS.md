@@ -4,10 +4,10 @@
 
 | Item | State |
 |---|---|
-| Live site | https://modinspect.thuliamdev.com, released by the manual FTPS workflow from `main`. Last release: PR 25 (LS-88/89), 2026-11-28 |
-| Database | One shared MariaDB for the live site and DEV. Every `--apply` and migration affects the live site. Migrations through 039 applied and recorded |
-| Prices | 55 public used-asking prices, all from one platform. 309 listings wait for review |
-| Optional modules | Seller listings, seller check, community reports, forum, push, two-step sign-in: off. Member sign-in has no OAuth keys; no member exists |
+| Live site | https://modinspect.thuliamdev.com, released by the manual FTPS workflow from `main`. Last release: PR 27 (LS-90), 2026-11-28 |
+| Database | One shared MariaDB for the live site and DEV. Every `--apply` and migration affects the live site. Migrations through 044 applied and recorded |
+| Prices | 51 public used-asking prices, all from one platform. 309 listings wait for review |
+| Optional modules | Seller listings and marketplace pages, seller check, community reports, forum, push, two-step sign-in, legal pages, seller price helper: off. Member sign-in has no OAuth keys |
 | Open owner items | `docs/OWNER_TODO_TH.md` |
 
 Older sections below are history, newest at the end. Research staging notes are in `docs/RESEARCH_LOG.md`.
@@ -1231,3 +1231,13 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - Migrations 040-044 (tables and columns added only).
 - Not built (out of scope): messaging, orders, payments, Buyer Plus, reviews tied to orders.
 - Not verified: a real member sign-in (no OAuth keys); member pages were opened in a local browser with a test-only session helper.
+
+## LS-90 release 2026-11-28 (owner: "ขึ้นเว็บทั้งสองช่วง"). This replaces any "not released" wording above for LS-90
+- PR 26 (part 1) and PR 27 (part 2) merged to main after CI passed on PHP 8.1, 8.3 and 8.4.
+- Part 1: deployed (539 files, 12 new sent first). Shared database backed up, then `snapshot_recompute --apply` inside the owner's limits: 12 changed, 4 withdrawn (RTX 4070 SUPER, Core i5-14400F, Ryzen 9 9800X3D, NVMe 2TB), largest move among kept models 5.22%. Public prices 55 to 51; audit 51 replay MATCH, P0 0, P1 0; trend 68 points. The same numbers came out of the rehearsal on a local copy.
+- Part 2: shared database backed up, migrations 040-044 applied and recorded (rehearsed on a local copy first). First deploy attempt failed before uploading anything (FTP connection timed out from the runner); one rerun uploaded 551 files.
+- **The workflow's smoke job failed on all three deploys.** Its new diagnostic shows the runner gets a page titled "One moment, please..." for every address, including one that does not exist: the host's bot check, not the site. The same check from the Studio machine passed 38 of 38 (180 internal links) after each part. The sprint note said to redeploy the previous commit if the smoke check failed; this was not done, on that evidence.
+- Verified live: `/listings`, `/seller/profile`, `/privacy`, `/terms`, `/seller-price-advisor` answer 404 (switches off); new admin pages redirect to sign-in; withdrawn models show "not enough data".
+- Daily backup task `ModInspect daily DB backup` (Windows Task Scheduler, 12:00) created and run once with result 0.
+- **Not done:** the studio folder was not updated to `main`. Another program was writing collection files in it during the sprint. Its uncommitted work is saved on the local branch `backup/studio-2026-11-28` (checked identical to the folder at 17:57; later writes are not in it). Do not push that branch.
+- Not verified: signed-in admin pages on the live host, a real member sign-in, and a real browser check of the live site.
