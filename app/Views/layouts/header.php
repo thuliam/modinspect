@@ -135,6 +135,7 @@ $seoUrl = \App\Services\Seo\SeoService::canonical((string) $config['base_url'], 
                 </li>
                 <?php endforeach; ?>
                 <li class="nav-item"><a class="nav-link<?= $navCurrent('/blog') ?>" href="<?= $base ?>/blog">บทความ</a></li>
+                <?php if (!empty($config['seller']['listings_public'])): ?><li class="nav-item"><a class="nav-link<?= $navCurrent('/listings') ?>" href="<?= $base ?>/listings">ประกาศขาย</a></li><?php endif; ?>
                 <?php if (!empty($config['community_forum']['enabled'])): ?><li class="nav-item"><a class="nav-link<?= $navCurrent('/community') ?>" href="<?= $base ?>/community">ชุมชน</a></li><?php endif; ?>
             </ul>
             <div class="nav-tools">

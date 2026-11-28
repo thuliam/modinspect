@@ -60,7 +60,9 @@ return [
     // LS-90 T5: public /privacy and /terms show the documents published in the admin. Off until the owner and counsel approved the text.
     'legal_pages' => ['enabled' => filter_var($_ENV['LEGAL_PAGES_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
     // LS-14 Module 9: approved seller listings are shown to everyone only when the owner turns this on (HG-16, marketplace decision)
-    'seller' => ['listings_public' => filter_var($_ENV['SELLER_LISTINGS_PUBLIC'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
+    'seller' => ['listings_public' => filter_var($_ENV['SELLER_LISTINGS_PUBLIC'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
+        // LS-90 D2: days an approved listing stays up before the seller has to renew it (a starting value; the owner decides)
+        'expiry_days' => max(1, min(365, (int)($_ENV['LISTING_EXPIRY_DAYS'] ?? 60)))],
     // LS-14 Module 8 (ADR-007): off unless enabled AND keyed. The key is a long random secret in .env (HG-18), never in the repository.
     // LS-21 (R-11, ADR-006 option A): community reports. Off unless enabled AND a real key (32+ characters) is set; the routes answer 404 otherwise.
     'community_reports' => ['enabled' => filter_var($_ENV['COMMUNITY_REPORTS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'hmac_key' => (string)($_ENV['COMMUNITY_REPORTS_HMAC_KEY'] ?? '')],

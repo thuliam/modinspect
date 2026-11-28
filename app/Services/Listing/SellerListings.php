@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Services\Listing;
 
 use App\Services\Auth\AuthService;
+use App\Services\Market\ListingLifecycle;
+use App\Services\Market\NotificationQueue;
 use PDO;
 
 /**
@@ -70,9 +72,16 @@ final class SellerListings
             $existing = $this->owned($uuid, $memberId);
             if (!$existing || $existing['status'] === 'withdrawn') { return ['ok' => false, 'errors' => ['listing' => 'ไม่พบประกาศนี้ในบัญชีของคุณ']]; }
         }
+        // LS-90 D2: how many of the same item; only written when the form sends it (and the column exists)
+        $quantity = null;
+        if (isset($input['quantity']) && is_scalar($input['quantity']) && trim((string)$input['quantity']) !== '') {
+            $quantity = filter_var($input['quantity'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 999]]);
+            if ($quantity === false) { $errors['quantity'] = 'จำนวนต้องเป็น 1 ถึง 999'; }
+        }
         if ($errors) { return ['ok' => false, 'errors' => $errors]; }
         $vals = ['product_id' => $productId, 'asking_price' => round((float)$p, 2)];
         foreach (self::COLUMNS as $c) { $vals[$c] = $attrs['values'][$c]; }
+        if ($quantity !== null) { $vals['quantity'] = $quantity; }
         if ($existing === null) {
             $uuid = bin2hex(random_bytes(16));
             $cols = array_keys($vals);
@@ -83,6 +92,7 @@ final class SellerListings
             // any change goes back to draft: it must be moderated again before it can be shown
             $this->db->prepare("UPDATE seller_listings SET $set, status = 'draft', moderated_by = NULL, moderated_at = NULL, moderation_note = NULL WHERE id = :id AND member_id = :member_id")
                 ->execute($vals + ['id' => (int)$existing['id'], 'member_id' => $memberId]);
+            if ($existing['status'] !== 'draft') { $this->lifecycle()->record((int)$existing['id'], 'member', $memberId, 'status', (string)$existing['status'], 'draft', 'edited'); }
         }
         return ['ok' => true, 'uuid' => $uuid];
     }
@@ -95,8 +105,10 @@ final class SellerListings
         if ($action === 'submit') {
             if (!in_array($l['status'], ['draft', 'rejected'], true)) { return ['ok' => false, 'error' => 'BAD_STATE']; }
             $this->db->prepare("UPDATE seller_listings SET status = 'submitted' WHERE id = :id")->execute(['id' => (int)$l['id']]);
+            $this->lifecycle()->record((int)$l['id'], 'member', $memberId, 'status', (string)$l['status'], 'submitted');
         } elseif ($action === 'withdraw') {
             $this->db->prepare("UPDATE seller_listings SET status = 'withdrawn' WHERE id = :id")->execute(['id' => (int)$l['id']]);
+            $this->lifecycle()->record((int)$l['id'], 'member', $memberId, 'status', (string)$l['status'], 'withdrawn');
         } elseif ($action === 'delete') {
             $this->db->prepare('DELETE FROM seller_listings WHERE id = :id')->execute(['id' => (int)$l['id']]);
             $this->photos?->delete($uuid);
@@ -164,7 +176,17 @@ final class SellerListings
         $s->execute(['d' => $decision, 'a' => $adminId, 'n' => $note !== '' ? $note : null, 'id' => $listingId]);
         if ($s->rowCount() !== 1) { return ['ok' => false, 'error' => 'BAD_STATE']; }
         (new AuthService())->audit($adminId, 'seller_listing_' . $decision, 'seller_listing', $listingId, ['note' => $note]);
+        $this->lifecycle()->record($listingId, 'admin', $adminId, 'status', 'submitted', $decision, $note !== '' ? $note : null);
+        if ($decision === 'approved') { $this->lifecycle()->startClock($listingId); }
+        $owner = $this->db->prepare('SELECT member_id FROM seller_listings WHERE id = ?');
+        $owner->execute([$listingId]);
+        (new NotificationQueue($this->db))->enqueue((int)$owner->fetchColumn(), 'listing_' . $decision, $listingId);
         return ['ok' => true];
+    }
+
+    private function lifecycle(): ListingLifecycle
+    {
+        return ListingLifecycle::fromConfig($this->db);
     }
 
     /** A listing shown to everyone: approved, and only when the owner turned the public pages on (HG-16). */
@@ -172,6 +194,7 @@ final class SellerListings
     {
         if (!$publicEnabled) { return null; }
         $l = $this->find($uuid);
-        return $l && $l['status'] === 'approved' ? $l : null;
+        // LS-90 D2: a sold or expired listing is no longer shown (rows from before migration 041 have neither)
+        return $l && $l['status'] === 'approved' && ($l['sale_state'] ?? 'available') !== 'sold' && !ListingLifecycle::expired($l) ? $l : null;
     }
 }

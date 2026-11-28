@@ -10,6 +10,9 @@ use App\Models\Product;
 use App\Services\Http\RateLimiter;
 use App\Services\Listing\ListingPhotoStore;
 use App\Services\Listing\SellerListings;
+use App\Services\Market\ListingBrowse;
+use App\Services\Market\ListingLifecycle;
+use App\Services\Market\SellerProfiles;
 use App\Services\Member\MemberAuth;
 
 /**
@@ -23,7 +26,7 @@ final class SellerController extends Controller
     public function index(): void
     {
         $m = $this->member();
-        $this->view('seller/index', ['title' => 'ประกาศขายของฉัน', 'listings' => $this->svc()->forMember((int)$m['id']), 'notice' => $this->takeNotice()]);
+        $this->view('seller/index', ['title' => 'ประกาศขายของฉัน', 'listings' => $this->svc()->forMember((int)$m['id']), 'notice' => $this->takeNotice(), 'marketOpen' => $this->publicEnabled()]);
     }
 
     public function form(string $uuid = ''): void
@@ -33,7 +36,7 @@ final class SellerController extends Controller
         if ($uuid !== '' && !$listing) { $this->notFound(); return; }
         $products = (new Product())->search();
         $this->view('seller/form', ['title' => $listing ? 'แก้ไขประกาศ' : 'ลงประกาศขาย', 'listing' => $listing, 'products' => $products, 'errors' => [], 'old' => $listing ?? [],
-            'photos' => $listing ? $this->svc()->photos((int)$listing['id']) : [], 'notice' => $this->takeNotice()]);
+            'photos' => $listing ? $this->svc()->photos((int)$listing['id']) : [], 'notice' => $this->takeNotice(), 'marketOpen' => $this->publicEnabled()]);
     }
 
     public function save(): void
@@ -101,7 +104,81 @@ final class SellerController extends Controller
     {
         $l = $this->svc()->publicListing($uuid, $this->publicEnabled());
         if (!$l) { $this->notFound(); return; }
-        $this->view('seller/show', ['title' => (string)$l['full_name'], 'listing' => $l, 'photos' => $this->svc()->photos((int)$l['id'])]);
+        $market = null;
+        $member = null;
+        $saved = false;
+        try {
+            $db = $this->db();
+            $browse = new ListingBrowse($db);
+            $market = $browse->one($uuid);
+            $member = (new MemberAuth($db))->current();
+            $saved = $member !== null && $browse->isSaved((int)$member['id'], (int)$l['id']);
+        } catch (\PDOException $e) {
+            error_log('LISTING_EXTRAS_UNAVAILABLE ' . $e->getCode());   // a host without migrations 040-042 still shows the listing
+        }
+        $notice = $_SESSION['market_notice'] ?? null;
+        unset($_SESSION['market_notice']);
+        $this->view('seller/show', ['title' => (string)$l['full_name'], 'listing' => $l, 'photos' => $this->svc()->photos((int)$l['id']),
+            'market' => $market, 'member' => $member, 'saved' => $saved, 'notice' => is_string($notice) ? $notice : null]);
+    }
+
+    /** LS-90 D2: reserved, sold, available again, or renew. Closed with the public listings (SELLER_LISTINGS_PUBLIC). */
+    public function sale(string $uuid): void
+    {
+        if (!$this->marketOpen()) { return; }
+        $m = $this->member();
+        if (!Csrf::verify($_POST['_token'] ?? null)) { $this->notice('แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/seller'); }
+        $listing = $this->svc()->owned($uuid, (int)$m['id']);
+        if (!$listing) { $this->notFound(); return; }
+        $to = is_scalar($_POST['to'] ?? null) ? (string)$_POST['to'] : '';
+        $life = ListingLifecycle::fromConfig($this->db());
+        $r = $to === 'renew' ? $life->renew($listing) : $life->changeSale($listing, $to);
+        $this->notice($r['ok'] ? ($to === 'renew' ? 'ต่ออายุประกาศแล้ว' : 'อัปเดตสถานะการขายแล้ว')
+            : ($r['error'] === 'TOO_EARLY' ? 'ต่ออายุได้เมื่อเหลือไม่เกิน ' . ListingLifecycle::RENEW_WINDOW_DAYS . ' วัน' : 'ทำรายการนี้ในสถานะปัจจุบันไม่ได้'));
+        $this->redirect('/seller/listings/' . $uuid);
+    }
+
+    /** LS-90 D1: the seller's profile */
+    public function profile(): void
+    {
+        if (!$this->marketOpen()) { return; }
+        $m = $this->member();
+        $profile = (new SellerProfiles($this->db()))->get((int)$m['id']);
+        $this->view('seller/profile', ['title' => 'โปรไฟล์ผู้ขาย', 'profile' => $profile, 'errors' => [], 'old' => $profile ?? [], 'notice' => $this->takeNotice()]);
+    }
+
+    public function saveProfile(): void
+    {
+        if (!$this->marketOpen()) { return; }
+        $m = $this->member();
+        if (!Csrf::verify($_POST['_token'] ?? null)) { $this->notice('แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/seller/profile'); }
+        if (!$this->limit('seller-profile', 20)) { return; }
+        $profiles = new SellerProfiles($this->db());
+        $r = $profiles->save((int)$m['id'], $_POST);
+        if (!$r['ok']) {
+            $this->view('seller/profile', ['title' => 'โปรไฟล์ผู้ขาย', 'profile' => $profiles->get((int)$m['id']), 'errors' => $r['errors'], 'old' => array_filter($_POST, 'is_scalar'), 'notice' => null]);
+            return;
+        }
+        $this->notice('บันทึกโปรไฟล์แล้ว');
+        $this->redirect('/seller/profile');
+    }
+
+    public function verifyProfile(): void
+    {
+        if (!$this->marketOpen()) { return; }
+        $m = $this->member();
+        if (!Csrf::verify($_POST['_token'] ?? null)) { $this->notice('แบบฟอร์มหมดอายุ กรุณาลองใหม่'); $this->redirect('/seller/profile'); }
+        if (!$this->limit('seller-profile', 20)) { return; }
+        $r = (new SellerProfiles($this->db()))->requestVerification((int)$m['id']);
+        $this->notice($r['ok'] ? 'ส่งคำขอยืนยันแล้ว' : 'ส่งคำขอในสถานะปัจจุบันไม่ได้');
+        $this->redirect('/seller/profile');
+    }
+
+    private function marketOpen(): bool
+    {
+        if ($this->publicEnabled()) { return true; }
+        $this->notFound();
+        return false;
     }
 
     private function member(): array

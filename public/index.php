@@ -81,7 +81,17 @@ $router->post('/seller/listings/save',[\App\Controllers\SellerController::class,
 $router->get('/seller/listings/{uuid}',[\App\Controllers\SellerController::class,'form']);
 $router->post('/seller/listings/{uuid}/photos',[\App\Controllers\SellerController::class,'photos']);
 $router->post('/seller/listings/{uuid}/action',[\App\Controllers\SellerController::class,'action']);
+$router->post('/seller/listings/{uuid}/sale',[\App\Controllers\SellerController::class,'sale']);
+$router->get('/seller/profile',[\App\Controllers\SellerController::class,'profile']);
+$router->post('/seller/profile',[\App\Controllers\SellerController::class,'saveProfile']);
+$router->post('/seller/profile/verify',[\App\Controllers\SellerController::class,'verifyProfile']);
 $router->get('/seller/photos/{uuid}/{file}',[\App\Controllers\SellerController::class,'photo']);
+$router->get('/listings',[\App\Controllers\MarketController::class,'browse']);
+$router->get('/listings/saved',[\App\Controllers\MarketController::class,'saved']);
+$router->post('/listings/searches/save',[\App\Controllers\MarketController::class,'saveSearch']);
+$router->post('/listings/searches/{id}/delete',[\App\Controllers\MarketController::class,'deleteSearch']);
+$router->post('/listings/{uuid}/save',[\App\Controllers\MarketController::class,'toggleSaved']);
+$router->post('/listings/{uuid}/report',[\App\Controllers\MarketController::class,'report']);
 $router->get('/listings/{uuid}',[\App\Controllers\SellerController::class,'show']);
 // LS-14 Module 8 (OD-3, ADR-007): seller check. Every public route is 404 unless SELLER_CHECK_ENABLED=true and a real HMAC key is set.
 $router->get('/seller-check',[\App\Controllers\SellerCheckController::class,'lookup']);
@@ -93,6 +103,10 @@ $router->get('/admin/seller-reports',[AdminCommunityController::class,'sellerRep
 $router->post('/admin/seller-reports/action',[AdminCommunityController::class,'sellerReportAction']);
 $router->get('/admin/community-moderation',[AdminCommunityController::class,'communityModeration']);
 $router->post('/admin/community-moderation/action',[AdminCommunityController::class,'communityModerationAction']);
+$router->post('/admin/users/capability',[AdminController::class,'userCapability']);
+$router->get('/admin/moderation',[\App\Controllers\AdminModerationController::class,'index']);
+$router->post('/admin/moderation/listing-report',[\App\Controllers\AdminModerationController::class,'listingReport']);
+$router->post('/admin/moderation/seller',[\App\Controllers\AdminModerationController::class,'seller']);
 $router->get('/admin/privacy-requests',[AdminMemberController::class,'privacyRequests']);
 $router->post('/admin/privacy-requests/action',[AdminMemberController::class,'privacyRequestAction']);
 $router->get('/admin/legal-documents',[AdminMemberController::class,'legalDocuments']);

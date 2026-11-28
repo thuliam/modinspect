@@ -14,8 +14,10 @@ function ok_rg(bool $c, string $m): void { if (!$c) { throw new RuntimeException
 
 $root = dirname(__DIR__);
 $index = (string)file_get_contents($root . '/public/index.php');
-preg_match_all('/\$router->(get|post)\(\'([^\']+)\',\[(\w+)::class,\'(\w+)\'\]\)/', $index, $m, PREG_SET_ORDER);
+// LS-90: a handler may be written with a short or a full class name; both are checked, and every route line must be parsed
+preg_match_all('/\$router->(get|post)\(\'([^\']+)\',\[(?:\\\\?App\\\\Controllers\\\\)?(\w+)::class,\'(\w+)\'\]\)/', $index, $m, PREG_SET_ORDER);
 ok_rg(count($m) > 30, 'Routes were parsed from public/index.php (' . count($m) . ')');
+ok_rg(count($m) === preg_match_all('/\$router->(?:get|post)\(/', $index), 'Every route line is parsed (' . count($m) . ' of ' . preg_match_all('/\$router->(?:get|post)\(/', $index) . ')');
 
 $methodBody = static function (string $class, string $method) use ($root): ?string {
     $file = $root . '/app/Controllers/' . $class . '.php';
