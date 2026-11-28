@@ -53,6 +53,8 @@ return [
         'facebook' => ['client_id' => $_ENV['MEMBER_FACEBOOK_APP_ID'] ?? '', 'client_secret' => $_ENV['MEMBER_FACEBOOK_APP_SECRET'] ?? ''],
         'facebook_graph_version' => $_ENV['MEMBER_FACEBOOK_GRAPH_VERSION'] ?? 'v19.0',
     ],
+    // LS-89: second sign-in factor for admins (TOTP). Off unless enabled; enrolling also needs a long random key (32+ characters) and migration 039.
+    'auth_mfa' => ['enabled' => filter_var($_ENV['AUTH_MFA_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN), 'key' => (string)($_ENV['AUTH_MFA_KEY'] ?? '')],
     // LS-14 Module 9: approved seller listings are shown to everyone only when the owner turns this on (HG-16, marketplace decision)
     'seller' => ['listings_public' => filter_var($_ENV['SELLER_LISTINGS_PUBLIC'] ?? 'false', FILTER_VALIDATE_BOOLEAN)],
     // LS-14 Module 8 (ADR-007): off unless enabled AND keyed. The key is a long random secret in .env (HG-18), never in the repository.

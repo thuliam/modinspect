@@ -14,7 +14,7 @@ class Controller
             require ROOT_PATH . '/app/Views/layouts/admin_footer.php';
             return;
         }
-        if ($view === 'auth/login') {
+        if (str_starts_with($view, 'auth/')) {
             require ROOT_PATH . '/app/Views/layouts/auth_header.php';
             require $viewFile;
             require ROOT_PATH . '/app/Views/layouts/auth_footer.php';

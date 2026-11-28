@@ -66,4 +66,7 @@ foreach ($statements as $statement) {
     $db->exec($statement);
 }
 
+// LS-89: write it down (a no-op until the ledger table of migration 038 exists)
+(new App\Services\Ops\MigrationLedger($db))->record($path, $sql, 'run');
+
 echo "Applied {$path}\n";

@@ -5,9 +5,50 @@ use App\Core\Database;
 use App\Core\Csrf;
 use App\Models\Dashboard;
 use App\Services\Admin\AdminDataTableService;
+use App\Services\Auth\MfaService;
+use App\Services\Ops\JobRunner;
+use App\Services\Ops\SystemHealth;
 
 /** LS-89 BE-4: the dashboard, users, audit log and read-only reports. */
 final class AdminController extends AdminBaseController {
+    /** LS-89 BE-3: the detailed health list (admins only); the public /health stays a yes/no */
+    public function systemHealth(): void {
+        if(!$this->requirePermission('system.view')) return;
+        global $config; $db=Database::connection($config['db']);
+        $runner=new JobRunner($db);
+        $this->render('system-health','System health',['checks'=>(new SystemHealth($db))->checks(),'runs'=>$runner->recent(30),'jobsTable'=>$runner->available()]);
+    }
+    /** LS-89 BE-3: every signed-in staff member manages the second factor of their own account */
+    public function accountSecurity(): void {
+        if(!$this->requirePermission('admin.dashboard.view')) return;
+        $this->accountSecurityPage([]);
+    }
+    public function accountSecurityAction(): void {
+        if(!$this->requirePermission('admin.dashboard.view')) return;
+        if(!Csrf::verify($_POST['_token']??null)) { $this->flash('danger',t('flash.csrf')); $this->redirect('/admin/account-security'); }
+        $mfa=new MfaService();
+        $id=(int)$this->user()['id'];
+        $code=is_string($_POST['code'] ?? null) ? $_POST['code'] : '';
+        $action=(string)($_POST['action']??'');
+        if($action==='begin') {
+            $r=$mfa->begin($id,(string)$this->user()['email']);
+            if(!$r['ok']) $this->flash('danger',t('mfa.err.'.$r['error']));
+        } elseif($action==='confirm') {
+            $r=$mfa->confirm($id,$code);
+            // the recovery codes are shown on this response only: they are never put in the session or a redirect
+            if($r['ok']) { $this->flash('success',t('mfa.done.enabled')); $this->accountSecurityPage($r['recovery_codes']); return; }
+            $this->flash('danger',t('mfa.err.'.$r['error']));
+        } elseif($action==='disable') {
+            if($mfa->verify($id,$code) && $mfa->remove($id,$id,'self')) $this->flash('success',t('mfa.done.disabled'));
+            else $this->flash('danger',t('mfa.err.MFA_CODE_WRONG'));
+        }
+        $this->redirect('/admin/account-security');
+    }
+    private function accountSecurityPage(array $recoveryCodes): void {
+        $mfa=new MfaService();
+        $id=(int)$this->user()['id'];
+        $this->render('account-security','Account security',['featureOn'=>$mfa->featureOn(),'canEnrol'=>$mfa->canEnrol(),'enrolled'=>$mfa->isEnrolled($id),'pending'=>$mfa->pending($id,(string)$this->user()['email']),'recoveryCodes'=>$recoveryCodes]);
+    }
     public function index(): void { if(!$this->requirePermission('admin.dashboard.view')) return; $d=new Dashboard();$this->render('dashboard','Admin Data Quality',$d->adminStats()+['products'=>$d->products(),'sources'=>$d->sources(),'recent_imports'=>$d->recentImportRuns()]); }
     public function snapshotEvidence(string $id): void {
         if(!$this->requirePermission('snapshots.view')) return;

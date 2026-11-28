@@ -61,6 +61,8 @@ $groups = [
     'SYSTEM' => [
         ['label' => 'Users', 'icon' => 'fa-users', 'href' => '/admin/users', 'permission' => 'users.manage', 'paths' => ['/admin/users']],
         ['label' => 'Audit', 'icon' => 'fa-history', 'href' => '/admin/audit-logs', 'permission' => 'audit.view', 'paths' => ['/admin/audit-logs']],
+        ['label' => 'System health', 'icon' => 'fa-heartbeat', 'href' => '/admin/system-health', 'permission' => 'system.view', 'paths' => ['/admin/system-health']],
+        ['label' => 'Account security', 'icon' => 'fa-shield-alt', 'href' => '/admin/account-security', 'permission' => 'admin.dashboard.view', 'paths' => ['/admin/account-security']],
     ],
 ];
 

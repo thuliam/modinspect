@@ -15,7 +15,7 @@ final class MigrationPlan
      * @param array<string,list<string>> $existing table => columns (lower case)
      * @return array{items:list<array{file:string,verdict:string,action:string,missing:list<string>}>,safe:bool,to_run:list<string>,counts:array<string,int>}
      */
-    public static function build(array $files, array $existing, int $from = 0): array
+    public static function build(array $files, array $existing, int $from = 0, array $recorded = []): array
     {
         $items = []; $counts = ['skip' => 0, 'run' => 0, 'manual' => 0, 'blocked' => 0];
         ksort($files, SORT_STRING);
@@ -23,6 +23,8 @@ final class MigrationPlan
             if ((int)$name < $from) { continue; }
             $r = MigrationStatus::evaluate($sql, $existing);
             $action = match ($r['verdict']) { 'applied' => 'skip', 'pending' => 'run', 'partial' => 'blocked', default => 'manual' };
+            // LS-89: a file the checker cannot see (data only) is not asked about again once the ledger says it ran
+            if ($action === 'manual' && isset($recorded[(string)$name])) { $action = 'skip'; $r['verdict'] = 'recorded'; }
             $counts[$action]++;
             $items[] = ['file' => (string)$name, 'verdict' => $r['verdict'], 'action' => $action, 'missing' => $r['missing']];
         }

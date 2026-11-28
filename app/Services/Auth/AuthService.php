@@ -11,6 +11,9 @@ final class AuthService
     public const SESSION_USER_ID = 'auth_user_id';
     public const SESSION_LOGIN_AT = 'auth_login_at';
     public const SESSION_LAST_SEEN_AT = 'auth_last_seen_at';
+    /** LS-89: password accepted, second factor still to be given; holds no permission */
+    public const SESSION_MFA_PENDING = 'auth_mfa_pending';
+    private const MFA_PENDING_SECONDS = 300;
     public const IDLE_TIMEOUT_SECONDS = 1800;
     public const ABSOLUTE_LIFETIME_SECONDS = 28800;
     /**
@@ -102,6 +105,56 @@ final class AuthService
             $rehash = $this->db->prepare("UPDATE users SET password_hash=:hash WHERE id=:id");
             $rehash->execute(['hash' => password_hash($password, $this->passwordAlgorithm()), 'id' => (int)$user['id']]);
         }
+        if ((new MfaService($this->db))->requiredFor((int)$user['id'])) {
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_regenerate_id(true);
+            }
+            unset($_SESSION[self::SESSION_USER_ID], $_SESSION[self::SESSION_LOGIN_AT], $_SESSION[self::SESSION_LAST_SEEN_AT]);
+            $_SESSION[self::SESSION_MFA_PENDING] = ['user_id' => (int)$user['id'], 'at' => time()];
+            $this->audit((int)$user['id'], 'auth_mfa_challenge', 'user', (int)$user['id'], []);
+            return ['ok' => false, 'error' => 'MFA_REQUIRED'];
+        }
+        return $this->startSession($user);
+    }
+
+    public function mfaPending(): bool
+    {
+        $pending = $_SESSION[self::SESSION_MFA_PENDING] ?? null;
+        return is_array($pending) && (time() - (int)($pending['at'] ?? 0)) <= self::MFA_PENDING_SECONDS;
+    }
+
+    /** LS-89: the second step of a sign-in. Wrong codes count against the same limit as wrong passwords. */
+    public function completeMfa(string $code, ?string $ipAddress = null): array
+    {
+        if (!$this->mfaPending()) {
+            unset($_SESSION[self::SESSION_MFA_PENDING]);
+            return ['ok' => false, 'error' => 'MFA_EXPIRED'];
+        }
+        $stmt = $this->db->prepare('SELECT * FROM users WHERE id=:id LIMIT 1');
+        $stmt->execute(['id' => (int)$_SESSION[self::SESSION_MFA_PENDING]['user_id']]);
+        $user = $stmt->fetch();
+        if (!$user || (int)$user['is_active'] !== 1) {
+            unset($_SESSION[self::SESSION_MFA_PENDING]);
+            return ['ok' => false, 'error' => 'MFA_EXPIRED'];
+        }
+        $email = $this->normalizeEmail((string)$user['email']);
+        $ipAddress = $this->safeIp($ipAddress);
+        if ($this->tooManyAttempts($email, $ipAddress)) {
+            $this->recordLoginAttempt($email, $ipAddress, false);
+            return ['ok' => false, 'error' => 'TOO_MANY_ATTEMPTS'];
+        }
+        $ok = (new MfaService($this->db))->verify((int)$user['id'], $code);
+        $this->recordLoginAttempt($email, $ipAddress, $ok);
+        if (!$ok) {
+            $this->audit((int)$user['id'], 'auth_mfa_failed', 'user', (int)$user['id'], []);
+            return ['ok' => false, 'error' => 'MFA_CODE_WRONG'];
+        }
+        unset($_SESSION[self::SESSION_MFA_PENDING]);
+        return $this->startSession($user);
+    }
+
+    private function startSession(array $user): array
+    {
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_regenerate_id(true);
         }
@@ -116,7 +169,7 @@ final class AuthService
     public function logout(bool $audit = true): void
     {
         $userId = isset($_SESSION[self::SESSION_USER_ID]) ? (int)$_SESSION[self::SESSION_USER_ID] : null;
-        unset($_SESSION[self::SESSION_USER_ID], $_SESSION[self::SESSION_LOGIN_AT], $_SESSION[self::SESSION_LAST_SEEN_AT]);
+        unset($_SESSION[self::SESSION_USER_ID], $_SESSION[self::SESSION_LOGIN_AT], $_SESSION[self::SESSION_LAST_SEEN_AT], $_SESSION[self::SESSION_MFA_PENDING]);
         if (session_status() === PHP_SESSION_ACTIVE) {
             $_SESSION = [];
             if (ini_get('session.use_cookies')) {

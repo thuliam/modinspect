@@ -179,6 +179,11 @@ $router->get('/admin/game-fps',[AdminCatalogController::class,'gameFpsPage']);
 $router->post('/admin/game-fps/save',[AdminCatalogController::class,'gameFpsSave']);
 $router->post('/admin/game-fps/delete',[AdminCatalogController::class,'gameFpsDelete']);
 $router->get('/admin/audit-logs',[AdminController::class,'audits']);
+$router->get('/admin/system-health',[AdminController::class,'systemHealth']);
+$router->get('/admin/account-security',[AdminController::class,'accountSecurity']);
+$router->post('/admin/account-security',[AdminController::class,'accountSecurityAction']);
+$router->get('/login/mfa',[AuthController::class,'mfaForm']);
+$router->post('/login/mfa',[AuthController::class,'mfaVerify']);
 $router->get('/admin/audit-logs/data',[AdminController::class,'auditsData']);
 
 $basePath=rtrim(dirname($_SERVER['SCRIPT_NAME']),'/\\');
