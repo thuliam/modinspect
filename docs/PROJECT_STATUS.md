@@ -1282,3 +1282,11 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - Found and fixed: the admin review detail page printed its own PHP source since `54254b1` (2026-11-15). The live site still has this until deploy.
 - Shared database, read-only with the new code (2026-11-28): 55 public prices, all marked outdated (confidence method v3), 2 hidden (Corsair Vengeance LPX 32GB DDR4-3200, Intel Core i5-8400); no median would change; trend rebuild: 8 changed, 19 added, 1 removed.
 - Not done: bulk review of many rows (needs the DataTables extension download), a scheduled task on the host, QR code for two-step sign-in, CSRF check stays per action, coverage report still counts source rows rather than platforms.
+
+## LS-88/89 release 2026-11-28 (owner: "ขึ้นโค้ดและฐาน")
+- PR 25 merged to main (`a80fe46`) after CI passed on PHP 8.1, 8.3 and 8.4. This replaces the "not pushed, not deployed" notes above.
+- `ModInspect FTPS Deploy` plan (527 files, no remote deletes), then deploy: upload succeeded. **The workflow's smoke job failed, twice** (rerun of that job only): 11 of 42 checks, and every address, `robots.txt` and `favicon.ico` included, answered the GitHub runner with an HTML page and status 200. The same check from the Studio machine passed 37 of 37 right after, with `/.env` and `/.git/config` answering 403. Cause not established; a host-side block page for the runner's address is the likely reading and is unverified.
+- Shared database: backed up, migrations 038 and 039 applied and recorded, `snapshot_recompute --apply` stored 55 snapshots (no median, quartile or sample change; 9 confidence labels medium to low), trend rebuilt to 71 points (8 changed, 19 added, 1 removed). Audit after: 55 public prices, 55 replay MATCH, P0 0, P1 0, all single source.
+- Product 229 trend (2,190 to 1,400) checked before applying: four newer used listings that the public price already counted. Two of its seven listings say they are brand new (handled by LS-90 T1).
+- Verified on the live site: `/price/intel-core-i5-8400` shows "not enough data"; new admin pages redirect to sign-in; `/privacy` is still 404.
+- Not verified: signed-in admin pages on the live host, a real browser check.
