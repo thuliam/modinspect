@@ -7,6 +7,7 @@ require __DIR__ . '/bootstrap.php';
 
 use App\Controllers\AdminController;
 use App\Controllers\AdminMemberController;
+use App\Controllers\AdminCommunityController;
 use App\Core\Csrf;
 use App\Core\Database;
 use App\Core\RedirectException;
