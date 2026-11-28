@@ -67,7 +67,8 @@ final class CohortRules
             return 'INSUFFICIENT_PROVENANCE';
         }
         // LS-90 T1: a listing that says the item is brand new is not a used price. Last, so the earlier reason codes are unchanged.
-        if ($priceType !== 'new' && BrandNewClaim::detect((string)($row['raw_title'] ?? '') . ' ' . (string)($row['excerpt'] ?? '')) !== null) {
+        // Only the listing's own text is read: evidence excerpts also carry the collector's notes about a whole import batch.
+        if ($priceType !== 'new' && BrandNewClaim::detect((string)($row['raw_title'] ?? '')) !== null) {
             return 'BRAND_NEW_CLAIM';
         }
         return null;

@@ -51,6 +51,11 @@ try {
     assert_new($service->recalculateProduct($product) !== null && $publicId($product) !== null, 'a public price exists');
     $history = static fn() => (int)$db->query("SELECT COUNT(*) FROM price_histories WHERE product_id=$product")->fetchColumn();
 
+    // a collector's note in the evidence excerpt is not the listing's own text
+    $db->prepare("INSERT INTO market_evidence (raw_observation_id,source_id,evidence_level,evidence_type,excerpt,captured_at) SELECT r.id,r.source_id,'C','snippet',?,NOW() FROM raw_price_observations r JOIN price_observations o ON o.raw_observation_id=r.id WHERE o.id=?")
+        ->execute(['Collector note: marked sealed where the seller states it is brand new', $ids[2]]);
+    assert_new(count($service->cohort($product)['included']) === 4, 'an excerpt note does not exclude a listing');
+
     // one turns out to be new: it is left out with its own reason, three used ones remain
     $retitle($ids[0], 'ของ ทดสอบ มือหนึ่ง');
     $reasons = array_column($service->cohort($product)['excluded'], 'exclusion_reason', 'observation_id');
@@ -90,5 +95,6 @@ try {
     echo "brand_new_claim_test: PASS\n";
 } finally {
     $other?->cleanup();
+    $fx->db->exec("DELETE FROM market_evidence WHERE source_id={$fx->sourceId}");
     $fx->cleanup();
 }

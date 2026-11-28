@@ -1210,3 +1210,12 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - Product 229 trend (2,190 to 1,400) checked before applying: four newer used listings that the public price already counted. Two of its seven listings say they are brand new (handled by LS-90 T1).
 - Verified on the live site: `/price/intel-core-i5-8400` shows "not enough data"; new admin pages redirect to sign-in; `/privacy` is still 404.
 - Not verified: signed-in admin pages on the live host, a real browser check.
+
+## LS-90 part 1 (T1-T8) 2026-11-28
+- T1: used prices leave out listings that claim a new item (`BrandNewClaim`, cohort-v2); a price that rested on them with too few left is withdrawn without deleting anything.
+- T2: review queue warnings (new, sold or reserved), filter "effect on price" with first-price rows first, CSV of pending rows.
+- T3-T5: `/seller-price-advisor` closed (`SELLER_ADVISOR_ENABLED`); photographs stored under two or more models are not drawn (7 models); `/privacy` and `/terms` behind `LEGAL_PAGES_ENABLED`, showing only published documents; text with unfilled blanks cannot be published.
+- T6-T7: `cli/backup_job.php`; coverage counts sources by platform; deploy sends files new to the host first; the smoke check says when it seems blocked; research notes moved to `docs/RESEARCH_LOG.md`.
+- T8: bulk review with a confirmation page (DataTables Select 1.7.0, owner-approved download, hashes verified).
+- Shared database, read-only before release: 12 snapshots change, 4 prices would be withdrawn (RTX 4070 SUPER, Core i5-14400F, Ryzen 9 9800X3D, NVMe 2TB), largest median move among kept models 5.2%; 34 approved listings are left out as new. Within the owner's limits (at most 6 withdrawn, at most 15%).
+- Browser check on the local test database: select rows, confirm, save, price recalculated; no console error from the admin script.

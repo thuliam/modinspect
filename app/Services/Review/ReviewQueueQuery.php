@@ -205,8 +205,7 @@ final class ReviewQueueQuery {
     private function warningItems(array $row): array {
         $codes=array_values(array_unique(array_merge($row['reason_codes_list'] ?? [],$row['quality_flags'] ?? [])));
         $items=[];
-        $text=(string)($row['raw_title'] ?? '').' '.(string)($row['excerpt'] ?? '');
-        if(\App\Services\Pricing\BrandNewClaim::detect($text)!==null) $codes[]='BRAND_NEW_CLAIM';
+        if(\App\Services\Pricing\BrandNewClaim::detect((string)($row['raw_title'] ?? ''))!==null) $codes[]='BRAND_NEW_CLAIM';
         if(preg_match('/ขายแล้ว|\bsold\b|จองแล้ว|reserved|ติดจอง/iu',(string)($row['raw_title'] ?? ''))===1) $codes[]='SOLD_OR_RESERVED';
         foreach($codes as $code){
             $code=(string)$code;
