@@ -13,7 +13,7 @@ use App\Services\Ops\SystemHealth;
 final class AdminController extends AdminBaseController {
     /** LS-89 BE-3: the detailed health list (admins only); the public /health stays a yes/no */
     public function systemHealth(): void {
-        if(!$this->requirePermission('system.view')) return;
+        if(!$this->requirePermission('audit.view')) return;
         global $config; $db=Database::connection($config['db']);
         $runner=new JobRunner($db);
         $this->render('system-health','System health',['checks'=>(new SystemHealth($db))->checks(),'runs'=>$runner->recent(30),'jobsTable'=>$runner->available()]);
