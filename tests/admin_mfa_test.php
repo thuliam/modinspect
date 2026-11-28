@@ -113,6 +113,12 @@ try {
     assert_mfa(str_contains($page['page'], 'value="disable"'), 'an enrolled account is offered to turn it off');
     $call(fn() => (new AdminController())->accountSecurityAction(), 'POST', ['action' => 'disable', 'code' => '000000']);
     assert_mfa($mfa->isEnrolled($uid), 'a wrong code does not turn it off');
+    // turning it off is limited like signing in: after five wrong codes from one address even a right one waits
+    $_SERVER['REMOTE_ADDR'] = '10.8.8.8';
+    for ($i = 0; $i < 5; $i++) { $call(fn() => (new AdminController())->accountSecurityAction(), 'POST', ['action' => 'disable', 'code' => '000000']); }
+    $call(fn() => (new AdminController())->accountSecurityAction(), 'POST', ['action' => 'disable', 'code' => $confirmed['recovery_codes'][2]]);
+    assert_mfa((new MfaService($db))->isEnrolled($uid), 'guessing the turn-off code is limited');
+    $_SERVER['REMOTE_ADDR'] = '127.0.0.5';
     $call(fn() => (new AdminController())->accountSecurityAction(), 'POST', ['action' => 'disable', 'code' => $confirmed['recovery_codes'][2]]);
     assert_mfa(!(new MfaService($db))->isEnrolled($uid), 'a valid code turns it off');
     $call(fn() => (new AdminController())->accountSecurityAction(), 'POST', ['action' => 'begin']);

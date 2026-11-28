@@ -137,6 +137,20 @@ final class AuthService
             unset($_SESSION[self::SESSION_MFA_PENDING]);
             return ['ok' => false, 'error' => 'MFA_EXPIRED'];
         }
+        $checked = $this->checkSecondFactor($user, $code, $ipAddress);
+        if (!$checked['ok']) {
+            return $checked;
+        }
+        unset($_SESSION[self::SESSION_MFA_PENDING]);
+        return $this->startSession($user);
+    }
+
+    /**
+     * LS-89: every check of a second-factor code goes through here (signing in, and turning the factor off), so guessing is limited
+     * in both places. @param array{id:int|string,email:string} $user @return array{ok:bool,error:?string}
+     */
+    public function checkSecondFactor(array $user, string $code, ?string $ipAddress = null): array
+    {
         $email = $this->normalizeEmail((string)$user['email']);
         $ipAddress = $this->safeIp($ipAddress);
         if ($this->tooManyAttempts($email, $ipAddress)) {
@@ -149,8 +163,7 @@ final class AuthService
             $this->audit((int)$user['id'], 'auth_mfa_failed', 'user', (int)$user['id'], []);
             return ['ok' => false, 'error' => 'MFA_CODE_WRONG'];
         }
-        unset($_SESSION[self::SESSION_MFA_PENDING]);
-        return $this->startSession($user);
+        return ['ok' => true, 'error' => null];
     }
 
     private function startSession(array $user): array

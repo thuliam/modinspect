@@ -5,6 +5,7 @@ use App\Core\Database;
 use App\Core\Csrf;
 use App\Models\Dashboard;
 use App\Services\Admin\AdminDataTableService;
+use App\Services\Auth\AuthService;
 use App\Services\Auth\MfaService;
 use App\Services\Ops\JobRunner;
 use App\Services\Ops\SystemHealth;
@@ -39,8 +40,9 @@ final class AdminController extends AdminBaseController {
             if($r['ok']) { $this->flash('success',t('mfa.done.enabled')); $this->accountSecurityPage($r['recovery_codes']); return; }
             $this->flash('danger',t('mfa.err.'.$r['error']));
         } elseif($action==='disable') {
-            if($mfa->verify($id,$code) && $mfa->remove($id,$id,'self')) $this->flash('success',t('mfa.done.disabled'));
-            else $this->flash('danger',t('mfa.err.MFA_CODE_WRONG'));
+            $checked=(new AuthService())->checkSecondFactor($this->user(),$code,$_SERVER['REMOTE_ADDR'] ?? null);
+            if($checked['ok'] && $mfa->remove($id,$id,'self')) $this->flash('success',t('mfa.done.disabled'));
+            else $this->flash('danger',t('mfa.err.'.($checked['error'] ?? 'MFA_CODE_WRONG')));
         }
         $this->redirect('/admin/account-security');
     }
