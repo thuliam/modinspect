@@ -157,7 +157,7 @@ final class PriceSnapshotService
         $included = [];
         $excluded = [];
         foreach ($considered as $row) {
-            $reason = CohortRules::exclusionReason($row, $priceType);
+            $reason = $this->exclusionReason($row, $priceType);
             if ($reason === null) {
                 $included[] = $row;
             } else {
@@ -172,6 +172,12 @@ final class PriceSnapshotService
         });
 
         return ['considered' => $considered, 'included' => $included, 'excluded' => $excluded];
+    }
+
+    /** why a listing is left out of a calculation (null = it counts); the rule itself is shared with the trend, see CohortRules */
+    private function exclusionReason(array $row, string $priceType): ?string
+    {
+        return CohortRules::exclusionReason($row, $priceType);
     }
 
     private function calculateSnapshot(int $productId, string $priceType, array $rows, array $cohort): array
