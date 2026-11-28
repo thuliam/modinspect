@@ -90,7 +90,7 @@ final class BetaReadiness
         if ($rows === []) { return ['available' => false, 'rows' => [], 'verdict' => self::verdict([])]; }
 
         $health = (new DataHealthReport())->build();
-        $ids = $db->query("SELECT pi.id, pi.confidence_label label FROM price_indices pi WHERE pi.id IN (SELECT MAX(id) FROM price_indices WHERE price_type='asking' AND product_variant_id IS NULL AND COALESCE(provenance_status,'legacy_unavailable') <> 'legacy_unavailable' GROUP BY product_id)
+        $ids = $db->query("SELECT pi.id, pi.confidence_label label FROM price_indices pi WHERE " . \App\Services\Pricing\PublicSnapshot::intactSql('pi') . " AND pi.id IN (SELECT MAX(id) FROM price_indices WHERE price_type='asking' AND product_variant_id IS NULL AND COALESCE(provenance_status,'legacy_unavailable') <> 'legacy_unavailable' GROUP BY product_id)
             AND pi.valid_sample_size >= 3 AND pi.median > 0")->fetchAll(PDO::FETCH_ASSOC);
         $svc = new PriceSnapshotService(); $match = 0;
         foreach ($ids as $i) { if ((($svc->reproduceSnapshot((int)$i['id']))['result'] ?? '') === 'MATCH') { $match++; } }

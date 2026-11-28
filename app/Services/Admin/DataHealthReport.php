@@ -19,7 +19,7 @@ final class DataHealthReport
      * @return array{categories:list<array>,confidence:array<string,int>,totals:array,freshness:array,grades:array{owner_text:int,other:int},ladder:array{checked:int,flags:int}} */
     public function build(): array
     {
-        $latest = "pi.id IN (SELECT MAX(id) FROM price_indices WHERE price_type = 'asking' AND product_variant_id IS NULL AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' GROUP BY product_id)";
+        $latest = "pi.id IN (SELECT MAX(id) FROM price_indices WHERE price_type = 'asking' AND product_variant_id IS NULL AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' GROUP BY product_id) AND " . \App\Services\Pricing\PublicSnapshot::intactSql('pi');
 
         $categories = $this->db->query("SELECT c.name category, COUNT(DISTINCT p.id) products,
                 COUNT(DISTINCT CASE WHEN pi.valid_sample_size >= 3 AND pi.median > 0 THEN p.id END) priced,

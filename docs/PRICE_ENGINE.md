@@ -29,8 +29,17 @@ Current version identifiers:
 formula_version: price-engine-v1
 cohort_version: cohort-v1
 quartile_method_version: linear-percentile-v1
-confidence_method_version: confidence-v1
+confidence_method_version: confidence-v3
 ```
+
+Version history: `confidence-v2` (DL-033) caps evidence that is entirely owner text. `confidence-v3` (DL-122) counts one platform as one source. Stored snapshots keep the version they were calculated with and still reproduce.
+
+## Public publication rule (DL-122)
+
+- One rule, `App\Services\Pricing\PublicSnapshot`: the latest recorded asking snapshot is public only while every included observation is still approved, on the same model, at the same price. Otherwise the model shows no price until a new snapshot is calculated. There is no fallback to an older snapshot.
+- Recalculation still needs at least 3 eligible observations; below that no new snapshot is written and the withdrawn one stays hidden.
+- Source identity (`SourceIdentity`): the platform counts, not the import batch or host spelling. All Facebook hosts and Facebook owner-text batches are one source.
+- Freshness wording on public pages is evaluated for the day of viewing (`PublicFreshness`). The stored score, label and prices are not changed by the passage of time.
 
 Confidence v1 components:
 

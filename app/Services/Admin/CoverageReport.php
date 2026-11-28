@@ -18,7 +18,7 @@ final class CoverageReport
         $required = IntakeValidator::contract()['spec_keys']['required_per_category'];
         $products = $db->query('SELECT p.id, p.full_name, c.slug cat FROM products p JOIN product_categories c ON c.id = p.category_id WHERE p.is_active = 1 ORDER BY c.slug, p.full_name')->fetchAll(PDO::FETCH_ASSOC);
         $priced = [];
-        foreach ($db->query("SELECT product_id FROM price_indices pi WHERE product_variant_id IS NULL AND price_type = 'asking' AND valid_sample_size > 0 AND median IS NOT NULL
+        foreach ($db->query("SELECT product_id FROM price_indices pi WHERE " . \App\Services\Pricing\PublicSnapshot::intactSql('pi') . " AND product_variant_id IS NULL AND price_type = 'asking' AND valid_sample_size > 0 AND median IS NOT NULL
             AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' AND id = (SELECT MAX(id) FROM price_indices x WHERE x.product_id = pi.product_id AND x.product_variant_id IS NULL AND x.price_type = 'asking' AND COALESCE(x.provenance_status, 'legacy_unavailable') <> 'legacy_unavailable')")->fetchAll(PDO::FETCH_COLUMN) as $id) { $priced[(int)$id] = true; }
         $sources = [];
         foreach ($db->query("SELECT o.product_id, COUNT(DISTINCT r.source_id) n FROM price_observations o JOIN raw_price_observations r ON r.id = o.raw_observation_id

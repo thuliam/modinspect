@@ -103,7 +103,7 @@ try {
     ok_ot(in_array('HUMAN_RECORDED_EVIDENCE_CAP', $mixed['policy_caps'], true) && $mixed['overall_score'] <= 79.0 && $mixed['label'] !== 'high', 'Human-recorded evidence is capped below high and the cap is stated: ' . json_encode([$mixed['overall_score'], $mixed['policy_caps']]));
     $withMachine = $conf->calculate(array_merge(array_map($ownerRow, range(1, 4)), array_map($fbRow, range(1, 4)), array_map($machineRow, range(1, 8))), 'asking', '2026-11-16');
     ok_ot(!in_array('HUMAN_RECORDED_EVIDENCE_CAP', $withMachine['policy_caps'], true), 'A machine capture (agent route) in the sample removes the human-recorded cap: same rule, same pattern');
-    ok_ot($ownerOnly['method_version'] === 'confidence-v2', 'Method version is unchanged (additive cap, no effect on data without the marker)');
+    ok_ot($ownerOnly['method_version'] === 'confidence-v3', 'Method version is unchanged (additive cap, no effect on data without the marker)');
 } finally {
     $db->rollBack();
     if ($file) { @unlink($file); }

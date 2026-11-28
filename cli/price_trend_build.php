@@ -4,7 +4,8 @@ declare(strict_types=1);
 /**
  * Rebuild monthly price-trend buckets from approved, single-item, non-defective asking observations (by observed_at).
  * A bucket needs at least 3 samples; quartiles use linear interpolation. Idempotent: rebuilds the table content per product.
- * Usage: php cli/price_trend_build.php [--min=3]
+ * Usage: php cli/price_trend_build.php [--min=3] [--dry-run]
+ * --dry-run writes nothing and counts how the stored months would change (LS-88: stored months can still hold listings that were excluded later).
  */
 require dirname(__DIR__) . '/app/bootstrap.php';
 
@@ -28,6 +29,23 @@ $rows = $db->query("SELECT product_id, DATE_FORMAT(observed_at,'%Y-%m-01') perio
     ORDER BY product_id, period")->fetchAll();
 $groups = [];
 foreach ($rows as $r) { $groups[(int)$r['product_id']][$r['period']][] = (float)$r['price']; }
+
+if (in_array('--dry-run', $argv, true)) {
+    $stored = [];
+    foreach ($db->query('SELECT product_id, period_start, median, sample_size FROM price_trend_points')->fetchAll() as $r) { $stored[$r['product_id'] . ' ' . $r['period_start']] = [round((float)$r['median'], 2), (int)$r['sample_size']]; }
+    $next = [];
+    foreach ($groups as $pid => $periods) {
+        foreach ($periods as $period => $prices) {
+            if (count($prices) < $min) { continue; }
+            sort($prices); $next[$pid . ' ' . $period] = [round(quantile($prices, .5), 2), count($prices)];
+        }
+    }
+    $changed = 0;
+    foreach ($next as $k => $v) { if (isset($stored[$k]) && $stored[$k] !== $v) { $changed++; echo "changed product_period=$k median {$stored[$k][0]} -> {$v[0]} samples {$stored[$k][1]} -> {$v[1]}\n"; } }
+    foreach (array_diff_key($stored, $next) as $k => $v) { echo "removed product_period=$k median {$v[0]} samples {$v[1]}\n"; }
+    echo 'DRY RUN (nothing written): stored=' . count($stored) . ' rebuilt=' . count($next) . " changed=$changed added=" . count(array_diff_key($next, $stored)) . ' removed=' . count(array_diff_key($stored, $next)) . "\n";
+    exit(0);
+}
 
 $db->beginTransaction();
 $db->exec('DELETE FROM price_trend_points');

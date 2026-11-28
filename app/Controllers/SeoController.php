@@ -49,7 +49,7 @@ final class SeoController extends Controller
         // only products that have a public price (same gate as the price pages) get a sitemap entry: empty pages are not worth indexing
         $rows = $db->query("SELECT p.slug, pi.last_calculated_at FROM price_indices pi JOIN products p ON p.id = pi.product_id
             WHERE pi.id IN (SELECT MAX(id) FROM price_indices WHERE price_type = 'asking' AND product_variant_id IS NULL AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' GROUP BY product_id)
-              AND pi.valid_sample_size >= 3 AND pi.median > 0 AND p.is_active = 1 ORDER BY p.slug")->fetchAll();
+              AND pi.valid_sample_size >= 3 AND pi.median > 0 AND p.is_active = 1 AND " . \App\Services\Pricing\PublicSnapshot::intactSql('pi') . " ORDER BY p.slug")->fetchAll();
         $paths = ['/', '/price', '/methodology', '/deal-checker', '/read-listing', '/glossary', '/build', '/compare', '/upgrade', '/condition-guide', '/blog'];
         foreach ((new \App\Models\Blog())->recent(200) as $a) { $paths[] = ['path' => '/blog/' . rawurlencode((string)$a['slug']), 'lastmod' => $a['updated_at'] ?? $a['published_at']]; }   // LS-24 M8: published articles only
         foreach (\App\Services\Catalog\ConditionGuide::categories() as $g) { $paths[] = '/condition-guide/' . rawurlencode((string)$g['slug']); }

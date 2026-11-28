@@ -16,7 +16,8 @@ use PDO;
  */
 final class SnapshotRecompute
 {
-    private const FIELDS = ['q1' => 'q1', 'median' => 'median', 'q3' => 'q3', 'valid_sample_size' => 'valid_sample_size', 'confidence_label' => 'confidence_label'];
+    private const FIELDS = ['q1' => 'q1', 'median' => 'median', 'q3' => 'q3', 'valid_sample_size' => 'valid_sample_size', 'confidence_label' => 'confidence_label', 'confidence_method_version' => 'confidence_method_version'];
+    private const TEXT_FIELDS = ['confidence_label', 'confidence_method_version'];
 
     public function __construct(private PDO $db, private PriceSnapshotService $svc) {}
 
@@ -24,7 +25,7 @@ final class SnapshotRecompute
     public function plan(string $priceType = 'asking'): array
     {
         $out = [];
-        $current = $this->db->prepare("SELECT q1, median, q3, valid_sample_size, confidence_label FROM price_indices WHERE product_id = :p AND product_variant_id IS NULL AND price_type = :t
+        $current = $this->db->prepare("SELECT q1, median, q3, valid_sample_size, confidence_label, confidence_method_version FROM price_indices WHERE product_id = :p AND product_variant_id IS NULL AND price_type = :t
             AND COALESCE(provenance_status, 'legacy_unavailable') <> 'legacy_unavailable' ORDER BY last_calculated_at DESC, id DESC LIMIT 1");
         foreach ($this->db->query('SELECT id, full_name FROM products WHERE is_active = 1 ORDER BY id')->fetchAll(PDO::FETCH_ASSOC) as $p) {
             $pid = (int)$p['id'];
@@ -34,8 +35,8 @@ final class SnapshotRecompute
             if ($cur === null) { $out[] = ['product_id' => $pid, 'name' => (string)$p['full_name'], 'status' => 'new', 'changes' => ['median' => ['from' => null, 'to' => (float)$new['median']], 'valid_sample_size' => ['from' => null, 'to' => (int)$new['valid_sample_size']]]]; continue; }
             $ch = [];
             foreach (self::FIELDS as $col => $key) {
-                $from = in_array($col, ['confidence_label'], true) ? (string)$cur[$col] : (float)$cur[$col];
-                $to = in_array($col, ['confidence_label'], true) ? (string)$new[$key] : (float)$new[$key];
+                $from = in_array($col, self::TEXT_FIELDS, true) ? (string)$cur[$col] : (float)$cur[$col];
+                $to = in_array($col, self::TEXT_FIELDS, true) ? (string)$new[$key] : (float)$new[$key];
                 if ($from !== $to) { $ch[$col] = ['from' => $from, 'to' => $to]; }
             }
             $out[] = ['product_id' => $pid, 'name' => (string)$p['full_name'], 'status' => $ch === [] ? 'unchanged' : 'changed', 'changes' => $ch];

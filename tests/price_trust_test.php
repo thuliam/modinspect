@@ -59,5 +59,5 @@ $mixed = $ownerRows;
 $mixed[0] = $mk(99, 'offline_real_priceza');
 $mixedResult = $svc->calculate($mixed, 'asking', $today);
 assert_pt(!in_array('OWNER_TEXT_ONLY_CAP', $mixedResult['policy_caps'], true), 'A cohort with any non-owner-text source must not get the owner-text cap');
-assert_pt(\App\Services\Pricing\SnapshotConfidenceService::METHOD_VERSION === 'confidence-v2', 'Method version must be bumped when the policy changes');
+assert_pt(\App\Services\Pricing\SnapshotConfidenceService::METHOD_VERSION === 'confidence-v3', 'Method version must be bumped when the policy changes');
 echo "price_trust_test: PASS\n";
