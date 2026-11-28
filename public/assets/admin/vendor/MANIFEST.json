@@ -54,6 +54,22 @@
                 "datatables/js/jquery.dataTables.min.js": "a33146fad8c7228dc4dc90043e3e50d51cead8b2267aeac32b0a8f3be8a52b86"
             }
         },
+        "datatables-select": {
+            "version": "1.7.0",
+            "license": "MIT",
+            "source": "npm datatables.net-select@1.7.0 and datatables.net-select-bs4@1.7.0 (official SpryMedia packages), tarball sha512 verified at install; only dataTables.select.min.js, select.bootstrap4.min.js, select.bootstrap4.min.css and License.txt are kept. Downloaded 2026-11-28 with owner approval (LS-90).",
+            "provenance": "official-npm-verified",
+            "npm_integrity": {
+                "datatables.net-select@1.7.0": "sha512-ps8eL8S2gUV7EdzMraw8mfQlHXpfuc8TC2onBxdk0snP8eizPe85VhpI3r4ULvPRTTI7vcViz8E7JV8aayA2lw==",
+                "datatables.net-select-bs4@1.7.0": "sha512-PAOAPVaIVxZ0FEk0BamIF4a3YVkln2swIM+be+w09OWRlUo8QXFY5LbImjZ9SdUInT7pCZfueBQh5oKSKesylg=="
+            },
+            "files": {
+                "datatables-select/License.txt": "62b5fdd54371b4f6bd07a60dbc78b38814f49a8028213f540dc2733cad605382",
+                "datatables-select/css/select.bootstrap4.min.css": "95ce1b4aed171705d3bd70427f3416ed4eb1b1efa1fe700303de7de82c0dfdfc",
+                "datatables-select/js/dataTables.select.min.js": "9acf7a1e0163b2128e404f5f149d219605513c2cf5d92651405e24225483e944",
+                "datatables-select/js/select.bootstrap4.min.js": "472e324db192b13cf820ef91c90a47d27ee689cc1049de390dc8b7ece179bb1a"
+            }
+        },
         "select2": {
             "version": "4.0.13",
             "license": "MIT",

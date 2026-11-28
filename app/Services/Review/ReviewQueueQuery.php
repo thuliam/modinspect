@@ -11,6 +11,9 @@ use App\Models\CollectionPipeline;
 final class ReviewQueueQuery {
     private PDO $db;
     public function __construct(?PDO $db = null){ global $config; $this->db=$db ?? Database::connection($config['db']); }
+    private ?PriceImpact $impact=null;
+    /** LS-90 T2: pending rows that would count towards a price if approved */
+    private function impact(): array { return ($this->impact ??= new PriceImpact($this->db))->pending(); }
     private function rows(string $sql,array $params=[]): array { $s=$this->db->prepare($sql);$s->execute($params);return $s->fetchAll(); }
     public function observations(?string $status=null, string $q=''): array {
         $sql="SELECT o.id,o.product_id,o.raw_observation_id,o.price_type,o.asking_price,o.price_value,COALESCE(o.price_value,o.asking_price) display_price,o.currency,o.condition_level,o.listing_type,o.classification_confidence,o.verified_status,o.observed_at,o.created_at,p.full_name,p.image_path product_image_path,c.slug category_slug,r.raw_title,s.source_key,s.name source_name,".$this->datasetSqlExpression()." dataset_label FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id WHERE 1=1";
@@ -33,7 +36,7 @@ final class ReviewQueueQuery {
         $countStmt=$this->db->prepare("SELECT COUNT(*) FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id LEFT JOIN observation_review_decisions d ON d.id=(SELECT id FROM observation_review_decisions WHERE price_observation_id=o.id ORDER BY id DESC LIMIT 1) WHERE $where");
         $countStmt->execute($params);
         $total=(int)$countStmt->fetchColumn();
-        $sql="SELECT o.id,o.raw_observation_id,o.product_id,o.price_type,o.asking_price,o.price_value,COALESCE(o.price_value,o.asking_price) display_price,o.currency,o.condition_level,o.warranty_months,o.listing_type,o.classification_confidence,o.quality_flags,o.verified_status,o.observed_at,o.created_at,p.full_name,p.image_path product_image_path,c.slug category_slug,r.raw_title,r.raw_price_text,r.raw_condition_text,r.raw_warranty_text,r.source_url_encrypted,r.external_reference_hash,s.id source_id,s.name source_name,s.source_key,e.evidence_level evidence_quality,e.evidence_type,e.excerpt,e.content_hash,x.confidence extraction_confidence,d.lane,d.reason_codes,d.rule_result,(SELECT COUNT(*) FROM review_corrections rc WHERE rc.price_observation_id=o.id) corrections_count,".$this->datasetSqlExpression()." dataset_label FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id LEFT JOIN extraction_runs x ON x.raw_observation_id=r.id LEFT JOIN observation_review_decisions d ON d.id=(SELECT id FROM observation_review_decisions WHERE price_observation_id=o.id ORDER BY id DESC LIMIT 1) WHERE $where ORDER BY ".$this->reviewSortSql((string)($filters['sort'] ?? 'attention'))." LIMIT :limit OFFSET :offset";
+        $sql="SELECT o.id,o.raw_observation_id,o.product_id,o.price_type,o.asking_price,o.price_value,COALESCE(o.price_value,o.asking_price) display_price,o.currency,o.condition_level,o.warranty_months,o.listing_type,o.classification_confidence,o.quality_flags,o.verified_status,o.observed_at,o.created_at,p.full_name,p.image_path product_image_path,c.slug category_slug,r.raw_title,r.raw_price_text,r.raw_condition_text,r.raw_warranty_text,r.source_url_encrypted,r.external_reference_hash,s.id source_id,s.name source_name,s.source_key,e.evidence_level evidence_quality,e.evidence_type,e.excerpt,e.content_hash,x.confidence extraction_confidence,d.lane,d.reason_codes,d.rule_result,(SELECT COUNT(*) FROM review_corrections rc WHERE rc.price_observation_id=o.id) corrections_count,".$this->datasetSqlExpression()." dataset_label FROM price_observations o JOIN products p ON p.id=o.product_id JOIN product_categories c ON c.id=p.category_id LEFT JOIN raw_price_observations r ON r.id=o.raw_observation_id LEFT JOIN data_sources s ON s.id=r.source_id LEFT JOIN market_evidence e ON e.raw_observation_id=r.id LEFT JOIN extraction_runs x ON x.raw_observation_id=r.id LEFT JOIN observation_review_decisions d ON d.id=(SELECT id FROM observation_review_decisions WHERE price_observation_id=o.id ORDER BY id DESC LIMIT 1) WHERE $where ORDER BY ".$this->reviewOrderSql($filters)." LIMIT :limit OFFSET :offset";
         $stmt=$this->db->prepare($sql);
         foreach($params as $key=>$value) $stmt->bindValue($key,$value,is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
         $stmt->bindValue(':limit',$perPage,PDO::PARAM_INT);
@@ -129,6 +132,11 @@ final class ReviewQueueQuery {
                 $params[':run_id']='%PROBE_RUN_ID='.$runId.'%';
             }
         }
+        $impact=(string)($filters['impact'] ?? '');
+        if($impact==='price' || $impact==='first_price'){
+            $ids=$this->impact()[$impact==='price' ? 'eligible' : 'first_price'];
+            $where[]=$ids===[] ? '1=0' : 'o.id IN ('.implode(',',array_map('intval',$ids)).')';
+        }
         if(!empty($filters['product_id'])){
             $where[]='o.product_id=:product_id';
             $params[':product_id']=(int)$filters['product_id'];
@@ -145,6 +153,14 @@ final class ReviewQueueQuery {
             $params[':q_title']='%'.$q.'%';
         }
         return implode(' AND ',$where);
+    }
+    /** the chosen sort; with the price-impact filter, rows that could give a model its first price come first, grouped by model */
+    private function reviewOrderSql(array $filters): string {
+        $sql=$this->reviewSortSql((string)($filters['sort'] ?? 'attention'));
+        if(!in_array((string)($filters['impact'] ?? ''),['price','first_price'],true)) return $sql;
+        $first=$this->impact()['first_price'];
+        $lead=$first===[] ? '' : 'CASE WHEN o.id IN ('.implode(',',array_map('intval',$first)).') THEN 0 ELSE 1 END ASC,';
+        return $lead.'p.full_name ASC,'.$sql;
     }
     private function reviewSortSql(string $sort): string {
         return match($sort){
@@ -189,6 +205,8 @@ final class ReviewQueueQuery {
     private function warningItems(array $row): array {
         $codes=array_values(array_unique(array_merge($row['reason_codes_list'] ?? [],$row['quality_flags'] ?? [])));
         $items=[];
+        if(\App\Services\Pricing\BrandNewClaim::detect((string)($row['raw_title'] ?? ''))!==null) $codes[]='BRAND_NEW_CLAIM';
+        if(preg_match('/ขายแล้ว|\bsold\b|จองแล้ว|reserved|ติดจอง/iu',(string)($row['raw_title'] ?? ''))===1) $codes[]='SOLD_OR_RESERVED';
         foreach($codes as $code){
             $code=(string)$code;
             if($code==='') continue;
@@ -217,6 +235,7 @@ final class ReviewQueueQuery {
             }
             return 'A validation confidence sub-check did not meet the Green threshold; verify the resolved product and listing evidence before approval.';
         }
+        if($code==='BRAND_NEW_CLAIM' || $code==='SOLD_OR_RESERVED') return \App\Core\Lang::t('review.warn.'.$code);
         $labels=[
             'BOARD_PARTNER_CONTEXT'=>'Board partner wording is present; confirm the title still matches the resolved GPU model.',
             'VARIANT_AMBIGUOUS'=>'Variant or suffix may be ambiguous; confirm the exact Product Master match.',

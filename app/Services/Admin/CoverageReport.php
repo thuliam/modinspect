@@ -20,8 +20,12 @@ final class CoverageReport
         $priced = [];
         foreach ($db->query("SELECT pi.product_id FROM price_indices pi WHERE pi.id = " . \App\Services\Pricing\PublicSnapshot::idSql('pi.product_id'))->fetchAll(PDO::FETCH_COLUMN) as $id) { $priced[(int)$id] = true; }
         $sources = [];
-        foreach ($db->query("SELECT o.product_id, COUNT(DISTINCT r.source_id) n FROM price_observations o JOIN raw_price_observations r ON r.id = o.raw_observation_id
-            WHERE o.verified_status = 'approved' AND o.price_type = 'asking' AND o.is_duplicate = 0 GROUP BY o.product_id")->fetchAll(PDO::FETCH_ASSOC) as $r) { $sources[(int)$r['product_id']] = (int)$r['n']; }
+        // LS-90: a source is a platform (SourceIdentity), the same rule price confidence uses; two import batches of one platform are one source
+        $seen = [];
+        foreach ($db->query("SELECT DISTINCT o.product_id, s.id source_id, s.domain source_domain, s.name source_name, s.source_key FROM price_observations o
+            JOIN raw_price_observations r ON r.id = o.raw_observation_id JOIN data_sources s ON s.id = r.source_id
+            WHERE o.verified_status = 'approved' AND o.price_type = 'asking' AND o.is_duplicate = 0")->fetchAll(PDO::FETCH_ASSOC) as $r) { $seen[(int)$r['product_id']][\App\Services\Pricing\SourceIdentity::ofRow($r)] = true; }
+        foreach ($seen as $id => $platforms) { $sources[$id] = count($platforms); }
         $specs = [];
         try { foreach ($db->query('SELECT product_id, spec_key FROM product_reference_specs')->fetchAll(PDO::FETCH_ASSOC) as $r) { $specs[(int)$r['product_id']][(string)$r['spec_key']] = true; } } catch (\PDOException $e) { /* migration 020 not applied */ }
         $newPrice = [];

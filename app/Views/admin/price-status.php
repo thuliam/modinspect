@@ -34,7 +34,8 @@ ob_start(); if ($canRecalculate && $actionable > 0): ?>
                     <td><span class="badge <?= $tone[$row['state']] ?>"><?= htmlspecialchars(t('price.state.' . $row['state'])) ?></span></td>
                     <td class="text-right"><?= $money($row['public_median']) ?><?php if ($row['public_sample'] !== null): ?><br><small class="text-muted"><?= htmlspecialchars(t('price.samples', ['n' => $row['public_sample']])) ?></small><?php endif; ?></td>
                     <td>
-                        <?php if (isset($row['changes']['median'])): ?><?= htmlspecialchars(t('price.col.median')) ?> <?= $money($row['changes']['median']['from'] === null ? null : (float)$row['changes']['median']['from']) ?> → <?= $money((float)$row['changes']['median']['to']) ?>
+                        <?php if ($row['status'] === 'withdraw'): ?><?= htmlspecialchars(t('price.will_withdraw')) ?>
+                        <?php elseif (isset($row['changes']['median'])): ?><?= htmlspecialchars(t('price.col.median')) ?> <?= $money($row['changes']['median']['from'] === null ? null : (float)$row['changes']['median']['from']) ?> → <?= $money((float)$row['changes']['median']['to']) ?>
                         <?php elseif ($row['status'] === 'not_eligible'): ?><?= htmlspecialchars(t('price.below_minimum')) ?>
                         <?php else: ?><?= htmlspecialchars(t('price.details_changed')) ?><?php endif; ?>
                     </td>

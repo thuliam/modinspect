@@ -126,3 +126,9 @@ It never changes the verdict label, never reads or writes a price snapshot, and 
 `App\Services\Pricing\CohortRules` is the only rule for which listing counts. The price snapshot and the monthly trend (`TrendBuilder`) both use it.
 A public price needs the latest recorded asking snapshot, at least 3 listings, a median, and every listing behind it unchanged (`PublicSnapshot`).
 From the admin, approving or withdrawing a listing runs `PriceRefresh` for the models concerned: a new snapshot only when the result differs or the stored one is no longer publishable, then that model's trend months. Imports and command line changes are picked up by `cli/daily_jobs.php --apply` or the price status page.
+
+## Brand-new claims and withdrawal (LS-90, `cohort-v2`)
+- A listing whose own text claims a new item (`BrandNewClaim`) is excluded from used asking and sold prices with reason `BRAND_NEW_CLAIM`. It is the last check, so earlier reason codes are unchanged. New-price references are a separate path and are not affected.
+- The same detector marks rows in the review queue and keeps them out of the owner-text approval plan.
+- If the currently public snapshot counted a listing that the rules now leave out and fewer than 3 remain, recalculation stores a snapshot of what is left with fewer than 3 samples. It is the latest one and never publishable, so the model shows "not enough data". Earlier snapshots stay and replay; price history gets no row.
+- `cli/snapshot_recompute.php` reports these models as `withdraw`.

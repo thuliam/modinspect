@@ -40,7 +40,10 @@ final class PriceRefresh
             $result = ['product_id' => $productId, 'status' => 'failed', 'median' => null, 'sample' => null, 'error' => null];
             try {
                 $plan = $recompute->planProduct($productId);
-                if ($plan['status'] === 'not_eligible' || $plan['status'] === 'none') {
+                if ($plan['status'] === 'withdraw') {
+                    $this->snapshots->recalculateProduct($productId);   // stores the unpublishable snapshot that hides the outdated price
+                    $result['status'] = 'below_minimum';
+                } elseif ($plan['status'] === 'not_eligible' || $plan['status'] === 'none') {
                     $result['status'] = 'below_minimum';
                 } elseif ($plan['status'] === 'unchanged') {
                     $result['status'] = 'unchanged';

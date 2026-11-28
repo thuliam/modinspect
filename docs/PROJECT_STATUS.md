@@ -1,96 +1,16 @@
 # ModInspect Project Status
 
-SSD research continuation: 45 model/capacity/variant summaries from Gen5 and 4TB comparative tables were staged. Unusual write values and cross-guide overlap are flagged; identity, test context and rights remain unreviewed.
+## Current state (2026-11-28)
 
-Internal SSD research continuation: 41 1TB model/variant summaries were staged from a comparative CrystalDiskMark table. Capacity is separate from the existing 2TB results; platform, identity, overlap and reuse rights remain unreviewed.
+| Item | State |
+|---|---|
+| Live site | https://modinspect.thuliamdev.com, released by the manual FTPS workflow from `main`. Last release: PR 25 (LS-88/89), 2026-11-28 |
+| Database | One shared MariaDB for the live site and DEV. Every `--apply` and migration affects the live site. Migrations through 039 applied and recorded |
+| Prices | 55 public used-asking prices, all from one platform. 309 listings wait for review |
+| Optional modules | Seller listings, seller check, community reports, forum, push, two-step sign-in: off. Member sign-in has no OAuth keys; no member exists |
+| Open owner items | `docs/OWNER_TODO_TH.md` |
 
-Internal SSD research: 33 2TB model/variant summaries from Tweakers were staged, pairing CrystalDiskMark sequential read and write tables. Drive state, platform, product identity, overlap and rights remain unreviewed.
-
-Portable SSD research: four model/capacity summaries were added with multiple benchmark measurements; one low Lexar write value is flagged for verification. Conflicting Crucial X6 results were not merged. Identities and rights remain unreviewed.
-
-Portable storage research: nine model/capacity summaries from comparative SSD reviews were staged with source and benchmark results. Reused comparison columns were counted once; settings, host, identity and rights require review.
-
-Case research: 19 sourced thermal observations across nine case names and varied configurations were staged. Some use borrowed fans or removed panels; test methods and reuse rights require review. The 1,000-item goal remains unverified.
-
-Motherboard research: 34 Z890 DDR5-8800 Gear 2 validation outcomes were staged (15 passed one-hour stress and 19 failed POST). These are configuration-specific compatibility results, not performance scores or permanent product claims; identity and rights remain unreviewed.
-
-Motherboard research continuation: 29 peak-PCB observations from X870 and AM5 mini-ITX comparative tests are staged; the shared Taichi variant result is one row. Different CPUs and power limits require separate interpretation; identities and reuse rights remain unreviewed.
-
-B850 research: 25 configurations across 24 board names were staged with measured temperature, clock, wall power and Cinebench score from one comparative test. Power limits and the unrestricted run remain distinct; identity, rights and overlap need review.
-
-Motherboard research: 30 X870/X870E rear-PCB temperature observations from one comparative review were staged with source and methodology. They are not internal VRM sensor temperatures. Product matching, rights and overlap remain unreviewed; 1,000-item completion remains unverified.
-
-PSU research continuation: 26 efficiency observations across eight reviewed models were staged with input voltage and temperature context. Some models already have cold-test observations elsewhere. Average load methods and rights require review; the 1,000-item target remains unverified.
-
-Cooling research: twelve additional maximum-fan configurations from the PCMasters table were staged; six previously recorded rows were excluded. The source uses the same coolers under other fan conditions elsewhere in staging. Review and rights assessment remain open.
-
-DDR3 research continuation: fourteen AIDA64 configurations across six additional memory kit families were staged, retaining settings and overclock context. The data are unreviewed and do not establish 1,000 distinct products.
-
-DDR3 research: 11 AIDA64 system configurations across three RAM kits were staged; overclock and platform distinctions are preserved. One duplicate external HDD result was removed. Product identity and reuse rights remain unreviewed.
-
-Research continuation: six PSU efficiency observations and four RAM AIDA64 configurations were staged. Some are configurations of products already represented; cross-source duplication and rights remain open. The 1,000-item objective is unverified.
-
-RAM research: six family-level PassMark scores and seven AIDA64 configurations or repeated runs are staged; three are from one anonymous kit and community results are self-reported. Model matching, platform context, overlap and rights need review. The 1,000-item goal remains unverified.
-
-External storage research: 15 configurations across four external HDD/SSD products were staged with benchmark names and provenance; measurements of a single sample across tools are not separate products. Host details and reuse rights require review; no production import.
-
-Cooling research: 17 cooler configurations from the PCMasters 1000 rpm table are staged with CPU clock and thermal deltas. They use the same roundup as earlier maximum-fan observations, but different fan settings. Identities and reuse rights remain unreviewed; the 1,000-record objective is not yet verified.
-
-Cooling and case research continuation: 15 sourced metric observations were staged with test conditions. Some rows describe the same product under different conditions; duplication, identities and reuse rights remain unreviewed. The requested 1,000 performance records remain unverified.
-
-Seven-category research update: four PSU efficiency observations, two motherboard thermal sensor observations and one RAM test configuration were added to private staging. Sources and test conditions are recorded; matching and reuse rights remain unreviewed. The requested 1,000 performance-test records have not yet been established.
-
-
-
-Research staging (2026-11-22): web search identified openly licensed external performance datasets, saved under `database/reference/benchmark_research_2026-11-22/`: 3,171 InnoReviews calculated ranking rows and 803 LLM Speed workload results. These are unreviewed source records, not matched to Product Master or imported into the database; they must not affect price snapshots. InnoReviews values are derived scores, not raw benchmark results. Category coverage is incomplete; see the staging README for attribution, validation and limitations. This research does not establish a completed product milestone.
-
-Seven-category research continuation: 116 sourced metric observations across RAM, SSD, HDD, motherboard, PSU, case and cooling, plus 31 HDD fleet reliability aggregates, are staged separately with source and limitations in `database/reference/benchmark_research_2026-11-22/SEVEN_CATEGORY_RESEARCH.md`. Three SSD metrics come from one anonymous research run and cannot yet be matched to a product. This is not yet the requested 1,000 records; identities and reuse remain unreviewed. No production import.
-
-RAM research continuation: 14 additional DFI SD170 AIDA64 system configurations covering six reported memory part numbers have been staged separately, with read/write/copy results and CPU/channel context. They are unreviewed, may overlap other research and are not 14 distinct products; matching and reuse rights remain open.
-
-Case and cooling research continuation: four Noctua case-clearance measurements and 13 PC Gamer fan metric observations have been staged with test context; clearance is a compatibility measurement, not a thermal benchmark. Data remain unreviewed and are not imported.
-
-Storage research continuation: seven SSD SlowMark model/capacity summaries have been staged with source and explicit uncertainty flags; test setup is incomplete and one source-reported interface conflicts with its throughput. No matching or production import.
-
-Additional memory research: four kit-level AIDA64 read/latency summaries have been staged from an external review; complete per-kit platform details and product identities require verification. No matching or production import.
-
-Mixed-memory research: four AIDA64 configurations were staged with both DIMM identities, CPU, motherboard and profile; the measurements apply to the entire configuration, and one module was overclocked. Review and rights assessment remain open.
-
-Case thermal research: eight sourced temperature-above-ambient observations covering four case models were staged with workload and fan context; system configurations differ and no production import was performed.
-
-Board and cooler research: four rear-PCB VRM-area observations and six cooler temperature deltas were staged with source and test configuration. The former are surface measurements and the latter differences from ambient; review remains open.
-
-External HDD research: four CrystalDiskMark read/write summaries are staged by enclosure model and capacity; test settings are incomplete, internal drive models are unknown, and review remains open.
-
-Small-form-factor cooling research: six LOUQE RAW S1 cooler/fan configurations were staged with system noise above ambient and test context. Values include case fans and are not standalone cooler noise; review remains open.
-
-Portable SSD research: eight sourced CrystalDiskMark read/write summaries have been staged with gaps and source discrepancies flagged; portable enclosures are not identified bare drives and matching remains open.
-
-PSU research continuation: 27 efficiency observations across fourteen PSU models are staged with input voltage, hot/cold test and load-range caveats; source averaging methods differ and review remains open.
-
-Motherboard research continuation: three reported MOS sensor observations from two motherboard models are staged with CPU and configuration; sensor details and some workload context need review. Two additional search sources returned HTTP 403 and collection from them stopped, as recorded in the research notes.
-
-Additional case research: six thermal observations for four case models were staged with workload and configuration context. Antec P8 measurements used a moved stock fan and the GPU throttled; review remains open.
-
-SSD manufacturer research: six SSD452K capacities are staged with Transcend's reported maximum CrystalDiskMark speeds and test setup; these are manufacturer maxima, not independent review measurements.
-
-Additional manufacturer research: five MTE470A-I capacity variants are staged with Transcend-reported maximum speeds and test context; results remain separate from independent tests and unreviewed.
-
-Further manufacturer research: ten capacity variants of Transcend MTE662T2 and MTS952T2 were staged with manufacturer-reported maximum speeds and different test setups; results remain unreviewed and separate from independent tests.
-
-Additional thermal research: six observations across three motherboard models and one cooler are staged with sensor type and workload; they are not directly interchangeable and remain unreviewed.
-
-DDR4 configuration research: six AIDA64 observations covering three kit identities and two/four-stick layouts were staged with manual or XMP timings and test platform; they are system-level results and remain unreviewed.
-
-Further research adds Lexar SL500 and two USB configurations of Fanxiang PS2000W, two Thermaltake A500 TG thermal readings, and two Gigabyte X870 AORUS ELITE WIFI7 VRM/heatsink observations. All are staged and unreviewed; interface and sensor distinctions are retained.
-
-Internal HDD research: nine review-based CrystalDiskMark summaries have been staged, including exact and incomplete model identities; missing settings, identity resolution and reuse rights remain open.
-
-Lexar and motherboard research: three vendor-run NM610 PRO benchmark configurations and one externally probed Z890M VRM heatsink observation were staged; source context and limitations are recorded. A Neoseeker page returned HTTP 403 and collection from it stopped.
-
-Further cooling research: five system-temperature observations across Lancool 207, Fractal Summit and Corsair 3200D cases, plus one PCCooler W120 cooler observation, were staged with workload and configuration caveats.
-
-Linux Hardware SMART research staging: 3,000 model-level HDD/SSD/NVMe health-statistic rows (three pinned CC BY 4.0 reports) have been added. These are self-selected SMART-based estimates, not controlled performance benchmarks or verified independent samples; do not mix them with performance measurements. See the seven-category research note for limitations. Performance-test coverage remains incomplete.
+Older sections below are history, newest at the end. Research staging notes are in `docs/RESEARCH_LOG.md`.
 
 ## 0. Canonical Current State (2026-11-14, Asia/Bangkok, Claude takeover baseline)
 
@@ -1282,3 +1202,20 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - Found and fixed: the admin review detail page printed its own PHP source since `54254b1` (2026-11-15). The live site still has this until deploy.
 - Shared database, read-only with the new code (2026-11-28): 55 public prices, all marked outdated (confidence method v3), 2 hidden (Corsair Vengeance LPX 32GB DDR4-3200, Intel Core i5-8400); no median would change; trend rebuild: 8 changed, 19 added, 1 removed.
 - Not done: bulk review of many rows (needs the DataTables extension download), a scheduled task on the host, QR code for two-step sign-in, CSRF check stays per action, coverage report still counts source rows rather than platforms.
+
+## LS-88/89 release 2026-11-28 (owner: "ขึ้นโค้ดและฐาน")
+- PR 25 merged to main (`a80fe46`) after CI passed on PHP 8.1, 8.3 and 8.4. This replaces the "not pushed, not deployed" notes above.
+- `ModInspect FTPS Deploy` plan (527 files, no remote deletes), then deploy: upload succeeded. **The workflow's smoke job failed, twice** (rerun of that job only): 11 of 42 checks, and every address, `robots.txt` and `favicon.ico` included, answered the GitHub runner with an HTML page and status 200. The same check from the Studio machine passed 37 of 37 right after, with `/.env` and `/.git/config` answering 403. Cause not established; a host-side block page for the runner's address is the likely reading and is unverified.
+- Shared database: backed up, migrations 038 and 039 applied and recorded, `snapshot_recompute --apply` stored 55 snapshots (no median, quartile or sample change; 9 confidence labels medium to low), trend rebuilt to 71 points (8 changed, 19 added, 1 removed). Audit after: 55 public prices, 55 replay MATCH, P0 0, P1 0, all single source.
+- Product 229 trend (2,190 to 1,400) checked before applying: four newer used listings that the public price already counted. Two of its seven listings say they are brand new (handled by LS-90 T1).
+- Verified on the live site: `/price/intel-core-i5-8400` shows "not enough data"; new admin pages redirect to sign-in; `/privacy` is still 404.
+- Not verified: signed-in admin pages on the live host, a real browser check.
+
+## LS-90 part 1 (T1-T8) 2026-11-28
+- T1: used prices leave out listings that claim a new item (`BrandNewClaim`, cohort-v2); a price that rested on them with too few left is withdrawn without deleting anything.
+- T2: review queue warnings (new, sold or reserved), filter "effect on price" with first-price rows first, CSV of pending rows.
+- T3-T5: `/seller-price-advisor` closed (`SELLER_ADVISOR_ENABLED`); photographs stored under two or more models are not drawn (7 models); `/privacy` and `/terms` behind `LEGAL_PAGES_ENABLED`, showing only published documents; text with unfilled blanks cannot be published.
+- T6-T7: `cli/backup_job.php`; coverage counts sources by platform; deploy sends files new to the host first; the smoke check says when it seems blocked; research notes moved to `docs/RESEARCH_LOG.md`.
+- T8: bulk review with a confirmation page (DataTables Select 1.7.0, owner-approved download, hashes verified).
+- Shared database, read-only before release: 12 snapshots change, 4 prices would be withdrawn (RTX 4070 SUPER, Core i5-14400F, Ryzen 9 9800X3D, NVMe 2TB), largest median move among kept models 5.2%; 34 approved listings are left out as new. Within the owner's limits (at most 6 withdrawn, at most 15%).
+- Browser check on the local test database: select rows, confirm, save, price recalculated; no console error from the admin script.

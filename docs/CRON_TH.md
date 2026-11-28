@@ -28,3 +28,9 @@
 | เมื่อพร้อมให้อัปเดตเอง | `php /path/to/modinspect/cli/daily_jobs.php --apply --actor=<id แอดมิน>` | สำรองฐานสำเร็จก่อนจึงเขียนราคาและกราฟ ถ้าสำรองไม่สำเร็จจะไม่เขียนอะไร |
 
 ถ้าใช้คำสั่งนี้ ไม่ต้องตั้ง `db_backup.php` และ `db_backup_prune.php` ในตารางด้านบนซ้ำ การนำเข้าชุดข้อมูลยังใช้ `daily_pipeline.php`
+
+## งานสำรองฐานบนเครื่อง Studio (LS-90)
+
+Windows Task Scheduler ชื่อ `ModInspect daily DB backup` ทุกวัน 12:00 (ถ้าเครื่องปิดอยู่ จะรันเมื่อเปิดและล็อกอิน) รัน `php cli/backup_job.php` จากโฟลเดอร์หลัก
+อ่านฐานอย่างเดียว เขียนไฟล์ใหม่ใน `storage/backups/` และบันทึกหนึ่งบรรทัดใน `storage/logs/backup.log` ไม่ลบไฟล์เก่า (ราว 10 MB ต่อวัน ลบเองเป็นครั้งคราว หรือใช้ `cli/db_backup_prune.php`)
+ปิดงาน: `Unregister-ScheduledTask -TaskName "ModInspect daily DB backup"`

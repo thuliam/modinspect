@@ -10,6 +10,8 @@
 <script src="<?= $base ?>/assets/admin/vendor/bootstrap/js/bootstrap.bundle.js"></script>
 <script src="<?= $base ?>/assets/admin/vendor/datatables/js/jquery.dataTables.min.js"></script>
 <script src="<?= $base ?>/assets/admin/vendor/datatables/js/dataTables.bootstrap4.min.js"></script>
+<script src="<?= $base ?>/assets/admin/vendor/datatables-select/js/dataTables.select.min.js"></script>
+<script src="<?= $base ?>/assets/admin/vendor/datatables-select/js/select.bootstrap4.min.js"></script>
 <script type="application/json" id="mi-i18n"><?= json_encode([
     'continue' => t('js.continue'), 'edit_product' => t('js.edit_product'), 'edit_product_sub' => t('js.edit_product_sub'), 'save_changes' => t('js.save_changes'),
     'add_product' => t('js.add_product'), 'add_product_sub' => t('js.add_product_sub'), 'save_product' => t('js.save_product'),

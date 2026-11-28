@@ -43,6 +43,15 @@ $components = [
             'datatables.net-bs4@1.13.11' => 'sha512-1LnxzQDFKpwvBETc8wtUtQ+pUXhs6NJomNST5pRzzHAccckkj9rZeOp3mevKDnDJKuNhBM1Y0rIeZGylJnqh9A==',
         ],
     ],
+    'datatables-select' => [
+        'dir' => 'datatables-select', 'version' => '1.7.0', 'license' => 'MIT',
+        'source' => 'npm datatables.net-select@1.7.0 and datatables.net-select-bs4@1.7.0 (official SpryMedia packages), tarball sha512 verified at install; only dataTables.select.min.js, select.bootstrap4.min.js, select.bootstrap4.min.css and License.txt are kept. Downloaded 2026-11-28 with owner approval (LS-90).',
+        'provenance' => 'official-npm-verified',
+        'npm_integrity' => [
+            'datatables.net-select@1.7.0' => 'sha512-ps8eL8S2gUV7EdzMraw8mfQlHXpfuc8TC2onBxdk0snP8eizPe85VhpI3r4ULvPRTTI7vcViz8E7JV8aayA2lw==',
+            'datatables.net-select-bs4@1.7.0' => 'sha512-PAOAPVaIVxZ0FEk0BamIF4a3YVkln2swIM+be+w09OWRlUo8QXFY5LbImjZ9SdUInT7pCZfueBQh5oKSKesylg==',
+        ],
+    ],
     'select2' => [
         'dir' => 'select2', 'version' => '4.0.13', 'license' => 'MIT',
         'source' => 'npm select2@4.0.13 (official package), tarball sha512 verified at install; only dist/js/select2.min.js, dist/css/select2.min.css, dist/js/i18n/th.js and LICENSE.md are kept. Downloaded 2026-11-19 with owner approval (LS-18).',

@@ -11,7 +11,7 @@ $excluded=(int)($summary['status_totals']['excluded'] ?? 0);
 $activeBatch=null;
 foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') === (string)($batchOption['value'] ?? '')) $activeBatch=$batchOption; }
 ?>
-<?php ob_start(); ?><?= htmlspecialchars(t('v.review_queue')) ?><?php $dxT = ob_get_clean(); ob_start(); ?><?= htmlspecialchars(t('v.human_review_console_defaults_to_rea')) ?><?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-analytics"><i class="fas fa-chart-bar mr-2"></i><?= htmlspecialchars(t('v.review_analytics')) ?></a><?php $dxA = ob_get_clean(); ?>
+<?php ob_start(); ?><?= htmlspecialchars(t('v.review_queue')) ?><?php $dxT = ob_get_clean(); ob_start(); ?><?= htmlspecialchars(t('v.human_review_console_defaults_to_rea')) ?><?php $dxD = ob_get_clean(); ob_start(); ?><a class="btn btn-outline-primary" href="<?= $base ?>/admin/review-analytics"><i class="fas fa-chart-bar mr-2"></i><?= htmlspecialchars(t('v.review_analytics')) ?></a><a class="btn btn-outline-secondary ml-2" href="<?= $base ?>/admin/review-queue/export"><i class="fas fa-file-csv mr-2"></i><?= htmlspecialchars(t('review.export')) ?></a><?php $dxA = ob_get_clean(); ?>
 <?= mi_page_header($base, array (  0 => 'Market Data',), $dxT, $dxD, $dxA) ?>
 
 <div class="row mi-metric-row">
@@ -26,6 +26,13 @@ foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') ==
 </div>
 
 <form id="review-filters" class="review-filter-panel js-datatable-filters" data-target="#review-table" method="get" action="<?= $base ?>/admin/review-queue">
+    <label><?= htmlspecialchars(t('review.impact')) ?>
+        <select name="impact">
+            <option value="" <?= $selected('impact','') ?>><?= htmlspecialchars(t('review.impact.all')) ?></option>
+            <option value="price" <?= $selected('impact','price') ?>><?= htmlspecialchars(t('review.impact.price')) ?></option>
+            <option value="first_price" <?= $selected('impact','first_price') ?>><?= htmlspecialchars(t('review.impact.first_price')) ?></option>
+        </select>
+    </label>
     <label><?= htmlspecialchars(t('v.dataset')) ?>
         <select name="dataset">
             <option value="REAL" <?= $selected('dataset','REAL') ?>><?= htmlspecialchars(t('v.real')) ?></option>
@@ -75,8 +82,18 @@ foreach($batchOptions as $batchOption){ if((string)($filters['run_id'] ?? '') ==
 
 <div class="card mi-table-card">
     <div class="card-header"><h2><?= htmlspecialchars(t('v.review_records')) ?></h2></div>
+<?php $canBulk = !empty($can_decide); if ($canBulk): ?>
+    <form class="card-body border-bottom js-bulk-review" method="post" action="<?= $base ?>/admin/review-queue/bulk" data-table="#review-table" data-empty="<?= htmlspecialchars(t('review.bulk.none')) ?>">
+        <input type="hidden" name="_token" value="<?= htmlspecialchars(\App\Core\Csrf::token()) ?>">
+        <input type="hidden" name="ids" value="">
+        <p class="text-muted small mb-2"><?= htmlspecialchars(t('review.bulk.pick', ['n' => \App\Services\Review\BulkReview::MAX_ROWS])) ?></p>
+        <button class="btn btn-sm btn-success mr-1" type="submit" name="decision" value="approved"><?= htmlspecialchars(t('review.bulk.approved')) ?></button>
+        <button class="btn btn-sm btn-outline-danger mr-1" type="submit" name="decision" value="rejected"><?= htmlspecialchars(t('review.bulk.rejected')) ?></button>
+        <button class="btn btn-sm btn-outline-secondary" type="submit" name="decision" value="excluded"><?= htmlspecialchars(t('review.bulk.excluded')) ?></button>
+    </form>
+<?php endif; ?>
     <div class="table-responsive">
-        <table id="review-table" class="table mi-admin-table mb-0 js-server-data-table mi-review-dt" data-source-url="<?= $base ?>/admin/review-queue/data" data-filters="#review-filters" data-page-length="25">
+        <table id="review-table" class="table mi-admin-table mb-0 js-server-data-table mi-review-dt" data-source-url="<?= $base ?>/admin/review-queue/data" data-filters="#review-filters" data-page-length="25"<?= $canBulk ? ' data-bulk-form="1"' : '' ?>>
             <thead><tr><th><?= htmlspecialchars(t('v.review_item')) ?></th></tr></thead>
             <tbody></tbody>
         </table>

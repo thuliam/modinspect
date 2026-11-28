@@ -59,6 +59,7 @@ final class OwnerApprovalPlan
         // LS-77b: a title that names another hardware category is a row filed under the wrong product
         if (!empty($r['category']) && \App\Services\Catalog\SpecConsistency::categoryConflict((string)$r['raw_title'], (string)$r['category']) !== null) { return true; }
         return (int)$r['is_deposit'] === 1 || (int)$r['is_defective'] === 1 || (int)$r['is_duplicate'] === 1 || (string)$r['listing_type'] !== 'single_item'
-            || preg_match('/(ขายแล้ว|\bsold\b|จองแล้ว|reserved|ติดจอง|มือ ?1\b|มือหนึ่ง|brand new|sealed|ใหม่แกะกล่อง|ของใหม่|มัดจำ|deposit)/iu', (string)$r['raw_title']) === 1;
+            || preg_match('/(ขายแล้ว|\bsold\b|จองแล้ว|reserved|ติดจอง|มัดจำ|deposit)/iu', (string)$r['raw_title']) === 1
+            || \App\Services\Pricing\BrandNewClaim::detect((string)$r['raw_title']) !== null;   // LS-90: the same rule the price calculation uses
     }
 }

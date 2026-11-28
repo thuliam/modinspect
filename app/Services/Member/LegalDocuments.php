@@ -34,6 +34,9 @@ final class LegalDocuments
             $d = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$d || $d['status'] !== 'draft') { throw new \RuntimeException('NOT_A_DRAFT'); }
             if (trim((string)$d['body_text']) === '') { throw new \RuntimeException('EMPTY_BODY'); }
+            // LS-90: the drafts mark what the owner still has to decide as [...]; such a text is not ready to publish
+            if (preg_match('/\[[^\]
+]{2,}\](?!\()/u', (string)$d['body_text']) === 1) { throw new \RuntimeException('UNFILLED_BLANK'); }
             $this->db->prepare("UPDATE legal_documents SET status = 'retired' WHERE doc_type = :t AND status = 'published'")->execute(['t' => $d['doc_type']]);
             $this->db->prepare("UPDATE legal_documents SET status = 'published', published_at = NOW(), published_by_user_id = :u WHERE id = :id")->execute(['u' => $adminUserId, 'id' => $documentId]);
             $this->audit->record(null, 'admin', $adminUserId, 'legal.published', 'legal_document', $documentId);
@@ -62,6 +65,14 @@ final class LegalDocuments
     public function published(): array
     {
         return $this->db->query("SELECT id, doc_type, version, title, published_at FROM legal_documents WHERE status = 'published' ORDER BY doc_type")->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /** @return ?array<string,mixed> the current published document of one type, with its text */
+    public function current(string $type): ?array
+    {
+        $stmt = $this->db->prepare("SELECT id, doc_type, version, title, body_text, published_at FROM legal_documents WHERE doc_type = :t AND status = 'published' ORDER BY published_at DESC, id DESC LIMIT 1");
+        $stmt->execute(['t' => $type]);
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
     /** @return list<array<string,mixed>> published documents the member has not accepted yet */

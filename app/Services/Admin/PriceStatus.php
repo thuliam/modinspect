@@ -53,7 +53,7 @@ final class PriceStatus
                     'public_median' => $public['median'] === null ? null : (float)$public['median'],
                     'public_sample' => $public['valid_sample_size'] === null ? null : (int)$public['valid_sample_size'],
                     'calculated_at' => $public['last_calculated_at'],
-                    'can_recalculate' => in_array($plan['status'], ['new', 'changed'], true),
+                    'can_recalculate' => in_array($plan['status'], ['new', 'changed', 'withdraw'], true),
                 ];
             }
         }
@@ -86,7 +86,7 @@ final class PriceStatus
             'state' => self::state($public !== null, $plan['status']),
             'public' => $public,
             'preview' => $this->snapshots->previewProduct($productId),
-            'can_recalculate' => in_array($plan['status'], ['new', 'changed'], true),
+            'can_recalculate' => in_array($plan['status'], ['new', 'changed', 'withdraw'], true),
             'included' => $cohort['included'],
             'excluded_reasons' => $reasons,
         ];

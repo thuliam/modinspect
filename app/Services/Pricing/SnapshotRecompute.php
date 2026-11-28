@@ -12,7 +12,8 @@ use PDO;
  * flooded). Neither method changes a formula, an observation or an approval; deterministic PHP still owns every number.
  *
  * Status per product: new (no recorded snapshot yet, now eligible), changed, unchanged, not_eligible (fewer than 3 usable observations; an older
- * snapshot, if any, stays as it is: it is not deleted here), none (no snapshot and not eligible).
+ * snapshot, if any, stays as it is: it is not deleted here), none (no snapshot and not eligible), withdraw (LS-90: the public price counted a
+ * listing that today's rules leave out and too few remain, so apply() stores an unpublishable snapshot that hides it; nothing is deleted).
  */
 final class SnapshotRecompute
 {
@@ -41,6 +42,9 @@ final class SnapshotRecompute
         $row = ['product_id' => $pid, 'name' => $name, 'status' => 'unchanged', 'changes' => []];
         $new = $this->svc->previewProduct($pid, $priceType);
         if ($new === null) {
+            if ($cur !== null && $this->svc->needsWithholding($pid, $priceType)) {
+                return array_merge($row, ['status' => 'withdraw', 'changes' => ['median' => ['from' => (float)$cur['median'], 'to' => null]]]);
+            }
             return array_merge($row, ['status' => $cur === null ? 'none' : 'not_eligible']);
         }
         if ($cur === null) {
@@ -58,12 +62,13 @@ final class SnapshotRecompute
         return array_merge($row, ['status' => $ch === [] ? 'unchanged' : 'changed', 'changes' => $ch]);
     }
 
-    /** @param list<array{product_id:int,status:string}> $plan @return int snapshots stored (only new or changed products) */
+    /** @param list<array{product_id:int,status:string}> $plan @return int snapshots stored (new, changed and withdrawn products) */
     public function apply(array $plan, string $priceType = 'asking'): int
     {
         $n = 0;
         foreach ($plan as $row) {
             if (in_array($row['status'], ['new', 'changed'], true) && $this->svc->recalculateProduct((int)$row['product_id'], $priceType) !== null) { $n++; }
+            if ($row['status'] === 'withdraw') { $this->svc->recalculateProduct((int)$row['product_id'], $priceType); $n++; }
         }
         return $n;
     }

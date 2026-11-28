@@ -74,5 +74,14 @@ if ($links) {
 foreach (['/seller-check' => 'seller check (HG-14)', '/account/login' => 'member sign-in (HG-13)'] as $p => $label) {
     $r = smoke_get($base . $p); echo "  info  $label is " . ($r['code'] === 404 ? 'OFF' : 'reachable') . " ($p: {$r['code']})\n";
 }
+// LS-90: when checks fail, say whether this checker is seeing the site at all (a host block page answers every address, even one that does not exist)
+if ($fail > 0) {
+    $none = smoke_get($base . '/smoke-no-such-page-' . bin2hex(random_bytes(4)));
+    preg_match('/<title[^>]*>(.{0,100}?)<\/title>/is', $none['body'], $t);
+    if ($none['code'] === 200) {
+        echo "  info  an address that does not exist answered 200: this checker is probably being blocked or intercepted by the host, so the results above do not describe the site. Check from another network.\n";
+    }
+    echo '  info  unknown address: ' . $none['code'] . ', title "' . trim(preg_replace('/\s+/', ' ', $t[1] ?? '')) . "\"\n";
+}
 echo "\n" . ($fail === 0 ? "SMOKE PASS ($pass checks)\n" : "SMOKE FAIL ($fail of " . ($pass + $fail) . " checks failed)\n");
 exit($fail === 0 ? 0 : 1);
