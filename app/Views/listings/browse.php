@@ -21,7 +21,7 @@ $pageUrl = static fn(int $n): string => $base . '/listings?' . htmlspecialchars(
             <div class="form-group col-md-2"><label for="mk-max">ราคาไม่เกิน</label><input id="mk-max" class="form-control" type="number" min="1" name="max_price" value="<?= $f('max_price') ?>"></div>
             <div class="form-group col-md-2"><label for="mk-sort">เรียง</label><select id="mk-sort" class="form-control" name="sort"><?php foreach (['new' => 'ใหม่ก่อน', 'price_asc' => 'ราคาต่ำก่อน', 'price_desc' => 'ราคาสูงก่อน'] as $k => $label): ?><option value="<?= $k ?>"<?= ($filters['sort'] ?? 'new') === $k ? ' selected' : '' ?>><?= $label ?></option><?php endforeach; ?></select></div>
         </div>
-        <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="mk-ver" name="verified" value="1"<?= !empty($filters['verified']) ? ' checked' : '' ?>><label class="form-check-label" for="mk-ver">เฉพาะผู้ขายที่ผู้ดูแลยืนยันแล้ว</label></div>
+        <div class="mb-2"><label class="d-flex align-items-center mb-0"><input type="checkbox" name="verified" value="1" class="mr-2"<?= !empty($filters['verified']) ? ' checked' : '' ?>> เฉพาะผู้ขายที่ผู้ดูแลยืนยันแล้ว</label></div>
         <div><button class="button" type="submit">ค้นหา</button> <a class="button ghost" href="<?= $base ?>/listings">ล้างตัวกรอง</a></div>
     </form>
     <?php if ($member): ?>

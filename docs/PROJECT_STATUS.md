@@ -1219,3 +1219,15 @@ PR 16 and 17 merged to main (17 allows the reviewed select2 LICENSE.md by exact 
 - T8: bulk review with a confirmation page (DataTables Select 1.7.0, owner-approved download, hashes verified).
 - Shared database, read-only before release: 12 snapshots change, 4 prices would be withdrawn (RTX 4070 SUPER, Core i5-14400F, Ryzen 9 9800X3D, NVMe 2TB), largest median move among kept models 5.2%; 34 approved listings are left out as new. Within the owner's limits (at most 6 withdrawn, at most 15%).
 - Browser check on the local test database: select rows, confirm, save, price recalculated; no console error from the admin script.
+
+## LS-90 part 2 (D1-D6) 2026-11-28: seller marketplace foundations, closed
+- Everything a member would see is behind `SELLER_LISTINGS_PUBLIC` (off): routes answer 404 and write nothing.
+- D1 seller profile and manual verification (`seller_profiles`, `seller_verification_events`); contact details refused; a changed profile loses its verification.
+- D2 listing quantity, expiry (`LISTING_EXPIRY_DAYS`, 60 is a starting value), reserved and sold, renewal, history (`listing_status_events`). Listings never create an observation or a price (HG-17, tested).
+- D3 `/listings` search and filters, saved listings and searches, report a listing.
+- D4 `/admin/moderation` (queues with waiting time, listing reports, seller verification); capability `content_moderator` for an admin-side account without changing the role column.
+- D5 `notification_queue` delivered only to `storage/logs/notifications.log` by `cli/notify_process.php --apply`. Nothing is e-mailed or pushed.
+- D6 switch tests, contact-detail checks, account deletion removes the new rows. The admin route guard now also reads routes written with a full class name (they were not checked before; all passed except the new moderation page, fixed).
+- Migrations 040-044 (tables and columns added only).
+- Not built (out of scope): messaging, orders, payments, Buyer Plus, reviews tied to orders.
+- Not verified: a real member sign-in (no OAuth keys); member pages were opened in a local browser with a test-only session helper.
