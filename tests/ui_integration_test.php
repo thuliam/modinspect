@@ -5,6 +5,9 @@ require __DIR__ . '/bootstrap.php';
 $_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admin pages (the default language is Thai)
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminCatalogController;
+use App\Controllers\AdminReviewController;
+use App\Controllers\AdminCollectionController;
 use App\Controllers\DealCheckerController;
 use App\Controllers\HomeController;
 use App\Controllers\ModuleController;
@@ -93,15 +96,15 @@ try {
         '/seller-price-advisor' => fn() => (new ModuleController())->sellerAdvisor(),
         '/methodology' => fn() => (new HomeController())->methodology(),
         '/admin' => fn() => (new AdminController())->index(),
-        '/admin/products' => fn() => (new AdminController())->products(),
-        '/admin/product-aliases' => fn() => (new AdminController())->aliases(),
-        '/admin/price-observations' => fn() => (new AdminController())->observations(),
-        '/admin/review-queue' => fn() => (new AdminController())->review(),
-        '/admin/review-analytics' => fn() => (new AdminController())->reviewAnalytics(),
+        '/admin/products' => fn() => (new AdminCatalogController())->products(),
+        '/admin/product-aliases' => fn() => (new AdminCatalogController())->aliases(),
+        '/admin/price-observations' => fn() => (new AdminReviewController())->observations(),
+        '/admin/review-queue' => fn() => (new AdminReviewController())->review(),
+        '/admin/review-analytics' => fn() => (new AdminReviewController())->reviewAnalytics(),
         '/admin/price-indices' => fn() => (new AdminController())->indices(),
-        '/admin/sources' => fn() => (new AdminController())->sources(),
-        '/admin/collector-jobs' => fn() => (new AdminController())->jobs(),
-        '/admin/articles' => fn() => (new AdminController())->articlesOperational(),
+        '/admin/sources' => fn() => (new AdminCollectionController())->sources(),
+        '/admin/collector-jobs' => fn() => (new AdminCollectionController())->jobs(),
+        '/admin/articles' => fn() => (new AdminCatalogController())->articlesOperational(),
         '/admin/audit-logs' => fn() => (new AdminController())->audits(),
     ];
 
@@ -130,43 +133,42 @@ try {
     }
     http_response_code(200);
 
-    $adminController = new AdminController();
-    assert_datatable(fn() => $adminController->productsData(), 'Products DataTable');
-    $productTotal = datatable_payload(fn() => $adminController->productsData());
-    $search5700 = datatable_payload(fn() => $adminController->productsData(), ['search' => ['value' => '5700X3D']]);
+    assert_datatable(fn() => (new AdminCatalogController())->productsData(), 'Products DataTable');
+    $productTotal = datatable_payload(fn() => (new AdminCatalogController())->productsData());
+    $search5700 = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['search' => ['value' => '5700X3D']]);
     assert_ui((int)$search5700['recordsFiltered'] >= 1, 'Products search 5700X3D returned no rows');
     assert_ui(str_contains(datatable_text($search5700), '5700X3D'), 'Products search 5700X3D missing expected product');
     assert_ui((int)$search5700['recordsFiltered'] < (int)$productTotal['recordsTotal'], 'Products search did not reduce filtered count');
-    $searchImpossible = datatable_payload(fn() => $adminController->productsData(), ['search' => ['value' => 'this-product-must-not-exist-xyz987']]);
+    $searchImpossible = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['search' => ['value' => 'this-product-must-not-exist-xyz987']]);
     assert_ui((int)$searchImpossible['recordsFiltered'] === 0 && count($searchImpossible['data']) === 0, 'Products impossible search must return zero rows');
-    $page1 = datatable_payload(fn() => $adminController->productsData(), ['start' => 0, 'length' => 10]);
-    $page2 = datatable_payload(fn() => $adminController->productsData(), ['start' => 10, 'length' => 10]);
+    $page1 = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['start' => 0, 'length' => 10]);
+    $page2 = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['start' => 10, 'length' => 10]);
     assert_ui(datatable_text($page1) !== datatable_text($page2), 'Products pagination page 1 and page 2 returned the same rows');
-    $sortAsc = datatable_payload(fn() => $adminController->productsData(), ['order' => [['column' => 0, 'dir' => 'asc']]]);
-    $sortDesc = datatable_payload(fn() => $adminController->productsData(), ['order' => [['column' => 0, 'dir' => 'desc']]]);
+    $sortAsc = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['order' => [['column' => 0, 'dir' => 'asc']]]);
+    $sortDesc = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['order' => [['column' => 0, 'dir' => 'desc']]]);
     assert_ui(datatable_text($sortAsc) !== datatable_text($sortDesc), 'Products sort ASC/DESC returned the same order');
     $categoryId = (int)$db->query("SELECT id FROM product_categories ORDER BY id LIMIT 1")->fetchColumn();
     $brandId = (int)$db->query("SELECT id FROM brands ORDER BY id LIMIT 1")->fetchColumn();
-    $categoryFilter = datatable_payload(fn() => $adminController->productsData(), ['category_id' => $categoryId]);
-    $brandFilter = datatable_payload(fn() => $adminController->productsData(), ['brand_id' => $brandId]);
-    $statusFilter = datatable_payload(fn() => $adminController->productsData(), ['active' => 1]);
+    $categoryFilter = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['category_id' => $categoryId]);
+    $brandFilter = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['brand_id' => $brandId]);
+    $statusFilter = datatable_payload(fn() => (new AdminCatalogController())->productsData(), ['active' => 1]);
     assert_ui((int)$categoryFilter['recordsFiltered'] <= (int)$productTotal['recordsTotal'], 'Products category filter invalid filtered count');
     assert_ui((int)$brandFilter['recordsFiltered'] <= (int)$productTotal['recordsTotal'], 'Products brand filter invalid filtered count');
     assert_ui((int)$statusFilter['recordsFiltered'] <= (int)$productTotal['recordsTotal'], 'Products status filter invalid filtered count');
-    assert_datatable(fn() => $adminController->aliasesData(), 'Aliases DataTable');
-    assert_datatable(fn() => $adminController->observationsData(), 'Observations DataTable');
-    assert_datatable(fn() => $adminController->reviewData(), 'Review Queue DataTable', ['dataset' => 'REAL', 'status' => 'pending']);
-    assert_datatable(fn() => $adminController->indicesData(), 'Price Index DataTable');
+    assert_datatable(fn() => (new AdminCatalogController())->aliasesData(), 'Aliases DataTable');
+    assert_datatable(fn() => (new AdminReviewController())->observationsData(), 'Observations DataTable');
+    assert_datatable(fn() => (new AdminReviewController())->reviewData(), 'Review Queue DataTable', ['dataset' => 'REAL', 'status' => 'pending']);
+    assert_datatable(fn() => (new AdminController())->indicesData(), 'Price Index DataTable');
     // Freshness is stored as a percentage (0-100); the Admin table once multiplied it again and showed "8,500.0%".
-    $indexPayload = datatable_payload(fn() => $adminController->indicesData(), ['length' => 100]);
+    $indexPayload = datatable_payload(fn() => (new AdminController())->indicesData(), ['length' => 100]);
     foreach ($indexPayload['data'] as $indexRow) {
         $freshText = trim(strip_tags((string)$indexRow[6]));
         assert_ui((bool)preg_match('/^\d{1,3}(\.\d)?%$/', $freshText) && (float)$freshText <= 100.0, "Price Index freshness out of range: {$freshText}");
     }
-    assert_datatable(fn() => $adminController->sourcesData(), 'Sources DataTable');
-    assert_datatable(fn() => $adminController->jobsData(), 'Imports DataTable');
-    assert_datatable(fn() => $adminController->articlesData(), 'Articles DataTable');
-    assert_datatable(fn() => $adminController->auditsData(), 'Audit DataTable');
+    assert_datatable(fn() => (new AdminCollectionController())->sourcesData(), 'Sources DataTable');
+    assert_datatable(fn() => (new AdminCollectionController())->jobsData(), 'Imports DataTable');
+    assert_datatable(fn() => (new AdminCatalogController())->articlesData(), 'Articles DataTable');
+    assert_datatable(fn() => (new AdminController())->auditsData(), 'Audit DataTable');
 
     $adminHtml = render_ui(fn() => (new AdminController())->index());
     $stats = (new Dashboard())->adminStats();
@@ -176,7 +178,7 @@ try {
     $failed = $db->prepare("INSERT INTO collector_jobs (source_id,job_type,product_id,query_text,status,attempt_count,error_message,created_at,updated_at) VALUES (:source_id,'coverage_mock_collection',:product_id,'ui-test','failed',1,'UI test failure',NOW(),NOW())");
     $failed->execute(['source_id' => $sourceId, 'product_id' => $productId]);
     $jobId = (int)$db->lastInsertId();
-    $jobsHtml = render_ui(fn() => (new AdminController())->jobs());
+    $jobsHtml = render_ui(fn() => (new AdminCollectionController())->jobs());
     assert_ui(str_contains($jobsHtml, '/admin/collector-jobs/data'), 'Collector jobs UI missing server-side DataTable endpoint');
     $requeue = (new SourceOperationsService())->requeueFailedJob($jobId);
     assert_ui($requeue['requeued'] === true, 'Requeue service action failed');
@@ -185,7 +187,7 @@ try {
     $ops = new SourceOperationsService();
     $pause = $ops->pauseSource($sourceId, 'UI integration pause', 'manually_paused');
     assert_ui($pause['status'] === 'paused', 'Source pause failed');
-    $sourcesHtml = render_ui(fn() => (new AdminController())->sources());
+    $sourcesHtml = render_ui(fn() => (new AdminCollectionController())->sources());
     assert_ui(str_contains($sourcesHtml, '/admin/sources/data'), 'Sources UI missing server-side DataTable endpoint');
     $resume = $ops->resumeSource($sourceId, 'UI integration resume');
     assert_ui($resume['status'] === 'resumed', 'Source resume failed');
@@ -204,7 +206,7 @@ try {
     $db->prepare("INSERT INTO observation_review_decisions (price_observation_id,raw_observation_id,lane,decision,reason_codes) VALUES (:observation_id,:raw_id,'green','review_required','[\"ui_test\"]')")
         ->execute(['observation_id' => $observationId, 'raw_id' => $rawId]);
 
-    $reviewHtml = render_ui(fn() => (new AdminController())->review());
+    $reviewHtml = render_ui(fn() => (new AdminReviewController())->review());
     assert_ui(str_contains($reviewHtml, '/admin/review-queue/data'), 'Review UI missing server-side DataTable endpoint');
     assert_ui((new Dashboard())->decideObservation($observationId, 'approved', 'UI integration approval') === true, 'Review approval failed');
     assert_ui((string)$db->query("SELECT verified_status FROM price_observations WHERE id={$observationId}")->fetchColumn() === 'approved', 'Approved review did not update observation');

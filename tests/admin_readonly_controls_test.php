@@ -6,6 +6,7 @@ define('MODINSPECT_TESTING', true);
 require __DIR__ . '/bootstrap.php';
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminCatalogController;
 use App\Core\Database;
 use App\Services\Auth\AuthService;
 
@@ -30,18 +31,18 @@ try {
     foreach (['products' => ['page' => 'products', 'data' => 'productsData', 'form' => 'id="product-form"', 'add' => 'js-product-new', 'row' => 'js-product-edit'],
               'aliases' => ['page' => 'aliases', 'data' => 'aliasesData', 'form' => 'id="alias-form"', 'add' => 'Save Alias', 'row' => 'js-alias-edit']] as $name => $c) {
         $as($admin);
-        $page = ro_page(fn() => (new AdminController())->{$c['page']}());
+        $page = ro_page(fn() => (new AdminCatalogController())->{$c['page']}());
         ok_ro(str_contains($page, $c['form']), "An admin sees the $name form");
-        $rows = json_decode(ro_page(fn() => (new AdminController())->{$c['data']}()), true);
+        $rows = json_decode(ro_page(fn() => (new AdminCatalogController())->{$c['data']}()), true);
         ok_ro(!empty($rows['data']) && str_contains(json_encode($rows['data']), $c['row']), "An admin gets edit buttons in the $name rows");
 
         $as($reviewer);
-        $page = ro_page(fn() => (new AdminController())->{$c['page']}());
+        $page = ro_page(fn() => (new AdminCatalogController())->{$c['page']}());
         ok_ro(!str_contains($page, $c['form']) && !str_contains($page, $c['add']) && !str_contains($page, '/save"'), "A reviewer sees no $name form and no add button");
-        $rows = json_decode(ro_page(fn() => (new AdminController())->{$c['data']}()), true);
+        $rows = json_decode(ro_page(fn() => (new AdminCatalogController())->{$c['data']}()), true);
         $json = json_encode($rows['data']);
         ok_ro(!empty($rows['data']) && !str_contains($json, $c['row']) && !str_contains($json, '/toggle') && !str_contains($json, '/delete') && !str_contains($json, '_token'), "A reviewer gets the $name rows without any edit, toggle, delete button or token");
-        ok_ro(count($rows['data'][0]) === count(json_decode(ro_page(fn() => (function () use ($as, $admin, $c) { $as($admin); (new AdminController())->{$c['data']}(); })()), true)['data'][0]), "The $name table keeps the same number of columns");
+        ok_ro(count($rows['data'][0]) === count(json_decode(ro_page(fn() => (function () use ($as, $admin, $c) { $as($admin); (new AdminCatalogController())->{$c['data']}(); })()), true)['data'][0]), "The $name table keeps the same number of columns");
         $as($reviewer);
     }
 } finally {

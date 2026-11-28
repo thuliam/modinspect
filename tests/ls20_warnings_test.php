@@ -26,7 +26,7 @@ ok_wn($bad === [], "A missing parameter would warn and give '' instead of its de
 // the fixed lines behave: simulate the new form
 $pick = static function (array $in, array $allowed, string $default): string { $s = (string)($in['status'] ?? $default); return in_array($s, $allowed, true) ? $s : $default; };
 ok_wn($pick([], ['open', 'stale'], 'open') === 'open' && $pick(['status' => 'stale'], ['open', 'stale'], 'open') === 'stale' && $pick(['status' => 'x'], ['open', 'stale'], 'open') === 'open', 'A missing, valid, unknown value gives the default, the value, the default');
-$ctl = (string)file_get_contents($root . '/app/Controllers/AdminController.php');
+$ctl = (string)file_get_contents($root . '/app/Controllers/AdminReviewController.php') . (string)file_get_contents($root . '/app/Controllers/AdminCatalogController.php');
 ok_wn(str_contains($ctl, "\$status=(string)(\$_GET['status'] ?? 'open'); if(!in_array(\$status,['open','stale','decided','all'],true)){ \$status='open'; }") && str_contains($ctl, "\$status=(string)(\$_POST['status'] ?? 'draft'); if(!in_array(\$status,['draft','published','archived'],true)){ \$status='draft'; }"), 'Both Admin controller lines use the fixed form');
 
 $boot = (string)file_get_contents($root . '/app/bootstrap.php');

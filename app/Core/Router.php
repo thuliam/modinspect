@@ -17,6 +17,7 @@ final class Router
         foreach ($this->routes as $route) {
             if ($route['method'] !== $method || !preg_match($route['pattern'], $uri, $matches)) continue;
             $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+            if (AdminGate::covers($uri)) { (new AdminGate())->requireSignedIn($method); }   // LS-89: no admin action runs for a visitor
             [$class, $action] = $route['handler'];
             (new $class())->$action(...array_values($params));
             return;

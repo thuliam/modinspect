@@ -4,6 +4,7 @@ declare(strict_types=1);
 define('MODINSPECT_TESTING', true);
 
 require __DIR__ . '/bootstrap.php';
+require __DIR__ . '/support/AdminRoutes.php';
 
 use App\Controllers\AdminController;
 use App\Core\Csrf;
@@ -77,11 +78,11 @@ try {
     foreach ($writes as $method => $uri) {
         foreach (['reviewer', 'operator'] as $role) {
             md_session((int)$users[$role]['id']);
-            $r = md_call(fn() => (new AdminController())->$method(), $uri);
+            $r = md_call(fn() => (new (admin_controller_of($method))())->$method(), $uri);
             ok_md($r === 'blocked', "$role must be refused (403) on POST $uri, got $r");
         }
         md_session((int)$users['admin']['id']);
-        $r = md_call(fn() => (new AdminController())->$method(), $uri);
+        $r = md_call(fn() => (new (admin_controller_of($method))())->$method(), $uri);
         ok_md($r === 'allowed', "admin must not be refused on POST $uri, got $r");
     }
     $after = [

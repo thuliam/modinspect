@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Models\Dashboard;
 use App\Services\Collection\OfflineEvidenceImportService;
@@ -71,7 +71,7 @@ $observation = [
     'corrections' => [],
 ];
 ob_start();
-include dirname(__DIR__) . '/app/Views/admin/review-detail.php';
+include dirname(__DIR__, 2) . '/app/Views/admin/review-detail.php';
 $viewHtml = (string)ob_get_clean();
 
 $queue = (new Dashboard())->reviewQueue([

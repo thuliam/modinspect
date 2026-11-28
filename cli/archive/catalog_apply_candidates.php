@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Services\Catalog\ProductImport;
@@ -9,11 +9,11 @@ use App\Services\Catalog\ProductImport;
 /**
  * LS-75: loads a models_to_add.csv (cli/catalog_candidates_models.php) through the same ProductImport the import centre uses.
  * Keeps rows served by at least --min unmatched posts and whose brand exists. Dry run by default; --apply writes.
- * Usage: php cli/catalog_apply_candidates.php --file=storage/import/catalog_candidates/models_to_add.csv [--min=2] [--apply]
+ * Usage: php cli/archive/catalog_apply_candidates.php --file=storage/import/catalog_candidates/models_to_add.csv [--min=2] [--apply]
  */
 global $config;
 $o = getopt('', ['file:', 'min::', 'apply']); $file = (string) ($o['file'] ?? ''); $min = max(1, (int) ($o['min'] ?? 2));
-if ($file === '' || !is_file($file)) { fwrite(STDERR, "Usage: php cli/catalog_apply_candidates.php --file=<csv> [--min=2] [--apply]\n"); exit(2); }
+if ($file === '' || !is_file($file)) { fwrite(STDERR, "Usage: php cli/archive/catalog_apply_candidates.php --file=<csv> [--min=2] [--apply]\n"); exit(2); }
 $fh = fopen($file, 'rb'); $head = fgetcsv($fh, 0, ',', '"', ''); $head[0] = preg_replace('/^\xEF\xBB\xBF/', '', (string) $head[0]); $rows = [];
 while (($r = fgetcsv($fh, 0, ',', '"', '')) !== false) {
     $a = array_combine($head, array_pad($r, count($head), ''));

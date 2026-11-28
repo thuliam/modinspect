@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Services\Catalog\PsuFormat;
@@ -10,7 +10,7 @@ use App\Services\Catalog\StorageFormat;
 /**
  * LS-74: fills the storage and PSU facts that are still empty (storage: interface, media, form factor, capacity; PSU: wattage, 80 PLUS rating, cable type, form factor)
  * from what each product's own name and summary state. Empty columns only, never overwrites, never guesses (a PSU form factor stays empty unless the text says it).
- * Dry run by default; --apply writes. Prints what is still incomplete. Usage: php cli/storage_psu_backfill.php [--apply]
+ * Dry run by default; --apply writes. Prints what is still incomplete. Usage: php cli/archive/storage_psu_backfill.php [--apply]
  */
 global $config;
 $apply = getopt('', ['apply']) !== [];

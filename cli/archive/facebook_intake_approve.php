@@ -8,10 +8,10 @@ declare(strict_types=1);
  * Per product, a row below 60% or above 160% of the median (pending plus already approved) is EXCLUDED with a note; a product with fewer than 3 usable rows
  * or a bimodal sample stays pending.
  *
- * Usage: php cli/facebook_intake_approve.php --actor=<admin user id> [--apply --expect=<rows to approve>]
+ * Usage: php cli/archive/facebook_intake_approve.php --actor=<admin user id> [--apply --expect=<rows to approve>]
  *        without --apply it only prints the plan and writes nothing; --apply refuses unless --expect equals the number of rows the plan approves.
  */
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Models\Dashboard;

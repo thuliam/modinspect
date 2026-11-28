@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Services\Collection\PricezaProbeCollector;
 
-$limit = 40;
+$limit = 8;
 $import = false;
 
 foreach (array_slice($argv ?? [], 1) as $arg) {
@@ -27,4 +27,4 @@ if (PHP_SAPI !== 'cli') {
     $import = (string)($_GET['import'] ?? '') === '1';
 }
 
-echo json_encode((new PricezaProbeCollector())->collectAuthoritativeBatch($limit, $import), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+echo json_encode((new PricezaProbeCollector())->collect($limit, $import), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;

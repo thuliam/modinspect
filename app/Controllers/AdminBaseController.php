@@ -6,6 +6,8 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Services\Auth\AuthService;
 use App\Services\Auth\AuthorizationService;
+use App\Core\Database;
+use App\Services\Collection\OfflineEvidenceImportService;
 
 /** LS-89: what every admin controller shares: the signed-in user, the server-side permission check, page rendering, flash messages and the audit line. */
 abstract class AdminBaseController extends Controller
@@ -21,6 +23,34 @@ abstract class AdminBaseController extends Controller
     protected function user(): ?array
     {
         return $this->user ??= (new AuthService())->currentUser();
+    }
+
+    /** LS-14 J-0: the server already refuses the write (403); this only stops the page from offering a button that would fail */
+    protected function canManage(): bool { return (new AuthorizationService())->can($this->user(), 'products.manage'); }
+    /** drops the action cell (last column) of every row for a read-only role; the column stays so the table keeps its shape */
+    protected function withoutActions(array $payload): array {
+        if($this->canManage() || empty($payload['data'])) return $payload;
+        foreach($payload['data'] as $i=>$row){ if(is_array($row) && $row){ $row[array_key_last($row)]=''; $payload['data'][$i]=$row; } }
+        return $payload;
+    }
+    protected function storedUploadPath(?array $file): string {
+        if(!$file || (int)($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) return '';
+        $name=(string)($file['name'] ?? '');
+        $ext=strtolower(pathinfo($name,PATHINFO_EXTENSION));
+        if(!in_array($ext,['csv','json'],true)) return '';
+        if((int)($file['size'] ?? 0) > OfflineEvidenceImportService::MAX_FILE_BYTES) return ''; // same cap the importer enforces, checked before the file is stored
+        $dir=ROOT_PATH.'/storage/import_uploads';
+        if(!is_dir($dir)) mkdir($dir,0775,true);
+        $target=$dir.'/admin-import-'.date('YmdHis').'-'.bin2hex(random_bytes(4)).'.'.$ext;
+        $tmp=(string)($file['tmp_name'] ?? '');
+        if(move_uploaded_file($tmp,$target)) return $target;
+        if(defined('MODINSPECT_TESTING') && is_file($tmp) && copy($tmp,$target)) return $target;
+        return '';
+    }
+    /** LS-21 (R-11): community report queue. Reads and decisions never hash an address, so a placeholder key is enough (the public form is what needs the real one). */
+    protected function communityReportService(): \App\Services\Community\CommunityReports {
+        global $config; $key=(string)($config['community_reports']['hmac_key']??'');
+        return new \App\Services\Community\CommunityReports(Database::connection($config['db']),strlen($key)>=32 ? $key : str_repeat('x',32));
     }
 
     protected function can(string $permission): bool

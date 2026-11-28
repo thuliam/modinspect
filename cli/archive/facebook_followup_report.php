@@ -7,9 +7,9 @@ declare(strict_types=1);
  *   LS-78  pending rows a reviewer would not trust, grouped by reason
  *   LS-79  products still pending and how many usable rows each one lacks
  *   LS-80  products without a photo; Klevv products
- * Usage: php cli/facebook_followup_report.php [--csv=storage/import/facebook_20261122]
+ * Usage: php cli/archive/facebook_followup_report.php [--csv=storage/import/facebook_20261122]
  */
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Services\Research\OwnerApprovalPlan;

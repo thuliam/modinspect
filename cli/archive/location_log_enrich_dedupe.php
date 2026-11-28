@@ -6,17 +6,17 @@ declare(strict_types=1);
  *   research_listings_sanitized.csv  (row_id, dedupe_key, duplicate_of_row)
  *   location_hints.csv               (only used to know the file belongs to the same extraction)
  *
- *   php cli/location_log_enrich_dedupe.php --listings=<research_listings_sanitized.csv>
+ *   php cli/archive/location_log_enrich_dedupe.php --listings=<research_listings_sanitized.csv>
  *
  * Idempotent; prints counts only. Needs migration 017.
  */
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 
 $file = '';
 foreach (array_slice($argv, 1) as $a) { if (str_starts_with($a, '--listings=')) { $file = substr($a, 11); } }
-if ($file === '' || !is_file($file)) { fwrite(STDERR, "Usage: php cli/location_log_enrich_dedupe.php --listings=<research_listings_sanitized.csv>\n"); exit(2); }
+if ($file === '' || !is_file($file)) { fwrite(STDERR, "Usage: php cli/archive/location_log_enrich_dedupe.php --listings=<research_listings_sanitized.csv>\n"); exit(2); }
 
 global $config;
 $db = Database::connection($config['db']);

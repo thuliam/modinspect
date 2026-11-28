@@ -117,7 +117,7 @@ $footer = (string)file_get_contents($root . '/app/Views/layouts/admin_footer.php
 preg_match_all("/t\('((?:js|dt)\.[a-z_]+)'\)/", $footer, $jsKeys);
 ok_lg(count($jsKeys[1]) >= 20, 'The footer hands the script texts to the page (' . count($jsKeys[1]) . ')');
 // page titles and crumbs written in English in the code have a text in both languages
-$ctrl = (string)file_get_contents($root . '/app/Controllers/AdminController.php');
+$ctrl = implode("\n", array_map(static fn(string $f): string => (string)file_get_contents($f), glob($root . '/app/Controllers/Admin*Controller.php') ?: []));
 preg_match_all("/render\('[a-z-]+','([^']+)'/", $ctrl, $titles);
 foreach (array_unique($titles[1]) as $ti) {
     if (str_contains($ti, '#') || preg_match('/[\x{0E01}-\x{0E4E}]/u', $ti)) { continue; }

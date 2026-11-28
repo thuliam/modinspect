@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Services\Catalog\RamFormat;
@@ -10,7 +10,7 @@ use App\Services\Catalog\RamFormat;
  * LS-71: fills the RAM facts (memory_type, memory_speed_mhz, capacity_gb, kit_modules, form_factor) of the RAM products that are still empty, from what their own
  * name and summary state. Never overwrites a value that is already there and never guesses a number the text does not give; form_factor defaults to DIMM
  * (desktop), the owner's decision of 2026-11-23 for this PC catalog. Dry run by default; --apply writes. Prints the products whose facts are still incomplete.
- * Usage: php cli/ram_backfill.php [--apply]
+ * Usage: php cli/archive/ram_backfill.php [--apply]
  */
 global $config;
 $apply = getopt('', ['apply']) !== [];

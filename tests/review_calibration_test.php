@@ -7,6 +7,7 @@ require __DIR__ . '/bootstrap.php';
 $_COOKIE['mi_lang'] = 'en';   // this test reads the English wording of the admin pages (the default language is Thai)
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminReviewController;
 use App\Core\Database;
 use App\Services\Auth\AuthService;
 use App\Services\Auth\AuthorizationService;
@@ -172,7 +173,7 @@ try {
     assert_calibration($authz->can(['role' => 'operator', 'is_active' => 1], 'review.analytics.view'), 'Operator should view analytics read-only');
 
     calibration_session((int)$reviewer['user_id']);
-    $html = calibration_render(fn() => (new AdminController())->reviewAnalytics());
+    $html = calibration_render(fn() => (new AdminReviewController())->reviewAnalytics());
     assert_calibration(http_response_code() === 200, 'Review analytics route should render for reviewer');
     assert_calibration(str_contains($html, 'Review Analytics'), 'Admin analytics view missing title');
     assert_calibration(str_contains($html, 'MOCK_TEST metrics are not live-market proof'), 'Admin analytics view missing fixture warning');

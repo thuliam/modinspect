@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Services\Catalog\MotherboardFormat;
@@ -9,7 +9,7 @@ use App\Services\Catalog\MotherboardFormat;
 /**
  * LS-73: fills the chipset of motherboards that lack it from their own model name (empty columns only, never overwrites) and reports boards whose facts are
  * missing or impossible (an AM5 board that is DDR4, a form factor spelled in a non-standard way). Dry run by default; --apply writes.
- * Usage: php cli/motherboard_backfill.php [--apply]
+ * Usage: php cli/archive/motherboard_backfill.php [--apply]
  */
 global $config;
 $apply = getopt('', ['apply']) !== [];

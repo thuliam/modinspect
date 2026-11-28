@@ -22,7 +22,7 @@ $q = A::plan($big, $ids, []);
 ok_ai(count($q['rows']) === A::MAX_LINES && $q['truncated'] === true, 'A very long paste is cut at the limit and says so');
 ok_ai(A::plan('ryzen-5-5600, ' . str_repeat('x', 300), $ids, [])['rows'][0]['status'] === 'invalid', 'An alias longer than the column is invalid');
 
-$src = (string) file_get_contents(dirname(__DIR__) . '/app/Controllers/AdminController.php');
+$src = (string) file_get_contents(dirname(__DIR__) . '/app/Controllers/AdminCatalogController.php');
 preg_match('/public function aliasImport\(\): void \{(.*?)\n    \}\n/s', $src, $m);
 $body = $m[1] ?? '';
 ok_ai(str_contains($body, "requirePermission('products.manage')") && strpos($body, 'requirePermission') < strpos($body, 'Csrf::verify') && strpos($body, 'Csrf::verify') < strpos($body, 'beginTransaction'), 'The action checks permission, then the token, before it writes');

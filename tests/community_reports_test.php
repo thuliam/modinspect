@@ -162,8 +162,8 @@ ok_cr(str_contains(str_replace("\r\n", "\n", $unix($root . '/.env.example')), "C
 ok_cr(str_contains($unix($root . '/config/app.php'), "'community_reports' => ['enabled' => filter_var(\$_ENV['COMMUNITY_REPORTS_ENABLED'] ?? 'false'"), 'Off unless the env says true');
 ok_cr(str_contains($unix($root . '/app/Views/layouts/admin_header.php'), "'href' => '/admin/community-reports', 'permission' => 'reports.moderate'"), 'The Admin menu entry needs the reports.moderate permission (reviewer and admin)');
 $idx = $unix($root . '/public/index.php');
-ok_cr(str_contains($idx, "\$router->get('/admin/community-reports',[AdminController::class,'communityReports']);") && str_contains($idx, "\$router->post('/admin/community-reports/action',[AdminController::class,'communityReportAction']);"), 'The queue routes exist');
-$adm = $unix($root . '/app/Controllers/AdminController.php');
+ok_cr(str_contains($idx, "\$router->get('/admin/community-reports',[AdminCommunityController::class,'communityReports']);") && str_contains($idx, "\$router->post('/admin/community-reports/action',[AdminCommunityController::class,'communityReportAction']);"), 'The queue routes exist');
+$adm = $unix($root . '/app/Controllers/AdminCommunityController.php');
 ok_cr(str_contains($adm, "public function communityReports(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;") && str_contains($adm, "public function communityReportAction(): void {\n        if(!\$this->requirePermission('reports.moderate')) return;\n        if(!Csrf::verify(\$_POST['_token']??null))"), 'Viewing the queue and deciding a report need the permission, and a decision needs a CSRF token');
 ok_cr(str_contains($unix($root . '/app/Lang/en.views.php'), 'Community reports') && str_contains($unix($root . '/cli/retention_purge.php'), '--community-days=N'), 'Data health shows the counts and the retention CLI has the option (S4)');
 ok_cr(str_contains($unix($root . '/app/Services/Seo/SeoService.php'), "'/account', '/report', "), 'robots.txt keeps the form out of search');

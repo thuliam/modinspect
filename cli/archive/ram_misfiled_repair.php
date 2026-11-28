@@ -5,9 +5,9 @@ declare(strict_types=1);
  * LS-77: find APPROVED RAM price rows whose own title contradicts the product they sit under (a 16GB kit approved under a 32GB class) and EXCLUDE them
  * through Dashboard::decideObservation (audit and decision record, recorded under --actor), then rebuild the snapshot of each affected product.
  * Excluding is reversible and keeps the evidence; it does not guess a new product. Dry run unless --apply; --apply refuses unless --expect equals the row count.
- * Usage: php cli/ram_misfiled_repair.php --actor=<admin id> [--apply --expect=<rows>]
+ * Usage: php cli/archive/ram_misfiled_repair.php --actor=<admin id> [--apply --expect=<rows>]
  */
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Models\Dashboard;

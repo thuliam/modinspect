@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 /**
  * LS-83: a review pack for the pending rows a person must decide, and the way to record those decisions.
- *  1) Export (default, writes nothing to the database):  php cli/ls83_review_pack.php --csv=<dir>
+ *  1) Export (default, writes nothing to the database):  php cli/archive/ls83_review_pack.php --csv=<dir>
  *     ls78_review.csv   one line per untrusted pending Facebook row, a suggested decision and an empty owner_decision column
  *     ls79_collect.csv  one line per product that still lacks a price snapshot: usable rows, rows missing, what to collect
- *  2) Record decisions:  php cli/ls83_review_pack.php --actor=<admin id> --decisions=<ls78_review.csv> [--apply --expect=<rows>]
+ *  2) Record decisions:  php cli/archive/ls83_review_pack.php --actor=<admin id> --decisions=<ls78_review.csv> [--apply --expect=<rows>]
  *     owner_decision accepts approve | reject | exclude (empty = leave pending). Each goes through Dashboard::decideObservation under --actor
  *     (audit log and review decision record); dry run unless --apply, and --apply refuses unless --expect equals the number of decided rows.
  */
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Models\Dashboard;

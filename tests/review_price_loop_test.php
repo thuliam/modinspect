@@ -9,6 +9,7 @@ require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/support/PriceFixture.php';
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminReviewController;
 use App\Controllers\AdminPriceController;
 use App\Core\Csrf;
 use App\Core\RedirectException;
@@ -55,26 +56,26 @@ try {
     $fx->observation(1100);
     $third = $fx->observation(1200, 'pending');
     assert_rpl($public()['median'] === null, 'no price below three rows');
-    $r = $call(fn() => (new AdminController())->reviewDecision(), ['observation_id' => $third, 'decision' => 'approved']);
+    $r = $call(fn() => (new AdminReviewController())->reviewDecision(), ['observation_id' => $third, 'decision' => 'approved']);
     assert_rpl($r['path'] === '/admin/review/' . $third, 'redirect back to the listing: ' . json_encode($r['path']));
     assert_rpl(($r['flash']['type'] ?? '') === 'success' && str_contains($r['flash']['message'], '1,100'), 'the message names the new median: ' . json_encode($r['flash'], JSON_UNESCAPED_UNICODE));
     assert_rpl((float)$public()['median'] === 1100.0, 'the approval published the price');
     assert_rpl($fx->count('SELECT COUNT(*) FROM price_trend_points WHERE product_id=? AND sample_size=3', [$pid]) === 1, 'the trend month was built too');
 
     // 2) deciding the same row again says so
-    $r = $call(fn() => (new AdminController())->reviewDecision(), ['observation_id' => $third, 'decision' => 'approved']);
+    $r = $call(fn() => (new AdminReviewController())->reviewDecision(), ['observation_id' => $third, 'decision' => 'approved']);
     assert_rpl(($r['flash']['type'] ?? '') === 'danger', 'a second decision is reported, not silent');
 
     // 3) rejecting a pending row leaves the price alone
     $fourth = $fx->observation(9000, 'pending');
     $snapshots = $fx->count('SELECT COUNT(*) FROM price_indices WHERE product_id=?', [$pid]);
-    $r = $call(fn() => (new AdminController())->reviewDecision(), ['observation_id' => $fourth, 'decision' => 'rejected']);
+    $r = $call(fn() => (new AdminReviewController())->reviewDecision(), ['observation_id' => $fourth, 'decision' => 'rejected']);
     assert_rpl(($r['flash']['type'] ?? '') === 'success' && $fx->count('SELECT COUNT(*) FROM price_indices WHERE product_id=?', [$pid]) === $snapshots, 'no new snapshot for a rejection');
 
     // 4) withdrawing needs a reason; with one the price falls below the minimum and disappears
-    $r = $call(fn() => (new AdminController())->reviewWithdraw(), ['observation_id' => $first, 'to' => 'excluded', 'reason' => '   ']);
+    $r = $call(fn() => (new AdminReviewController())->reviewWithdraw(), ['observation_id' => $first, 'to' => 'excluded', 'reason' => '   ']);
     assert_rpl(($r['flash']['type'] ?? '') === 'danger' && (float)$public()['median'] === 1100.0, 'no withdrawal without a reason');
-    $r = $call(fn() => (new AdminController())->reviewWithdraw(), ['observation_id' => $first, 'to' => 'pending', 'reason' => 'wrong price typed']);
+    $r = $call(fn() => (new AdminReviewController())->reviewWithdraw(), ['observation_id' => $first, 'to' => 'pending', 'reason' => 'wrong price typed']);
     assert_rpl(($r['flash']['type'] ?? '') === 'warning', 'the admin is told the model no longer has enough listings: ' . json_encode($r['flash'], JSON_UNESCAPED_UNICODE));
     assert_rpl($public()['median'] === null, 'the price built on the withdrawn row is not shown');
     assert_rpl($fx->count('SELECT COUNT(*) FROM price_trend_points WHERE product_id=?', [$pid]) === 0, 'the trend month fell below the minimum');
@@ -84,9 +85,9 @@ try {
     assert_rpl($status['state'] === 'hidden' && $status['can_recalculate'] === false, 'state hidden, nothing to calculate yet: ' . $status['state']);
 
     // 5) back in the queue it can be corrected and approved again; the price returns with the corrected value
-    $r = $call(fn() => (new AdminController())->reviewCorrection(), ['observation_id' => $first, 'field_name' => 'price', 'corrected_value' => '1050', 'reason' => 'read the post again']);
+    $r = $call(fn() => (new AdminReviewController())->reviewCorrection(), ['observation_id' => $first, 'field_name' => 'price', 'corrected_value' => '1050', 'reason' => 'read the post again']);
     assert_rpl(($r['flash']['type'] ?? '') === 'success', 'correction saved message');
-    $call(fn() => (new AdminController())->reviewDecision(), ['observation_id' => $first, 'decision' => 'approved']);
+    $call(fn() => (new AdminReviewController())->reviewDecision(), ['observation_id' => $first, 'decision' => 'approved']);
     assert_rpl((float)$public()['median'] === 1100.0 && (float)$public()['price_low'] === 1050.0, 'the corrected row is in the new price');
 
     // 6) a change made outside the review pages shows up as hidden, and the button repairs it

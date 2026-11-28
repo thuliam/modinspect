@@ -6,9 +6,9 @@ declare(strict_types=1);
  * (a DDR5 kit under a Ryzen CPU, a motherboard under a CPU) and EXCLUDE them with a review decision and an audit entry under --actor,
  * then rebuild the snapshot of each affected product that had an approved row removed. Excluding is reversible and keeps the evidence.
  * Dry run unless --apply; --apply refuses unless --expect equals the row count.
- * Usage: php cli/category_misfiled_repair.php --actor=<admin id> [--apply --expect=<rows>]
+ * Usage: php cli/archive/category_misfiled_repair.php --actor=<admin id> [--apply --expect=<rows>]
  */
-require dirname(__DIR__) . '/app/bootstrap.php';
+require dirname(__DIR__, 2) . '/app/bootstrap.php';
 
 use App\Core\Database;
 use App\Services\Catalog\SpecConsistency;

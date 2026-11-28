@@ -6,6 +6,7 @@ define('MODINSPECT_TESTING', true);
 require __DIR__ . '/bootstrap.php';
 
 use App\Controllers\AdminController;
+use App\Controllers\AdminMemberController;
 use App\Core\Csrf;
 use App\Core\Database;
 use App\Core\RedirectException;
@@ -46,7 +47,7 @@ try {
         $_SERVER['REQUEST_METHOD'] = $method; $_SERVER['REQUEST_URI'] = '/admin/x'; $_GET = $get;
         $_POST = $method === 'POST' ? $post + ($token ? ['_token' => Csrf::token()] : []) : [];
     };
-    $c = new AdminController();
+    $c = new AdminMemberController();
     $audit = new MemberAudit($db);
     $pages = ['privacyRequests' => 'คำขอข้อมูลส่วนบุคคล', 'legalDocuments' => 'เอกสารกฎหมาย', 'memberCapabilities' => 'สิทธิ์ของสมาชิก'];
     $posts = ['privacyRequestAction' => ['id' => '1', 'to' => 'completed'], 'legalDocumentCreate' => ['doc_type' => 'privacy', 'version' => 'x', 'title' => 't', 'body' => 'b'],
